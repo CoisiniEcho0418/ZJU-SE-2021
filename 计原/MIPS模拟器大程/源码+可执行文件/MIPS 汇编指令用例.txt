@@ -1,0 +1,30 @@
+main:	addi $t0,$zero,28
+	addi $t1,$zero,40
+	addi $t9,$zero,-1
+	add $t2,$t0,$t1
+	sub $t3,$t0,$t1
+	sll $t8,$t9,1
+	srl $t7,$t9,1
+	j jump
+	sub $t2,$zero,$zero
+	sub $t3,$zero,$zero
+jump:	beq $t2,$t3,label
+	bne $t2,$t3,exit
+label:sw $t0,640($t1)
+exit:	sw $t0,620($t1)
+	lw $s0,620($t1)
+	jal test
+	j stop
+test: and $t4,$t0,$t1
+	or $t5,$t0,$t8
+	xor $s1,$t1,$t9
+	nor $s2,$zero,$t8
+	nor $s3,$t2,$t3
+	andi $s4,$s0,-15
+	ori $s5,$s0,-8
+	addi $s6,$zero,108
+	jr $s6
+	slt $t6,$t0,$t1
+	jr $ra
+stop: addi $s7,$zero,3
+

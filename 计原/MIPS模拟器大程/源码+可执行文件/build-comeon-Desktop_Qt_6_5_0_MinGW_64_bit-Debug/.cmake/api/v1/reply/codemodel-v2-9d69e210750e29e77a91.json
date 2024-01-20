@@ -1,0 +1,70 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-e2fbad55a05452610667.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "comeon",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "comeon::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-comeon-Debug-32b27411baa2c2b4fd8b.json",
+					"name" : "comeon",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "comeon_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-comeon_autogen-Debug-10ca4b8a91871e01b614.json",
+					"name" : "comeon_autogen",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/XTY/Desktop/build-comeon-Desktop_Qt_6_5_0_MinGW_64_bit-Debug",
+		"source" : "C:/Users/XTY/Desktop/MIPS_final/MIPS"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 4
+	}
+}

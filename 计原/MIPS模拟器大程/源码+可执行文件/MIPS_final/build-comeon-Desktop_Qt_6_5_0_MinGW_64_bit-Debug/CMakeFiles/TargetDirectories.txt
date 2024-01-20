@@ -1,0 +1,8 @@
+C:/Users/XTY/Desktop/build-comeon-Desktop_Qt_6_5_0_MinGW_64_bit-Debug/CMakeFiles/comeon.dir
+C:/Users/XTY/Desktop/build-comeon-Desktop_Qt_6_5_0_MinGW_64_bit-Debug/CMakeFiles/edit_cache.dir
+C:/Users/XTY/Desktop/build-comeon-Desktop_Qt_6_5_0_MinGW_64_bit-Debug/CMakeFiles/rebuild_cache.dir
+C:/Users/XTY/Desktop/build-comeon-Desktop_Qt_6_5_0_MinGW_64_bit-Debug/CMakeFiles/list_install_components.dir
+C:/Users/XTY/Desktop/build-comeon-Desktop_Qt_6_5_0_MinGW_64_bit-Debug/CMakeFiles/install.dir
+C:/Users/XTY/Desktop/build-comeon-Desktop_Qt_6_5_0_MinGW_64_bit-Debug/CMakeFiles/install/local.dir
+C:/Users/XTY/Desktop/build-comeon-Desktop_Qt_6_5_0_MinGW_64_bit-Debug/CMakeFiles/install/strip.dir
+C:/Users/XTY/Desktop/build-comeon-Desktop_Qt_6_5_0_MinGW_64_bit-Debug/CMakeFiles/comeon_autogen.dir

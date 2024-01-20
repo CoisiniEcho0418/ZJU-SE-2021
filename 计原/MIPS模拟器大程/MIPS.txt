@@ -1,0 +1,15 @@
+已完成的指令
+R-type：add sub and or xor nor jr slt sll srl   （加了xor、sll）
+I-type：beq  bne  addi  andi  ori  lw  sw
+J-type：J  JAL
+
+TODO:
+2.$0,0号寄存器只能存0，这里要加限制（对每条涉及寄存器的指令）
+3.溢出等中断类型的设置
+
+
+
+参考链接（CSDN）
+https://blog.csdn.net/peachhhh/article/details/114376694
+https://blog.csdn.net/wzbbbb/article/details/129971475
+https://blog.csdn.net/weixin_44984664/article/details/104970433

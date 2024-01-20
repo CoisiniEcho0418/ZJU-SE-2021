@@ -1,0 +1,2 @@
+exe文件包里的.exe文件可以直接运行；
+若本地装有QtCreater及相关库，可以打开MIPS_final里的CMakeList.txt进行项目构建和运行。

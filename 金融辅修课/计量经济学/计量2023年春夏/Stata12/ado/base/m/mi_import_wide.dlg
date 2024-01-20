@@ -1,0 +1,53 @@
+/*
+  mi_import_wide
+
+*! VERSION 1.0.1  02jul2009
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_msmall
+DEFINE _dlght 190
+INCLUDE header
+
+HELP hlp1, view("help mi_import_wide")
+RESET res1
+
+DIALOG main, label("mi import wide - Import wide-like data into mi") ///
+	tabtitle("Main")
+BEGIN
+  TEXT tx_imp		_lft	_top	_iwd	.,			///
+	label("Imputed variables to be registered:")
+  VARLIST vl_imp	@	_ss	@	.,			///
+	option(imputed)							///
+	label("Imputed variables to be registered")
+  TEXT tx_pas		@	_ls	@	.,			///
+	label("Passive variables to be registered:")
+  VARLIST vl_pas	@	_ss	@	.,			///
+	option(passive)							///
+	label("Passive variables to be registered")
+
+  CHECKBOX ck_dupsok	@	_ls	@	.,			///
+	option(dupsok)							///
+	label("Allow variable to be posted repeatedly")
+  CHECKBOX ck_drop	@	_ms	@	.,			///
+	option(drop)							///
+	label("Drop imputed and passive after posting")
+  CHECKBOX ck_clear	@	_ms	@	.,			///
+	option(clear)							///
+	label("Replace data in memory")
+END
+
+PROGRAM command
+BEGIN
+	put "mi import wide "
+
+	beginoptions
+		optionarg main.vl_imp
+		optionarg main.vl_pas
+		option main.ck_dupsok
+		option main.ck_drop
+		option main.ck_clear
+	endoptions
+END

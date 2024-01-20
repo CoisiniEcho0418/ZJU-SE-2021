@@ -1,0 +1,103 @@
+/*
+  bsample
+
+*!  VERSION 1.1.0  06nov2004
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_large
+INCLUDE header
+HELP hlp1, view("help bsample")
+RESET res1
+
+DIALOG main, label("bsample - Sampling with replacement") tabtitle("Main")
+BEGIN
+  CHECKBOX ck_size   _lft      _top      _ckwd     .,			/*
+		*/ label("")						/*
+		*/ clickon("gaction main.sp_size.enable")		/*
+		*/ clickoff("gaction main.sp_size.disable")		/*
+		*/
+  SPINNER  sp_size   _cksep    @         _spwd     .,			/*
+		*/ label("Sample size")					/*
+		*/ min(1)						/*
+		*/ max(c(N))						/*
+		*/ default(c(N))					/*
+		*/ option("size")					/*
+		*/
+  TEXT     tx_size   _spsep    @         _spr      .,			/*
+		*/ label("Sample size (default is current sample size)")/*
+		*/
+
+  CHECKBOX ck_strata _lft      _ls       _iwd      _ht2h,		/*
+		*/ label("Strata variables")				/*
+		*/ clickon("gaction main.vl_strata.enable")		/*
+		*/ clickoff("gaction main.vl_strata.disable")		/*
+		*/ groupbox						/*
+		*/
+  VARLIST  vl_strata _indent   _ms       _ibwd     .,			/*
+		*/ label("Strata variables")				/*
+		*/ option("strata")					/*
+		*/
+
+  CHECKBOX ck_clust  _lft      _xls      _iwd      _ht7,		/*
+		*/ label("Cluster variables")				/*
+		*/ clickon("script cl_on")				/*
+		*/ clickoff("script cl_off")				/*
+		*/ groupbox						/*
+		*/
+  VARLIST  vl_clust  _indent   _ms       _ibwd     .,			/*
+		*/ label("Cluster variables")				/*
+		*/ option("cluster")					/*
+		*/
+  TEXT     tx_clid   @         _ms       @         .,			/*
+		*/ label("New cluster ID variable: (optional)")		/*
+		*/
+  EDIT     ed_clid   @         _ss       _vnwd     .,			/*
+		*/ label("New cluster ID variable")			/*
+		*/ option("idcluster")					/*
+		*/
+
+  CHECKBOX ck_weight _lft      _xls      _iwd      _ht2h,		/*
+	*/ label("Replace variable with frequency weights")		/*
+		*/ clickon("gaction main.vn_weight.enable")		/*
+		*/ clickoff("gaction main.vn_weight.disable")		/*
+		*/ groupbox						/*
+		*/
+  VARNAME  vn_weight _indent   _ms       _vnwd     .,			/*
+		*/ label("frequency weights")				/*
+		*/ option("weight")					/*
+		*/
+END
+
+SCRIPT cl_on
+BEGIN
+  main.vl_clust.enable
+  main.tx_clid.enable
+  main.ed_clid.enable
+
+END
+
+SCRIPT cl_off
+BEGIN
+  main.vl_clust.disable
+  main.tx_clid.disable
+  main.ed_clid.disable
+
+END
+
+PROGRAM command
+BEGIN
+	put "bsample "
+	put main.sp_size
+	beginoptions
+		optionarg main.vl_strata
+		optionarg main.vl_clust
+		if main.ed_clid {
+			require main.vl_clust
+		}
+		optionarg main.ed_clid
+		optionarg main.vn_weight
+	endoptions
+END

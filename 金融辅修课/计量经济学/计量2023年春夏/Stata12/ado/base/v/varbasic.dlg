@@ -1,0 +1,102 @@
+/*
+  varbasic
+
+  VERSION 1.0.3  02jun2009
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_medium
+INCLUDE _ht270
+INCLUDE header
+HELP hlp1, view("help varbasic")
+RESET res1
+
+DIALOG main, label("varbasic - Fit a simple VAR and graph IRFs") /*
+							*/  tabtitle("Main")
+BEGIN
+  DEFINE _x _xsetbu
+  DEFINE _y _top
+  INCLUDE _bu_tsset
+
+  TEXT     tx_dv             _lft      _topph    129       .,		/*
+		*/ label("Dependent variables:")
+  VARLIST  vl_dv             @         _ss       _iwd      .,		/*
+		*/ label("Dependent variables") ts
+
+  GROUPBOX gb_lags           @         _ls       _comb3_1  _ht10,	/*
+		*/ label("Lags")
+  DEFINE   holdy @y
+  RADIO    rb_lags1          _ilft     _ss       _comb3_3  ., first	/*
+		*/ clickon("script one2n")				/*
+		*/ label("Include lags 1 to:")
+  SPINNER  sp_lags1          _indent2  _ms       _spwd     .,		/*
+		*/ min(1) max(c(N)) default(2)				/*
+		*/ label("Include lags 1 to:")
+  RADIO    rb_lags2          _ilft     _ls       _comb3_3  ., last	/*
+		*/ clickon("script laglist")				/*
+		*/ label(`"Supply list of lags: (e.g. "1 3 8")"')
+  EDIT     ed_lags2          _indent2  _ms       _vnwd     .,		/*
+		*/ option("lags")					/*
+		*/ label("Supply list of lags")
+
+  GROUPBOX gb_step           _lft      _xls      _iwd      _ht2h,	/*
+		*/ label("Horizon for OIRFs, IRFs, and FEVDs")
+  SPINNER  sp_step           _ilft     _ms       _spwd     .,		/*
+		*/ min(1) max(c(N)) default(8)				/*
+		*/ option("step")					/*
+		*/ label("Periods")
+  TEXT     tx_step           _spsep    @         _sprb     .,		/*
+		*/ label("Periods")
+
+  GROUPBOX gb_graph          _lft3_3   holdy     _cwd3_1   _ht10,	/*
+		*/ label("Graph")
+  RADIO    rb_oirf           _indent   _ms       _inwd     ., first	/*
+		*/ option(NONE)						/*
+		*/ label("OIRFs")
+  RADIO    rb_irf            @         _ms       @         .,		/*
+		*/ option("irf")					/*
+		*/ label("IRFs")
+  RADIO    rb_fevd           @         _ms       @         .,		/*
+		*/ option("fevd")					/*
+		*/ label("FEVDs")
+  RADIO    rb_nograph        @         _ms       @         ., last	/*
+		*/ option("nograph")					/*
+		*/ label("No graph")
+END
+
+INCLUDE ifin
+
+SCRIPT one2n
+BEGIN
+	main.sp_lags1.enable
+	main.ed_lags2.disable
+END
+
+SCRIPT laglist
+BEGIN
+	main.sp_lags1.disable
+	main.ed_lags2.enable
+END
+
+PROGRAM command
+BEGIN
+	allowxi
+	put "varbasic "
+	varlist main.vl_dv
+	INCLUDE _ifin_pr
+	beginoptions
+		if main.rb_lags1 {
+			put "lags(1/"
+			put main.sp_lags1
+			put ") "
+		}
+		if main.rb_lags2 {
+			require main.ed_lags2
+			optionarg main.ed_lags2
+		}
+		optionarg main.sp_step
+		option radio(main rb_oirf rb_irf rb_fevd rb_nograph)
+	endoptions
+END

@@ -1,0 +1,62 @@
+/*
+	as_probit_rpt.idlg
+
+	This is an INCLUDE file for the -model- and -model2- dialogs that go 
+	with -asmprobit- and -asroprobit-.
+
+*!  VERSION 1.0.3  23aug2010
+
+	// SCRIPTS and PROGRAMS for external use
+	    * SCRIPT  as_probit_rpt_transform_off
+	    * SCRIPT  as_probit_rpt_transform_on
+	    * PROGRAM rpt_output
+*/
+
+SCRIPT rpt_POSTINIT
+BEGIN
+	create STRING rpt_bu_fmtcoefResults
+	program rpt_bu_fmtcoef_ckResults
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr2b
+  DEFINE _y _top
+  INCLUDE _sp_level
+
+  CHECKBOX ck_notransform	_lft	_ls	_iwd		.,	///
+  	option(notransform)						///
+  	label("Prevent reparameterizing the Cholesky-factored variance-covariance estimates to the standard")
+  TEXT     tx_notransform	_indent2 _vss	_inwd		.,	///
+  	label("deviation and correlation metric")
+
+  DEFINE _x _lft
+  DEFINE _y _ls
+  DEFINE _cx _iwd
+  INCLUDE _nocnsreport
+
+  DEFINE _x _lft
+  DEFINE _y _ls
+  INCLUDE _bu_coef_table_reporting
+END
+
+INCLUDE fmt_coef_table_reporting_pr
+
+SCRIPT as_probit_rpt_transform_off
+BEGIN
+	rpt.ck_notransform.disable
+END
+
+SCRIPT as_probit_rpt_transform_on
+BEGIN
+	rpt.ck_notransform.enable
+END
+
+PROGRAM rpt_output
+BEGIN
+	optionarg /hidedefault rpt.sp_level
+	option rpt.ck_notransform
+	INCLUDE _nocnsreport_pr
+	put " " rpt_bu_fmtcoefResults
+END

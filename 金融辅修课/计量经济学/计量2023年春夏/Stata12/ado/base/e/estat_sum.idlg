@@ -1,0 +1,48 @@
+/*
+	estat_summarize -- an INCLUDE file used by estat.dlg, svy_estat.dlg, and
+	             other estat dialogs that require a generic summarize option
+
+*!  VERSION 1.0.2  10jun2009
+
+	NOTE: this INCLUDE file assumes that 'holdy' contains the y position
+	where the controls for -estat summarize- options begin, and that this
+        file is included within the 'main' tab
+
+*/
+
+  // options for -estat summarize-
+  GROUPBOX gb_eqlist		_lft	holdy	_iwd	_ht6,		///
+	label("Summarize")
+  RADIO rb_default		_ilft	_ss	_inwd	.,		///
+	first label("Use all variables involved in the estimation")	///
+	onclickon(main.vl_spec.disable)
+  RADIO rb_spec		@	_ss	@	.,			///
+	onclickon(main.vl_spec.enable) last				///
+	label("Use variables and optional equation names:")
+  VARLIST vl_spec	_indent2	_ss	_inwd	.,		///
+	label("Use variables and optional equation names:")
+  CHECKBOX ck_equation	_lft	+45	_iwd	.,			///
+	option(equation)						///
+	label("Display summary by equation")
+  CHECKBOX ck_labels		@	_ms	@	.,		///
+	label("Display variable labels")				///
+	option(labels)
+  CHECKBOX ck_noheader		_lft	_ms	_iwd	.,		///
+	option(noheader)						///
+	label("Suppress the header")
+  CHECKBOX ck_noweights		@	_ms	@	.,		///
+	option(noweights)						///
+	label("Ignore weights")
+
+  CHECKBOX ck_noomitted_sum	@	_ms	@	.,		///
+	label("Suppress omitted collinear covariates")			///
+	option(noomitted)
+
+  CHECKBOX ck_vsquish_sum	@	_ms	@	.,		///
+	label("Suppress blank lines")					///
+	option(vsquish)
+
+  BUTTON bu_facvars_sum		@	_ls	200	.,		///
+	onpush("program sum_bu_facvars_getOpts")			///
+	label("Factor-variable display options  ")
+

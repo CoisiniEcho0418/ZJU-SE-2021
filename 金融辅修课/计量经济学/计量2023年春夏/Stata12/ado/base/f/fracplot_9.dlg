@@ -1,0 +1,57 @@
+/*
+  fracplot_9
+
+*!  VERSION 1.1.2  08sep2006 (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+HELP hlp1, view("help fracplot")
+RESET res1
+
+DIALOG main, tabtitle("Main")	///
+	label("fracplot - Plots of fractional polynomial regression results")
+BEGIN
+  TEXT     tx_var    _lft      _top      _iwd      .,		///
+	label("Covariate from the most recently fitted fractional polynomial: (optional)")
+  VARNAME  vn_var    _lft      _ss       _vnwd     .,		///
+	label("Covariate from the most recently fitted fractional polynomial")
+END
+
+INCLUDE ifin
+INCLUDE p1_opts
+INCLUDE line_opts
+INCLUDE p2_opts
+INCLUDE addplot
+INCLUDE gr_twoway
+
+SCRIPT PREINIT
+BEGIN
+	script p1_opts_createAsNoRange
+	script p1_opts_setDefaultScatter
+	script p2_opts_createAsRange
+	script p2_opts_default_rscatter
+END
+
+SCRIPT POSTINIT
+BEGIN
+	script p2_opts_setTabtitleCi
+	line_opts.settabtitle "Fitted line"
+END
+
+PROGRAM command
+BEGIN
+	put "fracplot "
+	varlist [main.vn_var]
+	INCLUDE _ifin_pr
+	beginoptions
+		put " " /program p1_opts_recast_output
+		put " " /program line_opts_rlopts_output
+		put " " /program p2_opts_ci_output
+		put " " /program addplot_output
+		put " " /program gr_twoway_output
+	endoptions
+END

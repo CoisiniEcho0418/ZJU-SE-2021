@@ -1,0 +1,6 @@
+*! version 1.0.0  22dec2002
+sequence 3805
+
+set width    scheme matrix_plotregion 
+set color    scheme matplotregion_line
+set pattern  scheme matrix_plotregion 

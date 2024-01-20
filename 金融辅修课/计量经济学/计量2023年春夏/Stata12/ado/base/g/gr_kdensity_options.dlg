@@ -1,0 +1,190 @@
+/*
+    gr_kdensity_options.dlg
+    
+*!  VERSION 1.0.1  23mar2007
+
+*/
+
+VERSION 10
+
+INCLUDE _std_large
+INCLUDE header_gr_child
+
+DEFINE _clwd 15
+INCLUDE _kernel_function_list
+
+HELP hlp1, view("help twoway_kdensity")
+RESET res1
+
+DIALOG main, label("Kernel density options") tabtitle("Main")
+BEGIN
+  TEXT     tx_function		_lft	_top	200	.,	///
+	label("Kernel function:")
+  COMBOBOX cb_function		@	_ss	_vnwd	.,	///
+	dropdownlist						///
+	contents(kernel_function)				///
+	values(kernel_function_val)				///
+	option(kernel)
+	
+  CHECKBOX ck_kernelwidth	_lft	_ls	_iwd	.,	///
+	label("Override optimal width (smoothing parameter)")	///
+	onclickon(script kernelwidth_on)			///
+	onclickoff(script kernelwidth_off)
+  EDIT     ed_kernelwidth	+20	_ss	_en7wd	.,	///
+  	option(bwidth) label("Halfwidth of the kernel")
+  TEXT     tx_kernelwidth	_en7sep	@	200	.,	///
+	label("Halfwidth of the kernel")
+
+  CHECKBOX ck_points		_lft	_ls	_iwd	.,	///
+	onclickon(script points_on)				///
+	onclickoff(script points_off)	  			///
+	label("Override the number of points at which the estimate is evaluated")
+  SPINNER  sp_points		+20	_ss	_en7wd	.,	///
+	default(300) min(1) max(10000000) option(n)
+  TEXT     tx_points		_en7sep	@	200	.,	///
+	label("Number of points")
+	
+  CHECKBOX ck_range		_lft	+35	_iwd	_ht5h,	///
+	groupbox						///
+	label("Override the range of the plot")			///
+	onclickon(program range_on)				///
+	onclickoff(script range_off)
+  RADIO    rb_minmax		_ilft	_ms	15	.,	///
+	first onclickon(program range_minmax_on)
+  EDIT     ed_min		+18	@	40	.,	///
+	label("Min")
+  TEXT     tx_min		+45	@	30	.,	///
+	label("Min")	
+  EDIT     ed_max		+35	@	40	.,	///
+	label("Max")
+  TEXT     tx_max		+45	@	40	.,	///
+	label("Max")	
+	
+  RADIO    rb_varname		_ilft	_ms	15	.,	///
+	last onclickon(program range_variable_on)
+  VARNAME  vn_range		+18	@	120	.,	///
+	option(range) label("Variable")
+  TEXT     tx_range		_vnsep	@	150	.,	///
+	label("Variable")
+	
+  CHECKBOX ck_horizontal	_lft	_xxls	_iwd	.,	///
+	label("Plot the result horizontally") option(horizontal)
+END
+
+PROGRAM range_on
+BEGIN
+	if main.rb_minmax {
+		call main.ed_min.enable
+		call main.ed_max.enable
+	}
+	if main.rb_varname {
+		call main.vn_range.enable
+	}
+	call main.tx_min.enable
+	call main.tx_max.enable
+	call main.tx_range.enable
+END
+SCRIPT range_off
+BEGIN
+	main.ed_min.disable
+	main.ed_max.disable
+	main.vn_range.disable
+	main.tx_min.disable
+	main.tx_max.disable
+	main.tx_range.disable
+END
+
+PROGRAM range_minmax_on
+BEGIN
+	if main.ck_range {
+		call main.ed_min.enable
+		call main.ed_max.enable
+		call main.vn_range.disable
+	}
+END
+
+PROGRAM range_variable_on
+BEGIN
+	if main.ck_range {
+		call main.ed_min.disable
+		call main.ed_max.disable
+		call main.vn_range.enable
+	}
+END
+
+SCRIPT kernelwidth_on
+BEGIN
+	main.ed_kernelwidth.enable
+	main.tx_kernelwidth.enable
+END
+
+SCRIPT kernelwidth_off
+BEGIN
+	main.ed_kernelwidth.disable
+	main.tx_kernelwidth.disable
+END
+
+SCRIPT points_on
+BEGIN
+	main.sp_points.enable
+	main.tx_points.enable
+END
+
+SCRIPT points_off
+BEGIN
+	main.sp_points.disable
+	main.tx_points.disable
+END
+
+DIALOG adv, tabtitle("Advanced")
+BEGIN
+  CHECKBOX ck_area		_lft	_top	_iwd	_ht4,	///
+	groupbox						///
+	onclickon(script area_on) onclickoff(script area_off)	///
+	label("Set multiplier by which the density estimates are adjusted before plotting")
+  TEXT     tx_area		_ilft	_ss	_inwd	.,	///
+	label("Multiplier:")
+  EDIT     ed_area		@	_ss	_en7wd	.,	///
+	label("Multiplier") option(area) numonly default(1)
+END
+
+SCRIPT area_on
+BEGIN
+	adv.tx_area.enable
+	adv.ed_area.enable
+END
+
+SCRIPT area_off
+BEGIN
+	adv.tx_area.disable
+	adv.ed_area.disable
+END
+
+PROGRAM command
+BEGIN
+	optionarg /hidedefault main.cb_function
+	if main.ck_kernelwidth {
+		require main.ed_kernelwidth
+		optionarg main.ed_kernelwidth
+	}
+	optionarg main.sp_points
+	if main.ck_range {
+		if main.rb_minmax {
+			require main.ed_min
+			require main.ed_max
+			put " range("
+			put main.ed_min " " main.ed_max
+			put ") "
+		}
+		if main.rb_varname {
+			require main.vn_range
+			optionarg main.vn_range
+		}
+	}
+	option main.ck_horizontal
+	
+	if adv.ck_area {
+		require adv.ed_area
+		optionarg adv.ed_area
+	}
+END

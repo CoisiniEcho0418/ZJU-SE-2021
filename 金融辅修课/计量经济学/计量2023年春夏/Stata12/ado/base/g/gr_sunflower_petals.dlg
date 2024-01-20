@@ -1,0 +1,112 @@
+/*
+    gr_sunflower_petals.dlg
+    
+*!  VERSION 1.0.0  02jan2007
+
+*/
+
+VERSION 10
+
+INCLUDE _std_small
+DEFINE _dlght 260
+INCLUDE header_gr_child
+
+DEFINE _clwd	15
+DEFINE _txwd	170
+DEFINE _txsep	+175
+
+HELP hlp1, view("help sunflower")
+RESET res1
+
+DIALOG main, label("Sunflower petal options") tabtitle("Main")
+BEGIN
+  GROUPBOX gb_light	_lft	_top	_iwd   _ht8h,		///
+	label("Light petals")
+
+  TEXT     tx_lflclr	_ilft	_ss	_txwd	.,		///
+	label("Color:") right
+  COMBOBOX cb_lflclr	_txsep	@	_vnwd	.,		///
+	contents(colors)  					///
+	option(lflcolor)					///
+	onselchangelist(lflclr_change)				///
+	dropdownlist
+  COLOR    cl_lflclr	_vnsep	@	_clwd	.,		///
+	option(lflcolor)	
+
+  TEXT     tx_lflwidth	_ilft	_ls	_txwd	.,		///
+	label("Width:") right
+  COMBOBOX cb_lflwidth	_txsep	@	_vnwd   .,		///
+	contents(linewidths) 					///
+	option(lflwidth)					///
+	dropdown
+
+  TEXT     tx_lflpat	_ilft	_ls	_txwd	.,		///
+	label("Pattern:") right
+  COMBOBOX cb_lflpat	_txsep	@	_vnwd   .,		///
+	contents(linepatterns) 					///
+	option(lflpattern)					///
+	dropdownlist
+
+
+  GROUPBOX gb_dark	_lft	_xls	_iwd   _ht8h,		///
+	label("Dark petals")
+
+  TEXT     tx_dflclr	_ilft	_ss	_txwd	.,		///
+	label("Color:") right
+  COMBOBOX cb_dflclr	_txsep	@	_vnwd	.,		///
+	contents(colors)  					///
+	option(dflcolor)					///
+	onselchangelist(dflclr_change)				///
+	dropdownlist
+  COLOR    cl_dflclr	_vnsep	@	_clwd	.,		///
+	option(dflcolor)	
+
+  TEXT     tx_dflwidth	_ilft	_ls	_txwd	.,		///
+	label("Width:") right
+  COMBOBOX cb_dflwidth	_txsep	@	_vnwd   .,		///
+	contents(linewidths) 					///
+	option(dflwidth)					///
+	dropdown
+
+  TEXT     tx_dflpat	_ilft	_ls	_txwd	.,		///
+	label("Pattern:") right
+  COMBOBOX cb_dflpat	_txsep	@	_vnwd   .,		///
+	contents(linepatterns) 					///
+	option(dflpattern)					///
+	dropdownlist
+
+END
+
+LIST lflclr_change
+BEGIN
+	main.cl_lflclr.hide
+	main.cl_lflclr.show
+	main.cl_lflclr.hide
+END
+LIST dflclr_change
+BEGIN
+	main.cl_dflclr.hide
+	main.cl_dflclr.show
+	main.cl_dflclr.hide
+END
+
+PROGRAM command
+BEGIN
+	if ! main.cl_lflclr.isvisible() {
+		optionarg /hidedefault main.cb_lflclr
+	}
+	if main.cl_lflclr.isvisible() {
+		optionarg /quoted main.cl_lflclr
+	}
+	optionarg /hidedefault main.cb_lflwidth
+	optionarg /hidedefault main.cb_lflpat
+
+	if ! main.cl_dflclr.isvisible() {
+		optionarg /hidedefault main.cb_dflclr
+	}
+	if main.cl_dflclr.isvisible() {
+		optionarg /quoted main.cl_dflclr
+	}
+	optionarg /hidedefault main.cb_dflwidth
+	optionarg /hidedefault main.cb_dflpat
+END

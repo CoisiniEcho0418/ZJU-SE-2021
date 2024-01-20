@@ -1,0 +1,35 @@
+/*
+    gr_yaxis2_options.dlg
+    
+*!  VERSION 1.0.0  03jan2007
+
+    NOTE: (IMPORTANT)
+    	titleOption and scaleOption MUST be set by the caller.
+    	
+	// SCRIPTS and PROGRAMS for external use
+		*
+*/
+
+VERSION 10.0
+
+INCLUDE _std_mlarge
+DEFINE _dlght	240
+INCLUDE header_gr_child
+
+DEFINE _clwd 15
+INCLUDE gr_orientation
+
+HELP hlp1, view("help axis_options")
+RESET res1
+
+SCRIPT POSTINIT
+BEGIN
+	script gr_yaxis_setIsY2
+END
+
+INCLUDE gr_yaxis
+
+PROGRAM command
+BEGIN
+	put /program gr_yaxis_output
+END

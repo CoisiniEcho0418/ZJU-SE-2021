@@ -1,0 +1,249 @@
+/*
+	ca_row
+
+*!  VERSION 1.0.1  22sep2006 (deprecated)
+
+*/
+
+SCRIPT ca_row_PREINIT
+BEGIN
+	create BOOLEAN ca_row_has_supp_opts
+	create BOOLEAN ca_row_has_opts
+END
+
+DIALOG ca_row, tabtitle("Rows")
+BEGIN
+/**** BEGIN -- Row options ****/
+  GROUPBOX gb_marker   _lft        _top      _gwd1         _ht14,	///
+	label("Markers (Scatter options)")
+
+  TEXT     tx_msymbol  _igft       _ss       _txwd         .,		///
+	label("Symbol:") right
+  COMBOBOX cb_msymbol  _txsep      @         _txr4gi       .,		///
+	option(msymbol)							///
+	dropdownlist							///
+	contents(symbols)
+
+  TEXT     tx_mcolor   _igft       _ls       _txwd         .,		///
+	label("Color:") right
+  COMBOBOX cb_mcolor   _txsep      @         _tcr4gi       .,		///
+	option(mcolor)							///
+	dropdownlist							///
+	contents(colors)						///
+	onselchangelist(ca_row_color_mcolor)
+  COLOR    cl_mcolor   _tcr4gisep  @         _btwd         .,		///
+	option(mcolor)
+
+  TEXT     tx_msize    _lft4_2gi   @         _txwd         .,		///
+	label("Size:") right
+  COMBOBOX cb_msize    _txsep      @         _txr4gi       .,		///
+	option(msize)							///
+	dropdownlist 							///
+	contents(symbolsizes)
+
+  GROUPBOX gb_mlabel   _igft       _ls       _gwd2	   85,		///
+	label("Labels")
+
+  TEXT     tx_mlabel   _iigft      _ss       _txswd        .,		///
+	label("Variable:") right
+  VARNAME  vn_mlabel   _txssep     @         _txr4gi       .,		///
+  	option(mlabel)
+
+  TEXT     tx_mlcolor  _lft4_2gi   @         _txswd	   .,		///
+	label("Color:") right
+  COMBOBOX cb_mlcolor  _txssep     @         _tcr4gi       .,		///
+	option(mlabcolor)						///
+	dropdownlist							///
+	contents(colors)						///
+	onselchangelist(ca_row_color_mlcolor)
+  COLOR    cl_mlcolor  _tcr4gisep  @         _btwd         .,		///
+	option(mlabcolor)
+
+  TEXT     tx_mlsize   _iigft      _ls       _txswd        .,		///
+	label("Size:") right
+  COMBOBOX cb_mlsize   _txssep     @         _txr4gi       .,		///
+	option(mlabsize) 						///
+	dropdownlist							///
+	contents(textsizes)
+
+  TEXT     tx_mlposition _lft4_2gi @         _txswd        .,		///
+	label("Position:") right
+  COMBOBOX cb_mlposition _txssep   @         _txr4gi       .,		///
+	option(mlabposition) 						///
+	dropdownlist							///
+	contents(clockpos)
+/**** END   -- Row options  ****/
+
+/**** BEGIN -- Supplementary row options ****/
+  GROUPBOX gb_smarker   _gft2       _top      _gwd1         _ht14,	///
+	label("Supplementary markers (Scatter options)")
+
+  TEXT     tx_smsymbol  _igft2      _ss       _txwd         .,		///
+	label("Symbol:") right
+  COMBOBOX cb_smsymbol  _txsep      @         _txr4gi       .,		///
+	option(msymbol)							///
+	dropdownlist							///
+	contents(symbols)
+
+  TEXT     tx_smcolor   _igft2      _ls       _txwd         .,		///
+	label("Color:") right
+  COMBOBOX cb_smcolor   _txsep      @         _tcr4gi       .,		///
+	option(mcolor)							///
+	dropdownlist							///
+	contents(colors)						///
+	onselchangelist(ca_row_color_smcolor)
+  COLOR    cl_smcolor   _tcr4gisep  @         _btwd         .,		///
+	option(mcolor)
+
+  TEXT     tx_smsize    _lft4_4gi   @         _txwd         .,		///
+	label("Size:") right
+  COMBOBOX cb_smsize    _txsep      @         _txr4gi       .,		///
+	option(msize)							///
+	dropdownlist 							///
+	contents(symbolsizes)
+
+  GROUPBOX gb_smlabel   _igft2      _ls       _gwd2	   85,		///
+	label("Labels")
+
+  TEXT     tx_smlabel   _iigft2     _ss       _txswd        .,		///
+	label("Variable:") right
+  VARNAME  vn_smlabel   _txssep     @         _txr4gi       .,		///
+  	option(mlabel)
+
+  TEXT     tx_smlcolor  _lft4_4gi   @         _txswd	   .,		///
+	label("Color:") right
+  COMBOBOX cb_smlcolor  _txssep     @         _tcr4gi       .,		///
+	option(mlabcolor)						///
+	dropdownlist							///
+	contents(colors)						///
+	onselchangelist(ca_row_color_smlcolor)
+  COLOR    cl_smlcolor  _tcr4gisep  @         _btwd         .,		///
+	option(mlabcolor)
+
+  TEXT     tx_smlsize   _iigft2     _ls       _txswd        .,		///
+	label("Size:") right
+  COMBOBOX cb_smlsize   _txssep     @         _txr4gi       .,		///
+	option(mlabsize) 						///
+	dropdownlist							///
+	contents(textsizes)
+
+  TEXT     tx_smlposition _lft4_4gi @         _txswd        .,		///
+	label("Position:") right
+  COMBOBOX cb_smlposition _txssep   @         _txr4gi       .,		///
+	option(mlabposition) 						///
+	dropdownlist							///
+	contents(clockpos)
+/**** END   -- Supplementary row options  ****/
+END
+
+LIST ca_row_color_mcolor
+BEGIN
+	ca_row.cl_mcolor.hide
+	ca_row.cl_mcolor.show
+	ca_row.cl_mcolor.hide
+END
+LIST ca_row_color_mlcolor
+BEGIN
+	ca_row.cl_mlcolor.hide
+	ca_row.cl_mlcolor.show
+	ca_row.cl_mlcolor.hide
+END
+
+LIST ca_row_color_smcolor
+BEGIN
+	ca_row.cl_smcolor.hide
+	ca_row.cl_smcolor.show
+	ca_row.cl_smcolor.hide
+END
+
+LIST ca_row_color_smlcolor
+BEGIN
+	ca_row.cl_smlcolor.hide
+	ca_row.cl_smlcolor.show
+	ca_row.cl_smlcolor.hide
+END
+
+PROGRAM rowopts_output
+BEGIN
+	optionarg /hidedefault ca_row.cb_msymbol
+	if H(ca_row.cl_mcolor) {
+		optionarg /hidedefault ca_row.cb_mcolor
+	}
+	if !H(ca_row.cl_mcolor) {
+		optionarg /quoted ca_row.cl_mcolor
+	}
+	optionarg /hidedefault ca_row.cb_msize
+	optionarg ca_row.vn_mlabel
+	optionarg /hidedefault ca_row.cb_mlsize
+	if H(ca_row.cl_mlcolor) {
+		optionarg /hidedefault ca_row.cb_mlcolor
+	}
+	if !H(ca_row.cl_mlcolor) {
+		optionarg /quoted ca_row.cl_mlcolor
+	}
+	optionarg /hidedefault ca_row.cb_mlposition
+END
+
+PROGRAM ca_row_check_opts
+BEGIN
+	if   ( ca_row.cb_msymbol | ca_row.cb_mcolor			///
+		| !H(ca_row.cl_mcolor) | ca_row.cb_msize 		///
+		| ca_row.vn_mlabel | ca_row.cb_mlsize 			///
+		| ca_row.cb_mlcolor | !H(ca_row.cl_mlcolor) 		///
+		| ca_row.cb_mlposition )				///
+	{
+		call ca_row_has_opts.settrue
+	}
+END
+PROGRAM ca_row_check_supp_opts
+BEGIN
+	if   ( ca_row.cb_smsymbol | ca_row.cb_smcolor			///
+		| !H(ca_row.cl_smcolor) | ca_row.cb_smsize 		///
+		| ca_row.vn_smlabel | ca_row.cb_smlsize 		///
+		| ca_row.cb_smlcolor | !H(ca_row.cl_smlcolor) 		///
+		| ca_row.cb_smlposition )				///
+	{
+		call ca_row_has_supp_opts.settrue
+	}
+END
+PROGRAM ca_row_suppopts_output
+BEGIN
+	optionarg /hidedefault ca_row.cb_smsymbol
+	if H(ca_row.cl_smcolor) {
+		optionarg /hidedefault ca_row.cb_smcolor
+	}
+	if !H(ca_row.cl_smcolor) {
+		optionarg /quoted ca_row.cl_smcolor
+	}
+	optionarg /hidedefault ca_row.cb_smsize
+	optionarg ca_row.vn_smlabel
+	optionarg /hidedefault ca_row.cb_smlsize
+	if H(ca_row.cl_smlcolor) {
+		optionarg /hidedefault ca_row.cb_smlcolor
+	}
+	if !H(ca_row.cl_smlcolor) {
+		optionarg /quoted ca_row.cl_smlcolor
+	}
+	optionarg /hidedefault ca_row.cb_smlposition
+END
+
+PROGRAM ca_row_output
+BEGIN
+	call ca_row_has_supp_opts.setfalse
+	call ca_row_has_opts.setfalse
+	call program ca_row_check_opts
+	call program ca_row_check_supp_opts
+	if  ca_row_has_opts | ca_row_has_supp_opts {
+		put " " "rowopts(
+			put /program rowopts_output
+			if ca_row_has_opts & ca_row_has_supp_opts{
+				put " "
+			}
+			if ca_row_has_supp_opts {
+				put "suppopts("
+				put /program ca_row_suppopts_output
+				put ")"
+			}
+		put ") "
+	}
+END

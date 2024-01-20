@@ -1,0 +1,60 @@
+/*
+	predict (after asmprobit)
+
+*!  VERSION 1.1.1  27feb2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_medium  // ** set POSTINIT to match
+INCLUDE header
+
+HELP hlp1, view("help asmprobit postestimation")
+RESET res1
+
+SCRIPT POSTINIT
+BEGIN
+	script _p_gentype_setMedium
+END
+
+DIALOG main, label("predict - Prediction after estimation") tabtitle("Main")
+BEGIN
+  INCLUDE  _p_gentype
+
+  GROUPBOX gb_opts		_lft	_ls	_iwd	_ht8,		///
+		label("Produce:")
+  RADIO    rb_pr		_indent	_ss	_inwd	., first	///
+		option(pr)						///
+		onclickon(script _p_gentype_single)			///
+		label("Probability alternative is chosen")
+  RADIO    rb_xb		@	_ss	@	.,		///
+		option(xb)						///
+		onclickon(script _p_gentype_single)			///
+		label("Linear prediction")
+  RADIO    rb_stdp		@	_ss	@	.,		///
+		option(stdp)						///
+		onclickon(script _p_gentype_single)			///
+		label("Standard error of the linear prediction")
+  RADIO    rb_score		@	_ss	@	., last		///
+		option(score)						///
+		onclickon(script _p_gentype_multiple)			///
+		label("Parameter-level scores")
+  CHECKBOX ck_altwise	_lft	_xls	_cwd1	.,			///
+	option(altwise) label("Use alternative-wise deletion")
+END
+
+INCLUDE _p_gentype_sc
+INCLUDE ifin
+INCLUDE _type_list_fd
+
+PROGRAM command
+BEGIN
+	put "predict "
+	put " " /program _p_gentype_output
+	put " " /program ifin_output
+	beginoptions
+		option radio(main rb_pr rb_xb rb_stdp rb_score)
+		option main.ck_altwise
+	endoptions
+END

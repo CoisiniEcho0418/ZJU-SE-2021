@@ -1,0 +1,67 @@
+/*
+  matrix eigenvalues
+
+*!  VERSION 1.2.0  07feb2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_mlarge
+INCLUDE _ht250
+INCLUDE header
+
+HELP hlp1, view("help matrix eigenvalues")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	create STRING matrixResult
+END
+
+DIALOG main, tabtitle("Main") 					///
+	label("matrix eigenvalues - Eigenvalues of nonsymmetric matrices")
+BEGIN
+  BUTTON   bu_matinput   	_rj100	_top    100	.,		///
+	label("Input matrix...") onpush(program show_matrix_input)	///
+	tooltip("Input matrix by hand")
+
+  TEXT     tx_mat	_lft	_top	_cwd1	.,		///
+	label("Square matrix:")
+  COMBOBOX cb_mat	@	_ss	_vnwd	.,		///
+	dropdownlist						///
+	contents(square)
+
+  EDIT     ed_eigreal	_lft	_xls	_vnwd	.,		///
+	label("Real part")
+  TEXT     tx_eigreal	_vnsep	@	_ivlwd	.,		///
+	label("Name for real vector")
+
+  EDIT     ed_eigcomplex _lft	_ls	_vnwd	.,		///
+	label("Imaginary part")
+  TEXT     tx_eigcomplex _vnsep	@	_ivlwd	.,		///
+	label("Name for imaginary vector")
+END
+
+PROGRAM show_matrix_input
+BEGIN
+	call create CHILD matrix_input
+	if ! _rc {
+		call matrix_input.setExitString matrixResult
+		call matrix_input.setExitAction "program getMatrixResult"
+		call matrix_input.callthru "isChildContext.settrue"
+	}
+END
+PROGRAM getMatrixResult
+BEGIN
+	call main.cb_mat.repopulate
+	call matrixResult.withvalue main.cb_mat.setvalue "@"
+END
+
+PROGRAM command
+BEGIN
+	require main.ed_eigreal main.ed_eigcomplex main.cb_mat
+
+	put "matrix eigenvalues "
+	put main.ed_eigreal " " main.ed_eigcomplex " " "= " main.cb_mat
+END

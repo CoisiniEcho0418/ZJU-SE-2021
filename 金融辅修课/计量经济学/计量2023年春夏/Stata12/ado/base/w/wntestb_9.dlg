@@ -1,0 +1,79 @@
+/*
+	wntestb_9
+
+*!  VERSION 1.1.1  08aug2006  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+
+HELP hlp1, view("help wntestb")
+RESET res1
+
+DIALOG main, tabtitle("Main")	///
+	label("wntestb - Bartlett's periodogram-based test for white noise")
+BEGIN
+  DEFINE _x _xsetbu
+  DEFINE _y _top
+  INCLUDE _bu_tsset
+  TEXT     tx_var		_lft	_top	_cwd2	.,		///
+	label("Variable:")
+  VARNAME  vn_var		@	_ss	_vnwd	.,		///
+	label("Variable") allowts
+  GROUPBOX gp_results		@	_ls	_cwd1	_ht4,		///
+	label("Results")
+  RADIO    rb_graph             _indent _ss     _inwd   .,		///
+	label("Show graph") first option(NONE)				///
+	onclickon(script graph_on)
+  RADIO    rb_table             @       _ss     @       .,		///
+	label("Display table") last option(table)			///
+	onclickon(script graph_off)
+  DEFINE   _x  _lft
+  DEFINE   _cx _spr
+  DEFINE   _y  _xxls
+  INCLUDE  _sp_level
+END
+
+SCRIPT graph_on
+BEGIN
+	script p1_opts_enable
+	script addplot_enable
+	script gr_twoway_enable
+END
+
+SCRIPT graph_off
+BEGIN
+	script p1_opts_disable
+	script addplot_disable
+	script gr_twoway_disable
+END
+
+INCLUDE ifin
+INCLUDE p1_opts
+INCLUDE addplot
+INCLUDE gr_twoway
+
+SCRIPT PREINIT
+BEGIN
+	script p1_opts_createAsNoRange
+	script p1_opts_setDefaultScatter
+END
+
+PROGRAM command
+BEGIN
+	put "wntestb "
+	varlist main.vn_var
+	INCLUDE _ifin_pr
+	beginoptions
+		option radio(main rb_graph rb_table)
+		INCLUDE _level_main_pr
+
+		put " " /program p1_opts_output
+		put " " /program addplot_output
+		put " " /program gr_twoway_output
+	endoptions
+END
+/* end */

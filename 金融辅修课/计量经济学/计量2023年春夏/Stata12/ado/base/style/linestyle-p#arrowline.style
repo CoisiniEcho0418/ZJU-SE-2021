@@ -1,0 +1,6 @@
+*! version 1.0.0  19dec2004
+sequence 4352
+
+set width    scheme p#arrowline
+set color    scheme p#arrowline
+set pattern  scheme p#arrowline

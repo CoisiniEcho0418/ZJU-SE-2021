@@ -1,0 +1,37 @@
+{smcl}
+{* *! version 1.1.2  06jun2011}{...}
+{findalias asfrupdate}{...}
+{vieweralsosee "[R] net" "mansection R net"}{...}
+{vieweralsosee "" "--"}{...}
+{vieweralsosee "[R] adoupdate" "help adoupdate"}{...}
+{vieweralsosee "[R] net" "help net"}{...}
+{vieweralsosee "[R] search" "help search"}{...}
+{vieweralsosee "[R] sj" "help sj"}{...}
+{vieweralsosee "stb" "help stb"}{...}
+{vieweralsosee "[R] update" "help update"}{...}
+{p}{hi:Installation and maintenance of SJ, STB, and user-written programs}
+{p_end}
+
+{p 4 4 2}
+User-written programs -- SJ, STB, Statalist, and others -- are available from a
+variety of sources.  Use the links below to find, install, and uninstall them.
+
+    {ul:New packages}
+
+        {nsdialog:Search...}           Search all sources.  Try this first!
+
+        {net "from http://www.stata-journal.com/software/":Stata Journal}       Programs from Stata Journal articles
+        {net "from http://www.stata.com/stb/":STB}                 Programs from Stata Technical Bulletin articles
+        {net "from http://fmwww.bc.edu/RePEc/bocode/":SSC archive}         Boston College Statistical Software Components
+                               Stata program archive
+        {net "from http://www.stata.com/":Other locations}     Other locations with available programs
+
+        Advanced
+               {nfdialog:enter site name...}
+               {net from CD:cd/dvd drive}
+
+    {ul:Previously installed packages}
+
+        {ado dir:List}
+        {asdialog:Search...}
+	{dialog adoupdate:Update...}

@@ -1,0 +1,218 @@
+/*				margin
+	Class for storing and managing margins
+
+	Note that .setting, but not .stylename and .snm returns a string
+	containing the rgb values, rather than the name.
+*/
+
+*! version 1.0.2  22dec2005
+version 8
+
+class {
+    class:
+
+     instance:
+	left	= 0
+	right	= 0
+	top	= 0
+	bottom	= 0
+
+}, inherit(style)
+
+/* -------------------------------------------------------------------------*/
+
+program define new
+
+	syntax [ , Style(string) * ]
+
+	if "`style'" == "" { 
+		.setstyle, style(zero)				/* default */
+	}	
+
+	.Super.new , `.set `0''
+end
+
+program define set
+
+	syntax [ , Left(real -999) Right(real -999) Top(real -999)	/*
+		*/ Bottom(real -999) * ]
+
+	foreach d in left right top bottom {
+		if ``d'' != -999 {
+			.`d' = ``d''
+		}
+	}
+
+	class exit `"`options'"'
+
+end
+
+
+/* -------------------------------------------------------------------------*/
+/* Set the current transform/metric and the supplied x and y sizes (passed by
+   reference) to use the margins.  Affects GDI transform only.
+
+   if view is passed (and may be either a full name or reference), then the
+   size of non-fixed size views will be reduced by the margin sizes.
+   
+*/
+program define setgdi
+
+	syntax [, view(string) Xonly Yonly ]
+
+	if `.left'   != 0 & "`yonly'" == "" { 
+		gdi xalpha = `gdi(xalpha)' + `.gmleft' * `gdi(gbeta)'
+	}
+	if `.bottom' != 0 & "`xonly'" == "" { 
+		gdi yalpha = `gdi(yalpha)' + `.gmbottom' * `gdi(gbeta)'
+	}
+
+	if "`view'" == "" { 
+		exit						/* EXIT */
+	}
+
+*	if "`.`view'.xstretch.setting'" != "fixed" {
+	if "`yonly'" == "" {
+	    .`view'.xsize_ren = `.`view'.xsize_ren' - (`.gmleft' + `.gmright')
+	}
+*	}
+
+*	if "`.`view'.ystretch.setting'" != "fixed" {
+	if "`xonly'" == "" {
+	    .`view'.ysize_ren = `.`view'.ysize_ren' - (`.gmtop' + `.gmbottom')
+	}
+*	}
+end
+
+
+
+/* -------------------------------------------------------------------------*/
+/* Allow a series of 4 numbers (#_left, #_right, #_top, #_bottom) in place 
+   of a stylename to mean set the margins of the current style to these
+   numbers.
+
+   Usage:  .a.b.setstyle, style(#|stylename|scheme)
+
+*/
+program define setstyle
+
+						// style(t [-]# l # ...)
+	capture syntax [ , Style(string) ]
+	if (`:word count `style'' >= 2 & "`:word 1 of `style''" != "scheme") ///
+	   | `=index(`"`style'"', "+")' | `=index(`"`style'"', "-")' {
+		local side left	
+		local ct 1
+		local sequence left right bottom top
+		gettoken tok style : style , parse(" lrtb+-")
+		while "`tok'" != "" {
+			if "`tok'" == "l" {
+				local side left
+			}
+			else {
+			  if "`tok'" == "r" {
+				local side right
+			  }
+			  else {
+			    if "`tok'" == "t" {
+					local side top
+			    }
+			    else {
+			      if "`tok'" == "b" {
+				local side bottom
+			      }
+			      else {
+				if "`tok'" == "+" {
+					local op +
+				}
+				else {
+				  if "`tok'" == "-" {
+					local op -
+				  }
+				  else {
+				    if "`tok'" == `"="' {
+				     	local op
+				    }
+				    else {
+					confirm number `tok'
+					if "`op'" == "" {
+						.`side' = `tok'
+					}
+					else {
+						.`side' = `.`side'' `op' `tok'
+					}
+					local op
+					local side `:word `++ct' of `sequence''
+					if "`side'" == "" {
+						local side left
+					}
+				    }
+				  }
+				}
+			      }
+			    }
+			  }
+			}
+
+			gettoken tok style : style , parse(" lrtb+-")
+		}
+
+		exit						// Exit
+	}
+
+					// Allow scheme to possibly set value
+	local scheme_setting `.`c(curscm)'.style `.classname' `style''	
+	capture numlist "`scheme_setting'", min(4) max(4) 
+	if ! _rc {
+		tokenize `r(numlist)'
+		.left   = `1'
+		.right  = `2'
+		.bottom = `3'
+		.top    = `4'
+		exit
+	}
+
+	.Super.setstyle, style(`scheme_setting')      // let parent handle this
+end
+
+
+// ---------------------------------------------------------------------------
+//  Take over .setting and a string containing the margin values rather than 
+//  the current stylename.
+//
+//	Usage:  .setting
+//
+
+
+program setting
+	class exit "`.left' `.right' `.top' `.bottom'"
+end
+
+// --------------------------------------------------------------------------
+// Set the values to be those scaled by the current gmetric multiplyer
+
+program set2gm
+	.left	= 0`.left'   * 0`._Gr_Cglobal.gmetric_mult'
+	.right	= 0`.right'  * 0`._Gr_Cglobal.gmetric_mult'
+	.top	= 0`.top'    * 0`._Gr_Cglobal.gmetric_mult'
+	.bottom = 0`.bottom' * 0`._Gr_Cglobal.gmetric_mult'
+end
+
+
+// --------------------------------------------------------------------------
+// Margin values scaled by the current gmetric multiplyer
+
+program gmleft
+	class exit = 0`.left'   * 0`._Gr_Cglobal.gmetric_mult'
+end
+
+program gmright
+	class exit = 0`.right'  * 0`._Gr_Cglobal.gmetric_mult'
+end
+
+program gmtop
+	class exit = 0`.top'    * 0`._Gr_Cglobal.gmetric_mult'
+end
+
+program gmbottom
+	class exit = 0`.bottom' * 0`._Gr_Cglobal.gmetric_mult'
+end

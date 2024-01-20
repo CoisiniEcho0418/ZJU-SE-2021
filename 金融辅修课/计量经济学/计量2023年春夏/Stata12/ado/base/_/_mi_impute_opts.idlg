@@ -1,0 +1,42 @@
+/*
+  _mi_impute_opts.idlg
+
+*!  VERSION 1.0.0  01apr2011
+
+  To be included within a DIALOG.
+
+ ** NOTES:
+  	Macros _x, _cx, and _y must already be defined.
+  	Must also include _mi_impute_opts_sc.  
+
+*/
+  GROUPBOX gb_imp	_x	_y	_cx	_ht5h,			///
+	label("Imputations")
+  CHECKBOX ck_add	_ilft	_ms	20	.,			///
+	onclickon(main.sp_add.enable) onclickoff(main.sp_add.disable)
+  SPINNER  sp_add	+25	@	_spwd	.,			///
+	min(1) max(1000) default(1) option(add)
+  TEXT     tx_add	_spsep	@	250	.,			///
+	label("Imputations to add")
+
+  CHECKBOX ck_replace	_ilft	_ls	_ibwd	.,			///
+	label("Replace imputed values in existing imputations")		///
+	option(replace)
+
+  EDIT     ed_rseed	_lft	+45	_en14wd	.,			///
+	label("Random-number seed") option(rseed)
+  TEXT     tx_rseed	_en14sep @	200	.,			///
+	label("Random-number seed (optional)")
+  CHECKBOX ck_double	_lft	_ls	_iwd	.,			///
+	label("Save imputed values in double precision")		///
+	option(double)
+  TEXT tx_group		_lft	_ls	_iwd	.,			///
+	label("Impute separately on each group formed by variables")
+  VARLIST vl_group	@	_ss	_lw75	.,			///
+	label("Impute separately on each group formed by variables")
+  BUTTON bu_group	_slw75	@	75	.,			///
+	onpush(script show_group_opts_dialog)				///
+	tooltip("Group options")					///
+	label("Options  ")
+	
+// END: _mi_impute_opts.idlg

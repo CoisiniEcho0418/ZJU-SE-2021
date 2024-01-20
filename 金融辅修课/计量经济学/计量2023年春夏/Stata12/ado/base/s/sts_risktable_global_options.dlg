@@ -1,0 +1,296 @@
+/*
+   sts_risktable_global_options.dlg
+
+*!  VERSION 1.0.0  06feb2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_large
+DEFINE _dlght 350
+DEFINE _colorwd 15
+INCLUDE header_gr_child
+
+HELP hlp1, view("help sts_graph")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	create BOOLEAN mainSet
+	create BOOLEAN rtitleSet
+	create BOOLEAN titleSet
+END
+
+DIALOG main, tabtitle("Main")
+BEGIN
+  TEXT     tx_rule	_lft	_top	_iwd	.,		///
+  	label("Evaluation points: (by default, values on the x axis are used)")
+  EDIT     ed_rule	@	_ss	@	.,
+
+  TEXT     tx_ospec	_lft	_ls	_iwd	.,		///
+	label("Order specification:")
+  EDIT     ed_ospec	_lft	_ss	@	.,		///
+	option(order)						///
+	tooltip(`"Example: 3 "Group 3" 2 "Group 2" 1 "Group 1""')
+	
+  CHECKBOX ck_right	@	_ls	@	.,		///
+  	label("Place titles on right")				///
+  	option(righttitles)
+  CHECKBOX ck_fail	@	_ms	@	.,		///
+  	label("Show number of failure events in parentheses")	///
+  	option(failevents)  
+
+  GROUPBOX gb_text	_lft	_ls	_iwd	_ht14h,		///
+	label("Global text options (affect both elements and row titles)") 
+
+  TEXT     tx_size	_indent	_ss	120	.,		///
+	label("Size:")
+  COMBOBOX cb_size	@	_ss	@	 .,		///
+	dropdown contents(textsizes) option(size)
+
+  TEXT     tx_clr	_lft2	-20	120	.,		///
+	label("Color:")
+  COMBOBOX cb_clr	@	_ss	@	.,		///
+	dropdownlist contents(colors)				///
+	onselchangelist(main_cl_clr_sel)			///
+	option(color)
+  COLOR    cl_clr	+125	@	_colorwd .,		///
+	option(color)
+	
+  TEXT     tx_just	_ilft	_ls	120	.,		///
+	label("Justification:")
+  COMBOBOX cb_just	@	_ss	@	.,		///
+	dropdownlist contents(justification) option(justification)	
+
+  TEXT     tx_fmt	_lft2	-20	120	.,		///
+	label("Format:")
+  EDIT     ed_fmt	@	_ss	@	.,		///
+	option(format)
+  BUTTON   bu_fmt	+125	@	15	.,		///
+	label(..) onpush(script main_GetFormat)			///
+	tooltip("Create display format")
+	
+  TEXT     tx_tgap	_ilft	_ls	120	.,		///
+	label("Top gap:")
+  EDIT     ed_tgap	@	_ss	@	.,		///
+	option(topgap)
+	
+  TEXT     tx_bgap	_lft2	-20	120	.,		///
+	label("Bottom gap:")
+  EDIT     ed_bgap	@	_ss	@	.,		///
+	option(bottomgap)	
+END
+
+SCRIPT main_GetFormat
+BEGIN
+	create STRING mainFormat
+	create CHILD format_chooser
+	format_chooser.setExitString mainFormat
+	format_chooser.setExitAction "main.ed_fmt.setvalue class mainFormat.value"
+END
+
+LIST main_cl_clr_sel
+BEGIN
+	main.cl_clr.hide
+	main.cl_clr.show
+	main.cl_clr.hide
+END
+
+DIALOG rtitle, tabtitle("Row titles")
+BEGIN
+  TEXT     tx_title	_lft	_top	_iwd	.,		///
+	label("Row title: (affects all rows)")
+  EDIT     ed_title	@	_ss	@	.,		///
+	option(title)
+	
+  GROUPBOX gb_tbl	_lft	_ls	_iwd	_ht14h,		///
+	label("Title options (affect only row titles)") 
+
+  TEXT     tx_size	_indent	_ss	120	.,		///
+	label("Size:")
+  COMBOBOX cb_size	@	_ss	@	 .,		///
+	dropdown contents(textsizes) option(size)
+
+  TEXT     tx_clr	_lft2	-20	120	.,		///
+	label("Color:")
+  COMBOBOX cb_clr	@	_ss	@	.,		///
+	dropdownlist contents(colors)				///
+	onselchangelist(rtitle_cl_clr_sel)			///
+	option(color)
+  COLOR    cl_clr	+125	@	_colorwd .,		///
+	option(color)
+	
+  TEXT     tx_just	_ilft	_ls	120	.,		///
+	label("Justification:")
+  COMBOBOX cb_just	@	_ss	@	.,		///
+	dropdownlist contents(justification) option(justification)	
+
+  TEXT     tx_at	_lft2	-20	120	.,		///
+	label("Position:")
+  EDIT     ed_at	@	_ss	@	.,		///
+	option(at)						///
+	tooltip("Position relative to values of the x axis")
+	
+  TEXT     tx_tgap	_ilft	_ls	120	.,		///
+	label("Top gap:")
+  EDIT     ed_tgap	@	_ss	@	.,		///
+	option(topgap)
+END
+
+LIST rtitle_cl_clr_sel
+BEGIN
+	rtitle.cl_clr.hide
+	rtitle.cl_clr.show
+	rtitle.cl_clr.hide
+END
+
+DIALOG title, tabtitle("Title")
+BEGIN
+  TEXT     tx_title	_lft	_top	_iwd	.,		///
+	label("Table title:")
+  EDIT     ed_title	@	_ss	@	.,		///
+	option(title)
+	
+  GROUPBOX gb_tbl	_lft	_ls	_iwd	_ht14h,		///
+	label("Title options  (affect only overall table title)") 
+  TEXT     tx_size	_ilft	_ss	120	.,		///
+	label("Size:")
+  COMBOBOX cb_size	@	_ss	@	.,		///
+	dropdown contents(textsizes) option(size)
+
+  TEXT     tx_clr	_lft2	-20	120	.,		///
+	label("Color:")
+  COMBOBOX cb_clr	@	_ss	@	.,		///
+	dropdownlist contents(colors)				///
+	onselchangelist(title_cl_clr_sel)			///
+	option(color)
+  COLOR    cl_clr	+125	@	_colorwd .,		///
+	option(color)
+	
+  TEXT     tx_just	_ilft	_ls	120	.,		///
+	label("Justification:")
+  COMBOBOX cb_just	@	_ss	@	.,		///
+	dropdownlist contents(justification) option(justification)	
+
+  TEXT     tx_at	_lft2	-20	120	.,		///
+	label("Position:")
+  EDIT     ed_at	@	_ss	@	.,		///
+	option(at)						///
+	tooltip("Position relative to values of the x axis")
+	
+  TEXT     tx_tgap	_ilft	_ls	120	.,		///
+	label("Top gap:")
+  EDIT     ed_tgap	@	_ss	@	.,		///
+	option(topgap)
+  TEXT     tx_bgap	_lft2	-20	120	.,		///
+	label("Bottom gap:")
+  EDIT     ed_bgap	@	_ss	@	.,		///
+	option(bottomgap)	
+END
+
+LIST title_cl_clr_sel
+BEGIN
+	title.cl_clr.hide
+	title.cl_clr.show
+	title.cl_clr.hide
+END
+
+PROGRAM main_output
+BEGIN
+	put main.ed_rule
+	beginoptions
+		optionarg main.ed_ospec
+		option main.ck_right
+		option main.ck_fail
+		optionarg /hidedefault main.cb_size
+		optionarg /hidedefault main.cb_just
+		optionarg main.ed_tgap
+		optionarg main.ed_bgap
+		optionarg main.ed_fmt
+		if ! main.cl_clr.isvisible() {
+			optionarg /hidedefault main.cb_clr
+		}
+		if main.cl_clr.isvisible() {
+			optionarg /quoted main.cl_clr
+		}
+		if rtitleSet {
+			put " rowtitle("
+			put /program rtitle_output
+			put ") "
+		}
+		if titleSet {
+			put " title("
+			put /program title_output
+			put ") "
+		}		
+	endoptions
+END
+
+PROGRAM rtitle_output
+BEGIN
+	put rtitle.ed_title
+	beginoptions
+		optionarg /hidedefault rtitle.cb_size
+		optionarg /hidedefault rtitle.cb_just
+		optionarg rtitle.ed_tgap
+		optionarg rtitle.ed_at
+		if ! rtitle.cl_clr.isvisible() {
+			optionarg /hidedefault rtitle.cb_clr
+		}
+		if rtitle.cl_clr.isvisible() {
+			optionarg /quoted rtitle.cl_clr
+		}
+	endoptions
+END
+
+PROGRAM title_output
+BEGIN
+	put title.ed_title
+	beginoptions
+		optionarg /hidedefault title.cb_size
+		optionarg /hidedefault title.cb_just
+		optionarg title.ed_tgap
+		optionarg title.ed_bgap
+		optionarg title.ed_at
+		if ! title.cl_clr.isvisible() {
+			optionarg /hidedefault title.cb_clr
+		}
+		if title.cl_clr.isvisible() {
+			optionarg /quoted title.cl_clr
+		}
+	endoptions
+END
+
+PROGRAM command
+BEGIN
+	call mainSet.setfalse
+	call rtitleSet.setfalse
+	call titleSet.setfalse
+	
+	if main.ed_rule | main.ck_fail | main.cb_size | main.cb_just 	///
+		| main.ed_tgap | main.ed_bgap | main.ed_fmt 		///
+		| main.cb_clr | main.cl_clr.isvisible() 		///
+		| main.ed_ospec	| main.ck_right				///
+	{
+		call mainSet.settrue
+	}
+	if rtitle.ed_title | rtitle.cb_size | rtitle.ed_at	///
+		| rtitle.cb_just | rtitle.ed_tgap 		///
+		| rtitle.cb_clr | rtitle.cl_clr.isvisible() 	///
+	{
+		call rtitleSet.settrue
+	}
+	if title.ed_title | title.cb_size | title.ed_at		///
+		| title.cb_just | title.ed_tgap | title.ed_bgap	///
+		| title.cb_clr | title.cl_clr.isvisible() 	///
+	{
+		call titleSet.settrue
+	}	
+	
+	if mainSet | rtitleSet | titleSet {
+		put "risktable("
+		put /program main_output
+		put ") "
+	}
+END

@@ -1,0 +1,43 @@
+/*
+	rvfplot_9.dlg
+
+*! VERSION 1.1.1  07aug2006  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+
+HELP hlp1, view("help rvfplot")
+RESET res1
+
+DIALOG main, label("rvfplot - Residual-versus-fitted plot")		///
+	tabtitle("Main")
+BEGIN
+  TEXT     tx_msg1      _lft      _top      _iwd      .,		///
+	label("rvfplot graphs a residual-versus-fitted plot after regress and anova.")
+  TEXT     tx_msg2      @         _ls       @         .,		///
+	label("Click OK or Submit to graph")
+END
+
+INCLUDE p1_opts
+INCLUDE addplot
+INCLUDE gr_twoway
+
+SCRIPT PREINIT
+BEGIN
+	script p1_opts_createAsNoRange
+	script p1_opts_setDefaultScatter
+END
+
+PROGRAM command
+BEGIN
+	put "rvfplot "
+	beginoptions
+		put " " /program p1_opts_output
+		put " " /program addplot_output
+		put " " /program gr_twoway_output
+	endoptions
+END

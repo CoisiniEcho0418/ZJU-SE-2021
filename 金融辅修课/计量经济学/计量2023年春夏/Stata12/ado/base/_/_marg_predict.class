@@ -1,0 +1,66 @@
+*! version 1.0.0  05may2009
+version 11
+
+class _marg_predict {
+
+class:
+	_nextid	n	= ._nextid.new
+
+instance:
+	string	vv	= "11"
+	string	varname	= ""
+	string	eq	= ""
+	string	offset	= ""
+	string	opts	= ""
+	double	notxb	= 0
+
+}
+
+program .new
+	.vv = string(_caller())
+	if "`.varname'" == "" {
+		.varname = "__marg_pvar_`.n.next'"
+	}
+end
+
+program .destructor
+	capture drop `.varname'
+end
+
+program .parse
+	syntax [, EQuation(string) noOFFset *]
+
+	if `:length local equation' {
+		.eq = `"equation(`equation')"'
+	}
+	.offset = "`offset'"
+	if `:length local options' {
+		.opts = `"`options'"'
+	}
+	else if "`e(predict)'" != "" {
+		capture local prop : properties `e(predict)'
+		if !c(rc) {
+			local xb "default_xb"
+			if `:list xb in prop' {
+				.opts = "xb"
+			}
+			local xb "notxb"
+			if `:list xb in prop' {
+				.notxb = 1
+			}
+		}
+	}
+end
+
+program .no_offset
+	.offset = "nooffset"
+end
+
+program .Predict
+	syntax [if] [in]
+	capture drop `.varname'
+	version `.vv': ///
+	quietly predict double `.varname' `if' `in', `.offset' `.eq' `.opts'
+end
+
+exit

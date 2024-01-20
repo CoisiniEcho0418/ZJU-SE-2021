@@ -1,0 +1,17 @@
+/*
+    gr_xaxis_reflines.dlg
+
+*!  VERSION 1.0.0  26dec2006
+
+	
+*/
+
+VERSION 10.0
+
+SCRIPT PREINIT
+BEGIN
+	create PSTRING axisType
+	axisType.setvalue "x"
+END
+
+INCLUDE gr_axis_reflines

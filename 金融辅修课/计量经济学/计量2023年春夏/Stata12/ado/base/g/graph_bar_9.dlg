@@ -1,0 +1,53 @@
+/*
+  graph bar - Bar charts
+
+*!  VERSION 2.0.1  28jul2006  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+
+HELP hlp1, view("help graph_bar")
+RESET res1
+
+SCRIPT POSTINIT
+BEGIN
+	script weights_setLayout_fpa
+END
+
+INCLUDE gbar
+INCLUDE gover
+INCLUDE ifin
+INCLUDE weights
+INCLUDE gbaropt
+INCLUDE gbarstyle
+INCLUDE gbarlabel
+INCLUDE gbaryaxis
+INCLUDE gtitle
+INCLUDE gcaption
+INCLUDE glegend
+INCLUDE gregion
+INCLUDE gby
+
+PROGRAM command
+BEGIN
+	put "graph "
+	put " " /program gbar_output
+	put " " /program weights_output
+	put " " /program ifin_output
+	beginoptions
+		put " " /program gover_output
+		put " " /program gbaropt_output
+		put " " /program gbarstyle_output
+		put " " /program gbarlabel_output
+		put " " /program gbaryaxis_output
+		put " " /program gtitle_output
+		put " " /program gcaption_output
+		put " " /program glegend_output
+		put " " /program gregion_output
+		put " " /program gby_output
+	endoptions
+END

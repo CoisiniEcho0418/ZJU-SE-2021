@@ -1,0 +1,204 @@
+/*
+  xtcloglog, re
+
+*!  VERSION 1.3.7  23aug2010
+
+  keyword:  eclass
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_wide
+DEFINE _dlght 360
+INCLUDE header
+
+HELP hlp1, view("help xtcloglog")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	program parseMessage
+	script se_createAsGEE
+END
+
+PROGRAM parseMessage
+BEGIN
+	if __MESSAGE.contains("__MI__") {
+		call script se_setMI_on
+		call main.bu_xtset.hide
+	}
+	else {
+		call main.bu_mi_xtset.hide
+	}
+END
+
+SCRIPT POSTINIT
+BEGIN
+	program check_bytab
+	script corr_setForceVisible
+	program check_se_status
+	script weights_setLayout_i
+END
+
+PROGRAM check_bytab
+BEGIN
+	if __MESSAGE.contains("__MI__") {
+		call script byifin_set_by_off
+	}
+END
+
+SCRIPT show_xtset
+BEGIN
+	create STRING note
+	note.setvalue `"For a population-averaged model,"'
+	note.append   `" correlation structures other than"'
+	note.append   `" "exchangeable" and "independent""'
+	note.append   `" require that a time variable be specified."'
+	note.withvalue create CHILD xtset, message(`"" " `"@"'"')
+END
+
+DIALOG main, tabtitle("Model")	///
+	label("xtcloglog - Random-effects and population-averaged cloglog models")	
+BEGIN
+  BUTTON   bu_xtset	_xsetbu	_top	_setbuwd .,			///
+	onpush(script show_xtset)					///
+	label("Panel settings...")
+  BUTTON   bu_mi_xtset  _xsetbu	_top	_setbuwd	.,		///
+	onpush("view dialog mi_xtset")					///
+	label("Panel settings...")
+
+  TEXT tx_dv 		_lft	_topph	_vnwd	.,			///
+	label("Dependent variable:")
+  VARNAME vn_dv		@ 	_ss	@	.,			///
+	label("Dependent variable")
+
+  TEXT tx_iv		_vlx	_topph	160	.,			///
+	label("Independent variables:")
+  VARLIST vl_iv		@	_ss	_vlwd	.,			///
+	fv								///
+	allowcat							///
+	label("Independent variables")
+
+  CHECKBOX ck_nocons @         _ms       @         .,			/*
+		*/ label("Suppress constant term")			/*
+		*/ option("noconstant")					/*
+		*/
+
+  GROUPBOX gb_model  _lft      _ls       _iwd      _ht2,		/*
+	*/ label("Model type (affects which options are available)")	/*
+		*/
+  RADIO    rb_re     _ilft     _ss       _cwd2     .,			/*
+		*/ label("Random-effects (RE)")				/*
+		*/ clickon("script re_opts")				/*
+		*/ first						/*
+		*/ option("re")						/*
+		*/
+  RADIO    rb_pa     _lft2     @         @         .,			/*
+		*/ label("Population-averaged (PA)")			/*
+		*/ clickon("script pa_opts")				/*
+		*/ last							/*
+		*/ option("pa")						/*
+		*/
+
+  GROUPBOX gb_opts   _lft      _xls      _iwd      _ht12,		/*
+		*/ label("Options")					/*
+		*/
+
+  TEXT     tx_offset _ilft     _ss       _cwd2     .,			/*
+		*/ label("Offset variable:")				/*
+		*/
+  VARNAME  vn_offset @         _ss       _vnwd     .,			/*
+		*/ label("Offset variable")				/*
+		*/ option("offset")					/*
+		*/
+
+  DEFINE _x _ilft
+  DEFINE _y _ls
+  DEFINE _cx _ilw80
+  DEFINE _bux _islw80
+  INCLUDE _constraints
+
+  DEFINE _x _ilft
+  DEFINE _xw _ibwd
+  INCLUDE _ck_collinear
+END
+
+INCLUDE _constraints_sc 
+
+SCRIPT re_opts
+BEGIN
+	script intopts_re_enable
+	script max_ml_on
+	script rpt_lrtest_enable
+	main.ck_nocons.enable
+
+	program check_se_status
+	program disable_xtgee_common
+	script intopts_re_reset
+	script weights_setLayout_i
+	main.tx_constr.enable
+	main.cb_constr.enable
+	rpt.ck_nocnsreport.enable
+	main.ck_collinear.enable
+END
+
+SCRIPT pa_opts
+BEGIN
+	script intopts_re_disable
+	script rpt_lrtest_disable
+	main.ck_nocons.enable
+
+	program check_se_status
+	program enable_xtgee_common
+	script max_pa_on
+	main.tx_constr.disable
+	main.cb_constr.disable
+	rpt.ck_nocnsreport.disable
+	main.ck_collinear.disable
+	script weights_setLayout_fpi
+END
+
+INCLUDE xtgee_common
+INCLUDE byifin
+INCLUDE weights
+INCLUDE se
+INCLUDE rpt_xt_eform
+INCLUDE intopts_re
+INCLUDE max_ml
+
+PROGRAM check_se_status
+BEGIN
+	if main.rb_pa {
+		call script se_setIOIM_off
+		call script se_setGEE_on
+	}
+	if !main.rb_pa {
+		call script se_setIOIM_on
+		call script se_setGEE_off
+	}
+END
+
+PROGRAM command
+BEGIN
+	put /program by_output " "
+	put "xtcloglog "
+	varlist main.vn_dv [main.vl_iv]
+	if !main.vl_iv & main.ck_nocons & !D(main.ck_nocons) {
+	  stopbox stop `""Suppress constant term" is selected without independent variables."'
+	}
+	put " " /program ifin_output
+	put " " /program weights_output
+	beginoptions
+		option main.ck_nocons
+		option radio(main rb_re rb_pa)
+		optionarg main.vn_offset
+		INCLUDE _constraints_main_pr
+		option main.ck_collinear
+		put " " /program xtgee_common_output
+		put " " /program se_output
+		put " " /program rpt_output
+		put " " /program intopts_re_output
+		put " " /program max_output
+	endoptions
+END

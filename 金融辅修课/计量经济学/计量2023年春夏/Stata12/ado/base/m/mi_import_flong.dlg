@@ -1,0 +1,62 @@
+/*
+  mi_import_flong
+
+*!  VERSION 1.0.1  02jul2009
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_medium
+DEFINE _dlght 270
+INCLUDE header
+
+HELP hlp1, view("help mi_import_flong")
+RESET res1
+
+DIALOG main, label("mi import flong - Import flong-like data into mi") ///
+	tabtitle("Main")
+BEGIN
+  TEXT tx_m		_lft	_top	_iwd	.,			///
+	label("Name of variable containing m:")
+  VARNAME vn_m		@	_ss	_vnwd	.,			///
+	option(m)							///
+	label("Name of variable containing m")
+  TEXT tx_id		@	_ls	_iwd	.,			///
+	label("Variables to match observations on:")
+  VARLIST vl_id		@	_ss	@	.,			///
+	option(id)							///
+	label("Variables to match observations on")
+
+  GROUPBOX gb_options	_lft	_ls	_iwd	_ht12,			///
+	label("Options")
+  TEXT tx_imp		_indent	_ss	_inwd	.,			///
+	label("Imputed variables to be registered:")
+  VARLIST vl_imp	@	_ss	@	.,			///
+	option(imputed)							///
+	label("Imputed variables to be registered")
+  TEXT tx_pas		@	_ls	@	.,			///
+	label("Passive variables to be registered:")
+  VARLIST vl_pas	@	_ss	@	.,			///
+	option(passive)							///
+	label("Passive variables to be registered")
+
+  CHECKBOX ck_clear	@	_ls	@	.,			///
+	option(clear)							///
+	label("Replace data in memory")
+END
+
+PROGRAM command
+BEGIN
+	require main.vn_m
+	require main.vl_id
+	put "mi import flong "
+
+	beginoptions
+		optionarg main.vn_m
+		optionarg main.vl_id
+		optionarg main.vl_imp
+		optionarg main.vl_pas
+		option main.ck_clear
+	endoptions
+END

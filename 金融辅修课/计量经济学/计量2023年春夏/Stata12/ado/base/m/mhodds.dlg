@@ -1,0 +1,142 @@
+/*
+	mhodds
+
+*!  VERSION 1.0.2  13nov2008
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help mhodds")
+RESET res1
+
+DIALOG main, label("mhodds - Case-control studies") tabtitle("Main")
+BEGIN
+  TEXT     tx_var     _lft      _top      _cwd1         .,		/*
+		*/ label("Case exposed variable:")
+  VARNAME  vn_var        @       _ss      _vnwd         .,		/*
+		*/ label("Case exposed variable")
+
+  TEXT     tx_val    _lft2      _top      _cwd1         .,		/*
+		*/ label("Control exposed variable:")
+  VARNAME  vn_val        @       _ss      _vnwd         .,		/*
+		*/ label("Control exposed variable")
+  TEXT     tx_adj      _lft      +35      _iwd          .,		/*
+		*/ label("Control for confounding variables: (optional)")
+  VARLIST  vl_adj      @         _ss       @	        .,    		/*
+		*/ label("Control for confounding variables")
+END
+
+INCLUDE ifin
+INCLUDE weights_f
+
+DIALOG opt, tabtitle("Options")
+BEGIN
+  CHECKBOX ck_byopt          _lft      _top       _cwd1    .,		/*
+		*/ label("Stratify on variables:")			/*
+		*/ clickon("script byopt_on")				/*
+		*/ clickoff("script byopt_off")
+  VARLIST  vl_byopt          _indent2   _ss       _ibwd    .,    	/*
+		*/ option("by")						/*
+		*/ label("Stratify on variables")
+  CHECKBOX ck_missing        _lft2      _top      _cwd1    .,		/*
+		*/ label("Include missing categories")			/*
+		*/ option("missing")
+  CHECKBOX ck_bin            _lft      +50       _cwd1	   .,		/*
+		*/ label("Number of subjects variable:")		/*
+		*/ clickon("gaction opt.vn_bin.enable")			/*
+		*/ clickoff("gaction opt.vn_bin.disable")
+  VARNAME  vn_bin            _indent2  _ss       _vnwd	   .,		/*
+		*/ option("binomial")					/*
+		*/ label("Number of subjects variable")
+  CHECKBOX ck_compare        _lft      _ls       _iwd      .,		/*
+		*/ label("Override categories of the control variable")	/*
+		*/ clickon("script compare_on")				/*
+		*/ clickoff("script compare_off")
+  EDIT     en_var1           _indent2  _ss       _en7wd    .,		/*
+		*/ label("Numerator")					/*
+		*/ numonly
+DEFINE x @x
+  TEXT     tx_var1           _en7sep   @         _vnrb     .,		/*
+		*/ label("Numerator")
+  EDIT     en_var2           x         _ms       _en7wd    .,		/*
+		*/ label("Denominator")					/*
+		*/ numonly
+  TEXT     tx_var2           _en7sep   @         _vnrb     .,		/*
+		*/ label("Denominator")
+  DEFINE _x _lft
+  DEFINE _y _xls
+  DEFINE _cx _spr
+  INCLUDE _sp_level
+END
+
+SCRIPT byopt_on
+BEGIN
+	 opt.vl_byopt.enable
+	 opt.ck_missing.enable
+END
+
+SCRIPT byopt_off
+BEGIN
+	 opt.vl_byopt.disable
+	 opt.ck_missing.disable
+END
+
+SCRIPT compare_on
+BEGIN
+	opt.en_var2.enable
+	opt.tx_var2.enable
+	opt.en_var1.enable
+	opt.tx_var1.enable
+END
+
+SCRIPT compare_off
+BEGIN
+	opt.en_var2.disable
+	opt.tx_var2.disable
+	opt.en_var1.disable
+	opt.tx_var1.disable
+END
+
+PROGRAM mhodds_by_var_output
+BEGIN
+	put opt.vl_byopt
+	if opt.ck_missing {
+		put ", "
+		option opt.ck_missing
+	}
+END
+
+PROGRAM command
+BEGIN
+	put "mhodds "
+	varlist main.vn_var
+	varlist main.vn_val
+	varlist [main.vl_adj]
+	INCLUDE _weights_pr
+	INCLUDE _ifin_pr
+	beginoptions
+		if opt.ck_byopt {
+			require opt.vl_byopt
+			put "by("
+			put /program mhodds_by_var_output
+			put ")"
+		}
+		if opt.ck_bin {
+			require opt.vn_bin
+			optionarg opt.vn_bin
+		}
+		if opt.ck_compare {
+			require opt.en_var1 opt.en_var2
+			put "compare("
+			put opt.en_var1
+			put ","
+			put opt.en_var2
+			put ")"
+		}
+		INCLUDE _level_opt_pr
+	endoptions
+END

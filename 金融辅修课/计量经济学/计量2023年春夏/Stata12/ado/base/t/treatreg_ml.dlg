@@ -1,0 +1,227 @@
+/*
+  treatreg
+
+*!  VERSION 1.2.6  23aug2010
+
+  keyword:  eclass
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_large
+DEFINE _dlght 425
+INCLUDE header
+
+HELP hlp1, view("help treatreg")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	script se_createAsSvyJknifeBstrapML
+	program svy_check_title
+END
+
+SCRIPT POSTINIT
+BEGIN
+	script sub_set_by_on
+	program se_setFinalInitState
+END
+
+SCRIPT svy_is_on
+BEGIN
+	rpt.ck_first.disable
+	rpt.gb_tests.disable
+	rpt.ck_noskip.disable
+	rpt.gb_genvar.disable
+	rpt.tx_hazard.disable
+	rpt.ed_hazard.disable
+	script max_setDefaultNoLog
+END
+SCRIPT svy_is_off
+BEGIN
+	rpt.ck_first.enable
+	rpt.gb_tests.enable
+	rpt.ck_noskip.enable
+	rpt.gb_genvar.enable
+	rpt.tx_hazard.enable
+	rpt.ed_hazard.enable
+	script max_setDefaultLog
+END
+PROGRAM svy_check_title
+BEGIN
+	if __MESSAGE.contains("-svy-") {
+		call settitle "svy: treatreg - Treatment-effects model for survey data"
+	}
+END
+
+SCRIPT main_PREINIT
+BEGIN
+	script _constraints_main_setOptionalOn
+END
+
+DIALOG main, 								///
+	title("treatreg - Treatment-effects model") /* has svy title */	///
+	tabtitle("Model")
+BEGIN
+  TEXT tx_dv 		_lft	_top	_vnwd	.,			///
+	label("Dependent variable:")
+  VARNAME vn_dv		@ 	_ss	@	.,			///
+	ts								///
+	label("Dependent variable")
+
+  TEXT tx_iv		_vlx	_top	160	.,			///
+	label("Independent variables:")
+  VARLIST vl_iv		@	_ss	_vlwd	.,			///
+	fv ts								///
+	allowcat							///
+	label("Independent variables")
+
+  CHECKBOX ck_nocons @         _ms       @         .,			/*
+		*/ label("Suppress constant term")			/*
+		*/ option("noconstant")					/*
+		*/
+
+  TEXT     tx_tdv    _lft      _ls       _vnwd     .,			/*
+		*/ label("Treatment variable:")				/*
+		*/
+  DEFINE y @y
+  VARNAME  vn_tdv    @         _ss       @         .,			/*
+		*/ label("Treatment variable") ts			/*
+		*/
+  TEXT     tx_tiv    _vlx      y         _vlwd     .,			/*
+		*/ label("Treatment independent variables:")		/*
+		*/
+  VARLIST  vl_tiv    @         _ss       @         .,			/*
+		*/ label("Treatment independent variables")		/*
+		*/ allowcat ts fv					/*
+		*/
+  CHECKBOX ck_tnocon @         _ms       @         .,			/*
+		*/ label("Suppress treatment constant term")		/*
+		*/ option("noconstant")					/*
+		*/
+
+  DEFINE _x _lft
+  DEFINE _y _ls
+  DEFINE _cx _lw80
+  DEFINE _bux _slw80
+  INCLUDE _constraints
+
+  DEFINE _x _lft
+  DEFINE _xw _iwd
+  INCLUDE _ck_collinear
+END
+
+INCLUDE _constraints_sc 
+INCLUDE sub_by_ifin_over_subpop
+INCLUDE weights_fpai
+INCLUDE se
+
+SCRIPT rpt_POSTINIT
+BEGIN
+	create STRING rpt_bu_fmtcoefResults
+	program rpt_bu_fmtcoef_ckResults
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr
+  DEFINE _y _top
+  INCLUDE _sp_level
+
+  CHECKBOX ck_first  _lft      _ls       _cwd1     .,			/*
+		*/ label("Report first-step probit estimates")		/*
+		*/ option("first")					/*
+		*/
+  GROUPBOX gb_genvar _lft       _ms    _cwd1      _ht4h,		/*
+  		*/ label("Generate new variable")
+  DEFINE holdy @y
+  TEXT     tx_hazard _ilft      _ss      _inwd     .,			/*
+		*/ label("Treatment hazard variable:")			/*
+		*/
+  EDIT     ed_hazard @         _ss       _vnwd     .,			/*
+		*/ label("Treatment hazard")				/*
+		*/ max(32)						/*
+		*/ option("hazard")					/*
+		*/
+
+  GROUPBOX gb_tests  _lft2      holdy    _cwd1       _ht4h,		/*
+  		*/ label("Additional test statistics")
+  CHECKBOX ck_noskip _indent     _ss      _inwd      .,			/*
+		*/ label("Perform likelihood-ratio test")		/*
+		*/ option("noskip")					/*
+		*/
+
+  DEFINE _x _lft
+  DEFINE _y _xxxxls
+  DEFINE _cx _iwd
+  INCLUDE _nocnsreport
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _noomitted
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _vsquish
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _factor_vars_reporting
+
+  DEFINE _x _lft
+  DEFINE _y _xxxls
+  INCLUDE _bu_coef_table_reporting
+END
+
+INCLUDE fmt_coef_table_reporting_pr
+
+INCLUDE max_ml
+
+PROGRAM treat_opts
+BEGIN
+	require main.vn_tdv
+	put main.vn_tdv " "
+	put "= "
+	require main.vl_tiv
+	put main.vl_tiv
+	beginoptions
+		option main.ck_tnocon
+	endoptions
+END
+
+PROGRAM command
+BEGIN
+	put /program by_output " "
+	put /program se_prefix_output " "
+	put "treatreg "
+	varlist main.vn_dv [main.vl_iv]
+	if !main.vl_iv & main.ck_nocons {
+	  stopbox stop `""Suppress constant term" is selected without independent variables."'
+	}
+	put " " /program ifin_output
+	put " " /program weights_output
+	beginoptions
+		option main.ck_nocons
+		put "treat("
+		put /program treat_opts
+		put ")"
+		INCLUDE _constraints_main_pr
+		option main.ck_collinear
+		put " " /program se_output
+		optionarg /hidedefault rpt.sp_level
+		option rpt.ck_first
+		option rpt.ck_noskip
+		optionarg rpt.ed_hazard
+		INCLUDE _nocnsreport_pr
+		INCLUDE _noomitted_pr
+		INCLUDE _vsquish_pr
+		INCLUDE _factor_vars_reporting_pr
+		put " " rpt_bu_fmtcoefResults
+		put " " /program max_output
+	endoptions
+END

@@ -1,0 +1,53 @@
+/*
+	prtest
+
+*!  VERSION 1.1.2  25apr2007
+
+	prtest by groups.
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help prtest")
+RESET res1
+
+DIALOG main, label("prtest - Two-group proportion test") tabtitle("Main")
+BEGIN
+  TEXT     tx_var1     _lft      _top      _cwd1         .,		/*
+		*/ label("Variable name:")
+  VARNAME  vn_var1        @       _ss      _vnwd         .,		/*
+		*/ label("Variable name")
+  TEXT     tx_byopt   _lft2      _top      _cwd1         .,		/*
+		*/ label("Group variable name:")
+  VARNAME  vn_byopt       @       _ss      _vnwd         .,		/*
+		*/ label("Group variable name")
+
+  DEFINE _x _lft
+  DEFINE _cx _spr
+  DEFINE _y _xls
+  INCLUDE _sp_level
+END
+
+INCLUDE byifin
+
+PROGRAM main_by_group_opt
+BEGIN
+	varlist main.vn_byopt
+END
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "prtest "
+	varlist main.vn_var1
+	INCLUDE _ifin_pr
+	beginoptions
+		put "by("
+		put /program main_by_group_opt
+		put ")"
+		INCLUDE _level_main_pr
+	endoptions
+END

@@ -1,0 +1,283 @@
+/*
+	predict (after discrim knn)
+
+*!  VERSION 1.0.0  03may2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_large
+INCLUDE _ht220
+INCLUDE header
+
+HELP hlp1, view("help discrim knn postestimation")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	create STRING tiesSpecification
+	tiesSpecification.setvalue e(ties)
+END
+
+SCRIPT POSTINIT
+BEGIN
+	opt.cb_ties.setvalue class tiesSpecification.value
+	opt.cb_ties.setdefault class tiesSpecification.value
+END
+
+DIALOG main, label("predict - Prediction after estimation") tabtitle("Main")
+BEGIN
+  TEXT tx_vars		_lft	_top	_vlwd	.,		///
+	label("New variable names or variable stub* :")
+  EDIT ed_vars		@	_ss	@	.,		///
+	label("New variable names or variable stub*")
+  TEXT tx_var		_lft	_top	@	.,		///
+	label("New variable name:")
+  EDIT ed_var		@	_ss	_vnwd	.,		///
+	label("New variable name") max(32)
+
+  TEXT tx_type		_vlsep	_top	_vlr	.,		///
+	label("New variable type:")
+  COMBOBOX cb_type	@	_ss	@	.,		///
+	dropdownlist						///
+	contents(type) default(c(type))				///
+	label("Type")
+
+  GROUPBOX gb_opts	_lft	_ls	_iwd	_ht8,		///
+	label("Produce:")
+  RADIO rb_class	_ilft	_ss	_ibwd	.,		///
+	first							///
+  	option(classification)					///
+	onclickon(script classification_on)			///
+	label("Group membership classification (classification)")
+  RADIO rb_pr		@	_ss	@	.,		///
+  	option(pr)						///
+	clickon(program pr_on)					///
+	label("Probability of group membership (pr)")
+  RADIO rb_looclass	@	_ss	@	.,		///
+  	option(looclass)					///
+	clickon(script looclass_on)				///
+	label("Leave-one-out group membership classification (looclass)")
+  RADIO rb_loopr	@	_ss	@	.,		///
+	last							///
+  	option(loopr)						///
+	clickon(program loopr_on)				///
+	label("Leave-one-out probability of group membership (loopr)")
+
+  CHECKBOX ck_groupvar	_lft	_xls	_ckwd	.,		///
+	onclickon(program group_on)				///
+	onclickoff(program group_off)				///
+	label("")
+  SPINNER sp_groupvar	_cksep	@	_spwd	.,		///
+	option(group)						///
+	default(1)						///
+	min(1)							///
+	max(e(N_groups))					///
+	label("Group")
+  TEXT tx_groupvar	_spsep	@	300	.,		///
+	label("Group for which the statistic is to be calculated")
+END
+
+INCLUDE ifin
+INCLUDE _type_list_fd
+
+SCRIPT classification_on
+BEGIN
+	main.ck_groupvar.disable
+	main.sp_groupvar.disable
+	main.tx_groupvar.disable
+
+	script onevar
+END
+
+PROGRAM pr_on
+BEGIN
+	call main.ck_groupvar.enable
+	call main.tx_groupvar.enable
+	if main.ck_groupvar {
+		call main.sp_groupvar.enable
+	}
+
+	if main.ck_groupvar {
+		call script onevar
+	}
+	else {
+		call script manyvars
+	}
+END
+
+SCRIPT looclass_on
+BEGIN
+	main.ck_groupvar.disable
+	main.sp_groupvar.disable
+	main.tx_groupvar.disable
+
+	script onevar
+END
+
+PROGRAM loopr_on
+BEGIN
+	call main.ck_groupvar.enable
+	call main.tx_groupvar.enable
+	if main.ck_groupvar {
+		call main.sp_groupvar.enable
+	}
+
+	if main.ck_groupvar {
+		call script onevar
+	}
+	else {
+		call script manyvars
+	}
+END
+
+PROGRAM group_on
+BEGIN
+	call main.sp_groupvar.enable
+
+	if main.rb_class | main.rb_looclass {
+		call script onevar
+	}
+
+	if main.rb_pr | main.rb_loopr {
+		call script onevar
+	}
+END
+
+PROGRAM group_off
+BEGIN
+	call main.sp_groupvar.disable
+
+	if main.rb_class | main.rb_looclass {
+		call script onevar
+	}
+
+	if main.rb_pr | main.rb_loopr {
+		call script manyvars
+	}
+END
+
+SCRIPT manyvars
+BEGIN
+	main.tx_vars.show
+	main.ed_vars.show
+	main.tx_var.hide
+	main.ed_var.hide
+END
+
+SCRIPT onevar
+BEGIN
+	main.tx_vars.hide
+	main.ed_vars.hide
+	main.tx_var.show
+	main.ed_var.show
+END
+
+DIALOG opt, tabtitle("Options")
+BEGIN
+  GROUPBOX gb_priors	_lft	_top	_iwd	_ht10h,			///
+	label("Group prior probabilities")
+
+  RADIO rb_priordefault	_indent	_ss	_ibwd	.,			///
+	first								///
+	option(NONE)							///
+	onclickon(opt.lb_matname.disable)				///
+	label("Use default (defined by estimation command)")
+
+  RADIO rb_equal	@	_ss	@	.,			///
+	option(equal)							///
+	onclickon(opt.lb_matname.disable)				///
+	label("Equal prior probabilities")
+
+  RADIO rb_proportional	@	_ss	@	.,			///
+	option(proportional)						///
+	onclickon(opt.lb_matname.disable)				///
+	label("Group-size-proportional prior probabilities")
+
+  RADIO rb_matrix	@	_ss	@	.,			///
+	last								///
+	onclickon(opt.lb_matname.enable)				///
+	label("Matrix or matrix expression containing group prior probabilities")
+  COMBOBOX lb_matname	_rbsep	_ss	200	60,			///
+	dropdown							///
+	label("Vector containing coefficients for the model")		///
+	contents(vector)
+
+  TEXT tx_ties		_lft	_xls	_iwd	.,			///
+	label("Ties in group classification:")
+  COMBOBOX cb_ties	@	_ss	@	.,			///
+	dropdownlist							///
+	option(ties)							///
+	contents(main_ties_contents)					///
+	values(main_ties_values)					///
+	label("Ties in group classification")
+END
+
+LIST main_ties_contents
+BEGIN
+	"Produce a missing value"
+	"Are broken randomly"
+	"Are set to the first tied group"
+	"Are assigned based on the closest observations, or missing if this still results in a tie"
+END
+
+LIST main_ties_values
+BEGIN
+	missing
+	random
+	first
+	nearest
+END
+
+PROGRAM opt_priors_output
+BEGIN
+	if opt.rb_equal {
+		put "priors(equal)"
+	}
+	if opt.rb_proportional {
+		put "priors(proportional)"
+	}
+	if opt.rb_matrix {
+		put "priors("
+		put opt.lb_matname
+		put ")"
+	}
+END
+
+PROGRAM command
+BEGIN
+	put "predict "
+
+	if ! main.cb_type.isdefault() {
+		put main.cb_type " " "("
+	}
+
+	if main.rb_class | main.rb_looclass {
+		require main.ed_var
+		put main.ed_var
+	}
+
+	if main.ck_groupvar & main.ck_groupvar.isenabled() {
+		require main.sp_groupvar
+		require main.ed_var
+		put main.ed_var
+	}
+
+	if main.rb_pr | main.rb_loopr {
+		require main.ed_vars
+		put main.ed_vars
+	}
+
+	if ! main.cb_type.isdefault() {
+		put ") "
+	}
+
+	INCLUDE _ifin_pr
+	beginoptions
+		option radio(main rb_class rb_pr rb_looclass rb_loopr)
+		optionarg main.sp_groupvar
+		put " " /program opt_priors_output
+		optionarg /hidedefault opt.cb_ties
+	endoptions
+END

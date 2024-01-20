@@ -1,0 +1,60 @@
+/*
+    numlabel.dlg
+
+*!  VERSION 1.1.1  23apr2007
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+INCLUDE _ht280
+INCLUDE header
+
+HELP hlp1, view("help numlabel")
+RESET res1
+
+DIALOG main, tabtitle("Main")	///
+	label("numlabel - Prefix numeric values to value labels")
+BEGIN
+  TEXT     tx_label        _lft      _top       _iwd     .,		///
+	label("Label(s): (leave blank for all)")
+  COMBOBOX cb_label        @         _ss        @        .,		///
+	label("Label(s)") contents(valuelabels) dropdown append
+
+  RADIO    rb_add          @         _ls        _iwd     .,		///
+	label("Add numeric values") option(add) first
+  RADIO    rb_rem          @         _ss        @        .,		///
+ 	label("Remove numeric values") option(remove) last
+
+  GROUPBOX gb_opts         @         _ls        _iwd     _ht12h,	///
+	label("Options")
+  TEXT     tx_mask         _ilft     _ss        _ibwd    .,		///
+	label("Prefix mask:")
+  EDIT     ed_mask         @         _ss        _vnwd    .,		///
+	label("Prefix mask") default("#. ") max(10) option(mask)
+  TEXT     tx_mask2        @         _ss        _ibwd    .,		///
+	label("Note: the # is replaced with the correct numeric value")
+
+  CHECKBOX ck_force        @         _ms        @        .,		///
+	label("Force adding or removing of numeric labels")		///
+	option(force)
+  CHECKBOX ck_detail       @         _ms        @        .,		///
+	label("Provide details about value labels, where some labels")	///
+	option(detail)
+  TEXT     tx_detail       _cksep   _vss        _inwd    .,		///
+	label("are prefixed with numbers and others are not.")
+END
+
+PROGRAM command
+BEGIN
+	put "numlabel "
+	put main.cb_label
+	beginoptions
+		option radio(main rb_add rb_rem)
+		require main.ed_mask
+		optionarg /quoted main.ed_mask
+		option main.ck_force
+		option main.ck_detail
+	endoptions
+END

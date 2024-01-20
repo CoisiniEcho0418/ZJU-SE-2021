@@ -1,0 +1,363 @@
+/*
+  graph_header.idlg
+
+*!  VERSION 1.1.2  03aug2006  (deprecated)
+
+  To be included at the top of graph dialogs.
+  
+  This file is deprecated as of version 10.
+
+*/
+
+INCLUDE _std_graph
+
+/* DEFINE only **************************************************************/
+
+						/* short sep */
+DEFINE _gsep +15
+
+/* EQUATION and DEFINE ******************************************************/
+				/* left margin inside maximal graph box */
+DEFINE _igft 17
+DEFINE _iigft 24
+
+				/* inside width of maximal graph box */
+DEFINE _igwd 725
+DEFINE _iigwd 710
+
+/* GRAPH maximal 4 boxes with smaller margins */
+/* 4 Maximal columns */
+/* column width */
+DEFINE _cwd4_g 177
+DEFINE _gwd4_1 177
+DEFINE _gwd4_2 170
+DEFINE _gwd4_3 162
+DEFINE _gwd4_4 155
+
+/* col wid minus two smallseps */
+DEFINE _cwd4_gi 162
+DEFINE _comb4_3g 553
+
+/* Width of last 2 columns */
+DEFINE _cwd1g 364
+DEFINE _gwd1 364
+/* interior width of last 2 columns */
+DEFINE _cwd1gb 349
+DEFINE _cwd1gi 349
+DEFINE _cwd3g 349
+DEFINE _gwd2 349
+DEFINE _gwd3 334
+DEFINE _gwd4 319
+
+/* small indent inside */
+DEFINE _lft4_1gi 17
+DEFINE _lft1g 17
+DEFINE _lft1gi 24
+
+/* x pos to place the second of 4 equal columns */
+DEFINE _lft4_2g 197
+DEFINE _gft4_2 197
+/* small indent inside + 1 more */
+DEFINE _lft4_2gi 204
+DEFINE _igft4_2 204
+
+/* x pos to place the third of 4 equal columns */
+DEFINE _lft4_3g 384
+DEFINE _lft2g 384
+DEFINE _gft2 384
+DEFINE _gft4_3 384
+
+/* small indent inside */
+DEFINE _lft4_3gi 391
+DEFINE _igft4_3 391
+
+/* x pos to place the fourth of 4 equal columns */
+DEFINE _lft4_4g 571
+DEFINE _gft4_4 571
+/* small indent inside */
+DEFINE _lft4_4gi 578
+DEFINE _igft4_4 578
+
+/* 2 column split with 2 boxes in each column 2b4 stuff */
+
+/* width exterior (2 col) box  is _cwd1g */
+
+/* width of interior box in box -- 4 cols of these */
+DEFINE _cwd2b4_g 170
+
+/* width of 2nd interior box in box -- 4 cols of these */
+DEFINE _cwd2b4_gi 155
+
+/* position of first box in box */
+DEFINE _ilft2b4_1g 17
+DEFINE _ilft1g 17
+/* one more indent for text */
+DEFINE _ilft1gi 24
+
+/* position of second box in box */
+DEFINE _ilft2b4_2g 197
+DEFINE _igft4_2 197
+/* one more indent for text */
+DEFINE _ilft2b4_2gi 204
+DEFINE _iigft4_2 204
+
+/* position of third box in box _lft2g + _bssep or */
+DEFINE _ilft2b4_3g 391
+DEFINE _ilft2g 391
+DEFINE _igft2 391
+/* one more indent for text */
+DEFINE _ilft2gi 398
+DEFINE _iigft2 398
+
+DEFINE _ilft2b4_4g 571
+DEFINE _igft4_4 571
+/* one more indent for text */
+DEFINE _ilft2b4_4gi 578
+DEFINE _iigft4_4 578
+
+				/* Large space gap and separator */
+DEFINE _gapwd 20
+DEFINE _gapsep +25
+
+					/* varname, gap, and short sep */
+DEFINE _vngapsep +150
+
+					/* text label length */
+DEFINE _txwd 65
+					/* long text label length */
+DEFINE _txlwd 80
+					/* long text label length */
+DEFINE _txswd 58
+					/* short sep after text label */
+DEFINE _txsep +70
+					/* short sep after long text label */
+DEFINE _txlsep +85
+					/* short sep after short text label */
+DEFINE _txssep +63
+
+					/* color picker width */
+DEFINE _colorwd 14
+DEFINE _btwd 14
+
+					/* short sep after color picker */
+DEFINE _colorsep +17
+DEFINE _btsep +17
+
+					/* if's edit field width */
+DEFINE _edifwd1g 344
+
+/* rest of the width left after the specified control **********************/
+
+					/* rest of a 4 col after text + sep */
+DEFINE _txr4g 107
+DEFINE _txr2g 294
+DEFINE _txr2gi 279
+DEFINE _txr4gi 92
+DEFINE _txr2b4g 99
+DEFINE _txr2b4gi 85
+DEFINE _txr2ga 245
+DEFINE _txr2gsep 299
+DEFINE _txr2gasep +250
+DEFINE _txr2gia 230
+DEFINE _txr2giasep +236
+DEFINE _txr4gc 483
+
+/* Long text in a box in a box  and 2nd column of such */
+DEFINE _ltxbb 260
+DEFINE _ltbb2 634
+
+DEFINE _tcr4gi 75
+DEFINE _tcr2b4gi 68
+DEFINE _tcr4gisep 78
+DEFINE _tcr2b4gisep 71
+DEFINE _tcr4gisep +78
+DEFINE _tcr2b4gisep +71
+DEFINE _tcr2g 277
+DEFINE _tcr2gsep +280
+DEFINE _tcr2gi 262
+DEFINE _tcr2gisep +265
+DEFINE _tcr2b4g 82
+DEFINE _tcr2b4gsep 85
+DEFINE _tcr2b4gsep +85
+DEFINE _tcr4gc 466
+DEFINE _tcr4gcsep +469
+
+				/* rest of a 4 col after long text + sep */
+DEFINE _txlr	 655
+DEFINE _txlrb 635
+DEFINE _txlr2 275
+DEFINE _txlr2b 255
+DEFINE _txlr2bb 235
+DEFINE _txlr3 148
+DEFINE _txlr4 85
+DEFINE _txlr4g 92
+DEFINE _txlr2g 279
+DEFINE _txlr2gi 264
+DEFINE _txlr4gi 77
+DEFINE _txlr2b4g 85
+DEFINE _txlr2b4gi 70
+
+DEFINE _tlcr4gi 60
+DEFINE _tlcr2b4gi 53
+DEFINE _tlcr4gisep 63
+DEFINE _tlcr2b4gisep 56
+DEFINE _tlcr4gisep +63
+DEFINE _tlcr2b4gisep +56
+
+				/* rest of a 4 col after short text + sep */
+DEFINE _txsr	 677
+DEFINE _txsrb 657
+DEFINE _txsr2 297
+DEFINE _txsr2b 277
+DEFINE _txsr2bb 257
+DEFINE _txsr3 170
+DEFINE _txsr4 107
+DEFINE _txsr4g 114
+DEFINE _txsr2g 301
+DEFINE _txsr2gi 286
+DEFINE _txsr4gi 99
+DEFINE _txsr2b4g 107
+DEFINE _txsr2b4gi 92
+DEFINE _txsr2ga 257
+DEFINE _txsr2gsep 306
+DEFINE _txsr2gasep 262
+
+DEFINE _tscr4gi 82
+DEFINE _tscr2b4gi 75
+DEFINE _tscr4gisep 85
+DEFINE _tscr2b4gisep 78
+DEFINE _tscr4gisep +85
+DEFINE _tscr2b4gisep +78
+
+					/* rest of a 4 col after text + sep */
+DEFINE _txr	 670
+DEFINE _txrb 650
+DEFINE _txr2 290
+DEFINE _txr2b 270
+DEFINE _txr2bb 250
+DEFINE _txr3 163
+DEFINE _txr4 100
+
+					/* rest of width after spinner */
+DEFINE _spr2g 299
+DEFINE _spr2gi 284
+DEFINE _spr2b4g 105
+DEFINE _spr2b4gi 90
+
+				/* rest of width after check box+spinner */
+DEFINE _ckspr4g 92
+DEFINE _ckspr2g 279
+DEFINE _ckspr2gi 264
+DEFINE _ckspr4gi 77
+DEFINE _ckspr2b4g 85
+DEFINE _ckspr2b4gi 70
+
+				/* rest of width after radio box+spinner */
+DEFINE _rbspr4g 92
+DEFINE _rbspr2g 279
+DEFINE _rbspr2gi 264
+DEFINE _rbspr4gi 77
+DEFINE _rbspr2b4g 85
+DEFINE _rbspr2b4gi 70
+
+				/* rest of width after 7 digit edit box */
+DEFINE _en7r4g 112
+DEFINE _en7r2g 299
+DEFINE _en7r2gi 284
+DEFINE _en7r4gi 97
+DEFINE _en7r2b4g 105
+DEFINE _en7r2b4gi 90
+
+			/* rest of width after check box+7 digit edit box */
+DEFINE _cken7r4g 92
+DEFINE _cken7r2g 279
+DEFINE _cken7r2gi 264
+DEFINE _cken7r4gi 77
+DEFINE _cken7r2b4g 85
+DEFINE _cken7r2b4gi 70
+
+					/* rest of width after varname box */
+DEFINE _vnr4g 52
+DEFINE _vnr2g 239
+DEFINE _vnr2gi 224
+DEFINE _vnr4gi 37
+DEFINE _vnr2b4g 45
+DEFINE _vnr2b4gi 30
+
+/* Special for twoway dialog */
+DEFINE _typewd 35
+DEFINE _typesep +40
+DEFINE _yvarwd 20
+DEFINE _yvarsep +25
+DEFINE _sortwd 50
+DEFINE _sortsep +52
+
+DEFINE _boxsep 135
+DEFINE _boxsep +135
+DEFINE _boxwd 125
+DEFINE _gifwd 285
+
+LIST orientation
+BEGIN
+	"Default"
+	"Horizontal"
+	"Vertical"
+	"Rev. Horizontal"
+	"Rev. Vertical"
+END
+
+LIST orientation_values
+BEGIN
+	""
+	"horizontal"
+	"vertical"
+	"rhorizontal"
+	"rvertical"
+END
+
+LIST pcarrow_angle
+BEGIN
+	Default
+	10 degrees
+	15 degrees
+	20 degrees
+	25 degrees
+	30 degrees
+	35 degrees
+	40 degrees
+	45 degrees
+	50 degrees
+	55 degrees
+	60 degrees
+	65 degrees
+	70 degrees
+	75 degrees
+	80 degrees
+	85 degrees
+	90 degrees
+END
+
+LIST pcarrow_angle_values
+BEGIN
+	""
+	10
+	15
+	20
+	25
+	30
+	35
+	40
+	45
+	50
+	55
+	60
+	65
+	70
+	75
+	80
+	85
+	90
+END
+
+INCLUDE _kernel_function_list
+/* END: graph_header.idlg */

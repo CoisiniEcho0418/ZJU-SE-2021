@@ -1,0 +1,7 @@
+*! version 1.0.0  22dec2002
+sequence 2200
+
+set left   0
+set right  3
+set top    0
+set bottom 0

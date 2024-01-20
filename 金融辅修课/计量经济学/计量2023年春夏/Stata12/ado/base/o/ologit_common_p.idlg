@@ -1,0 +1,158 @@
+/*
+	ologit_common_p.idlg
+
+	This is an INCLUDE file for the -predict- dialogs that go with
+	-ologit- and -svy: ologit-.
+
+*!  VERSION 1.0.0  21mar2005
+
+*/
+
+DIALOG main, label("predict - Prediction after estimation") tabtitle("Main")
+BEGIN
+  TEXT     tx_vars           _lft      _top      _vlwd     .,		/*
+		*/ label("New variable names or variable stub* :")
+  EDIT     ed_vars           @         _ss       @         .,		/*
+		*/ label("New variable names or variable stub*")
+  TEXT     tx_var            _lft      _top      @         .,		/*
+		*/ label("New variable name:")
+  EDIT     ed_var            @         _ss       _vnwd     .,		/*
+		*/ label("New variable name") max(32)
+
+  TEXT     tx_type           _vlsep    _top      _vlr      .,		/*
+		*/ label("New variable type:")
+  COMBOBOX cb_type           @         _ss       @         .,		/*
+		*/ dropdownlist						/*
+		*/ contents(type) default(c(type))			/*
+		*/ label("Type")
+
+  GROUPBOX gb_opts           _lft      _ls       _iwd      _ht14h,	/*
+		*/ label("Produce:")
+  RADIO    rb_p_all          _ilft     _ss       _ibwd     ., first	/*
+		*/ option(p)						/*
+		*/ clickon("script manyon")				/*
+    		*/ label("Probabilities (specify as many variables as number of outcomes)")
+  RADIO    rb_score          @         _ss       @         .,		/*
+		*/ option(scores)					/*
+		*/ clickon("script score_on")				/*
+		*/ label("Equation-level scores")
+  RADIO    rb_p              @         _ss       @         .,		/*
+		*/ option(p)						/*
+		*/ clickon("script oneon_p")				/*
+		*/ label("Probability (specify one variable)")
+  TEXT     tx_outcome        _indent2  _ss       _inwd     .,		/*
+		*/ label("For outcome (value of dependent variable):")
+  EDIT     ed_outcome        @         _ss       _vnwd     .,		/*
+		*/ option(outcome)					/*
+		*/ label("For outcome (value of dependent variable)")
+
+  RADIO    rb_xb             _ilft     _ms       _ibwd     .,		/*
+		*/ option(xb)						/*
+		*/ clickon("script oneon")				/*
+		*/ label("Linear prediction (xb)")
+  RADIO    rb_stdp           @         _ss       @         ., last	/*
+		*/ option(stdp)						/*
+		*/ clickon("script oneon")				/*
+		*/ label("Standard error of linear prediction")
+
+  INCLUDE  _p_nooffset
+END
+
+
+INCLUDE _p_gentype_sc
+INCLUDE ifin
+INCLUDE _type_list_fd
+
+
+SCRIPT score_on
+BEGIN
+	script manyon
+	main.ck_nooffset.disable
+END
+
+SCRIPT manyon
+BEGIN
+	script manyvars
+	script eqoff
+	main.ck_nooffset.enable
+END
+
+SCRIPT oneon
+BEGIN
+	script onevar
+	script eqoff
+	main.ck_nooffset.enable
+END
+
+SCRIPT oneon_p
+BEGIN
+	script onevar
+	script eqon
+	main.ck_nooffset.enable
+END
+
+SCRIPT manyvars
+BEGIN
+	main.tx_vars.show
+	main.ed_vars.show
+	main.tx_var.hide
+	main.ed_var.hide
+END
+
+SCRIPT onevar
+BEGIN
+	main.tx_vars.hide
+	main.ed_vars.hide
+	main.tx_var.show
+	main.ed_var.show
+END
+
+SCRIPT eqon
+BEGIN
+	main.tx_outcome.enable
+	main.ed_outcome.enable
+END
+
+SCRIPT eqoff
+BEGIN
+	main.tx_outcome.disable
+	main.ed_outcome.disable
+END
+
+
+PROGRAM command
+BEGIN
+	put "predict "
+	if main.cb_type.isdefault() {
+		if main.rb_p_all | main.rb_score {
+			require main.ed_vars
+			put main.ed_vars " "
+		}
+		if !main.rb_p_all & !main.rb_score {
+			require main.ed_var
+			put main.ed_var " "
+		}
+	}
+	if ! main.cb_type.isdefault() {
+		put main.cb_type " " "("
+		if main.rb_p_all | main.rb_score {
+			require main.ed_vars
+			put main.ed_vars
+		}
+		if !main.rb_p_all & !main.rb_score {
+			require main.ed_var
+			put main.ed_var
+		}
+		put ") "
+	}
+
+	INCLUDE _ifin_pr
+	beginoptions
+		if main.rb_p {
+			require main.ed_outcome
+			optionarg main.ed_outcome
+		}
+		option radio(main rb_p_all rb_p rb_xb rb_stdp rb_score)
+	endoptions
+	INCLUDE _p_nooffset_pr
+END

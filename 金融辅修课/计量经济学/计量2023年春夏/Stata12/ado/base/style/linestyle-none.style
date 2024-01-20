@@ -1,0 +1,6 @@
+*! version 1.0.0  22dec2002
+sequence 2300
+
+set width    scheme foreground
+set color    none
+set pattern  solid

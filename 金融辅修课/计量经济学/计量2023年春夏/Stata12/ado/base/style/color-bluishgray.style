@@ -1,0 +1,5 @@
+*! version 1.0.1  05apr2005
+sequence 425
+label "Bluish-gray"
+
+set rgb "217 230 235"

@@ -1,0 +1,389 @@
+/*
+        gr_ca_row_col
+
+*!  VERSION 1.0.0  30oct2006
+
+*/
+
+SCRIPT ca_row_PREINIT
+BEGIN
+	create STRING rmarkerResults
+	create STRING rlabelResults
+	create STRING srmarkerResults
+	create STRING srlabelResults
+END
+SCRIPT ca_row_POSTINIT
+BEGIN
+	program checkRMarkerResults
+	program checkRLabelResults
+	program checkSRMarkerResults
+	program checkSRLabelResults
+END
+
+DIALOG ca_row, tabtitle("Rows")
+BEGIN
+  BUTTON bu_rmarker		_lft	_top	120	.,		///
+	label("Marker properties  ")					///
+	onpush(script show_rmarker_dialog)				///
+	tooltip("Marker properties for rows")
+  BUTTON bu_rlabel		@	_ls	120	.,		///
+	label("Labels properties  ")					///
+	onpush(script show_rlabel_dialog)				///
+	tooltip("Label properties for rows")
+
+  GROUPBOX gb_supp		_lft	+35	_cwd1	_ht6,		///
+	label("Supplementary rows")
+  BUTTON bu_srmarker		_ilft	_ls	120	.,		///
+	label("Marker properties  ")					///
+	onpush(script show_srmarker_dialog)				///
+	tooltip("Marker properties for supplementary rows")
+  BUTTON bu_srlabel		@	_ls	120	.,		///
+	label("Label properties  ")					///
+	onpush(script show_srlabel_dialog)				///
+	tooltip("Label properties for supplementary rows")
+END
+
+//Programs/Scripts
+SCRIPT ca_row_enable
+BEGIN
+	ca_row.bu_rmarker.enable
+	ca_row.bu_rlabel.enable
+	ca_row.bu_srmarker.enable
+	ca_row.bu_srlabel.enable
+	ca_row.gb_supp.enable
+END
+SCRIPT ca_row_disable
+BEGIN
+	ca_row.bu_rmarker.disable
+	ca_row.bu_rlabel.disable
+	ca_row.bu_srmarker.disable
+	ca_row.bu_srlabel.disable
+	ca_row.gb_supp.disable
+END
+
+//Buttons
+SCRIPT show_rmarker_dialog
+BEGIN
+	create CHILD gr_marker_nolabel_options AS rmarker, allowsubmit
+	rmarker.setExitString rmarkerResults
+	rmarker.settitle "Marker properties for rows"
+	rmarker.setExitAction "program checkRMarkerResults"
+	rmarker.setSubmitAction "program rmarkerSubmit"
+END
+PROGRAM checkRMarkerResults
+BEGIN
+	if rmarkerResults.iseq("") {
+		call ca_row.bu_rmarker.setlabel "Marker properties  "
+	}
+	else {
+		call ca_row.bu_rmarker.setlabel "Marker properties *"
+	}
+END
+PROGRAM rmarkerSubmit
+BEGIN
+	call program checkRMarkerResults
+	call Submit
+END
+
+SCRIPT show_rlabel_dialog
+BEGIN
+	create CHILD gr_markerlabel_options AS rlabel, allowsubmit
+	rlabel.setExitString rlabelResults
+	rlabel.settitle "Label properties for rows"
+	rlabel.setExitAction "program checkRLabelResults"
+	rlabel.setSubmitAction "program rlabelSubmit"
+END
+PROGRAM checkRLabelResults
+BEGIN
+	if rlabelResults.iseq("") {
+		call ca_row.bu_rlabel.setlabel "Label properties  "
+	}
+	else {
+		call ca_row.bu_rlabel.setlabel "Label properties  *"
+	}
+END
+PROGRAM rlabelSubmit
+BEGIN
+	call program checkRLabelResults
+	call Submit
+END
+
+SCRIPT show_srmarker_dialog
+BEGIN
+	create CHILD gr_marker_nolabel_options AS srmarker, allowsubmit
+	srmarker.setExitString srmarkerResults
+	srmarker.settitle "Marker properties for supplementary rows"
+	srmarker.setExitAction "program checkSRMarkerResults"
+	srmarker.setSubmitAction "program srmarkerSubmit"
+END
+PROGRAM checkSRMarkerResults
+BEGIN
+	if srmarkerResults.iseq("") {
+		call ca_row.bu_srmarker.setlabel "Marker properties  "
+	}
+	else {
+		call ca_row.bu_srmarker.setlabel "Marker properties  *"
+	}
+END
+PROGRAM srmarkerSubmit
+BEGIN
+	call program checkSRMarkerResults
+	call Submit
+END
+
+SCRIPT show_srlabel_dialog
+BEGIN
+	create CHILD gr_markerlabel_options AS srlabel, allowsubmit
+	srlabel.setExitString srlabelResults
+	srlabel.settitle "Label properties for supplementary rows"
+	srlabel.setExitAction "program checkSRLabelResults"
+	srlabel.setSubmitAction "program srlabelSubmit"
+END
+PROGRAM checkSRLabelResults
+BEGIN
+	if srlabelResults.iseq("") {
+		call ca_row.bu_srlabel.setlabel "Label properties  "
+	}
+	else {
+		call ca_row.bu_srlabel.setlabel "Label properties  *"
+	}
+END
+PROGRAM srlabelSubmit
+BEGIN
+	call program checkSRLabelResults
+	call Submit
+END
+
+// Column tab
+SCRIPT ca_col_PREINIT
+BEGIN
+	create STRING cmarkerResults
+	create STRING clabelResults
+	create STRING scmarkerResults
+	create STRING sclabelResults
+END
+SCRIPT ca_col_POSTINIT
+BEGIN
+	program checkCMarkerResults
+	program checkCLabelResults
+	program checkSCMarkerResults
+	program checkSCLabelResults
+END
+
+DIALOG ca_col, tabtitle("Columns")
+BEGIN
+  BUTTON bu_cmarker		_lft	_top	120	.,		///
+	label("Marker properties  ")					///
+	onpush(script show_cmarker_dialog)				///
+	tooltip("Marker properties for columns")
+  BUTTON bu_clabel		@	_ls	120	.,		///
+	label("Labels properties  ")					///
+	onpush(script show_clabel_dialog)				///
+	tooltip("Label properties for columns")
+
+  GROUPBOX gb_supp		_lft	+35	_cwd1	_ht6,		///
+	label("Supplementary columns")
+  BUTTON bu_scmarker		_ilft	_ls	120	.,		///
+	label("Marker properties  ")					///
+	onpush(script show_scmarker_dialog)				///
+	tooltip("Marker properties for supplementary columns")
+  BUTTON bu_sclabel		@	_ls	120	.,		///
+	label("Label properties  ")					///
+	onpush(script show_sclabel_dialog)				///
+	tooltip("Label properties for supplementary columns")
+END
+
+//Programs/Scripts
+SCRIPT ca_col_enable
+BEGIN
+	ca_col.bu_cmarker.enable
+	ca_col.bu_clabel.enable
+	ca_col.bu_scmarker.enable
+	ca_col.bu_sclabel.enable
+	ca_col.gb_supp.enable
+END
+SCRIPT ca_col_disable
+BEGIN
+	ca_col.bu_cmarker.disable
+	ca_col.bu_clabel.disable
+	ca_col.bu_scmarker.disable
+	ca_col.bu_sclabel.disable
+	ca_col.gb_supp.disable
+END
+
+//Buttons
+SCRIPT show_cmarker_dialog
+BEGIN
+	create CHILD gr_marker_nolabel_options AS cmarker, allowsubmit
+	cmarker.setExitString cmarkerResults
+	cmarker.settitle "Marker properties for columns"
+	cmarker.setExitAction "program checkCMarkerResults"
+	cmarker.setSubmitAction "program cmarkerSubmit"
+END
+PROGRAM checkCMarkerResults
+BEGIN
+	if cmarkerResults.iseq("") {
+		call ca_col.bu_cmarker.setlabel "Marker properties  "
+	}
+	else {
+		call ca_col.bu_cmarker.setlabel "Marker properties  *"
+	}
+END
+PROGRAM cmarkerSubmit
+BEGIN
+	call program checkCMarkerResults
+	call Submit
+END
+SCRIPT show_clabel_dialog
+BEGIN
+	create CHILD gr_markerlabel_options AS clabel, allowsubmit
+	clabel.setExitString clabelResults
+	clabel.settitle "Label properties for columns"
+	clabel.setExitAction "program checkCLabelResults"
+	clabel.setSubmitAction "program clabelSubmit"
+END
+PROGRAM checkCLabelResults
+BEGIN
+	if clabelResults.iseq("") {
+		call ca_col.bu_clabel.setlabel "Label properties  "
+	}
+	else {
+		call ca_col.bu_clabel.setlabel "Label properties *"
+	}
+END
+PROGRAM clabelSubmit
+BEGIN
+	call program checkCLabelResults
+	call Submit
+END
+
+SCRIPT show_scmarker_dialog
+BEGIN
+	create CHILD gr_marker_nolabel_options AS scmarker, allowsubmit
+	scmarker.setExitString scmarkerResults
+	scmarker.settitle "Marker properties for supplementary columns"
+	scmarker.setExitAction "program checkSCMarkerResults"
+	scmarker.setSubmitAction "program scmarkerSubmit"
+END
+PROGRAM checkSCMarkerResults
+BEGIN
+	if scmarkerResults.iseq("") {
+		call ca_col.bu_scmarker.setlabel "Marker properties  "
+	}
+	else {
+		call ca_col.bu_scmarker.setlabel "Marker properties *"
+	}
+END
+PROGRAM scmarkerSubmit
+BEGIN
+	call program checkSCMarkerResults
+	call Submit
+END
+
+SCRIPT show_sclabel_dialog
+BEGIN
+	create CHILD gr_markerlabel_options AS sclabel, allowsubmit
+	sclabel.setExitString sclabelResults
+	sclabel.settitle "Label properties for supplementary columns"
+	sclabel.setExitAction "program checkSCLabelResults"
+	sclabel.setSubmitAction "program sclabelSubmit"
+END
+PROGRAM checkSCLabelResults
+BEGIN
+	if sclabelResults.iseq("") {
+		call ca_col.bu_sclabel.setlabel "Label properties  "
+	}
+	else {
+		call ca_col.bu_sclabel.setlabel "Label properties *"
+	}
+END
+PROGRAM sclabelSubmit
+BEGIN
+	call program checkSCLabelResults
+	call Submit
+END
+
+//Output
+PROGRAM ca_row_output
+BEGIN
+	if rmarkerResults & ! H(ca_row.bu_rmarker) {
+		put " " rmarkerResults " "		
+	}
+	if rlabelResults & ! H(ca_row.bu_rlabel)  {
+		put " " rlabelResults " "		
+	}
+END
+PROGRAM ca_srow_output
+BEGIN
+	put "suppopts("
+	put /program ca_srow_output_wrk
+	put ") "
+END
+PROGRAM ca_srow_output_wrk
+BEGIN
+	if srmarkerResults & ! H(ca_row.bu_srmarker) {
+		put " " srmarkerResults " "		
+	}
+	if srlabelResults & ! H(ca_row.bu_srlabel) {
+		put " " srlabelResults " "		
+	}
+END
+
+PROGRAM ca_col_output
+BEGIN
+	if cmarkerResults & ! H(ca_col.bu_cmarker) {
+		put " " cmarkerResults " "		
+	}
+	if clabelResults & ! H(ca_col.bu_clabel) {
+		put " " clabelResults " "	
+	}
+END
+PROGRAM ca_scol_output
+BEGIN
+	put " suppopts("
+	put /program ca_scol_output_wrk
+	put ") "
+END
+PROGRAM ca_scol_output_wrk
+BEGIN
+	if scmarkerResults & ! H(ca_col.bu_scmarker) {
+		put " " scmarkerResults  " "
+	}
+	if sclabelResults & ! H(ca_col.bu_sclabel) {
+		put " " sclabelResults  " "
+	}
+END
+
+PROGRAM gr_ca_row_col_output
+BEGIN
+	if ((srmarkerResults & ! H(ca_row.bu_srmarker)) | ///
+	    (srlabelResults & ! H(ca_row.bu_srlabel))  | ///
+	    (rlabelResults & ! H(ca_row.bu_rlabel))   | ///
+	    (rmarkerResults & ! H(ca_row.bu_rmarker)))  ///
+	{
+		put " rowopts("
+		put /program ca_row_output
+		if srmarkerResults | srlabelResults {
+			if (rmarkerResults | rlabelResults) {
+				put " " 
+			}
+			put /program ca_srow_output
+		}
+		put ") "	
+	}
+	if ((scmarkerResults & ! H(ca_col.bu_scmarker)) | ///
+	    (sclabelResults & ! H(ca_col.bu_sclabel))	| ///
+	    (clabelResults & ! H(ca_col.bu_clabel))	| ///
+	    (cmarkerResults & ! H(ca_col.bu_cmarker)))   ///
+	{
+		put " colopts("
+		put /program ca_col_output
+		if scmarkerResults | sclabelResults {
+			if (cmarkerResults | clabelResults) {
+				put " " 
+			}
+			put /program ca_scol_output
+		}
+		put ") "	
+	}
+END

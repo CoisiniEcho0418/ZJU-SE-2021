@@ -1,0 +1,94 @@
+/*
+	predict (after mprobit)
+
+*!  VERSION 1.0.1  30mar2005
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_large
+INCLUDE header
+
+HELP hlp1, view("help mprobit postestimation")
+RESET res1
+
+DIALOG main, label("predict - Prediction after estimation") tabtitle("Main")
+BEGIN
+  INCLUDE  _p_gentype
+
+  GROUPBOX gb_opts           _lft      _ls       _iwd      _ht10,	/*
+		*/ label("Produce:")
+  RADIO    rb_p_all          _ilft     _ss       _ibwd     ., first	/*
+		*/ option(p)						/*
+		*/ clickon("script offboth")				/*
+		*/ label("Probabilities (specify as many variables as number of outcomes)")
+  RADIO    rb_score          _ilft     _ss       _comb3_2  .,		/*
+		*/ option(scores)					/*
+		*/ clickon("script offboth")				/*
+		*/ label("Equation-level scores")
+  DEFINE   holdy@y
+  RADIO    rb_p              _ilft     _ss       _comb3_2  .,		/*
+		*/ option(p)						/*
+		*/ clickon("script off2")				/*
+		*/ label("Probability (specify one variable)")
+  RADIO    rb_xb             @         _ss       @         .,		/*
+		*/ option(xb)						/*
+		*/ clickon("script off2")				/*
+		*/ label("Linear prediction (xb)")
+  RADIO    rb_stdp           @         _ss       @         ., last	/*
+		*/ option(stdp)						/*
+		*/ clickon("script off2")				/*
+		*/ label("Standard error of linear prediction")
+
+  TEXT     tx_outcome1       _ilft3_3  holdy     _cwd3_2   .,		/*
+		*/ label("Outcome:")
+  LISTBOX  lb_outcome1       @         _ss       @         _ht3,	/*
+		*/ contents(ereturn outeqs)				/*
+		*/ label("Outcome")
+END
+
+INCLUDE _p_gentype_sc
+INCLUDE ifin
+INCLUDE _type_list_fd
+
+SCRIPT offboth
+BEGIN
+	script _p_gentype_multiple
+	script eq1off
+END
+
+SCRIPT off2
+BEGIN
+	script _p_gentype_single
+	script eq1on
+END
+
+SCRIPT eq1on
+BEGIN
+	main.tx_outcome1.show
+	main.lb_outcome1.show
+END
+
+SCRIPT eq1off
+BEGIN
+	main.tx_outcome1.hide
+	main.lb_outcome1.hide
+END
+
+
+PROGRAM command
+BEGIN
+	put "predict "
+	put " " /program _p_gentype_output
+	INCLUDE _ifin_pr
+	beginoptions
+		if !main.rb_p_all & !main.rb_score {
+			put "outcome("
+			require main.lb_outcome1
+			put main.lb_outcome1
+			put ") "
+		}
+		option radio(main rb_p_all rb_p rb_xb rb_stdp rb_score)
+	endoptions
+END

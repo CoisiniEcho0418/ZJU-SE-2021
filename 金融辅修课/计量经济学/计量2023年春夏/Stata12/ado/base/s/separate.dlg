@@ -1,0 +1,138 @@
+/*
+	separate
+	
+*!	VERSION 1.0.1  21aug2003
+*/
+
+VERSION 8.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help separate")
+RESET res1
+
+DIALOG main, label("separate - Create separate variables")            /*
+		*/	tabtitle("Main")
+BEGIN
+   TEXT	    tx_var        _lft	    _top      _iwd	.,            /*
+		*/	label("Variable:")
+
+   VARNAME  vn_var        @         _ss       _vnwd 	.,            /*
+                */      label("Variable")				
+
+   GROUPBOX gb_var        @         _ls       _iwd      _ht9,         /*
+                */      label("Create new variables")
+
+   RADIO    rb_byvar      _ilft     _ss       _ibwd     .,            /*
+                */      label("By variable:")		              /*
+		*/      first				              /*
+		*/      clickon("script byex_off")	
+
+   VARNAME  vn_byvar      _indent2  _ss       _vnwd     .,            /*
+                */      label("By variable")                          /*
+                */      option(by)				      
+
+   RADIO    rb_byexp      _ilft     _ms       _ibwd     .,            /*
+                */      label("By logical expression:")		      /*
+                */      last					      /*
+                */      clickon("script byex_on")
+   
+   EXP      ex_byexp     _indent2   _ss       _expifwd  .,            /*
+                */ label("Create...")                                 /*
+                */ error("Logical expression")                        /*
+                */ option(by)
+
+END
+
+INCLUDE ifin
+
+DIALOG opt, label("separate - Create separate variables")             /*
+                */      tabtitle("Options")
+BEGIN
+   GROUPBOX gb_gen        _lft      _top      _iwd      _ht6,         /*
+                */      label("Variable names")
+
+   RADIO    rb_gen        _ilft     _ss       _ibwd     .,            /*
+                */      label("Use original variable name as stub")   /*
+                */      first                                         /*
+	        */      clickon("script ed_gen_off")                  /*
+                */      option(NONE)
+
+   RADIO    rb_newname    @         _ss       @         .,	      /*
+                */      label("Use the following as stub:")           /*
+                */      last                                          /*
+		*/      clickon("script ed_gen_on")                   
+
+   EDIT     ed_gen        _indent2  _ss       _vnwd     .,            /*
+                */      label("Stub name")                            /*
+                */      option(generate)                              /*
+                */      max(32)
+
+
+   GROUPBOX gb_seq        _lft      _xls     _iwd      _ht4,         /*
+                */      label("Append sequence numbers to variable names")
+
+   RADIO    rb_seqdef     _ilft     _ss       _ibwd     .,            /*
+             */      label("Use values stored in original variable")  /*
+                */      first 	                                      /*
+                */      option(NONE)
+
+   RADIO    rb_seq        @         _ss       _ibwd     .,            /*
+                */      label("Start number from 1")	              /*
+                */      last	                                      /*
+		*/      option(sequential)
+
+   CHECKBOX ck_missing    _lft      _xls     _iwd      .,            /*
+                */  label("Create variables for the missing values")  /*
+                */      option(missing)
+
+   CHECKBOX ck_shortlbl   _lft      _ms      _iwd      .,            /*
+                */  label("Create shorter variable labels")  /*
+                */      option(shortlabel)
+END
+
+PROGRAM command
+BEGIN
+	put "separate "
+	varlist main.vn_var
+	INCLUDE _ifin_pr 
+	beginoptions
+		if main.rb_byvar{
+			require main.vn_byvar
+			optionarg main.vn_byvar
+		}
+		if main.rb_byexp{
+			require main.ex_byexp
+			optionarg main.ex_byexp
+		}
+                if opt.rb_newname {
+			optionarg opt.ed_gen
+		}
+		option radio(opt rb_seqdef rb_seq)
+                option opt.ck_missing
+		option opt.ck_shortlbl
+	endoptions
+END
+
+SCRIPT byex_off
+BEGIN
+      main.ex_byexp.disable
+      main.vn_byvar.enable
+END
+
+SCRIPT byex_on
+BEGIN	
+      main.ex_byexp.enable
+      main.vn_byvar.disable
+END
+
+SCRIPT ed_gen_off
+BEGIN
+	opt.ed_gen.disable
+END
+
+SCRIPT ed_gen_on	
+BEGIN
+	opt.ed_gen.enable
+END

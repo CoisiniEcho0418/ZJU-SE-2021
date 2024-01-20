@@ -1,0 +1,60 @@
+/*
+	icd9[p] clean
+	
+*! VERSION 1.0.1  20aug2003
+
+	which icd9  - *! version 1.0.4  31jul2001
+	which icd9p - *! version 1.0.3  11sep2000
+*/
+
+VERSION 8.0
+
+INCLUDE _std_medium
+INCLUDE header
+HELP hlp1, view("help icd9")
+RESET res1
+
+DIALOG main, label("icd9[p] clean - Verify and clean variable") tabtitle("Main")
+BEGIN
+  /*--+----1----+----2----+----3----+----4----+----5----+----6----+----7----+*/
+  TEXT     tx_vn     _lft      _top      _iwd      .,		/*
+		*/ label("Variable name:")
+
+  VARNAME  vn_vn     @         _ss       _vnwd     .,		/*
+		*/ label("Variable name")
+
+  RADIO    rb_diag   _lft      _ls       _cwd1     .,		/*
+		*/ first					/*
+		*/ label("Diagnostic codes")
+
+  RADIO    rb_proc   _lft2     @         @         .,		/*
+		*/ last						/*
+		*/ label("Procedure codes")
+
+  GROUPBOX gb_opt    _lft      _ls       _iwd      _ht5,	/*
+		*/ label("Options")
+
+  CHECKBOX ck_dots   _indent   _ss       _ibwd     .,		/*
+		*/ option(dots)					/*
+		*/ label("Include periods in final format")
+
+  CHECKBOX ck_pad    @         _ls       @         .,		/*
+		*/ option(pad)					/*
+		*/ label("Align codes vertically in listings")
+END
+
+PROGRAM command
+BEGIN   
+	if main.rb_diag {
+		put "icd9 clean "
+	}
+	if main.rb_proc {
+		put "icd9p clean "
+	}
+	varlist main.vn_vn
+	beginoptions
+		option main.ck_dots
+		option main.ck_pad
+	endoptions
+END
+		

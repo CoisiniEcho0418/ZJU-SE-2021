@@ -1,0 +1,108 @@
+/*
+	pwcorr
+	
+*!  VERSION 1.1.0  11jul2008
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_medium
+INCLUDE _ht300
+INCLUDE header
+
+HELP hlp1, view("help pwcorr")
+RESET res1
+
+DIALOG main, label("pwcorr - Pairwise correlations of variables")       /*
+		*/ tabtitle("Main")
+BEGIN
+
+   TEXT	    tx_var		_lft	_top	_iwd	.,		/*
+		*/	label("Variables: (leave empty for all)")
+	
+   VARLIST  vl_var		@	_ss	@	.,		/*
+		*/	label("Variables")
+
+
+   CHECKBOX ck_obs		_lft	_ls	_iwd	.,		/*
+	*/	label("Print number of observations for each entry")    /*
+		*/      option(obs)
+   DEFINE holdx  @x
+   DEFINE holdcx @cx
+
+   CHECKBOX ck_sig		@	_ms	@	.,		/*
+	*/	label("Print significance level for each entry")        /*
+                */      option(sig)
+
+   CHECKBOX ck_list		@	_ms	@	., 		/*
+	*/	label("Use listwise deletion to handle missing values")	/*
+		*/ option(listwise)
+
+   CHECKBOX ck_print		@	_ls	_ckwd   ., 		/*
+		*/	label("")					/*
+		*/	clickoff("gaction main.sp_print.disable")	/*
+		*/	clickon("gaction main.sp_print.enable")			
+	
+   SPINNER  sp_print		_cksep	@	_spwd	.,		/*
+		*/	label("Coefficients significance") 		/*
+		*/	min(1)						/*
+		*/	max(100)					/*
+		*/	default(10)					/*
+		*/	option(print)
+
+   TEXT	    tx_print		_spsep	@	_rbsprb	.,		/*
+		*/	label("Significance level for displaying coefficients")	 
+
+   CHECKBOX ck_star		holdx	_ls	_ckwd   .,		/*
+		*/	label("")					/*
+		*/	clickoff("gaction main.sp_star.disable")	/*
+		*/	clickon("gaction main.sp_star.enable")	
+	
+   SPINNER  sp_star		_cksep	@	_spwd	.,		/*
+		*/	label("Significance level for displaying star")	/*
+		*/	min(1)						/*
+		*/	max(100)					/*
+		*/	default(5)					/*
+		*/	option(star)
+
+   TEXT     tx_star		_spsep	@	_rbsprb	.,		/*
+		*/	label("Significance level for displaying with a star")
+
+   GROUPBOX gb_opts		_lft	_ls	_iwd	_ht6,  		/*
+		*/	label("Significance level adjustment")
+
+   RADIO    rb_none		_ilft	_ss	_ibwd	.,		/*
+   		*/ 	label("Don't adjust significance level")	/*
+		*/ 	option(NONE) first
+   RADIO    rb_bonferroni	@	_ss	@  	.,		/*
+		*/	label("Use Bonferroni-adjusted significance level") /*
+		*/      option(bonferroni) middle
+   RADIO    rb_sidak		@	_ss	@	.,		/*
+		*/	label("Use Sidak-adjusted significance level")	/*
+                */      option(sidak) last 
+END
+
+INCLUDE byifin
+INCLUDE weights_fa  
+
+PROGRAM command
+BEGIN
+  	INCLUDE _by_pr 
+        put "pwcorr "
+        varlist [main.vl_var]
+	INCLUDE _weights_pr
+        INCLUDE _ifin_pr
+        beginoptions
+                option main.ck_obs
+		option main.ck_sig
+		option main.ck_list
+                if main.ck_print{
+			optionarg main.sp_print
+                }
+		if main.ck_star{
+			optionarg main.sp_star
+		}
+		option radio(main rb_none rb_bonferroni rb_sidak)
+       endoptions
+END

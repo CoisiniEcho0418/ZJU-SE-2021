@@ -1,0 +1,57 @@
+/*
+	label variable using the review window.
+
+*!  VERSION 1.0.0  15mar2007
+
+	which label = built-in command:  label
+*/
+
+VERSION 10.0
+MODAL
+
+INCLUDE _std_msmall
+POSITION . . _dlgwd 100
+
+OK ok1, label("OK")
+CANCEL can1, label("Cancel")
+
+SCRIPT PREINIT
+BEGIN
+	create ARRAY ARGS
+	create STRING variable
+	create STRING label
+	create STRING title
+END
+
+PROGRAM POSTINIT_PROGRAM
+BEGIN
+	if __MESSAGE {
+		call __MESSAGE.tokenize ARGS
+		call variable.setvalue class ARGS[1]
+		call label.setvalue class ARGS[2]
+		call main.ed_label.setvalue class label.value
+		if variable {
+			call variable.withvalue title.setvalue	///
+				"Edit variable label for '@'"
+			call title.withvalue settitle "@"
+		}
+	}
+END
+
+DIALOG main
+BEGIN
+  TEXT     tx_label  _lft      20        _iwd      .,		///
+	label("Variable label: (may be up to 80 characters)")
+  EDIT     ed_label  @         _ss       @         .,
+END
+
+PROGRAM command
+BEGIN
+	put "label variable "
+	put variable " "
+	if main.ed_label {
+		put "`"
+		put `"""' main.ed_label `"""'
+		put "'"
+	}
+END

@@ -1,0 +1,1125 @@
+/*
+  nestreg
+
+*!  VERSION 1.0.6  15may2011
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_large
+INCLUDE header
+
+HELP hlp1, view("help nestreg")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	main.ck_blk1.seton
+END
+
+SCRIPT POSTINIT
+BEGIN
+	main.cb_cmd.forceselchange
+END
+
+DIALOG main, label("nestreg - Nested model statistics") tabtitle("Model")
+BEGIN
+  DEFINE wlabel 130
+
+  DEFINE cmdx 320
+  DEFINE cmdw 170
+
+  TEXT     tx_cmds   cmdx      _top      cmdw      .,			///
+	label("Command:")
+  COMBOBOX cb_cmd    @         _ss       @         .,			///
+	label("Command")						///
+	contents(cmd_con)						///
+	value(cmd_con)							///
+	onselchangelist(cmd_sel) dropdownlist
+
+  TEXT     tx_dv1    _lft      _top      wlabel    .,			///
+	label("Dependent variable:")
+  VARNAME  vn_dv1    @         _ss       _vnwd     .,			///
+	label("Dependent variable")
+
+  TEXT     tx_dv2    _vlx      _top      wlabel    .,			///
+	label("Dependent variable 2:")
+  VARNAME  vn_dv2    @         _ss       _vnwd     .,			///
+	label("Dependent variable 2")
+
+  // table for specifying the independent variable blocks
+  DEFINE col1w  35
+  DEFINE col2p  55	// = col1w + 20
+  DEFINE col2w  435
+
+  TEXT     tx_block  _lft      _ls       col1w     .,			///
+  	label("Block")
+  DEFINE holdy @y
+  CHECKBOX ck_blk1   @         _ms       @         .,			///
+	onclickon("program check_blk1")					///
+	onclickoff("program check_blk1")				///
+  	label("1")
+  CHECKBOX ck_blk2   @         _ms       @         .,			///
+	onclickon("program check_blk2")					///
+	onclickoff("program check_blk2")				///
+  	label("2")
+  CHECKBOX ck_blk3   @         _ms       @         .,			///
+	onclickon("program check_blk3")					///
+	onclickoff("program check_blk3")				///
+  	label("3")
+  CHECKBOX ck_blk4   @         _ms       @         .,			///
+	onclickon("program check_blk4")					///
+	onclickoff("program check_blk4")				///
+  	label("4")
+  CHECKBOX ck_blk5   @         _ms       @         .,			///
+	onclickon("program check_blk5")					///
+	onclickoff("program check_blk5")				///
+  	label("5")
+  CHECKBOX ck_blk6   @         _ms       @         .,			///
+	onclickon("program check_blk6")					///
+	onclickoff("program check_blk6")				///
+  	label("6")
+  CHECKBOX ck_blk7   @         _ms       @         .,			///
+	onclickon("program check_blk7")					///
+	onclickoff("program check_blk7")				///
+  	label("7")
+  CHECKBOX ck_blk8   @         _ms       @         .,			///
+	onclickon("program check_blk8")					///
+	onclickoff("program check_blk8")				///
+  	label("8")
+
+  TEXT     tx_xvars  col2p     holdy     col2w     .,			///
+  	label("Independent variables:")
+  VARLIST  vl_blk1   @         _ms       col2w     .,			///
+  	label("Block 1 independent variables")
+  VARLIST  vl_blk2   @         _ms       @         .,			///
+  	label("Block 2 independent variables")
+  VARLIST  vl_blk3   @         _ms       @         .,			///
+  	label("Block 3 independent variables")
+  VARLIST  vl_blk4   @         _ms       @         .,			///
+  	label("Block 4 independent variables")
+  VARLIST  vl_blk5   @         _ms       @         .,			///
+  	label("Block 5 independent variables")
+  VARLIST  vl_blk6   @         _ms       @         .,			///
+  	label("Block 6 independent variables")
+  VARLIST  vl_blk7   @         _ms       @         .,			///
+  	label("Block 7 independent variables")
+  VARLIST  vl_blk8   @         _ms       @         .,			///
+  	label("Block 8 independent variables")
+
+END
+
+LIST cmd_con
+BEGIN
+	clogit
+	cloglog
+	glm
+	intreg
+	logistic
+	logit
+	nbreg
+	ologit
+	oprobit
+	poisson
+	probit
+	qreg
+	regress
+	scobit
+	stcox
+	stcrreg
+	streg
+	tobit
+END
+
+LIST cmd_sel
+BEGIN
+	script clogit_on
+	script cloglog_on
+	script glm_on
+	script intreg_on
+	script logitstic_on
+	script logit_on
+	script nbreg_on
+	script ologit_on
+	script oprobit_on
+	script poisson_on
+	script probit_on
+	script qreg_on
+	script regress_on
+	script scobit_on
+	script stcox_on
+	script stcrreg_on
+	script streg_on
+	script tobit_on
+END
+
+SCRIPT main_one_depvar
+BEGIN
+	script model2_dist_off
+	main.tx_dv1.setlabel "Dependent variable:"
+	main.tx_dv1.enable
+	main.vn_dv1.enable
+	main.tx_dv2.hide
+	main.vn_dv2.hide
+END
+
+SCRIPT main_two_depvars
+BEGIN
+	script model2_dist_off
+	main.tx_dv1.setlabel "Dependent variable 1:"
+	main.tx_dv1.enable
+	main.vn_dv1.enable
+	main.tx_dv2.show
+	main.vn_dv2.show
+END
+
+SCRIPT main_no_depvars
+BEGIN
+	main.tx_dv1.setlabel "Dependent variable:"
+	main.tx_dv1.disable
+	main.vn_dv1.disable
+	main.tx_dv2.hide
+	main.vn_dv2.hide
+END
+
+SCRIPT clogit_on
+BEGIN
+	script main_one_depvar
+	script rpt_lr_on
+	script model2_group_on
+	script model2_cens_off
+	script model2_disp_off
+	script model2_quant_off
+	script model2_llul_off
+	script model2_stcrreg_off
+	script rpt_or_on
+	script weights_setLayout_fpi
+	script weights_enable
+END
+
+SCRIPT cloglog_on
+BEGIN
+	script main_one_depvar
+	script rpt_lr_on
+	script model2_group_off
+	script model2_cens_off
+	script model2_disp_off
+	script model2_quant_off
+	script model2_llul_off
+	script model2_stcrreg_off
+	script rpt_eform_on
+	script weights_setLayout_fpi
+	script weights_enable
+END
+
+SCRIPT glm_on
+BEGIN
+	script main_one_depvar
+	script rpt_lr_on
+	script model2_group_off
+	script model2_cens_off
+	script model2_disp_off
+	script model2_quant_off
+	script model2_llul_off
+	script model2_stcrreg_off
+	script rpt_eform_on
+	script weights_setLayout_fpai
+	script weights_enable
+END
+
+SCRIPT intreg_on
+BEGIN
+	script main_two_depvars
+	main.tx_dv1.setlabel "Dependent variable 1:"
+	main.tx_dv2.show
+	main.vn_dv2.show
+	script rpt_lr_on
+	script model2_group_off
+	script model2_cens_off
+	script model2_disp_off
+	script model2_quant_off
+	script model2_llul_off
+	script model2_stcrreg_off
+	script rpt_eform_off
+	script weights_setLayout_fpai
+	script weights_enable
+END
+
+SCRIPT logitstic_on
+BEGIN
+	script main_one_depvar
+	script rpt_lr_on
+	script model2_group_off
+	script model2_cens_off
+	script model2_disp_off
+	script model2_quant_off
+	script model2_llul_off
+	script model2_stcrreg_off
+	script rpt_eform_off
+	script weights_setLayout_fpi
+	script weights_enable
+END
+
+SCRIPT logit_on
+BEGIN
+	script main_one_depvar
+	script rpt_lr_on
+	script model2_group_off
+	script model2_cens_off
+	script model2_disp_off
+	script model2_quant_off
+	script model2_llul_off
+	script model2_stcrreg_off
+	script rpt_or_on
+	script weights_setLayout_fpi
+	script weights_enable
+END
+
+SCRIPT nbreg_on
+BEGIN
+	script main_one_depvar
+	script rpt_lr_on
+	script model2_group_off
+	script model2_cens_off
+	script model2_disp_on
+	script model2_quant_off
+	script model2_llul_off
+	script model2_stcrreg_off
+	script rpt_irr_on
+	script weights_setLayout_fpi
+	script weights_enable
+END
+
+SCRIPT ologit_on
+BEGIN
+	script main_one_depvar
+	script rpt_lr_on
+	script model2_group_off
+	script model2_cens_off
+	script model2_disp_off
+	script model2_quant_off
+	script model2_llul_off
+	script model2_stcrreg_off
+	script rpt_or_on
+	script weights_setLayout_fpi
+	script weights_enable
+END
+
+SCRIPT oprobit_on
+BEGIN
+	script main_one_depvar
+	script rpt_lr_on
+	script model2_group_off
+	script model2_cens_off
+	script model2_disp_off
+	script model2_quant_off
+	script model2_llul_off
+	script model2_stcrreg_off
+	script rpt_eform_off
+	script weights_setLayout_fpi
+	script weights_enable
+END
+
+SCRIPT probit_on
+BEGIN
+	script main_one_depvar
+	script rpt_lr_on
+	script model2_group_off
+	script model2_cens_off
+	script model2_disp_off
+	script model2_quant_off
+	script model2_llul_off
+	script model2_stcrreg_off
+	script rpt_eform_off
+	script weights_setLayout_fpi
+	script weights_enable
+END
+
+SCRIPT poisson_on
+BEGIN
+	script main_one_depvar
+	script rpt_lr_on
+	script model2_group_off
+	script model2_cens_off
+	script model2_disp_off
+	script model2_quant_off
+	script model2_llul_off
+	script model2_stcrreg_off
+	script rpt_irr_on
+	script weights_setLayout_fpi
+	script weights_enable
+END
+
+SCRIPT qreg_on
+BEGIN
+	script main_one_depvar
+	script rpt_lr_off
+	script model2_group_off
+	script model2_cens_off
+	script model2_disp_off
+	script model2_quant_on
+	script model2_llul_off
+	script model2_stcrreg_off
+	script rpt_eform_off
+	script weights_setLayout_fa
+	script weights_enable
+END
+
+SCRIPT regress_on
+BEGIN
+	script main_one_depvar
+	script rpt_lr_on
+	script model2_group_off
+	script model2_cens_off
+	script model2_disp_off
+	script model2_quant_off
+	script model2_llul_off
+	script model2_stcrreg_off
+	script rpt_eform_off
+	script weights_setLayout_fpai
+	script weights_enable
+END
+
+SCRIPT scobit_on
+BEGIN
+	script main_one_depvar
+	script rpt_lr_on
+	script model2_group_off
+	script model2_cens_off
+	script model2_disp_off
+	script model2_quant_off
+	script model2_llul_off
+	script model2_stcrreg_off
+	script rpt_or_on
+	script weights_setLayout_fpi
+	script weights_enable
+END
+
+SCRIPT stcox_on
+BEGIN
+	script main_no_depvars
+	script model2_dist_off
+	script rpt_lr_on
+	script model2_group_off
+	script model2_cens_off
+	script model2_disp_off
+	script model2_quant_off
+	script model2_llul_off
+	script model2_stcrreg_off
+	script rpt_nohr_on
+	script weights_disable
+END
+
+SCRIPT stcrreg_on
+BEGIN
+	script main_no_depvars
+	script model2_dist_off
+	script rpt_lr_off
+	script model2_group_off
+	script model2_cens_off
+	script model2_disp_off
+	script model2_quant_off
+	script model2_llul_off
+	script model2_stcrreg_on
+	script rpt_nohr_on
+	script weights_disable
+END
+
+SCRIPT streg_on
+BEGIN
+	script main_no_depvars
+	script model2_dist_on
+	script rpt_lr_on
+	script model2_group_off
+	script model2_cens_off
+	script model2_disp_off
+	script model2_quant_off
+	script model2_llul_off
+	script model2_stcrreg_off
+	script rpt_nohr_on
+	script weights_disable
+END
+
+SCRIPT tobit_on
+BEGIN
+	script main_one_depvar
+	script rpt_lr_on
+	script model2_group_off
+	script model2_cens_off
+	script model2_disp_off
+	script model2_quant_off
+	script model2_llul_on
+	script model2_stcrreg_off
+	script rpt_eform_off
+	script weights_setLayout_fpa
+	script weights_enable
+END
+
+PROGRAM check_blk1
+BEGIN
+	if main.ck_blk1 {
+		call main.vl_blk1.enable
+	}
+	if !main.ck_blk1 {
+		call main.vl_blk1.disable
+	}
+END
+
+PROGRAM check_blk2
+BEGIN
+	if main.ck_blk2 {
+		call main.vl_blk2.enable
+	}
+	if !main.ck_blk2 {
+		call main.vl_blk2.disable
+	}
+END
+
+PROGRAM check_blk3
+BEGIN
+	if main.ck_blk3 {
+		call main.vl_blk3.enable
+	}
+	if !main.ck_blk3 {
+		call main.vl_blk3.disable
+	}
+END
+
+PROGRAM check_blk4
+BEGIN
+	if main.ck_blk4 {
+		call main.vl_blk4.enable
+	}
+	if !main.ck_blk4 {
+		call main.vl_blk4.disable
+	}
+END
+
+PROGRAM check_blk5
+BEGIN
+	if main.ck_blk5 {
+		call main.vl_blk5.enable
+	}
+	if !main.ck_blk5 {
+		call main.vl_blk5.disable
+	}
+END
+
+PROGRAM check_blk6
+BEGIN
+	if main.ck_blk6 {
+		call main.vl_blk6.enable
+	}
+	if !main.ck_blk6 {
+		call main.vl_blk6.disable
+	}
+END
+
+PROGRAM check_blk7
+BEGIN
+	if main.ck_blk7 {
+		call main.vl_blk7.enable
+	}
+	if !main.ck_blk7 {
+		call main.vl_blk7.disable
+	}
+END
+
+PROGRAM check_blk8
+BEGIN
+	if main.ck_blk8 {
+		call main.vl_blk8.enable
+	}
+	if !main.ck_blk8 {
+		call main.vl_blk8.disable
+	}
+END
+
+DIALOG model2, tabtitle("Model 2")
+BEGIN
+  DEFINE holdx _lft
+  DEFINE holdy _top
+
+  // CLOGIT
+  TEXT     tx_group  holdx     holdy     _iwd      .,			///
+	label("Group variable (required):")
+  VARNAME  vn_group  @         _ss       _vnwd     .,			///
+	label("Group variable") option(group)
+
+  // CNREG
+  TEXT     tx_cens   holdx     holdy     _iwd      .,			///
+	label("Variable that identifies censored observations (required):")
+  VARNAME  vn_cens   @         _ss       _vnwd     .,			///
+	label("Variable that identifies censored observations:")	///
+	option(censored)
+
+  // NBREG
+  GROUPBOX gb_disper holdx     holdy     _iwd      _ht2,		///
+		label("Parameterization of dispersion")
+  RADIO    rb_mean   _ilft     _ss       _cwd2     ., first		///
+		label("A function of the expected mean")		///
+		option("dispersion(mean)")
+  RADIO    rb_cons   _lft2     @         @         ., last		///
+		label("A constant")					///
+		option("dispersion(constant)")
+
+  // QREG
+  SPINNER  sp_quantile holdx   holdy     _spwd     .,			///
+		label("Quantile to estimate")				///
+		min(1)							///
+		max(100)						///
+		default(50)						///
+		option("quantile")
+  TEXT     tx_quantile    _spsep    @         _spr      .,		///
+		label("Quantile to estimate")
+
+  // STREG
+  GROUPBOX gb_model  holdx     holdy     _iwd      _ht6,		///
+	label("Survival distribution")
+  RADIO    rb_exp    _ilft     _ss       _cwd2     .,			///
+	label("Exponential")						///
+	first								///
+	option(dist(exponential))
+  RADIO    rb_weib   _lft2     @         @         .,			///
+	label("Weibull")						///
+	option(dist(weibull))
+  RADIO    rb_gomp   _ilft     _ss       @         .,			///
+	label("Gompertz")						///
+	option(dist(gompertz))
+  RADIO    rb_logn   _lft2     @         @         .,			///
+	label("Log normal")						///
+	option(dist(lognormal))
+  RADIO    rb_logl   _ilft     _ss       @         .,			///
+	label("Log logistic")						///
+	option(dist(loglogistic))
+  RADIO    rb_gamma  _lft2     @         @         .,			///
+	label("Generalized gamma")					///
+	last								///
+	option(dist(gamma))
+
+  // STCRREG
+  GROUPBOX gb_compete	holdx	holdy	_iwd	_ht4,			///
+	label("Competing-risks events")
+  TEXT tx_compete_crvar	_ilft	_ss	_cwd3	.,			///
+	label("Variable:")
+  VARNAME  vn_crvar	@	+20	_vnwd	.,			///
+	label("Variable for competing-risk events")
+  TEXT tx_crnumlist	_lft2	-20	_cwd3	.,			///
+	label("Values:")
+  EDIT ed_crnumlist	@	_ss	_vnwd	.,			///
+	label("Values")
+
+  // TOBIT
+  GROUPBOX gb_censor holdx     holdy     _iwd      _ht8h,		///
+		label("Specify at least one censoring limit")
+  RADIO    rb_noll   _indent   _ss       _cwd2     ., first		///
+		label("No left-censoring limit")			///
+		onclickon("gaction model2.en_ll.disable")
+  DEFINE y @y
+  RADIO    rb_ll     @         _ss       @         .,			///
+		label("Left-censoring at minimum")			///
+		clickon("gaction model2.en_ll.disable")			///
+		option("ll")	default(1)
+  RADIO    rb_llarg  @         _ss       @         ., last		///
+		label("Specified left-censoring limit:")		///
+		clickon("gaction model2.en_ll.enable")
+  EDIT     en_ll     _indent2  _ss       _en14wd   .,			///
+		label("Left-censoring limit")				///
+		numonly							///
+		option("ll")
+  RADIO    rb_noul   _lft2     y         _cwd2     ., first		///
+		onclickon("gaction model2.en_ul.disable")		///
+		label("No right-censoring limit")
+  RADIO    rb_ul     @         _ss       @         .,			///
+		label("Right-censoring at maximum")			///
+		clickon("gaction model2.en_ul.disable")			///
+		option("ul")
+  RADIO    rb_ularg  @         _ss       @         ., last		///
+		label("Specified right-censoring limit:")		///
+		clickon("gaction model2.en_ul.enable")
+  EDIT     en_ul     _indent2  _ss       _en14wd   .,			///
+		label("Right-censoring limit")				///
+		numonly option("ul")
+
+  // This goes at the bottom of this tab.
+  TEXT     tx_regopt _lft      _ht22     _iwd      .,			///
+	label("Other options accepted by chosen regression command:")
+  EDIT     ed_regopt @         _ss       @         .,			///
+	label("Other options accepted by chosen regression command")
+
+END
+
+SCRIPT rpt_lr_on
+BEGIN
+	rpt.rb_lr.enable
+	rpt.rb_both.enable
+END
+
+SCRIPT rpt_lr_off
+BEGIN
+	rpt.rb_lr.disable
+	rpt.rb_both.disable
+	rpt.rb_wald.seton
+END
+
+SCRIPT model2_dist_on
+BEGIN
+	model2.gb_model.show
+	model2.rb_exp.show
+	model2.rb_weib.show
+	model2.rb_gomp.show
+	model2.rb_logn.show
+	model2.rb_logl.show
+	model2.rb_gamma.show
+END
+
+SCRIPT model2_dist_off
+BEGIN
+	model2.gb_model.hide
+	model2.rb_exp.hide
+	model2.rb_weib.hide
+	model2.rb_gomp.hide
+	model2.rb_logn.hide
+	model2.rb_logl.hide
+	model2.rb_gamma.hide
+END
+
+SCRIPT model2_group_on
+BEGIN
+	model2.tx_group.show
+	model2.vn_group.show
+END
+
+SCRIPT model2_group_off
+BEGIN
+	model2.tx_group.hide
+	model2.vn_group.hide
+END
+
+SCRIPT model2_cens_on
+BEGIN
+	model2.tx_cens.show
+	model2.vn_cens.show
+END
+
+SCRIPT model2_cens_off
+BEGIN
+	model2.tx_cens.hide
+	model2.vn_cens.hide
+END
+
+SCRIPT model2_disp_on
+BEGIN
+	model2.gb_disper.show
+	model2.rb_mean.show
+	model2.rb_cons.show
+END
+
+SCRIPT model2_disp_off
+BEGIN
+	model2.gb_disper.hide
+	model2.rb_mean.hide
+	model2.rb_cons.hide
+END
+
+SCRIPT model2_quant_on
+BEGIN
+	model2.sp_quantile.show
+	model2.tx_quantile.show
+END
+
+SCRIPT model2_quant_off
+BEGIN
+	model2.sp_quantile.hide
+	model2.tx_quantile.hide
+END
+
+SCRIPT model2_llul_on
+BEGIN
+	model2.gb_censor.show
+	model2.rb_noll.show
+	model2.rb_ll.show
+	model2.rb_llarg.show
+	model2.en_ll.show
+	model2.rb_noul.show
+	model2.rb_ul.show
+	model2.rb_ularg.show
+	model2.en_ul.show
+END
+
+SCRIPT model2_llul_off
+BEGIN
+	model2.gb_censor.hide
+	model2.rb_noll.hide
+	model2.rb_ll.hide
+	model2.rb_llarg.hide
+	model2.en_ll.hide
+	model2.rb_noul.hide
+	model2.rb_ul.hide
+	model2.rb_ularg.hide
+	model2.en_ul.hide
+END
+
+SCRIPT model2_stcrreg_on
+BEGIN
+	model2.gb_compete.show
+	model2.tx_compete_crvar.show
+	model2.vn_crvar.show
+	model2.tx_crnumlist.show
+	model2.ed_crnumlist.show
+END
+
+SCRIPT model2_stcrreg_off
+BEGIN
+	model2.gb_compete.hide
+	model2.tx_compete_crvar.hide
+	model2.vn_crvar.hide
+	model2.tx_crnumlist.hide
+	model2.ed_crnumlist.hide
+END
+
+INCLUDE byifin
+INCLUDE weights_fai
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+
+  GROUPBOX gb_table   _lft        _top        _cwd1       _ht6,		///
+  		label("Model comparison statistics")
+  RADIO    rb_wald    _ilft       _ss        _cwd3       ., first	///
+		label("Report Wald test results (default)")		///
+		option(NONE)
+  RADIO    rb_lr      @           _ss        @           .,		///
+		label("Report likelihood-ratio test results")		///
+		option(lrtable)
+  RADIO    rb_both    @           _ss        @           ., last	///
+		label("Report Wald and LR test results")		///
+		option(waldtable lrtable)
+
+  CHECKBOX ck_quietly _lft        +45        _cwd1       .,		///
+		label("Suppress output from command")			///
+		option(quietly)
+
+  GROUPBOX gb_eform   _lft        _ms        _cwd1       _ht4
+  RADIO    rb_coef    _ilft       _ss        _cwd3       ., first	///
+		label("Report coefficients (default)")			///
+		option(NONE)
+  RADIO    rb_nohr    @           _ss        @           .,		///
+		label("Report coefficients instead of hazard ratios")	///
+		option(nohr)
+  RADIO    rb_irr     @           @          @           .,		///
+		label("Report incidence-rate ratios")			///
+		option(irr)
+  RADIO    rb_or      @           @          @           .,		///
+		label("Report odds ratios")				///
+		option(or)
+  RADIO    rb_rrr     @           @          @           .,		///
+		label("Report reliative-risk ratios")			///
+		option(rrr)
+  RADIO    rb_eform   @           @          @           ., last	///
+		label("Report exponentiated coefficients")		///
+		option(eform)
+
+  CHECKBOX ck_store   _lft        _xls       _cwd1       .,		///
+  		label("Store nested estimation results")		///
+  		onclickon(script rpt_store_on)				///
+  		onclickoff(script rpt_store_off)
+  EDIT     ed_store   _indent2    _ss        _vnwd       .,		///
+  		label("Store nested estimation results")		///
+  		error("Stub for storing nested estimation results")	///
+		option(store)
+  TEXT     tx_store   _vnsep      @          100         .,		///
+  		label("Stub")
+END
+
+SCRIPT rpt_store_on
+BEGIN
+	rpt.ed_store.enable
+	rpt.tx_store.enable
+END
+
+SCRIPT rpt_store_off
+BEGIN
+	rpt.ed_store.disable
+	rpt.tx_store.disable
+END
+
+SCRIPT rpt_eform_off
+BEGIN
+	rpt.gb_eform.hide
+	rpt.rb_coef.hide
+	rpt.rb_nohr.hide
+	rpt.rb_irr.hide
+	rpt.rb_or.hide
+	rpt.rb_rrr.hide
+	rpt.rb_eform.hide
+	rpt.ck_store.setposition . 140 . .
+	rpt.ed_store.setposition . 160 . .
+	rpt.tx_store.setposition . 160 . .
+END
+
+SCRIPT rpt_nohr_on
+BEGIN
+	rpt.rb_coef.setlabel "Report hazard ratios (default)"
+	rpt.gb_eform.show
+	rpt.rb_coef.show
+	rpt.rb_nohr.show
+	rpt.rb_irr.hide
+	rpt.rb_or.hide
+	rpt.rb_rrr.hide
+	rpt.rb_eform.hide
+	rpt.ck_store.setposition . 220 . .
+	rpt.ed_store.setposition . 240 . .
+	rpt.tx_store.setposition . 240 . .
+END
+
+SCRIPT rpt_irr_on
+BEGIN
+	rpt.rb_coef.setlabel "Report coefficients (default)"
+	rpt.gb_eform.show
+	rpt.rb_coef.show
+	rpt.rb_nohr.hide
+	rpt.rb_irr.show
+	rpt.rb_or.hide
+	rpt.rb_rrr.hide
+	rpt.rb_eform.hide
+	rpt.ck_store.setposition . 220 . .
+	rpt.ed_store.setposition . 240 . .
+	rpt.tx_store.setposition . 240 . .
+END
+
+SCRIPT rpt_or_on
+BEGIN
+	rpt.rb_coef.setlabel "Report coefficients (default)"
+	rpt.gb_eform.show
+	rpt.rb_coef.show
+	rpt.rb_nohr.hide
+	rpt.rb_irr.hide
+	rpt.rb_or.show
+	rpt.rb_rrr.hide
+	rpt.rb_eform.hide
+	rpt.ck_store.setposition . 220 . .
+	rpt.ed_store.setposition . 240 . .
+	rpt.tx_store.setposition . 240 . .
+END
+
+SCRIPT rpt_rrr_on
+BEGIN
+	rpt.rb_coef.setlabel "Report coefficients (default)"
+	rpt.gb_eform.show
+	rpt.rb_coef.show
+	rpt.rb_nohr.hide
+	rpt.rb_irr.hide
+	rpt.rb_or.show
+	rpt.rb_rrr.hide
+	rpt.rb_eform.hide
+	rpt.ck_store.setposition . 220 . .
+	rpt.ed_store.setposition . 240 . .
+	rpt.tx_store.setposition . 240 . .
+END
+
+SCRIPT rpt_eform_on
+BEGIN
+	rpt.rb_coef.setlabel "Report coefficients (default)"
+	rpt.gb_eform.show
+	rpt.rb_coef.show
+	rpt.rb_nohr.hide
+	rpt.rb_irr.hide
+	rpt.rb_or.hide
+	rpt.rb_rrr.hide
+	rpt.rb_eform.show
+	rpt.ck_store.setposition . 220 . .
+	rpt.ed_store.setposition . 240 . .
+	rpt.tx_store.setposition . 240 . .
+END
+
+PROGRAM nestreg_command
+BEGIN
+	allowxi
+	INCLUDE _by_pr
+	put "nestreg "
+	beginoptions
+		option rpt.rb_wald
+		option rpt.rb_lr
+		option rpt.rb_both
+		option rpt.ck_quietly
+		if rpt.ck_store {
+			require rpt.ed_store
+		}
+		optionarg rpt.ed_store
+	endoptions
+END
+
+PROGRAM blk1_output
+BEGIN
+	put main.vl_blk1
+END
+
+PROGRAM blk2_output
+BEGIN
+	put main.vl_blk2
+END
+
+PROGRAM blk3_output
+BEGIN
+	put main.vl_blk3
+END
+
+PROGRAM blk4_output
+BEGIN
+	put main.vl_blk4
+END
+
+PROGRAM blk5_output
+BEGIN
+	put main.vl_blk5
+END
+
+PROGRAM blk6_output
+BEGIN
+	put main.vl_blk6
+END
+
+PROGRAM blk7_output
+BEGIN
+	put main.vl_blk7
+END
+
+PROGRAM blk8_output
+BEGIN
+	put main.vl_blk8
+END
+
+PROGRAM command_blocks
+BEGIN
+	if main.ck_blk1 {
+		require main.vl_blk1
+		put "("
+		put /program blk1_output
+		put ") "
+	}
+	if main.ck_blk2 {
+		require main.vl_blk2
+		put "("
+		put /program blk2_output
+		put ") "
+	}
+	if main.ck_blk3 {
+		require main.vl_blk3
+		put "("
+		put /program blk3_output
+		put ") "
+	}
+	if main.ck_blk4 {
+		require main.vl_blk4
+		put "("
+		put /program blk4_output
+		put ") "
+	}
+	if main.ck_blk5 {
+		require main.vl_blk5
+		put "("
+		put /program blk5_output
+		put ") "
+	}
+	if main.ck_blk6 {
+		require main.vl_blk6
+		put "("
+		put /program blk6_output
+		put ") "
+	}
+	if main.ck_blk7 {
+		require main.vl_blk7
+		put "("
+		put /program blk7_output
+		put ") "
+	}
+	if main.ck_blk8 {
+		require main.vl_blk8
+		put "("
+		put /program blk8_output
+		put ") "
+	}
+END
+
+PROGRAM command_command
+BEGIN
+	put main.cb_cmd
+	if !H(main.vn_dv1) {
+		require main.vn_dv1
+	}
+	put " " main.vn_dv1
+	if !H(main.vn_dv2) {
+		require main.vn_dv2
+		put " " main.vn_dv2
+	}
+	put " " /program command_blocks " "
+	INCLUDE _ifin_pr
+	INCLUDE _weights_pr
+	beginoptions
+		// CLOGIT
+		if !H(model2.vn_group) {
+			require model2.vn_group
+			optionarg model2.vn_group
+		}
+		// CNREG
+		if !H(model2.vn_cens) {
+			require model2.vn_cens
+			optionarg model2.vn_cens
+		}
+		// NBREG
+		option model2.rb_cons
+		// QREG
+		optionarg model2.sp_quantile
+		// STREG
+		option model2.rb_exp
+		option model2.rb_weib
+		option model2.rb_gomp
+		option model2.rb_logn
+		option model2.rb_logl
+		option model2.rb_gamma
+		//STCRREG
+		if model2.vn_crvar.isvisible() {
+			require model2.vn_crvar
+			put " compete(" model2.vn_crvar
+			if (model2.ed_crnumlist.isneq("")) {
+				put "==" model2.ed_crnumlist
+				put ") "
+			}
+			else {
+				put ") "
+			}
+		}
+		// TOBIT
+		if model2.rb_noll.isvisible() & model2.rb_noll & model2.rb_noul {
+			stopbox stop				///
+			`"On the "Model 2" tab,"'		///
+			`"at least one censoring limit must be specified"'
+		}
+		if model2.rb_llarg {
+			require model2.en_ll
+			optionarg model2.en_ll
+		}
+		if model2.rb_ularg {
+			require model2.en_ul
+			optionarg model2.en_ul
+		}
+		option model2.rb_ll
+		option model2.rb_ul
+
+		put " " model2.ed_regopt
+		option rpt.rb_coef
+		option rpt.rb_nohr
+		option rpt.rb_irr
+		option rpt.rb_or
+		option rpt.rb_rrr
+		option rpt.rb_eform
+	endoptions
+END
+
+PROGRAM command
+BEGIN
+	put /program nestreg_command
+	put " " ":" " " /program command_command
+END

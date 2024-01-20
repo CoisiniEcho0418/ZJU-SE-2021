@@ -1,0 +1,545 @@
+*! version 1.2.1  10jun2011
+
+version 10
+
+class _asclogitmodel {
+	instance:
+		string offset
+
+}, inherit(_altdepmodel)
+
+program .oncopy
+
+	di as err "_asclogitmodel.oncopy not implemented"
+	exit 498
+end
+
+program ._set
+	local vv : display "version " string(_caller()) ":"
+	syntax [varlist(default=none)] [fw iw pw], touse(varname numeric) ///
+		altern(varname)  case(varname numeric) [                  ///
+		CASEVars(varlist numeric)  OFFset(varname numeric)        ///
+		base(string) const(passthru) COLlinear altwise            ///
+		ifin(varname numeric) ]
+
+	._presetvalidate `varlist', touse(`touse') case(`case') ///
+		altern(`altern') casevars(`casevars') `const'   ///
+		offset(`offset') `collinear' `altwise' ifin(`ifin')
+
+	local casevars `r(casevars)'
+	local varlist `r(varlist)'
+	tempname cobj
+	.`cobj' = ._numericvar.new long `case' if `touse'
+
+	`vv' ///
+	.Super._set `varlist' [`weight'`exp'], touse(`touse') `const'  ///
+		altern(`altern') case(`cobj') `collinear' base(`base') ///
+		byaltvars(`casevars') 
+
+	.checkmatsize
+
+	if "`offset'" != "" {
+		._bycountdif `offset', bylist(`case')
+		local k = r(k)
+		if `k' == 0  {
+			di as err "offset `offset' does not vary within case"
+			exit 459
+		}
+		if `k' < `.ncase' {
+			di as text "{p 0 7 1}note: offset `offset' only " ///
+			 "varies in `k' out of `.ncase' cases{p_end}"
+		}
+		.offset = "`offset'"
+	}
+	else .offset = ""
+
+	tempvar nn
+	qui gen long `nn' = _n if `.touse'
+	gsort -`.touse' `.case.varname' `.dep' `nn'
+end
+
+program ._presetvalidate, rclass
+	syntax varlist(min=1), touse(varname numeric) case(varname numeric) ///
+		altern(varname) const(integer) [ casevars(varlist numeric)  ///
+		offset(varname numeric) collinear ifin(passthru) altwise ]
+
+	if ("`offset'"!="") markout `touse' `offset'
+
+	.Super._presetvalidate `varlist', touse(`touse') case(`case')   ///
+		altern(`altern') byaltvars(`casevars') `altwise' `ifin'
+
+	gettoken dep indep0 : varlist
+
+	/* assert at least one selection per case			*/
+	._markoutbindep `dep', case(`case') touse(`touse')
+
+	if "`collinear'" == "" { 
+		._rmcollin `varlist', touse(`touse') byaltvars(`casevars')
+
+		local casevars  `r(byaltvars)'
+		local varlist `r(varlist)'
+		return add
+		return local casevars `casevars'
+	}
+	else {
+		return local varlist `varlist'
+		return local casevars `casevars'
+	}
+
+	local nvar: word count `varlist'
+	local ncv: word count `casevars'
+	/* includes depvar						*/
+	if `nvar'+`ncv'+`const' == 1 {
+		di as error "too few variables specified"
+		exit 102
+	} 
+end
+
+program .evaluate
+	syntax, b(name) lnf(name) [ todo(integer 0) g(name) h(name) ]
+
+	tempname b0
+	mat `b0' = `b'
+	if ("`lnf'"=="") temname lnf
+
+	local X `.strvars' `.strtvars'
+	foreach x in `X' {
+		local coln `"`coln' :`x'"'
+	}
+	mat colnames `b0' = `coln'
+
+	if `todo' > 0 {
+		local gopt grad(`g')
+		if `todo' == 2 {
+			local hopt h(`h')
+		}
+	}
+	if "`.wtype'" != "" {
+		if "`.wtype'" == "pweight" {
+			local wopt [iweight=`.weight.varname']
+		}
+		else {
+			local wopt [`.wtype'=`.weight.varname']
+		}
+	}
+	if "`.offset'" != "" {
+		local offopt "offset(`.offset')"
+	}
+
+	qui _clogit_lf `.dep' `X' `wopt' if `.touse', `offopt' beta(`b0') ///
+		group(`.case.varname') lnf(`lnf') `gopt' `hopt' sorted
+end
+
+program .predict
+	syntax newvarlist(min=1 max=1), b(name)  ///
+		[ v(name) opt(string) k(string) noOFFset ]
+
+	local type : word 1 of `typlist'
+	if ("`opt'"=="") local opt pr
+
+	if "`offset'"=="" & "`.offset'"!="" {
+		local offset = 1
+	}
+	else local offset = 0
+
+	if "`opt'" == "pr" {
+		if "`k'" != "" {
+			._parsek "`k'"
+			local k `s(k)'
+			if "`k'" != "observed" {
+				if `k'<1 | `k'>=`.altern.k' {
+					di as err "{p}k() must be greater " ///
+					 "than or equal to 1 and less "     ///
+					 "than `.altern.k', or use "   	    ///
+					 "{cmd:k(observed)}{p_end}"
+					exit 198
+				}
+			}
+		}
+		else local k = 1
+	}
+	if "`opt'"=="xb" | "`opt'"=="pr" {
+		tempvar xb
+		.evaleqs `xb', b(`b')
+		if `offset' {
+			qui replace `xb' = `xb' + `.offset' if `.touse'
+		}
+		if "`opt'" == "xb" {
+			qui gen `type' `varlist' =  `xb'
+			label variable `varlist' "Linear prediction"
+			exit
+		}
+		sort `.case.varname' `.altern.varname'
+		if "`k'" == "1" {
+			tempname s
+			qui replace `xb' = exp(`xb') if `.touse'
+			qui by `.case.varname': gen double `s' = sum(`xb')
+			qui by `.case.varname': gen `type' `varlist' = ///
+				`xb'/`s'[_N] 
+			label variable `varlist' "Pr(`.altern.exp'|1 selected)"
+			exit
+		}
+		if "`k'" == "observed" {
+			local y `.dep'
+			local selected # selected in `.altern.exp'
+		}
+		else {
+			tempvar y 
+			qui by `.case.varname' : replace `.touse' = . ///
+				if _N < `k' 
+			qui gen byte `y' = 0 if `.touse'
+			qui by `.case.varname' : replace `y' = 1 ///
+				if _n <= `k' & `.touse'
+					
+			local selected `k' selected
+		}
+		tempvar p
+		qui gen double `p' = .
+		mata: _clogit_prob("`y'", "`xb'", "`.case.varname'", ///
+			"`.touse'", "`p'")
+		qui gen `type' `varlist' = `p'
+		label variable `varlist' "Pr(`.altern.exp'|`selected')"
+	}
+	else if "`opt'" == "stdp" {
+		if "`v'" == "" {
+			/* programmer error 				*/
+			di as err "variance-covariance matrix required"
+			exit 198
+		}
+		tempname R
+		mat `R' = e(V)
+		cap mat `R' = cholesky(`R')
+		if _rc {
+			di as err "coefficient variance-covariance matrix " ///
+			 "is not positive definite; cannot compute stdp"
+			exit 322
+		} 
+		tempvar stdp
+		.evalxRRx `stdp', r(`R')
+		qui gen `type' `varlist' = sqrt(`stdp') if `.touse'
+		label variable `varlist' "S.E. of the prediction"
+	}
+end
+
+program ._parsek, sclass
+	args k
+
+	local errmsg `"{p}option k() is misspecified; "'
+	local errmsg `"`errmsg' {cmd:k(#|observed)} where {cmd:#} is"'
+	local errmsg `"`errmsg' an integer, or use the string {cmd:observed}"'
+	local errmsg `"`errmsg' for the observed number of chosen"'
+	local errmsg `"`errmsg' alternatives{p_end}"'
+
+	if substr("observed",1,max(3,strlen("`k'")))=="`k'" {
+		local k observed
+	}
+	else {
+		tempname kk	
+		cap scalar `kk' = `k'
+		if _rc {
+			di as err `"`errmsg'"'
+			exit 198
+		}
+		if floor(`kk') != `kk' {
+			di as err `"`errmsg'"'
+			exit 198
+		}
+	}
+	sreturn local k `k'
+end
+
+program .scores
+	syntax newvarlist, b(name) 
+
+	local scores `varlist'
+
+	if `:word count `scores'' != `=colsof(`b')' {
+		/* programmers error: should not happen 		*/
+		di as err "_asclogitmodel.scores: number of variables in " ///
+		 "varlist is not equal to the number of columns in b()"
+		exit 499
+	}
+	tempvar xb 
+	.evaleqs `xb', b(`b')
+	if ("`.offset'"!="") qui replace `xb' = `xb' + `.offset' if `.touse'
+
+	tempname b0 lnf
+	mat `b0' = (1)
+	mat colnames `b0' = `xb'
+
+	if  "`.offset'" != "" {
+		local offopt offset(`.offset')
+	}
+	.scvar = ._numericvar.new
+
+	qui _clogit_lf `.dep' `xb' if `.touse', `offopt' beta(`b0') ///
+		lnf(`lnf') group(`.case.varname') score(`.scvar.name') 
+
+	/* equation involving alternative specific variables 		*/
+	if `.kvars' > 0 {
+		.evalasscrs `scores'
+		local is = r(k)
+	}
+	else local is = 0
+
+	if (`.kbavars'+`.const'==0) exit
+
+	if `is' {
+		tokenize `scores'
+		macro shift `is'
+		local scores `*'
+	}
+	/* equations involving case specific variables 			*/
+	.evalbascrs `scores'
+end
+
+program .initest, eclass
+	syntax, b(name) [ trace ]
+
+	local X `.strvars' `.strtvars'
+
+	if "`.wtype'" != "" {
+		if "`.wtype'" == "pweight" {
+			local wopt [iweight=`.weight.varname']
+		}
+		else {
+			local wopt [`.wtype'=`.weight.varname']
+		}
+	}
+	if "`.offsete'" != "" {
+		local offopt offset(`.offset')
+	}
+	if ("`trace'"!="") local noi noi
+
+	local k : word count `X'
+	mat `b' = J(1,`k',0)
+
+	cap `noi' logit `.dep' `X' `wopt' if `.touse', `offopt' iterate(100) 
+
+	if _rc==0 {
+		tempname b0
+		mat `b0' = e(b)
+
+		if (colsof(`b0')==`k'+1) mat `b' = `b0'[1,1..`k']
+		else if "`b'" != "" {
+			di in gr "{p 0 7 1}note: model has collinear " ///
+			 "variables; convergence may not be achieved{p_end}"
+
+			forvalues i=1/`k' {
+				local cl : word `i' of `X'
+				local k0 = colnumb(`b0',`"`cl'"')
+				if (`k0' < .) mat `b'[1,`i'] = `b0'[1,`k0']
+			}
+		}
+	}
+	else {
+		di as txt "note: initial estimates failed"
+	}
+	mat colnames `b' = `.stripe' `.bastripe'
+	if "`trace'" != "" {
+		tempname b0
+		mat `b0' = `b'
+		ereturn post `b0'
+		ereturn display
+		di _n "alternative by case-variable coefficient " ///
+		 "indices" _c
+		mat li `.idbacoef.matname', noheader
+	}
+end
+
+program .eretpost, eclass
+	syntax, [ * ]
+
+	if ("`.offset'"!="") ereturn local offset "`.offset'"
+
+	.Super.eretpost, ind2vars(casevars) `options'
+
+	._alternstats `.dep', type(binary)
+	tempname mat
+	mat `mat' = r(stats)
+	ereturn matrix stats = `mat'
+end
+
+program .eretget
+	local vv : display "version " string(_caller()) ":"
+	syntax, touse(varname numeric) [ markout(string) * ]
+
+	/* markout before setting data members from ereturn		*/
+	._eretmarkout `touse', `markout' `options'
+
+	`vv' ///
+	.Super.eretget, touse(`touse') ind2vars(casevars) `options'
+
+	if ("`e(offset)'"!="") .offset = "`e(offset)'"
+end
+
+program ._eretmarkout
+	syntax varname(numeric), [ altwise depvar case offset singleton * ]
+
+	local touse `varlist'
+	tempvar touse0
+	qui gen byte `touse0' = `touse'
+
+	.Super._eretmarkout `touse0', ind2vars(casevars) `case' `depvar' ///
+		`options'
+
+	if "`offset'" != "" {
+		if ("`e(offset)'"!="") markout `touse0' `e(offset)'
+	}
+	/* casewise or altwise deletion					*/
+	if "`altwise'" == "" {
+		._markoutbycase `touse0', case(`e(case)') ifin(`touse')
+	}
+	qui replace `touse' = `touse0' 
+	if "`depvar'" != "" {
+		._markoutbindep `e(depvar)', case(`e(case)') ///
+			touse(`touse') 
+	}
+	if "`singleton'" != "" {
+		._markoutsingletons `touse', case(`e(case)')
+	}
+	qui count if `touse'
+	if r(N) == 0 {
+		di as err "no cases remain after removing invalid " ///
+		 "observations"
+		exit 2000
+	}
+end
+
+program .mfx, rclass
+	syntax [varlist(default=none)], b(passthru) v(passthru) ///
+		[ noOFFset * ]
+
+	.Super.mfx `varlist', `b' `v' `options' 
+
+	local k_alt = `r(k_alt)'
+	return add
+	if "`.offset'"!="" & "`offset'"=="" {
+		tempname toff 
+		mat `toff' = J(1,`k_alt',.)
+		forvalues k=1/`k_alt' {
+			local ka = `altern'[`k']
+			mat `toff'[1,`k'] = `.offset'[`ka']
+			local names `names' `.altern.labels[`ka']'
+		}
+		mat colnames `toff' = `names'
+		mat rownames `toff' = `.offset'
+
+		return matrix offset = `toff'
+	}
+end
+
+program ._mfxsetup, rclass
+	syntax [varlist(default=none)], b(name) [ AT(passthru) noDISCrete ///
+		noWght ]
+
+	.Super._mfxsetup `varlist', b(`b') `at' `discrete' `wght' ///
+		extra(`.offset')
+
+	return add
+end
+
+program ._evalmfx, rclass
+	syntax, b(name) [ discrete kc(integer 2) noOffset * ]
+
+	tempvar xb 
+	.evaleqs `xb', b(`b')
+	if ("`offset'"=="" & "`.offset'"!="") ///
+		qui replace `xb' = `xb' + `.offset' if `.touse'
+
+	if `kc'<=0 | `kc'>=_N {
+		if (_N<`.altern.k') local more " for this case"
+
+		di as err "{p}k() must be greater than or equal to 1 and " ///
+		 "less than `=_N', the number of alternatives `more'{p_end}"
+
+		exit 198
+	}
+	local altern `.altern.varname'
+
+	local idba `.idbacoef.matname'
+	if "`discrete'" == "" {
+		/* derivatives  					*/
+		if `.kvars' > 0 {
+			._extract_ascoef, b(`b')
+
+			tempname as
+			mat `as' = r(b)
+		}
+		if `.kbavars'+`.const' > 0 {
+			._extract_bacoef, b(`b')
+
+			tempname A
+			mat `A'  = r(A)
+		}
+		mata: _clogit_mfx("`xb'","`altern'",`.altern.k',`.base',   ///
+			`"`.strvars'"',`"`.strbavars'"',`.const',"`idba'", ///
+			`kc',1e-6,"`as'","`A'")
+
+		/* must repost matrices?				*/
+		forvalues i=1/`=_N' {
+			tempname dpdx`i'
+			mat `dpdx`i'' = r(dpdx`i')
+			return matrix dpdx`i' = `dpdx`i''
+			if `.kvars' > 0 {
+				tempname dgdb`i'
+				mat `dgdb`i'' = r(dgdb`i')
+				return matrix dgdb`i' = `dgdb`i''
+			}
+			if `.kbavars' > 0 {
+				tempname dgda`i' 
+				mat `dgda`i'' = r(dgda`i')
+				return matrix dgda`i' = `dgda`i''
+			}
+		}
+	}
+	else {
+		/* discrete change					*/
+		mata: _clogit_mfx("`xb'","`altern'",`.altern.k',`.base',   ///
+			`"`.strvars'"',`"`.strbavars'"',`.const',"`idba'", ///
+			`kc')
+
+		/* must repost matrices?				*/
+		forvalues i=1/`=_N' {
+			tempname dgdb`i'
+			mat `dgdb`i'' = r(dgdb`i')
+			return matrix dgdb`i' = `dgdb`i''
+		}
+	}
+
+	if $CLOGIT_NUMDERIVERROR {
+		di as text "note: one or more numeric derivatives " ///
+		 "failed; standard errors may be questionable"
+	}
+	/* must repost matrices?					*/
+	tempname g pr
+	mat `g' = r(g)
+	return matrix g = `g'
+	mat `pr' = r(p)
+	return matrix p = `pr'
+
+	/* repost scalars						*/
+	return add
+end
+
+program ._mfxcallback, sortpreserve
+	syntax varlist, lnf(name) score(name)
+
+	gettoken y xb : varlist
+
+	tempname b
+	mat `b' = (1)
+	mat colnames `b' = `xb'
+
+	cap _clogit_lf `y' `xb', beta(`b') group(`.case.varname') ///
+		lnf(`lnf') score(`score') 
+	if _rc != 0 {
+		/* should not happen 					*/
+		local rc = _rc
+		di as err "{p}error `rc' occurred in internal routine " ///
+		 "{cmd:_clogit_lf}; computations cannot proceed{p_end}
+		exit `rc'
+	}
+end
+
+exit

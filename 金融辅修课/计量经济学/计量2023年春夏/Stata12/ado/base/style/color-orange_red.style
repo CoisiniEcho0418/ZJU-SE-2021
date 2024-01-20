@@ -1,0 +1,5 @@
+*! version 1.0.0  22dec2002
+sequence 680
+label "Orange red"
+
+set rgb "255 69 0"

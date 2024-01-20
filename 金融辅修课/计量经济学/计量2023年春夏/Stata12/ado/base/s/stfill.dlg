@@ -1,0 +1,51 @@
+/*
+	stfill
+
+*!  VERSION 1.1.0  13mar2005
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_small
+INCLUDE header
+
+HELP hlp1, view("help stfill")
+RESET res1
+
+DIALOG main, label("stfill - Fill forward with values of covariates") /*
+		*/ tabtitle("Main")
+BEGIN
+  DEFINE  _x _xsetbu
+  DEFINE  _y _top
+  INCLUDE _bu_stset
+
+  TEXT     tx_var        _lft      _ls      _iwd       .,		/*
+		*/ label("Variables:")
+  VARLIST  vl_var           @      _ss        @        .,		/*
+		*/ label("Variables")
+  RADIO    rb_baseline      @      _ms        @	       .,		/*
+		*/ first						/*
+		*/ option("baseline")					/*
+		*/ label("Replace with values at baseline")
+  RADIO    rb_forward	    @      _ss        @	       .,		/*
+		*/ last							/*
+		*/ option("forward")					/*
+		*/ label("Carry forward values")
+  CHECKBOX ck_noshow        @	   _ms        @        .,		/*
+		*/ option("noshow")					/*
+		*/ label("Do not show st setting information")
+END
+
+INCLUDE ifin
+
+PROGRAM command
+BEGIN
+	put "stfill "
+	varlist main.vl_var
+	INCLUDE _ifin_pr
+	beginoptions
+		option radio(main rb_baseline rb_forward)
+		option main.ck_noshow
+	endoptions
+END

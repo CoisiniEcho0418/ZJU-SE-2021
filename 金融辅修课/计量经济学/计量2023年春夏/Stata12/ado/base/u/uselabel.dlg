@@ -1,0 +1,93 @@
+/*
+	uselabel
+
+	VERSION 1.0.0  21dec2002
+*/
+
+VERSION 8.0
+
+INCLUDE _std_medium
+INCLUDE _ht280
+INCLUDE header
+
+HELP hlp1, view("help uselabel")
+RESET res1
+
+DIALOG main, label("uselabel - Make dataset out of value labels") tabtitle("Main")
+BEGIN
+  /*--+----1----+----2----+----3----+----4----+----5----+----6----+----7----+*/
+
+  RADIO    rb_all    _lft      _top      _iwd      .,           /*
+                */ label("All labels from current data")        /*
+                */ first                                        /*
+                */ clickon("script all_off")
+
+  RADIO    rb_lab    @         _ss       @         .,		/*
+		*/ label("Label(s) from current data:")         /*
+                */ clickon("script labelfile_off")
+
+  COMBOBOX cb_lab    _indent2  _ss       _inwd     _ht8,   	/*
+		*/ append					/*
+		*/ contents(valuelabels)			/*
+		*/ label("Label(s) from current data")
+ 
+  RADIO    rb_fn     _lft      _vs8      _iwd      .,		/*
+		*/label("Labels from Stata dataset (filename):")/*
+                */ last                                         /*
+                */ clickon("script label_off") 
+
+  FILE     fi_fn     _indent2  _ss       _inwd     .,		/*
+		*/ option(using)				/*
+		*/ label("Browse...")				/*
+		*/ filter("Stata Dataset (*.dta)|*.dta|All Files (*.*)|*.*")	/*
+		*/ defext(dta)						/*
+		*/ error("Labels from Stata dataset (filename)")
+
+  CHECKBOX ck_clear  _lft      _ls       _iwd      .,           /*
+ */ label("Create dataset even if data has changed since last saved") /*
+                */ option(clear) nomem
+  
+  CHECKBOX ck_var    @         _ms       @         .,           /*
+	*/ label("Return list of variables that use each value label") /*
+                */ option(var)
+
+END
+
+SCRIPT labelfile_off
+BEGIN
+	main.fi_fn.disable
+	main.cb_lab.enable
+END
+
+
+SCRIPT label_off
+BEGIN
+	main.fi_fn.enable 
+	main.cb_lab.disable
+END
+
+SCRIPT all_off
+BEGIN 
+	main.cb_lab.disable
+	main.fi_fn.disable
+END
+
+PROGRAM command
+BEGIN
+	put "uselabel " 
+	if main.rb_lab {
+		require main.cb_lab 
+		put main.cb_lab
+	}
+	if main.rb_fn {
+		require main.fi_fn
+		put "using " 
+		put `"""'
+		put main.fi_fn
+		put `"""'
+	}
+	beginoptions
+		option main.ck_clear
+		option main.ck_var
+	endoptions
+END

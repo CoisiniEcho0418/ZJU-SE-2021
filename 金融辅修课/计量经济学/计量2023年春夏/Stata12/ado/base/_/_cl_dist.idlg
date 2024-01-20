@@ -1,0 +1,37 @@
+/*
+	_cl_dist.idlg -- cluster analysis distances include file
+
+*!  VERSION 1.1.0  04jan2005
+*/
+
+  GROUPBOX gb_dist	  	_lft	_ls	_iwd	  _ht10,	///
+		label("(Dis)similarity measure")
+  RADIO     rb_distc		_indent	_ss	110	  .,	 first	///
+		label("Continuous")					///
+		onclickon(script d_continuous_on)
+  DEFINE    holdx @x
+  RADIO     rb_distb		+120	@	@	  .,		///
+		label("Binary")						///
+		onclickon(script d_binary_on)
+  RADIO     rb_distm		+120	@	@	  .,	 last	///
+		label("Mixed")						///
+		onclickon(script d_mixed_on)
+
+  LISTBOX   lb_distc	       holdx	_ms	_comb3_2  _ht4,		///
+		contents(continuous_dist)				///
+		onselchangelist(cont_power)				///
+		values(contin_value)
+  DEFINE    holdy @y
+  LISTBOX   lb_distb            @	@	@	  _ht4,		///
+		contents(binary_dist)					///
+		values(binary_value)
+  DEFINE    holdy @y
+  LISTBOX   lb_distm            @	@	@	  _ht4,		///
+		contents(mixed_dist)					///
+		values(mixed_value)
+
+  EDIT      en_power          _lft     _vs6      _en7wd  .,		///
+		numonly default(literal "2")				///
+		label("# for L(#) or Lpower(#)")
+  TEXT      tx_power          _en7sep   @         _en7rb  .,		///
+		label("# for L(#) or Lpower(#)")

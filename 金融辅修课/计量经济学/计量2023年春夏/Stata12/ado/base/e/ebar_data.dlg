@@ -1,0 +1,67 @@
+/*
+  easy graph bar - Bar chart
+
+
+*!  VERSION 1.0.1  03aug2006  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE egraph_header
+INCLUDE header
+HELP hlp1, view("help graph_bar")
+RESET res1
+
+DIALOG main, label("graph bar - Bar chart (observed data)") tabtitle("Main")
+BEGIN
+  TEXT     tx_var      _lft        _top      _vlwd       .,	///
+  	label("Variables:")
+  VARLIST  vl_var      @           _ss	     @           .,	///
+  	label("Variables")
+
+  GROUPBOX gb_bar_opts _lft        _ls       _iwd        _ht5,
+  CHECKBOX ck_stack    _ilft       _ss       _inwd       .,	///
+	label("Stack bars (over Y-variables)")			///
+	option(stack)
+  CHECKBOX ck_perct    @           _ms       @           .,     ///
+	label("Percentages of total (over Y-variables)")	///
+	option(percentages)
+
+  GROUPBOX gb_orientation	_lft	+45	_iwd	_ht4,	///
+  	label("Orientation")
+  RADIO    rb_vertical		_ilft	_ss	_inwd	.,	///
+  	first label("Vertical bars")
+  RADIO	   rb_horizontal	@	_ss	@	.,	///
+  	last label("Horizontal bars")
+END
+
+INCLUDE eover
+INCLUDE ifin
+INCLUDE etitle
+INCLUDE eyaxis
+INCLUDE ebaropts
+
+PROGRAM command
+BEGIN
+	put "graph "
+	if main.rb_vertical {
+		put "bar "
+	}
+	if main.rb_horizontal {
+		put "hbar "
+	}
+	put "(asis) "
+	varlist main.vl_var
+
+	put " " /program ifin_output
+	beginoptions
+		option main.ck_stack
+		option main.ck_perct
+		put " "  /program eover_output
+		put " "  /program etitle_output
+		put " "  /program eyaxis_output
+		put " "  /program ebaropts_output
+
+	endoptions
+END

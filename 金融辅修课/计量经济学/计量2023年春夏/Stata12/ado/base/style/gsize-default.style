@@ -1,0 +1,4 @@
+*! version 1.0.0  22dec2002
+sequence 3000
+label "Automatic"
+set val 4.166

@@ -1,0 +1,37 @@
+/*
+	estimates replay
+
+*!  VERSION 1.1.2  19apr2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_medium
+DEFINE  _dlght 190
+INCLUDE header
+HELP hlp1, view("help estimates replay")
+RESET res1
+
+DIALOG main, label("estimates replay - Replay stored estimation results")/*
+		*/ tabtitle("Main")
+BEGIN
+  RADIO    rb_all         _lft     _top       _iwd         ., first	/*
+		*/ clickon("gaction main.cb_elist.disable")		/*
+		*/ label("Replay all stored estimation results")
+  RADIO    rb_elist          @      _ss          @         ., last	/*
+		*/ clickon("gaction main.cb_elist.enable")		/*
+		*/ label("Replay estimation results for:")
+  COMBOBOX cb_elist   _indent2      _ms      _inwd      _ht10, append	/*
+		*/ contents(estimates)					/*
+		*/ error("Replay estimation results for")
+END
+
+PROGRAM command
+BEGIN
+	put "estimates replay "
+	if main.rb_elist {
+		require main.cb_elist
+		put main.cb_elist
+	}
+END

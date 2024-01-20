@@ -1,0 +1,180 @@
+/*
+  xtabond
+
+*!  VERSION 1.4.5  29may2009
+
+  keyword:  eclass
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_large
+INCLUDE _ht385
+INCLUDE header
+
+HELP hlp1, view("help xtabond")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	script se_createAsXTABOND
+END
+
+SCRIPT show_xtset
+BEGIN
+	create STRING note
+	note.setvalue `"A time variable is required for this command."'
+	note.withvalue create CHILD xtset, message(`""-timeRequired-" `"@"'"')
+END
+
+DIALOG main, tabtitle("Model")	///
+	label("xtabond - Arellano-Bond linear dynamic panel-data estimation")
+BEGIN
+  BUTTON   bu_xtset	_xsetbu	_top	_setbuwd .,			///
+	onpush(script show_xtset)					///
+	label("Panel settings...")
+
+  TEXT     tx_dv     _lft      _topph    _vnwd     .,			/*
+		*/ label("Dependent variable:")				/*
+		*/
+  VARNAME  vn_dv     @         _ss       @         .,			/*
+		*/ label("Dependent variable")				/*
+		*/
+
+  TEXT     tx_iv     _vlx      _topph    _cwd2     .,			/*
+		*/ label("Independent variables:")			/*
+		*/
+  VARLIST  vl_iv     @         _ss       _vlwd     .,			/*
+		*/ label("Independent variables")			/*
+		*/ allowcat ts						/*
+		*/
+  CHECKBOX ck_nocons @         _ms       @         .,			/*
+		*/ label("Suppress constant term")			/*
+		*/ option("noconstant")					/*
+		*/
+
+  GROUPBOX gb_opts   _lft      _xls       _iwd      _ht21h,		/*
+  		*/ label("Options")
+  TEXT     tx_ev     _ilft     _ss       _inwd     .,			/*
+		*/ label("Already-differenced exogenous variables:")	/*
+		*/
+  VARLIST  vl_ev     @         _ss       @         .,			/*
+		*/ label("Already-differenced exogenous variables")	/*
+		*/ allowcat						/*
+		*/ ts							/*
+		*/ option("diffvars")					/*
+		*/
+
+  TEXT     tx_ivars  @         _ls       @         .,			/*
+		*/ label("Additional instrumental variables:")		/*
+		*/
+  VARLIST  vl_ivars  @         _ss       @         .,			/*
+		*/ label("Additional instrumental variables")		/*
+		*/ allowcat						/*
+		*/ ts							/*
+		*/ option("inst")					/*
+		*/
+
+  SPINNER  sp_lags   _indent2  +35       _spwd     .,			/*
+		*/ label("Number of lags of dependent variable (p)")	/*
+		*/ min(1)						/*
+		*/ max(c(N))						/*
+		*/ default(1)						/*
+		*/ option("lags")					/*
+		*/
+  TEXT     tx_lags   _spsep    @         _cksprb   .,			/*
+		*/ label("Number of lags of dependent variable (p)")	/*
+		*/
+  CHECKBOX ck_maxld  _ilft     _ls       _ckwd     ., label("")		/*
+		*/ clickon("gaction main.sp_maxld.enable")		/*
+		*/ clickoff("gaction main.sp_maxld.disable")		/*
+		*/
+  SPINNER  sp_maxld  _cksep    @         _spwd     .,			/*
+*/ label("Max lags of dependent variable for use as instruments")/*
+		*/ min(1)						/*
+		*/ max(c(N))						/*
+		*/ default(1)						/*
+		*/ option("maxldep")					/*
+		*/
+  TEXT     tx_maxld  _spsep    @         _cksprb   .,			/*
+*/ label("Max lags of dependent variable for use as instruments")/*
+		*/
+  CHECKBOX ck_maxlag _ilft     _ls       _ckwd     ., label("")		/*
+		*/ clickon("gaction main.sp_maxlag.enable")		/*
+		*/ clickoff("gaction main.sp_maxlag.disable")		/*
+		*/
+  SPINNER  sp_maxlag _cksep    @         _spwd     .,			/*
+*/ label("Max lags of predetermined variables for use as instruments")/*
+		*/ min(1)						/*
+		*/ max(c(N))						/*
+		*/ default(1)						/*
+		*/ option("maxlags")					/*
+		*/
+  TEXT     tx_maxlag _spsep    @         _cksprb  .,			/*
+*/ label("Max lags of predetermined variables for use as instruments")/*
+		*/
+
+  CHECKBOX ck_twostep _ilft    _ls       _ibwd    .,			/*
+		*/ label("Compute two-step estimator instead of one-step estimator") /*
+		*/ option(twostep)					/*
+		*/
+END
+
+
+INCLUDE _xtdpd_common
+
+INCLUDE byifin
+INCLUDE se
+
+DIALOG rpt, label("") tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr2
+  DEFINE _y _top
+  INCLUDE _sp_level
+
+  GROUPBOX gb_tests  _lft      _ls       _iwd      _ht3,		/*
+  		*/ label("Additional test statistics")
+
+  SPINNER  sp_artest _ilft     _ms       _spwd     .,			/*
+		*/ label("Max order for AR tests")			/*
+		*/ min(1)						/*
+		*/ max(c(N))						/*
+		*/ default(2)						/*
+		*/ option("artests")					/*
+		*/
+  TEXT     tx_artest _spsep    @         _sprb     .,			/*
+		*/ label("Max order for AR tests")			/*
+		*/
+
+  DEFINE _x _lft
+  DEFINE _y _xxls
+  DEFINE _cx _iwd
+  INCLUDE _vsquish
+END
+
+
+PROGRAM command
+BEGIN
+	allowxi
+	put /program by_output " "
+	put "xtabond "
+	varlist main.vn_dv [main.vl_iv]
+	put " " /program ifin_output
+	beginoptions
+		option main.ck_nocons
+		optionarg main.vl_ev
+		optionarg main.vl_ivars
+		optionarg main.sp_lags
+		optionarg main.sp_maxld
+		optionarg main.sp_maxlag
+
+		option main.ck_twostep
+		put " " /program _xtdpd_common_output
+		put " " /program se_output
+		optionarg /hidedefault rpt.sp_level
+		optionarg rpt.sp_artest
+		INCLUDE _vsquish_pr
+	endoptions
+END

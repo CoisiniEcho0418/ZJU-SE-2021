@@ -1,0 +1,6 @@
+*! version 1.0.0  21jul2006
+sequence 5000
+
+set width    thin
+set color    black
+set pattern  solid

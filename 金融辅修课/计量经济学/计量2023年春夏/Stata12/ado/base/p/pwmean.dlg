@@ -1,0 +1,151 @@
+/*
+  pwmean
+
+*! VERSION 1.0.5  13jun2011
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_medium
+DEFINE _dlght 260
+INCLUDE header
+
+HELP hlp1, view("help pwmean")
+RESET res1
+
+DIALOG main, label("pwmean - Pairwise comparisons of means")	///
+	tabtitle("Main")
+BEGIN
+  TEXT tx_vn			_lft	_topph	_vnwd	.,		///
+	label("Variable:")
+  VARNAME vn_var		@	_ss	@	.,		///
+	label("Variable")
+  
+  TEXT tx_over			_vlx	_topph	260	.,		///
+	label("Over:")
+  VARLIST vl_over		@	_ss	@	.,		///
+	option(over)							///
+	label("Over")
+
+  TEXT tx_mcomp			_lft	_ls	280	.,		///
+	label("Multiple comparisons adjustment")
+  COMBOBOX cb_mcomp		@	_ss 	@	.,		///
+	dropdownlist							///
+	option(mcompare)						///
+	contents(main_mcomp_list)					///
+	values(main_mcomp_values)					///
+	label("Multiple comparisons adjustment")
+END
+
+LIST main_mcomp_list
+BEGIN
+	"Do not adjust"
+	"Bonferroni's method"
+	"Sidak's method"
+	"Scheffe's method"
+	"Tukey's method"
+	"Student-Newman-Keuls' method"
+	"Duncan's method"
+	"Dunnett's method"
+END
+
+LIST main_mcomp_values
+BEGIN
+	""
+	bonferroni
+	sidak
+	scheffe
+	tukey
+	snk
+	duncan
+	dunnett 
+END
+
+SCRIPT rpt_POSTINIT
+BEGIN
+	create STRING rpt_bu_fmtcoefResults
+	program rpt_bu_fmtcoef_ckResults
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr2b
+  DEFINE _y _top
+  INCLUDE _sp_level
+
+  RADIO rb_noeffects		_lft	_ls	_iwd	., first	///
+	onclickon("script rpt_effects_off")				///
+	option("noeffects")						///
+	label("Suppress effects tables")
+  RADIO rb_effects		@	_ss	@	., last		///
+	onclickon("script rpt_effects_on")				///
+	label("Effects tables")
+  CHECKBOX ck_cieffects		_indent	_ss	_inwd	.,		///
+	option("cieffects")						///
+	label("Show effects table with confidence intervals")
+  CHECKBOX ck_pveffects		@	_ss	@	.,		///
+	option("pveffects")						///
+	label("Show effects table with p-values")
+  CHECKBOX ck_effects		@	_ss	@	.,		///
+	option("effects")						///
+	label("Show effects table with confidence intervals and p-values")
+
+  CHECKBOX ck_cimeans		_lft	_ls	_iwd	.,		///
+	option("cimeans")						///
+	label("Report means and confidence intervals")
+  CHECKBOX ck_groups		@	_ms	@	.,		///
+	option("groups")						///
+	label("Report means and group codes")
+  CHECKBOX ck_sort		@	_ms	@	.,		///
+	option("sort")							///
+	label("Sort the means/differences in each term")
+
+  DEFINE _x _lft
+  DEFINE _y _ls
+  INCLUDE _bu_coef_table_reporting
+END
+
+INCLUDE fmt_coef_table_reporting_pr
+
+SCRIPT rpt_effects_on
+BEGIN
+	rpt.ck_cieffects.enable
+	rpt.ck_pveffects.enable
+	rpt.ck_effects.enable
+END
+
+SCRIPT rpt_effects_off
+BEGIN
+	rpt.ck_cieffects.disable
+	rpt.ck_pveffects.disable
+	rpt.ck_effects.disable
+END
+
+PROGRAM command
+BEGIN
+	put "pwmean "
+	require main.vn_var
+	require main.vl_over
+	varlist	main.vn_var
+	beginoptions
+		optionarg main.vl_over
+		optionarg main.cb_mcomp
+		optionarg /hidedefault rpt.sp_level
+		if (rpt.rb_effects & !rpt.ck_cieffects &		///
+			!rpt.ck_pveffects & !rpt.ck_effects) {
+		stopbox stop `"You must specify an "Effects table""'	///
+				`" on the "Reporting" tab"'
+		}
+		if (rpt.rb_effects) {
+			option rpt.ck_cieffects
+			option rpt.ck_pveffects
+			option rpt.ck_effects
+		}
+		option rpt.ck_cimeans
+		option rpt.ck_groups
+		option rpt.ck_sort
+		put " " rpt_bu_fmtcoefResults
+	endoptions
+END

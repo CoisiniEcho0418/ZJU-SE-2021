@@ -1,0 +1,73 @@
+/*
+	loneway
+
+*! VERSION 1.2.0  23may2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help loneway")
+RESET res1
+
+PROGRAM POSTINIT_PROGRAM
+BEGIN
+	if __MESSAGE.iseq("-exact-") {
+		call main.ck_exact.seton
+	}
+END
+
+DIALOG main, label("loneway - Large one-way ANOVA") tabtitle("Main")
+BEGIN
+  TEXT     tx_dv             _lft      _top      120       .,		///
+	label("Response variable:")
+  VARNAME  vn_dv             @         _ss       @         .,		///
+	label("Response variable")
+
+  TEXT     tx_groupvar       +140      _top      @         .,		///
+	label("Group variable:")
+  VARNAME  vn_groupvar       @         _ss       @         .,		///
+	label("Group variable")
+
+  GROUPBOX gb_reference      _lft      _ls       _iwd      _ht6,	///
+	label("Reference point for estimation of rho")
+  RADIO    rb_default        _indent   _ss       _inwd     ., first	///
+	option(NONE)							///
+	label("Default value of 1")
+  RADIO    rb_mean           @         _ss       @         .,		///
+	option(mean)							///
+	label("Expected value of F distribution")
+  RADIO    rb_median         @         _ss       @         ., last	///
+	option(median)							///
+	label("Median of F distribution")
+
+  CHECKBOX ck_exact          _lft      _xls      _ibwd     .,		///
+	option(exact)							///
+	label("Exact confidence intervals (groups must be equal)")
+
+  DEFINE  _x  _lft
+  DEFINE  _cx _sprb
+  DEFINE  _y  _ls
+  INCLUDE _sp_level
+END
+
+INCLUDE byifin
+INCLUDE weights_a
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "loneway "
+	varlist main.vn_dv
+	varlist main.vn_groupvar
+	INCLUDE _weights_pr
+	INCLUDE _ifin_pr
+	beginoptions
+		option radio(main rb_default rb_mean rb_median)
+		option main.ck_exact
+		INCLUDE _level_main_pr
+	endoptions
+END

@@ -1,0 +1,73 @@
+/*
+  tab1
+
+*!  VERSION 1.1.2  21aug2006
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help tabulate_oneway")
+RESET res1
+
+DIALOG main, label("tab1 - One-way tables") tabtitle("Main")
+BEGIN
+  TEXT     tx_vars   _lft      _top      _iwd      .,			/*
+		*/ label("Categorical variables:")			/*
+		*/
+  VARLIST  vl_vars   @         _ss       _vlwd     .,			/*
+		*/ label("Categorical variables")			/*
+		*/
+
+  TEXT     tx_subpop _lft      _ls       195       .,			/*
+		*/ label("Subpopulation variable: (optional)")		/*
+		*/
+  VARNAME  vn_subpop @         _ss       _vnwd     .,			/*
+		*/ label("Subpopulation variable")			/*
+		*/ option("subpop")		
+
+  CHECKBOX ck_miss   @         _ls       _iwd      .,			/*
+		*/ label("Treat missing values like other values")	/*
+		*/ option("missing")					/*
+		*/
+  CHECKBOX ck_nofreq @         _ms       @         .,			/*
+		*/ label("Do not display frequencies")			/*
+		*/ option("nofreq")					/*
+		*/
+  CHECKBOX ck_nolab  @         _ms       @         .,			/*
+		*/ label("Display numeric codes rather than value labels") /*
+		*/ option("nolabel")					/*
+		*/
+  CHECKBOX ck_plot   @         _ms       @         .,			/*
+	*/ label("Produce a bar chart of the relative frequencies")	/*
+		*/ option("plot")					/*
+		*/
+  CHECKBOX ck_sort   @         _ms       @         .,			/*
+	*/ label("Display the table in descending order of frequency")	/*
+		*/ option("sort")					/*
+		*/
+END
+
+INCLUDE byifin
+INCLUDE weights_f
+
+PROGRAM command
+BEGIN
+	put /program by_output " "
+	put "tab1 "
+	varlist main.vl_vars
+	put " " /program weights_output
+	put " " /program ifin_output
+	beginoptions
+		optionarg main.vn_subpop
+		option main.ck_miss
+		option main.ck_nofreq
+		option main.ck_nolab
+		option main.ck_plot
+		option main.ck_sort
+	endoptions
+END
+

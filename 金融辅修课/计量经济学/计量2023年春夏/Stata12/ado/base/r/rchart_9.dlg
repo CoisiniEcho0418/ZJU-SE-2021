@@ -1,0 +1,85 @@
+/*
+	rchart_9.dlg
+
+*! VERSION 1.1.1  09aug2006  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+
+HELP hlp1, view("help rchart")
+RESET res1
+
+DIALOG main,label("rchart - Draws a r (range) chart") tabtitle("Main")
+BEGIN
+  TEXT     tx_var         _lft       _top       _cwd1	   .,		///
+	label("Variables:")
+  VARLIST  vl_var         @          _ss        @          .,		///
+	label("Variables")
+
+  GROUPBOX gb_std         @          _ls        @          _ht6,	///
+	label("Standard deviation of the process")
+
+  RADIO    rb_range       _indent    _ss        _inwd      .,		///
+	label("Calculate standard deviation based on range")		///
+	first onclickon(script std_off)
+  RADIO    rb_std         @          _ss        @          .,		///
+	label("Use user-specified standard deviation")			///
+	last onclickon(script std_on)
+  EDIT     en_std         _indent2   _ss        _en7wd     .,		///
+	label("Standard deviation") default(0) numonly option(std)
+  TEXT     tx_std         _en7sep    @          130        .,		///
+	label("Standard deviation")
+END
+
+SCRIPT std_on
+BEGIN
+        main.en_std.enable
+        main.tx_std.enable
+END
+
+SCRIPT std_off
+BEGIN
+        main.en_std.disable
+        main.tx_std.disable
+END
+
+INCLUDE ifin
+INCLUDE p1_opts
+INCLUDE p2_opts
+INCLUDE addplot
+INCLUDE gr_twoway
+
+SCRIPT PREINIT
+BEGIN
+	script p1_opts_createAsNoRange
+	script p1_opts_setDefaultScatter
+	script p2_opts_createAsRange
+	script p2_opts_setDefaultRline
+END
+
+SCRIPT POSTINIT
+BEGIN
+	p2_opts.settabtitle "Control limits"
+END
+
+PROGRAM command
+BEGIN
+        put "rchart "
+        varlist main.vl_var
+        INCLUDE _ifin_pr
+        beginoptions
+                if main.rb_std{
+			require main.en_std
+                	optionarg main.en_std
+                }
+		put " " /program p1_opts_output
+		put " " /program p2_opts_cl_output
+		put " " /program addplot_output
+		put " " /program gr_twoway_output
+        endoptions
+END
+/* end */

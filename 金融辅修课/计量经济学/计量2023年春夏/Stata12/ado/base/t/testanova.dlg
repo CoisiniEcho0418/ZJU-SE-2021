@@ -1,0 +1,876 @@
+/*
+  test after anova
+
+*! VERSION 2.0.3  03jun2011
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_wide
+INCLUDE _ht330
+INCLUDE header
+
+HELP hlp1, view("help anova postestimation")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	/* Coeflist syntax */
+	create STRING main_cotmp
+	create STRING main_cotmp2
+	create STRING main_co_childdlg
+	create STRING main_co_child_result
+	create STRING main_co_cmd_output
+
+	create ARRAY main_co_list
+
+	create SVECTOR mainCOCommandDisplayList
+	create SVECTOR mainCOCommandList
+	create SVECTOR mainCOCommandValues
+	create SVECTOR mainCOStatusList
+	create SVECTOR mainCOChildDialogList
+
+	create DOUBLE main_co_count
+	create DOUBLE main_co_position
+	create DOUBLE main_co_arraysize
+
+	main.bu_co_edit.disable
+	main.bu_co_disable.disable
+	main.bu_co_enable.disable
+
+        /* Expression equals expression syntax */
+	create STRING main_extmp
+	create STRING main_extmp2
+	create STRING main_ex_childdlg
+	create STRING main_ex_child_result
+	create STRING main_ex_cmd_output
+
+	create ARRAY main_ex_list
+
+	create SVECTOR mainEXCommandDisplayList
+	create SVECTOR mainEXCommandList
+	create SVECTOR mainEXCommandValues
+	create SVECTOR mainEXStatusList
+	create SVECTOR mainEXChildDialogList
+
+	create DOUBLE main_ex_count
+	create DOUBLE main_ex_position
+	create DOUBLE main_ex_arraysize
+
+	main.bu_ex_edit.disable
+	main.bu_ex_disable.disable
+	main.bu_ex_enable.disable
+
+	create STRING matrixResult
+END
+
+SCRIPT POSTINIT
+BEGIN
+	mainCOCommandDisplayList.copyToArray main_co_list
+	main.lb_coBuild.repopulate
+
+	mainEXCommandDisplayList.copyToArray main_ex_list
+	main.lb_exBuild.repopulate
+END
+
+DIALOG main, label("test - Test linear hypotheses after anova")		///
+	tabtitle("Main")
+BEGIN
+  GROUPBOX gb_type	_lft	_top	_iwd	_ht10,			///
+	label("Test type")
+  RADIO rb_eff		_ilft	_ss	_inwd	., first		///
+	onclickon(script main_effects_on)				///
+	label("Effects")
+  RADIO rb_coef		@	_ss	@	.,			///
+	onclickon(script main_coef_on)					///
+	label("Coefficients are 0")
+  RADIO rb_expeq	@	_ss	@	.,			///
+	onclickon(script main_expeq_on)					///
+	label("Linear expressions are equal")
+  RADIO rb_mat		@	_ss	@	., 			///
+	onclickon(script main_mat_on)					///
+	label("Expressions involving coef. of underlying regression model (matrix)")
+  RADIO rb_showorder	@	_ss	@	., last			///
+	onclickon(script main_showorder_on)				///
+	label("Show order of columns in the design matrix")
+  BUTTON bu_effexamp	_rj100	_xls	100	.,			///
+	push("script main_eff_examp")	 				///
+	label("Examples")
+
+  DEFINE holdy @y
+  TEXT tx_eff		_lft	+5	_comb4_1 .,			///
+	label("Effects to test:")
+  VARLIST vl_eff	@	_ss	_iwd	.,			///
+	label("Effects to test")
+
+  BUTTON bu_matxamp	_rj210	holdy	100	.,			///
+	push("script main_mat_examp")					///
+	label("Examples")
+  BUTTON bu_matinput	_rj100	@	100	.,			///
+	onpush(program show_matrix_input)				///
+	tooltip("Input matrix by hand")					///
+	label("Input matrix...")
+
+  TEXT tx_mat		_lft	+5	150	.,			///
+	label("Matrix to test:")
+  COMBOBOX cb_mat	_lft	_ss	_iwd	.,			///
+	contents(matrix)						///
+	dropdown							///
+	error("Matrix to test")
+
+  CHECKBOX ck_symb	_lft	_ms	_cwd1	.,			///
+	option(symbolic)						///
+	onclickon(script main_symb_on)					///
+	onclickoff(program main_symb_off)				///
+	label("Show symbolic forms")
+
+  TEXT tx_coBuild	_lft	150	_iwd	.,			///
+	label("Specification: (test these coefficients)")
+  LISTBOX lb_coBuild	@	_ss	200	110,			///
+	contents(main_co_list) 						///
+	ondblclick(program main_co_edit)				///
+	onselchange(program main_co_sel_changed)			///
+	nomemory
+  BUTTON bu_co_new	+210	@	80	.,			///
+	onpush(program main_co_create)					///
+	tooltip("Create specification")					///
+	label("Create...")
+  BUTTON bu_co_edit	@	_ms	@	.,			///
+	onpush(program main_co_edit)					///
+	tooltip("Edit specification")					///
+	label("Edit")
+  BUTTON bu_co_disable	@	_ms	@	.,			///
+	onpush(program main_co_disable)					///
+	tooltip("Click to disable a specification")			///
+	label("Disable")
+  BUTTON bu_co_enable	@	_ms	@	.,			///
+	onpush(program main_co_enable)					///
+	tooltip("Click to enable a previously disabled specification")	///
+	label("Enable")
+  TEXTBOX tb_co_note	_lft	+40	_iwd	_tb2,			///
+	label(`"Press "Create" to define a specification"')
+  BUTTON bu_expeq_examp _rj100	-120	100	.,			///
+	push("script main_expeq_examp") 				///
+	label("Examples")
+  
+  TEXT tx_exBuild	_lft	150	_iwd	.,			///
+	label("Specification: (linear expressions)")
+  LISTBOX lb_exBuild	@	_ss	200	110,			///
+	contents(main_ex_list) 						///
+	ondblclick(program main_ex_edit)				///
+	onselchange(program main_ex_sel_changed)			///
+	nomemory
+  BUTTON bu_ex_new	+210	@	80	.,			///
+	onpush(program main_ex_create)					///
+	tooltip("Create specification")					///
+	label("Create...")
+  BUTTON bu_ex_edit	@	_ms	@	.,			///
+	onpush(program main_ex_edit)					///
+	tooltip("Edit specification")					///
+	label("Edit")
+  BUTTON bu_ex_disable	@	_ms	@	.,			///
+	onpush(program main_ex_disable)					///
+	tooltip("Click to disable a specification")			///
+	label("Disable")
+  BUTTON bu_ex_enable	@	_ms	@	.,			///
+	onpush(program main_ex_enable)					///
+	tooltip("Click to enable a previously disabled specification")	///
+	label("Enable")
+  TEXTBOX tb_ex_note	_lft	+40	_iwd	_tb2,			///
+	label(`"Press "Create" to define a specification"')
+END
+
+PROGRAM show_matrix_input
+BEGIN
+	call create CHILD matrix_input
+	if ! _rc {
+		call matrix_input.setExitString matrixResult
+		call matrix_input.setExitAction "program getMatrixResult"
+		call matrix_input.callthru "isChildContext.settrue"
+	}
+END
+PROGRAM getMatrixResult
+BEGIN
+	call main.cb_mat.repopulate
+	call main.cb_mat.setvalue class matrixResult.value
+END
+
+PROGRAM main_co_create
+BEGIN
+	call main_co_count.setvalue class mainCOChildDialogList.size
+	call main_co_count.increment
+	call main_co_count.withvalue main_co_childdlg.setvalue		///
+		"main_spec@"
+	call program main_show_co_child
+END
+
+PROGRAM main_co_edit
+BEGIN
+	call mainCOCommandDisplayList.findstr class main.lb_coBuild.value
+	call main_co_position.setvalue class mainCOCommandDisplayList.position
+	call main_co_position.withvalue main_co_childdlg.setvalue	///
+		class mainCOChildDialogList.values[@]
+
+	call program main_show_co_child_edit
+END
+
+PROGRAM main_show_co_child
+BEGIN
+	call main_co_childdlg.withvalue create CHILD test_new_coef_expeq AS @
+	call main_co_childdlg.withvalue @.setExitString "main_co_child_result"
+	call main_co_childdlg.withvalue @.setExitAction			///
+		"program main_co_child_done"
+
+	call main_co_count.withvalue main_cotmp.setvalue "Specification @"
+	call main_co_childdlg.withvalue main_cotmp2.setvalue "@.settitle"
+	call main_cotmp2.append `" ""'
+	call main_cotmp2.append class main_cotmp.value
+	call main_cotmp2.append `"""'
+	call main_cotmp2.withvalue @
+END
+
+PROGRAM main_show_co_child_edit
+BEGIN
+	call main_co_childdlg.withvalue create CHILD test_new_coef_expeq AS @
+	call main_co_childdlg.withvalue @.setExitString "main_co_child_result"
+	call main_co_childdlg.withvalue @.setExitAction			///
+		"program main_co_child_done"
+
+	call main_co_position.withvalue main_cotmp.setvalue		///
+		class mainCOCommandDisplayList.values[@]
+	call main_co_childdlg.withvalue main_cotmp2.setvalue "@.settitle"
+	call main_cotmp2.append `" ""'
+	call main_cotmp2.append class main_cotmp.value
+	call main_cotmp2.append `"""'
+	call main_cotmp2.withvalue @
+END
+
+PROGRAM main_co_child_done
+BEGIN
+	call mainCOChildDialogList.findstr class main_co_childdlg.value
+	call main_co_position.setvalue class mainCOChildDialogList.position
+	if main_co_position {
+		call main_co_position.withvalue main_cotmp.setvalue	///
+			class mainCOStatusList.values[@]
+		if main_cotmp.iseq("active") {
+			call main_co_position.withvalue			///
+				mainCOCommandDisplayList.store class	///
+				main_co_position.value "Specification @"
+			call mainCOCommandValues.store class		///
+				main_co_position.value class		///
+				main_co_child_result.value
+			call main_co_position.withvalue			///
+				main_cotmp2.setvalue "Specification @"
+		}
+		else {
+			call main_co_position.withvalue			///
+				main_cotmp2.setvalue "Specification @"
+
+			call main_cotmp2.withvalue			///
+				mainCOCommandDisplayList.store		///
+				class main_co_position.value "@ (disabled)"
+		}
+
+		call mainCOCommandList.store class			///
+			main_co_position.value class main_co_child_result.value
+
+		call mainCOCommandDisplayList.copyToArray main_co_list
+		call main.lb_coBuild.repopulate
+		call main.lb_coBuild.setvalue class main_cotmp2.value
+	}
+	else {
+		call main_co_arraysize.setvalue class mainCOChildDialogList.size
+		call main_co_arraysize.increment
+
+		/* Store child dialog name */
+		call mainCOChildDialogList.store class			///
+			main_co_arraysize.value class			///
+			main_co_childdlg.value
+
+		/* Store listbox display spec string */
+		call main_co_arraysize.withvalue			///
+			mainCOCommandDisplayList.store class		///
+			main_co_arraysize.value "Specification @"
+
+		/* Store child dialog result string */
+		call mainCOCommandList.store class			///
+			main_co_arraysize.value class main_co_child_result.value
+
+		/* Store child dialog result string for final command
+		   For disable/enable */
+		call mainCOCommandValues.store class			///
+			main_co_arraysize.value class main_co_child_result.value
+
+		/* Store disable/enable status */
+		call mainCOStatusList.store				///
+			class main_co_arraysize.value "active"
+
+		call mainCOCommandDisplayList.copyToArray main_co_list
+		call main.lb_coBuild.repopulate
+		call main_co_arraysize.withvalue			///
+			main.lb_coBuild.setvalue "Specification @"
+
+		call main.bu_co_edit.enable
+	}
+END
+
+PROGRAM main_co_sel_changed
+BEGIN
+	call mainCOCommandDisplayList.findstr class main.lb_coBuild.value
+	call main_co_position.setvalue class mainCOCommandDisplayList.position
+	call main_co_position.withvalue main_cotmp.setvalue		///
+		class mainCOStatusList.values[@]
+	if main_co_position {
+		call main_co_position.withvalue				///
+			main.tb_co_note.setlabel			///
+			class mainCOCommandList.values[@]
+	}
+
+	if main_cotmp.iseq("disable") {
+		call main.bu_co_enable.enable
+		call main.bu_co_disable.disable
+	}
+	if main_cotmp.iseq("active") {
+		call main.bu_co_enable.disable
+		call main.bu_co_disable.enable
+	}
+END
+
+PROGRAM main_co_disable
+BEGIN
+	call mainCOCommandDisplayList.findstr class main.lb_coBuild.value
+	call main_co_position.setvalue class mainCOCommandDisplayList.position
+
+	call main_cotmp.setvalue class main.lb_coBuild.value
+	call mainCOStatusList.store class main_co_position.value "disable"
+	call mainCOCommandValues.store class main_co_position.value ""
+	call main_cotmp.withvalue mainCOCommandDisplayList.store	///
+		class main_co_position.value "@ (disabled)"
+
+	call mainCOCommandDisplayList.copyToArray main_co_list
+	call main_cotmp.withvalue main_cotmp2.setvalue "@ (disabled)"
+	call main.lb_coBuild.repopulate
+	call main.lb_coBuild.setvalue class main_cotmp2.value
+END
+
+PROGRAM main_co_enable
+BEGIN
+	call mainCOCommandDisplayList.findstr class main.lb_coBuild.value
+	call main_co_position.setvalue class mainCOCommandDisplayList.position
+
+	call mainCOStatusList.store class main_co_position.value "active"
+	call main_co_position.withvalue mainCOCommandValues.store class	///
+		main_co_position.value class mainCOCommandList.values[@]
+
+	call main_co_position.withvalue mainCOCommandDisplayList.store	///
+		class main_co_position.value "Specification @"
+
+	call mainCOCommandDisplayList.copyToArray main_co_list
+	call main_co_position.withvalue main_cotmp2.setvalue class	///
+		mainCOCommandDisplayList.values[@]
+	call main.lb_coBuild.repopulate
+	call main.lb_coBuild.setvalue class main_cotmp2.value
+END
+
+PROGRAM main_lb_coBuild_output
+BEGIN
+	call mainCOCommandValues.copyToString main_co_cmd_output
+	call main_co_arraysize.setvalue class mainCOStatusList.size
+	if main_co_cmd_output.iseq("") & main_co_arraysize.iseq(0) & 	///
+		main.lb_coBuild.isvisible() {
+		stopbox stop "Specification not defined. "		///
+"Please enter a specification before proceeding."
+	}
+	if main_co_cmd_output.iseq("") & main_co_arraysize.isgt(0) &	///
+		main.lb_coBuild.isvisible() {
+		stopbox stop "All specifications are disabled. "	///
+"Either define a new specification or enable an existing specification before proceeding."
+	}
+
+	if main_co_cmd_output & main.lb_coBuild.isvisible() {
+		put main_co_cmd_output
+	}
+END
+
+PROGRAM main_ex_create
+BEGIN
+	call main_ex_count.setvalue class mainEXChildDialogList.size
+	call main_ex_count.increment
+	call main_ex_count.withvalue main_ex_childdlg.setvalue		///
+		"main_spec@"
+	call program main_show_ex_child
+END
+
+PROGRAM main_ex_edit
+BEGIN
+	call mainEXCommandDisplayList.findstr class main.lb_exBuild.value
+	call main_ex_position.setvalue class mainEXCommandDisplayList.position
+	call main_ex_position.withvalue main_ex_childdlg.setvalue	///
+		class mainEXChildDialogList.values[@]
+
+	call program main_show_ex_child_edit
+END
+
+PROGRAM main_show_ex_child
+BEGIN
+	call main_ex_childdlg.withvalue create CHILD test_new_coef_expeq AS @
+	call main_ex_childdlg.withvalue @.setExitString "main_ex_child_result"
+	call main_ex_childdlg.withvalue @.setExitAction			///
+		"program main_ex_child_done"
+
+	call main_ex_count.withvalue main_cotmp.setvalue "Specification @"
+	call main_ex_childdlg.withvalue main_cotmp2.setvalue "@.settitle"
+	call main_cotmp2.append `" ""'
+	call main_cotmp2.append class main_cotmp.value
+	call main_cotmp2.append `"""'
+	call main_cotmp2.withvalue @
+END
+
+PROGRAM main_show_ex_child_edit
+BEGIN
+	call main_ex_childdlg.withvalue create CHILD test_new_coef_expeq AS @
+	call main_ex_childdlg.withvalue @.setExitString "main_ex_child_result"
+	call main_ex_childdlg.withvalue @.setExitAction			///
+		"program main_ex_child_done"
+
+	call main_ex_position.withvalue main_cotmp.setvalue		///
+		class mainEXCommandDisplayList.values[@]
+	call main_ex_childdlg.withvalue main_cotmp2.setvalue "@.settitle"
+	call main_cotmp2.append `" ""'
+	call main_cotmp2.append class main_cotmp.value
+	call main_cotmp2.append `"""'
+	call main_cotmp2.withvalue @
+END
+
+PROGRAM main_ex_child_done
+BEGIN
+	call mainEXChildDialogList.findstr class main_ex_childdlg.value
+	call main_ex_position.setvalue class mainEXChildDialogList.position
+	if main_ex_position {
+		call main_ex_position.withvalue main_cotmp.setvalue	///
+			class mainEXStatusList.values[@]
+		if main_cotmp.iseq("active") {
+			call main_ex_position.withvalue			///
+				mainEXCommandDisplayList.store class	///
+				main_ex_position.value "Specification @"
+			call mainEXCommandValues.store class		///
+				main_ex_position.value class		///
+				main_ex_child_result.value
+			call main_ex_position.withvalue			///
+				main_cotmp2.setvalue "Specification @"
+		}
+		else {
+			call main_ex_position.withvalue			///
+				main_cotmp2.setvalue "Specification @"
+
+			call main_cotmp2.withvalue			///
+				mainEXCommandDisplayList.store		///
+				class main_ex_position.value "@ (disabled)"
+		}
+
+		call mainEXCommandList.store class			///
+			main_ex_position.value class main_ex_child_result.value
+
+		call mainEXCommandDisplayList.copyToArray main_ex_list
+		call main.lb_exBuild.repopulate
+		call main.lb_exBuild.setvalue class main_cotmp2.value
+	}
+	else {
+		call main_ex_arraysize.setvalue class mainEXChildDialogList.size
+		call main_ex_arraysize.increment
+
+		/* Store child dialog name */
+		call mainEXChildDialogList.store class			///
+			main_ex_arraysize.value class			///
+			main_ex_childdlg.value
+
+		/* Store listbox display spec string */
+		call main_ex_arraysize.withvalue			///
+			mainEXCommandDisplayList.store class		///
+			main_ex_arraysize.value "Specification @"
+
+		/* Store child dialog result string */
+		call mainEXCommandList.store class			///
+			main_ex_arraysize.value class main_ex_child_result.value
+
+		/* Store child dialog result string for final command
+		   For disable/enable */
+		call mainEXCommandValues.store class			///
+			main_ex_arraysize.value class main_ex_child_result.value
+
+		/* Store disable/enable status */
+		call mainEXStatusList.store				///
+			class main_ex_arraysize.value "active"
+
+		call mainEXCommandDisplayList.copyToArray main_ex_list
+		call main.lb_exBuild.repopulate
+		call main_ex_arraysize.withvalue			///
+			main.lb_exBuild.setvalue "Specification @"
+
+		call main.bu_ex_edit.enable
+	}
+END
+
+PROGRAM main_ex_sel_changed
+BEGIN
+	call mainEXCommandDisplayList.findstr class main.lb_exBuild.value
+	call main_ex_position.setvalue class mainEXCommandDisplayList.position
+	call main_ex_position.withvalue main_cotmp.setvalue		///
+		class mainEXStatusList.values[@]
+	if main_ex_position {
+		call main_ex_position.withvalue				///
+			main.tb_ex_note.setlabel			///
+			class mainEXCommandList.values[@]
+	}
+
+	if main_cotmp.iseq("disable") {
+		call main.bu_ex_enable.enable
+		call main.bu_ex_disable.disable
+	}
+	if main_cotmp.iseq("active") {
+		call main.bu_ex_enable.disable
+		call main.bu_ex_disable.enable
+	}
+END
+
+PROGRAM main_ex_disable
+BEGIN
+	call mainEXCommandDisplayList.findstr class main.lb_exBuild.value
+	call main_ex_position.setvalue class mainEXCommandDisplayList.position
+
+	call main_cotmp.setvalue class main.lb_exBuild.value
+	call mainEXStatusList.store class main_ex_position.value "disable"
+	call mainEXCommandValues.store class main_ex_position.value ""
+	call main_cotmp.withvalue mainEXCommandDisplayList.store	///
+		class main_ex_position.value "@ (disabled)"
+
+	call mainEXCommandDisplayList.copyToArray main_ex_list
+	call main_cotmp.withvalue main_cotmp2.setvalue "@ (disabled)"
+	call main.lb_exBuild.repopulate
+	call main.lb_exBuild.setvalue class main_cotmp2.value
+END
+
+PROGRAM main_ex_enable
+BEGIN
+	call mainEXCommandDisplayList.findstr class main.lb_exBuild.value
+	call main_ex_position.setvalue class mainEXCommandDisplayList.position
+
+	call mainEXStatusList.store class main_ex_position.value "active"
+	call main_ex_position.withvalue mainEXCommandValues.store class	///
+		main_ex_position.value class mainEXCommandList.values[@]
+
+	call main_ex_position.withvalue mainEXCommandDisplayList.store	///
+		class main_ex_position.value "Specification @"
+
+	call mainEXCommandDisplayList.copyToArray main_ex_list
+	call main_ex_position.withvalue main_cotmp2.setvalue class	///
+		mainEXCommandDisplayList.values[@]
+	call main.lb_exBuild.repopulate
+	call main.lb_exBuild.setvalue class main_cotmp2.value
+END
+
+PROGRAM main_lb_exBuild_output
+BEGIN
+	call mainEXCommandValues.copyToString main_ex_cmd_output
+	call main_ex_arraysize.setvalue class mainEXStatusList.size
+	if main_ex_cmd_output.iseq("") & main_ex_arraysize.iseq(0) & 	///
+		main.lb_exBuild.isvisible() {
+		stopbox stop "Specification not defined. "		///
+"Please enter a specification before proceeding."
+	}
+	if main_ex_cmd_output.iseq("") & main_ex_arraysize.isgt(0) &	///
+		main.lb_exBuild.isvisible() {
+		stopbox stop "All specifications are disabled. "	///
+"Either define a new specification or enable an existing specification before proceeding."
+	}
+
+	if main_ex_cmd_output & main.lb_exBuild.isvisible() {
+		put main_ex_cmd_output
+	}
+END
+
+SCRIPT main_hide_all
+BEGIN
+	main.vl_eff.hide
+	main.tx_eff.hide
+	main.bu_effexamp.hide
+	main.bu_matxamp.hide
+	main.bu_matinput.hide
+	main.tx_mat.hide
+	main.cb_mat.hide
+	main.ck_symb.hide
+
+	main.tx_coBuild.hide
+	main.lb_coBuild.hide
+	main.bu_co_new.hide
+	main.bu_co_edit.hide
+	main.bu_co_disable.hide
+	main.bu_co_enable.hide
+	main.tb_co_note.hide
+
+	main.tx_exBuild.hide
+	main.lb_exBuild.hide
+	main.bu_ex_new.hide
+	main.bu_ex_edit.hide
+	main.bu_ex_disable.hide
+	main.bu_ex_enable.hide
+	main.tb_ex_note.hide
+	main.bu_expeq_examp.hide
+END
+
+SCRIPT main_effects_on
+BEGIN
+	script main_hide_all
+	script opt_hide_all
+	main.bu_effexamp.show
+	main.tx_eff.setlabel "Effects to test:"
+	main.vl_eff.setlabel "Effects to test"
+	main.tx_eff.show
+	main.vl_eff.show
+	main.ck_symb.show
+	main.ck_symb.setposition . 200
+END
+
+SCRIPT main_symb_on
+BEGIN
+	script main_hide_all
+	script opt_hide_all
+	main.bu_effexamp.show
+	main.tx_eff.setlabel "Effects: (leave empty for symbolic form of estimable functions)"
+	main.vl_eff.setlabel "Effects"
+	main.tx_eff.show
+	main.vl_eff.show
+	main.ck_symb.show
+	main.ck_symb.setposition . 200
+END
+
+PROGRAM main_symb_off
+BEGIN
+	if main.rb_eff {
+		call script main_effects_on
+	}
+END
+
+SCRIPT main_coef_on
+BEGIN
+	script main_hide_all
+	program opt_show_all
+	main.tx_coBuild.show
+	main.lb_coBuild.show
+	main.bu_co_new.show
+	main.bu_co_edit.show
+	main.bu_co_disable.show
+	main.bu_co_enable.show
+	main.tb_co_note.show
+END
+
+SCRIPT main_expeq_on
+BEGIN
+	script main_hide_all
+	program opt_show_all
+	main.tx_exBuild.show
+	main.lb_exBuild.show
+	main.bu_ex_new.show
+	main.bu_ex_edit.show
+	main.bu_ex_disable.show
+	main.bu_ex_enable.show
+	main.tb_ex_note.show
+	main.bu_expeq_examp.show
+END
+
+SCRIPT main_mat_on
+BEGIN
+	script main_hide_all
+	script opt_hide_all
+	main.bu_matxamp.show
+	main.bu_matinput.show
+	main.tx_mat.show
+	main.cb_mat.show
+	program opt_mtest_show
+END
+
+SCRIPT main_showorder_on
+BEGIN
+	script main_hide_all
+	script opt_hide_all
+END
+
+SCRIPT main_eff_examp
+BEGIN
+	view help anova_example##|_new
+END
+
+SCRIPT main_mat_examp
+BEGIN
+	view help mat_anova_example##|_new
+END
+
+SCRIPT main_expeq_examp
+BEGIN
+	view help test_example##|_new
+END
+
+DIALOG opt, tabtitle("Options")
+BEGIN
+  CHECKBOX ck_mtest	_lft	_top	_cwd3_1	_ht10,			///
+	groupbox							///
+	onclickon(script opt_mtest_on)					///
+	onclickoff(script opt_mtest_off)				///
+	label("Do multiple testing")
+  TEXT tx_mtest2	_ilft	_ss	_cwd3_4	.,			///
+	label("Adjust p-values by:")
+  RADIO rb_noad		@	_ss	@	., first		///
+	option(mtest(noadjust))						///
+	label("No adjustment")
+  RADIO rb_bonf		@	_ss	@	.,			///
+	option(mtest(bonferroni))					///
+	label("Bonferroni")
+  RADIO rb_holm		@	_ss	@	.,			///
+	option(mtest(holm))						///
+	label("Holm")
+  RADIO rb_sidak	@	_ss	@	., last			///
+	option(mtest(sidak))						///
+	label("Sidak")
+  CHECKBOX ck_coef	_lft3_2	_top	_comb3_1 .,			///
+	option(coef)							///
+	label("Display estimated constrained coefficients")
+  CHECKBOX ck_accum	@	_ms	@	.,			///
+	option(accumulate)						///
+	label("Test hypothesis jointly with previously tested hypotheses")
+  CHECKBOX ck_notest	@	_ms	@	.,			///
+	option(notest)							///
+	label("Suppress the output")
+  CHECKBOX ck_const	@	_ms	@	.,			///
+	option(constant)						///
+	label("Include the constant in coefficients to be tested")
+  CHECKBOX ck_min	_lft	_xxxls	_iwd	.,			///
+	option(minimum)							///
+	label("Perform test with the constant, then drop terms until the test becomes")
+  TEXT tx_min		_cksep	_vss	_inwd	.,			///
+	label("nonsingular, then test without the constant on the remaining terms")
+END
+
+SCRIPT opt_mtest_on
+BEGIN
+	opt.tx_mtest2.enable
+	opt.rb_noad.enable
+	opt.rb_bonf.enable
+	opt.rb_holm.enable
+	opt.rb_sidak.enable
+	opt.ck_notest.disable
+	opt.ck_accum.disable
+END
+
+SCRIPT opt_mtest_off
+BEGIN
+	opt.tx_mtest2.disable
+	opt.rb_noad.disable
+	opt.rb_bonf.disable
+	opt.rb_holm.disable
+	opt.rb_sidak.disable
+	opt.ck_accum.enable
+	opt.ck_notest.enable
+END
+
+SCRIPT opt_hide_all
+BEGIN
+	opt.ck_mtest.hide
+	opt.tx_mtest2.hide
+	opt.rb_noad.hide
+	opt.rb_bonf.hide
+	opt.rb_holm.hide
+	opt.rb_sidak.hide
+	opt.ck_accum.hide
+	opt.ck_coef.hide
+	opt.ck_notest.hide
+	opt.ck_const.hide
+	opt.ck_min.hide
+	opt.tx_min.hide
+END
+
+PROGRAM opt_show_all
+BEGIN
+	call opt.ck_mtest.show
+	call opt.tx_mtest2.show
+	call opt.rb_noad.show
+	call opt.rb_bonf.show
+	call opt.rb_holm.show
+	call opt.rb_sidak.show
+	call opt.ck_accum.show
+	call opt.ck_coef.show
+	call opt.ck_notest.show
+	call opt.ck_const.show
+	call opt.ck_min.show
+	call opt.tx_min.show
+
+	if opt.ck_mtest {
+		call script opt_mtest_on
+	}
+	else {
+		call script opt_mtest_off
+	}
+END
+
+PROGRAM opt_mtest_show
+BEGIN
+	call opt.ck_mtest.show
+	call opt.tx_mtest2.show
+	call opt.rb_noad.show
+	call opt.rb_bonf.show
+	call opt.rb_holm.show
+	call opt.rb_sidak.show
+
+	if opt.ck_mtest {
+		call script opt_mtest_on
+	}
+	else {
+		call script opt_mtest_off
+	}
+END
+
+PROGRAM opt_output
+BEGIN
+	if opt.ck_mtest {
+		option radio(opt rb_noad rb_bonf rb_holm rb_sidak)
+	}
+	option opt.ck_coef
+	option opt.ck_accum
+	option opt.ck_notest
+	option opt.ck_const
+	option opt.ck_min
+END
+
+PROGRAM command
+BEGIN
+	put "test "
+	if main.rb_eff {
+		if main.ck_symb {
+			varlist [main.vl_eff]
+		}
+		else {
+			varlist main.vl_eff
+		}
+	}
+
+	if main.rb_coef {
+		put " " /program main_lb_coBuild_output
+	}
+	
+	if main.rb_expeq {
+		put " " /program main_lb_exBuild_output
+	}
+
+	beginoptions
+		option main.ck_symb
+		if main.rb_mat {
+			require main.cb_mat
+			put "test(" main.cb_mat ") "
+		}
+		if main.rb_showorder {
+			put "showorder "
+		}
+		put " "  /program opt_output
+	endoptions
+END
+

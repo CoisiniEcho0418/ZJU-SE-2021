@@ -1,0 +1,283 @@
+/*
+   tssmooth shwinters
+
+*! VERSION 1.2.0  09apr2007
+
+*/
+
+VERSION 9.0
+INCLUDE _std_large
+INCLUDE _ht370
+INCLUDE header
+HELP hlp1, view("help tssmooth_shwinters")
+RESET res1
+
+DIALOG main, tabtitle("Main")	///
+	label("tssmooth shwinters - Holt-Winters seasonal smoothing")
+BEGIN
+
+  DEFINE _x _xsetbu
+  DEFINE _y _top
+  INCLUDE _bu_tsset
+
+  TEXT     tx_gener    _lft      +10       _cwd3_1   .,			///
+	label("New variable:")
+
+  TEXT     tx_exp      _lft3_2   @         _cwd3_1   .,			///
+	label("Expression to forecast: ")
+
+  EDIT     ed_gener    _lft      _ss       _vnwd     .,			///
+	label("New variable ")
+
+  TEXT     tx_equals   _eqxpos   @         _eqwd     .,			///
+	center label("=")
+
+  EXP      ex_exp      _lft3_2   @         _comb3_1  .,			///
+	label("Create ...") error("Expression to forecast")
+
+DEFINE _x _lft
+DEFINE _y _ls
+DEFINE _cx _cwd1
+INCLUDE _type
+DEFINE holdy @y
+
+  CHECKBOX ck_replace  _lft3_2   holdy     _comb3_1  .,			///
+	option(replace) nomem label("Replace existing variable")
+
+  GROUPBOX gb_opts     _lft      +35       _iwd	     _ht19h,		///
+	label("Options")
+
+  RADIO    rb_parms1   _ilft     _ss       _cwd2     .,			///
+	label("Choose smoothing parameter to")				///
+	onclickon(script main_parms_on) first
+
+  DEFINE holdy1 @y
+
+  TEXT     tx_parms1    _indent2  _vss      _inwd    .,			///
+	label("minimize sum-of-squared forecast")
+
+  TEXT     tx_parms2    @         _vss      @        .,			///
+	label("errors:")
+
+  RADIO    rb_parms2   _lft4_3   holdy1    _cwd2     .,			///
+	label("Specify smoothing parameters:")				///
+	onclickon(script main_parms_off) last
+
+  EDIT     ed_parms1   _indent2  _ss       30        ., numonly		///
+	label("First box for smooth parameter")
+
+  DEFINE holdy2 @y
+
+  EDIT     ed_parms2   +35       holdy2	   30        ., numonly		///
+	label("Second box for smooth parameter")
+
+  EDIT     ed_parms3   +35       @         30        ., numonly		///
+	label("Third box for smooth parameter")
+
+  CHECKBOX ck_samp0    _ilft     +35       _cwd2     .,			///
+	label("# of observations to be used in")			///
+	onclickon(script main_samp0_on)					///
+	onclickoff(script main_samp0_off)
+  DEFINE holdy3 @y
+  TEXT     tx_samp0    _indent2  _vss      @         .,			///
+	label("obtaining initial values for recursions:")
+
+  SPINNER  sp_samp0    @         _ss	   _spwd     .,			///
+  	option(samp0) min(2) max(c(N)) default(2)
+
+  CHECKBOX ck_s0       _ilft4_3  holdy3	   _cwd2     .,			///
+	label("Initial values for the recursions:")			///
+	onclickon(script main_s0_on)					///
+	onclickoff(script main_s0_off)
+
+  EDIT     ed_s01      _indent2  _ss   	   _en7wd    .,	numonly		///
+	label("First starting values for recursions")
+
+  EDIT     ed_s02      _en7sep   @         _en7wd    .,	numonly		///
+	label("Second starting values for recursions")
+
+  CHECKBOX ck_for      _ilft     +45       _cwd1     .,			///
+	label("Periods for out-of-sample forecast:")			///
+	onclickon(main.sp_for.enable)					///
+	onclickoff(main.sp_for.disable)
+
+  DEFINE holdy4 @y
+
+  SPINNER  sp_for      _indent2  _ss       _spwd     .,			///
+	option(forecast) min(1) max(500) default(1)
+
+
+  CHECKBOX ck_period   _ilft4_3  holdy4    _cwd2     .,			///
+	label("Periodicity of the seasonality:")			///
+	onclickon(main.sp_period.enable)				///
+	onclickoff(main.sp_period.disable)
+
+  SPINNER  sp_period   _indent2   _ss       _spwd     .,		///
+	option(period) min(2) max(1000) default(2)
+
+  CHECKBOX ck_additive _ilft     _ls        _ibwd     .,		///
+	option(additive)						///
+	label("Additive seasonal Holt-Winters method")
+END
+
+DIALOG opt, tabtitle("Options")
+BEGIN
+  CHECKBOX ck_sn0_0    _lft      _top       _iwd      .,		///
+	onclickon(opt.ed_sn0_0.enable )					///
+	onclickoff(opt.ed_sn0_0.disable)				///
+	label("Name of the variable that holds the initial values for the seasonal term:")
+
+  EDIT     ed_sn0_0    _indent2  _ss       _vnwd     .,			///
+	option(sn0_0)							///
+	label("Name of the variable that holds the initial values for the seasonal term")
+
+
+  CHECKBOX ck_sn0_v    _lft      _ls       _iwd	     .,			///
+	onclickon(opt.ed_sn0_v.enable )					///
+	onclickoff(opt.ed_sn0_v.disable)				///
+	label("Name of the new variable to hold the estimated initial values for the seasonal term:")
+
+  EDIT     ed_sn0_v    _indent2  _ss       _vnwd     .,			///
+	option(sn0_v)							///
+	label("Name of the new variable to hold the estimated initial values")
+
+  CHECKBOX ck_snt_v    _lft      _ls       _iwd	     .,			///
+	onclickon(opt.ed_snt_v.enable )					///
+	onclickoff(opt.ed_snt_v.disable)				///
+	label("Name of the new variable to hold the final year's estimated seasonal terms:")
+
+  EDIT     ed_snt_v    _indent2  _ss       _vnwd     .,			///
+	option(snt_v)							///
+	label("Name of the variable that holds the estimated seasonal terms for the last year")
+
+  CHECKBOX ck_normal   _lft      _ls       _iwd      .,			///
+	option(normalize)						///
+	label("Normalize seasonal values")
+
+  CHECKBOX ck_altsta	_lft	_ms	_iwd	.,			///
+	option(altstarts)						///
+	label("Use alternative method for computing the starting values")
+END
+
+SCRIPT POSTINIT
+BEGIN
+	script max_setDefaultDifficult
+	script max_setFromForShwinters
+END
+
+INCLUDE ifin
+INCLUDE _type_list_fd
+INCLUDE max_ml
+
+SCRIPT main_parms_on
+BEGIN
+	main.ed_parms1.disable
+	main.ed_parms2.disable
+	main.ed_parms3.disable
+	script max_from_enable
+END
+
+SCRIPT main_parms_off
+BEGIN
+	script max_from_disable
+	main.ed_parms1.enable
+	main.ed_parms2.enable
+	main.ed_parms3.enable
+END
+
+SCRIPT main_samp0_on
+BEGIN
+	main.ck_s0.disable
+	main.ed_s01.disable
+	main.ed_s02.disable
+	main.sp_samp0.enable
+	main.tx_samp0.enable
+END
+
+SCRIPT main_samp0_off
+BEGIN
+	main.sp_samp0.disable
+	main.ck_s0.enable
+END
+
+SCRIPT main_s0_on
+BEGIN
+	main.sp_samp0.disable
+	main.ck_samp0.disable
+	main.tx_samp0.disable
+	main.ed_s01.enable
+	main.ed_s02.enable
+
+END
+
+SCRIPT main_s0_off
+BEGIN
+	main.ed_s01.disable
+	main.ed_s02.disable
+	main.ck_samp0.enable
+	main.tx_samp0.enable
+END
+
+PROGRAM command
+BEGIN
+	put "tssmooth shwinters "
+	INCLUDE _type_pr
+	require main.ed_gener
+	put main.ed_gener
+	put " "
+	put "= "
+	require main.ex_exp
+	put main.ex_exp
+	INCLUDE _ifin_pr
+	beginoptions
+		if main.rb_parms2 {
+			require main.ed_parms1
+			require main.ed_parms2
+			require main.ed_parms3
+			put "parms("
+			put main.ed_parms1
+			put " "
+			put main.ed_parms2
+			put " "
+			put main.ed_parms3
+			put ")"
+			put " "
+		}
+		if main.ck_s0 {
+		   	require main.ed_s01
+		   	require main.ed_s02
+			put "s0("
+			put main.ed_s01
+			put " "
+			put main.ed_s02
+			put ")"
+			put " "
+		}
+		if main.ck_samp0 {
+			optionarg main.sp_samp0
+		}
+		if main.ck_for {
+			optionarg main.sp_for
+		}
+		if main.ck_period {
+			optionarg main.sp_period
+		}
+		if opt.ck_sn0_0 {
+			require opt.ed_sn0_0
+			optionarg opt.ed_sn0_0
+		}
+		if opt.ck_sn0_v {
+			require opt.ed_sn0_v
+			optionarg opt.ed_sn0_v
+		}
+		if opt.ck_snt_v {
+			require opt.ed_snt_v
+			optionarg opt.ed_snt_v
+		}
+		option main.ck_additive
+		option main.ck_replace
+		option opt.ck_normal
+		option opt.ck_altsta
+		put " " /program max_output
+	endoptions
+END

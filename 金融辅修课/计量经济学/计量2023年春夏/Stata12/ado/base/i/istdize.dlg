@@ -1,0 +1,185 @@
+/*
+	istdize
+
+*!  VERSION 1.2.0  06feb2007
+
+	which istdize - *! version 2.1.11  20dec2004
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_large
+INCLUDE _ht290
+INCLUDE header
+HELP hlp1, view("help istdize")
+RESET res1
+
+DIALOG main, label("istdize - Indirect standardization") tabtitle("Main")
+BEGIN
+  TEXT     tx_case   _lft      _top      _cwd3_0   .,		/*
+		*/ label("# of cases variable:")
+
+  VARNAME  vn_case   @         _ss       _vnwd     .,		/*
+		*/ label("# of cases variable")
+
+  TEXT     tx_pop    _lft3_02  _top      _cwd3_0   .,		/*
+		*/ label("Population variable:")
+
+  VARNAME  vn_pop    @         _ss       _vnwd     .,		/*
+		*/ label("Population variable")
+
+  TEXT     tx_strata _lft3_03  _top      _cwd3_0   .,		/*
+		*/ label("Strata variables:")
+
+  VARLIST  vl_strata @         _ss       @         .,		/*
+		*/ label("Strata variables")
+
+  TEXT     tx_using  _lft      _ls       _iwd      .,		/*
+		*/ label("Use standard population from Stata dataset:")
+
+  FILE     fi_using  @         _ss       @         .,		/*
+		*/ error("Use standard population from Stata dataset")	/*
+		*/ filter("Stata Dataset (*.dta)|*.dta|All (*.*)|*.*")	/*
+		*/ defext(dta)						/*
+		*/ label("Browse...")
+
+  RADIO    rb_popvar @         _ls       @         .,		/*
+		*/ first					/*
+		*/ clickon("script pop_on")			/*
+		*/ label("Use population variables")
+
+  TEXT     tx_casep  _indent2  _ss       _ibwd     .,		/*
+		*/ label("Case variable:")
+
+  DEFINE holdy @y
+
+  VARNAME  vn_casep  @         _ss       _vnwd     .,		/*
+		*/ label("Case variable")
+
+  TEXT     tx_popp   _lft2     holdy     _cwd2     .,		/*
+		*/ label("Population variable:")
+
+  VARNAME  vn_popp   @         _ss       _vnwd     .,		/*
+		*/ option(by)					/*
+		*/ label("Population variable")
+
+  RADIO    rb_rate   _lft      _ls       _iwd      .,		/*
+		*/ last 					/*
+		*/ clickon("script rates_on")			/*
+		*/ label("Use stratum-specific rates")
+
+  TEXT     tx_rate   _indent2  _ss       _ibwd     .,		/*
+		*/ label("Stratum-specific rates variable:")
+
+  DEFINE holdy @y
+
+  VARNAME  vn_rate   @         _ss       _vnwd     .,		/*
+		*/ label("Stratum-specific rates variable")
+
+  TEXT     tx_crude  _lft2     holdy     _cwd2     .,		/*
+		*/ label("Crude rate value or variable:")
+
+  VARNAME  ed_crude  @         _ss       _vnwd     .,		/*
+		*/ label("Crude rate value or variable")
+
+  DEFINE _x _lft
+  DEFINE _cx _spr
+  DEFINE _y _xls
+  INCLUDE _sp_level
+END
+
+SCRIPT pop_on
+BEGIN
+	main.vn_casep.enable
+	main.vn_popp.enable
+	main.vn_rate.disable
+	main.ed_crude.disable
+END
+
+SCRIPT rates_on
+BEGIN
+	main.vn_casep.disable
+	main.vn_popp.disable
+	main.vn_rate.enable
+	main.ed_crude.enable
+END
+
+INCLUDE ifin
+
+DIALOG opt, tabtitle("Options")
+BEGIN
+  TEXT     tx_byvars _lft      _top      _iwd      .,		/*
+		*/ label("Group variables:")
+
+  VARLIST  vl_byvars @         _ss       @         .,		/*
+		*/ option(by)					/*
+		*/ label("Group variables")
+
+  CHECKBOX ck_format    @	_ls	@	.,		///
+	onclickon(script format_on)				///
+	onclickoff(script format_off)				///
+	label("Overide display format for numbers in final summary table")
+  EDIT     ed_format	+20	_ss	200	.,		///
+	option(format)						///
+	label("Display format")
+  BUTTON   bu_format	+205	@	80	.,		///
+	label("Create...")					///
+	onpush(script showFormatDialog)				///
+	tooltip("Create display format")
+
+  CHECKBOX ck_print  _lft      _ls       _iwd      .,		/*
+		*/ option(print)				/*
+		*/ label("Include table summary of standard population in output")
+END
+
+
+SCRIPT showFormatDialog
+BEGIN
+	create STRING formatString
+	create CHILD format_chooser
+	format_chooser.setExitString formatString
+	format_chooser.setExitAction "opt.ed_format.setvalue class formatString.value"
+END
+
+SCRIPT format_on
+BEGIN
+  	opt.ed_format.enable
+  	opt.bu_format.enable
+END
+
+SCRIPT format_off
+BEGIN
+  	opt.ed_format.disable
+	opt.bu_format.disable
+END
+
+
+PROGRAM command
+BEGIN
+	put "istdize "
+	varlist main.vn_case
+	varlist main.vn_pop
+	varlist main.vl_strata
+	require main.fi_using
+	put "using " `"""' main.fi_using `"""'
+	INCLUDE _ifin_pr
+	beginoptions
+		if main.rb_popvar {
+			require main.vn_casep
+			require main.vn_popp
+			put "popvars(" main.vn_casep " " main.vn_popp ") "
+		}
+		if main.rb_rate {
+			require main.vn_rate
+			require main.ed_crude
+			put "rate(" main.vn_rate " " main.ed_crude ") "
+		}
+		if opt.vl_byvars {
+			optionarg opt.vl_byvars
+		}
+		option opt.ck_print
+		optionarg opt.ed_format
+		INCLUDE _level_main_pr
+	endoptions
+END

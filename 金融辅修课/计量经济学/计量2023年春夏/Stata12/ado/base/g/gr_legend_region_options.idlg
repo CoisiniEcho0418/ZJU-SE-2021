@@ -1,0 +1,225 @@
+/*
+    gr_legend_region_options.idlg
+    
+*!  VERSION 1.0.0  28apr2011
+    	
+	// SCRIPTS and PROGRAMS for external use
+		*
+*/
+
+
+DEFINE _clwd	15
+DEFINE _wd	150
+DEFINE _sep	+155
+DEFINE _wd2	140
+DEFINE _sep2	+145
+DEFINE _cbwd	120
+DEFINE _cbsep	+125
+
+SCRIPT region_PREINIT
+BEGIN
+	create STRING tmp
+	create ARRAY  tmpArray
+	create STRING region_imarginResult
+	create STRING region_omarginResult
+END
+
+SCRIPT region_POSTINIT
+BEGIN
+	program region_checkIMarginResult
+	program region_checkOMarginResult
+END
+
+
+DIALOG region, tabtitle("Region")
+BEGIN
+  GROUPBOX gb_region	_lft	_top	_iwd	_ht19h,		///
+	label("Region properties")
+  TEXT     tx_bclr	_ilft	_ss	_wd	.,		///
+	label("Fill color:") right
+  COMBOBOX cb_bclr	_sep	@	_cbwd	.,		///
+	dropdownlist contents(colors) option(fcolor)		///
+	onselchangelist(region_cl_bclr_sel)
+  COLOR    cl_bclr   	_cbsep	@	_clwd	., 		///
+	option(fcolor)
+  
+  TEXT     tx_imargin	_ilft	_mls	_wd	.,		///
+	label("Inside margin:") right
+  COMBOBOX cb_imargin	_sep	@	_cbwd	.,		///
+	dropdownlist contents(margin) option(margin)		///
+	onselchange(program region_cb_imargin_check)
+  BUTTON   bu_imargin	_vnsep	@	_clwd	.,		///
+	label("..") tooltip("Custom margin")			///
+	onpush(script region_show_imargin_dialog)
+	
+  TEXT     tx_omargin	_ilft	_mls	_wd	.,		///
+	label("Outside margin:") right
+  COMBOBOX cb_omargin	_sep	@	_cbwd	.,		///
+	dropdownlist contents(margin) option(bmargin)  		///
+	onselchange(program region_cb_omargin_check)
+  BUTTON   bu_omargin	_vnsep	@	_clwd	.,		///
+	label("..") tooltip("Custom margin")			///
+	onpush(script region_show_omargin_dialog)
+
+  TEXT     tx_blclr	_ilft	_mls	_wd	.,		///
+	label("Outline color:") right
+  COMBOBOX cb_blclr	_sep   	@	_cbwd	.,		///
+	dropdownlist contents(colors) option(lcolor)		///
+	onselchangelist(region_cl_blclr_sel)
+  COLOR    cl_blclr	_cbsep	@	_clwd	., 		///
+	option(lcolor)
+  
+  TEXT     tx_lwidth	_ilft	_mls	_wd	.,		///
+	label("Outline width:") right
+  COMBOBOX cb_lwidth	_sep	@	_cbwd	.,		///
+	dropdown contents(linewidths) option(lwidth)
+	
+  TEXT     tx_lpattern	_ilft	_mls	_wd	.,		///
+	label("Outline pattern:") right
+  COMBOBOX cb_lpattern	_sep	@	_cbwd	.,		///
+	dropdownlist contents(linepatterns) option(lpattern)
+	
+  CHECKBOX ck_bexpand	_ilft	_ls	_ibwd	.,		///
+	option(bexpand) 					///
+	label("Expand legend in direction of text")
+END
+
+PROGRAM region_cb_imargin_check
+BEGIN
+	if region.cb_imargin.iseq("custom") {
+		call region.bu_imargin.show
+	}
+	else {
+		call region.bu_imargin.hide
+	}
+END
+
+SCRIPT region_show_imargin_dialog
+BEGIN
+	create CHILD gr_margin_create AS region_imargin_dlg
+	region_imargin_dlg.setExitString region_imarginResult
+	region_imargin_dlg.setExitAction "program region_checkIMarginResult"
+END	
+PROGRAM region_checkIMarginResult
+BEGIN
+	if region_imarginResult {
+		call region_imarginResult.tokenize tmpArray
+		call tmp.setvalue "Custom margin "
+		call tmp.append "(Left:"
+		call tmp.append class tmpArray[1]
+		call tmp.append " Right:"
+		call tmp.append class tmpArray[2]
+		call tmp.append " Bottom:"
+		call tmp.append class tmpArray[3]
+		call tmp.append " Top:"
+		call tmp.append class tmpArray[4]
+		call tmp.append ")"
+		call tmp.withvalue region.bu_imargin.settooltip "@"
+	}
+	else {
+		call region.bu_imargin.settooltip "Custom margin (not defined)"
+	}
+END
+
+PROGRAM region_cb_omargin_check
+BEGIN
+	if region.cb_omargin.iseq("custom") {
+		call region.bu_omargin.show
+	}
+	else {
+		call region.bu_omargin.hide
+	}
+END
+
+SCRIPT region_show_omargin_dialog
+BEGIN
+	create CHILD gr_margin_create AS region_omargin_dlg
+	region_omargin_dlg.setExitString region_omarginResult
+	region_omargin_dlg.setExitAction "program region_checkOMarginResult"
+END	
+PROGRAM region_checkOMarginResult
+BEGIN
+	if region_omarginResult {
+		call region_omarginResult.tokenize tmpArray
+		call tmp.setvalue "Custom margin "
+		call tmp.append "(Left:"
+		call tmp.append class tmpArray[1]
+		call tmp.append " Right:"
+		call tmp.append class tmpArray[2]
+		call tmp.append " Bottom:"
+		call tmp.append class tmpArray[3]
+		call tmp.append " Top:"
+		call tmp.append class tmpArray[4]
+		call tmp.append ")"
+		call tmp.withvalue region.bu_omargin.settooltip "@"
+	}
+	else {
+		call region.bu_omargin.settooltip "Custom margin (not defined)"
+	}
+END
+
+LIST region_cl_bclr_sel
+BEGIN
+	region.cl_bclr.hide
+	region.cl_bclr.show
+	region.cl_bclr.hide
+END
+
+LIST region_cl_blclr_sel
+BEGIN
+	region.cl_blclr.hide
+	region.cl_blclr.show
+	region.cl_blclr.hide
+END
+
+PROGRAM region_output_wrk
+BEGIN
+	if region.cl_bclr.isvisible() {
+		optionarg /quoted region.cl_bclr
+	}
+	if ! region.cl_bclr.isvisible() {
+		optionarg /hidedefault region.cb_bclr
+	}
+	if region.cb_imargin.isneq("custom") {
+		optionarg /hidedefault region.cb_imargin
+	}
+	else {
+		if region_imarginResult {
+			put " margin("
+			put region_imarginResult
+			put ") "
+		}
+	}
+
+	if region.cl_blclr.isvisible() {
+		optionarg /quoted region.cl_blclr
+	}
+	if ! region.cl_blclr.isvisible() {
+		optionarg /hidedefault region.cb_blclr
+	}
+	optionarg /hidedefault region.cb_lwidth
+	optionarg /hidedefault region.cb_lpattern
+END
+
+PROGRAM gr_legend_region_output
+BEGIN
+	if region.cb_bclr | region.cb_imargin 			///
+		| region.cb_blclr | region.cb_lwidth 		///
+		| region.cb_lpattern 				///
+	{
+		put " region("
+		put /program region_output_wrk
+		put ") "
+	}
+	if region.cb_omargin.isneq("custom") {
+		optionarg /hidedefault region.cb_omargin
+	}
+	else {
+		if region_omarginResult {
+			put " bmargin("
+			put region_omarginResult
+			put ") "
+		}
+	}
+	option region.ck_bexpand
+END

@@ -1,0 +1,5 @@
+*! version 1.0.1  05apr2005
+sequence 410
+label "Light bluish-gray"
+
+set rgb "234 242 243"

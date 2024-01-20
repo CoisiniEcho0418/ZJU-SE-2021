@@ -1,0 +1,48 @@
+/*
+ 	nlogittree	
+
+*!  VERSION 1.1.1  20feb2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help nlogittree")
+RESET res1
+
+DIALOG main, label("nlogittree - Display tree structure") tabtitle("Main")
+BEGIN
+  TEXT     tx_varlist     _lft        _top       _iwd       .,		/*
+		*/ label("Variables: (list from bottom level to top level)")
+  VARLIST  vl_varlist        @         _ss          @       .,		/*
+		*/ label("Variables")
+  TEXT     tx_choice         @         _ls          @       .,		/*
+		*/ label("Choice indicator variable:")
+  VARNAME  vl_choice         @         _ss      _vnwd       .,		/*
+		*/ option(choice)					/*
+		*/ label("Choice indicator variable")
+  CHECKBOX ck_nolabel        @         _ls       _iwd       .,		/*
+		*/ option("nolabel")					/*
+		*/ label("Use numeric codes rather than value labels")
+  CHECKBOX ck_nobranches     @         _ms          @       .,		/*
+		*/ option("nobranches")					/*
+		*/ label("Suppress branches")
+END
+
+INCLUDE weights_f
+
+PROGRAM command
+BEGIN
+	put "nlogittree"
+	varlist main.vl_varlist
+	put " " /program weights_output
+	beginoptions
+		optionarg main.vl_choice
+		option main.ck_nolabel
+		option main.ck_nobranches
+	endoptions
+END
+

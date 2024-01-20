@@ -1,0 +1,63 @@
+/*
+  manova
+
+*! VERSION 2.0.0  16may2009
+
+  keyword:  eclass
+*/
+
+VERSION 11.0
+
+INCLUDE _std_medium
+INCLUDE header
+HELP hlp1, view("help manova")
+RESET res1
+
+DIALOG main, 								///
+label("manova - Multivariate analysis of variance and covariance")	///
+tabtitle("Model")
+BEGIN
+  TEXT tx_dv		_lft	_top	_iwd	.,			///
+	label("Dependent variables:")
+  VARLIST vl_dv		@	_ss	@	.,			///
+	label("Dependent variables")
+
+  BUTTON bu_examples	_lft4_4	_ms	_cwd4_1	.,			///
+	push("script main_examples")					///
+	label("Examples...")
+  TEXT tx_terms		_lft	+5	_vlwd	.,			///
+	label("Model:")
+  VARLIST vl_terms	@	_ss	_iwd	.,			///
+	fvanova								///
+	label("Model")
+
+  CHECKBOX ck_noconst	_lft	_ls	_iwd	.,			///
+	option(noconstant)						///
+	label("Suppress constant term")
+  CHECKBOX ck_dropempty	@	_ms	@	.,			///
+	option(dropemptycells)						///
+	label("Drop empty cells from design matrix")
+END
+
+SCRIPT main_examples
+BEGIN
+	view help anova_example##|_new
+END
+
+INCLUDE byifin
+INCLUDE weights_fa
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "manova "
+	varlist main.vl_dv
+	put " = "
+	varlist main.vl_terms
+	INCLUDE _weights_pr
+	INCLUDE _ifin_pr
+	beginoptions
+		option main.ck_noconst
+		option main.ck_dropempty
+	endoptions
+END

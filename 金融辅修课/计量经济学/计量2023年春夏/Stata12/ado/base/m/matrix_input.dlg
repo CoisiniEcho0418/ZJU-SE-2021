@@ -1,0 +1,625 @@
+/*
+	matrix input
+
+*!  VERSION 1.4.2  05may2011
+
+*/
+
+VERSION 10.0
+SYNCHRONOUS_ONLY
+DEFINE _dlgwd 740
+DEFINE _dlght 540
+INCLUDE header
+
+HELP hlp1, view("help matrix_define")
+RESET res1
+
+DEFINE lbwd    60
+DEFINE lbsep  +65
+DEFINE lbtx    55
+DEFINE txsep  +60
+DEFINE mawd   120
+DEFINE masep +160
+
+DEFINE lft     10
+DEFINE ttop    10
+DEFINE top     85
+DEFINE ss     +20
+DEFINE ms     +25
+DEFINE wid     39
+DEFINE sep    +40
+
+SCRIPT PREINIT
+BEGIN
+	create STRING cmd
+	create STRING dlgName
+	dlgName.setvalue class _dlg_rsrcname	
+	create PBOOLEAN isChild
+
+	create STRING loadMatName
+	create DOUBLE rowCount	// loaded by ado code 
+	create DOUBLE colCount	// loaded by ado code
+
+	// used to prevent normal event handler from executing while loading
+	create BOOLEAN isLoading
+	create BOOLEAN isSyncOk
+	create BOOLEAN addingConstant
+	create BOOLEAN loadingMatName
+	program main_size_changed // initialize the layout
+	
+	isLoading.settrue
+	
+	create BOOLEAN isChildContext	// to be set by parent dialog 
+END
+
+SCRIPT POSTINIT
+BEGIN
+	isLoading.setfalse
+END
+
+PROGRAM main_size_changed
+BEGIN
+	if ! isLoading & !loadingMatName {
+		put "matrix_input__dlg setLayout , "
+		put "clsname(" dlgName ") "
+		put "rows(" main.sp_rows ") "
+		put "cols(" main.sp_cols ") "
+		put /on main.ck_sym
+		stata hidden immediate
+		call program main_cell_changed
+	}
+END
+
+PROGRAM main_sym_changed
+BEGIN
+    if ! isLoading {
+	if main.ck_sym {
+		call main.sp_cols.hide
+		call main.tx_cols.hide
+		call main.tx_rows.setlabel "Rows and columns"
+		call main.tx_rows.setposition . . 180 .
+		
+		if !loadingMatName {
+
+			call  isSyncOk.settrue
+			put "matrix_input__dlg isChangeSyncOk, " //calls back to showOverrideBox where isSyncOk is reset.
+			put "clsname(" dlgName ") "
+			stata hidden immediate
+			if isSyncOk {
+				call program main_size_changed
+				call program main_cell_changed
+			}
+			if ! isSyncOk {
+				call main.ck_sym.setoff
+			}
+		}
+	}
+	if ! main.ck_sym {
+		call main.sp_cols.show
+		call main.tx_cols.show
+		call main.tx_rows.setlabel "Rows"
+		call main.tx_rows.setposition . . 60 .
+		call program main_size_changed
+	}
+    }
+END
+
+PROGRAM main_cell_changed
+BEGIN
+	if !addingConstant & !loadingMatName {
+		if main.ck_sym {
+			put "matrix_input__dlg syncUpper , "
+			put "clsname(" dlgName ") "
+			put "size(" main.sp_rows ") "
+			stata hidden immediate
+		}
+	}
+END
+
+PROGRAM showOverrideBox
+BEGIN
+	call isSyncOk.setfalse
+	stopbox rusure 	///
+		"Values exist in the upper triangle that are not symmetric with the lower triangle." ///
+		"By default Stata will replace values in the upper triangle." ///
+		" " "Ok to proceed?"
+	call isSyncOk.settrue
+END
+
+SCRIPT showGetMatrixDialog
+BEGIN
+	create CHILD matrix_input_get_matname
+	matrix_input_get_matname.setExitString loadMatName
+	matrix_input_get_matname.setExitAction "program getMatNameResult"
+END
+PROGRAM getMatNameResult
+BEGIN
+	call create DOUBLE maxCols
+	call create DOUBLE maxRows	
+	call maxCols.setvalue class main.sp_cols.max
+	call maxRows.setvalue class main.sp_rows.max
+
+	call loadingMatName.settrue
+	put "matrix_input__dlg "
+	put "loadMatrix , "
+	put "clsname(" dlgName ") "
+	put "matrix(" loadMatName ") "
+	put "rmax(" maxRows ") "
+	put "cmax(" maxCols ") "
+
+	stata hidden immediate
+	call loadingMatName.setfalse
+
+	call program main_size_changed
+
+	/* rowCount and colCount set by matrix_input__dlg loadMatrix */	
+	if rowCount.isgt(maxRows) & colCount.isgt(maxCols) {
+		stopbox stop "The matrix is too large to display. Some rows and columns have been omitted.
+	}
+	else {
+		if rowCount.isgt(maxRows) {
+			stopbox stop "The matrix is too large to display. Some rows have been omitted.
+		}
+		else {
+			if colCount.isgt(maxCols) {
+				stopbox stop "The matrix is too large to display. Some columns have been omitted.
+			}
+		}
+	}
+END
+
+SCRIPT showConstantDialog
+BEGIN
+	create STRING constantResult
+	create CHILD matrix_input_set_constant
+	matrix_input_set_constant.setExitString constantResult
+	matrix_input_set_constant.setExitAction "program getConstantResult"
+END
+PROGRAM getConstantResult
+BEGIN
+	call create STRING constType
+	call create STRING constValue
+	call create ARRAY tmpArray
+	call constantResult.tokenize tmpArray
+	call constType.setvalue class tmpArray[1]
+	call constValue.setvalue class tmpArray[2]
+	
+	call addingConstant.settrue
+	put "matrix_input__dlg "
+	put constType ", "
+	put "clsname(" dlgName ") "
+	put "rows(" main.sp_rows ") "
+	if (main.ck_sym) {
+		put "cols(" main.sp_rows ") "
+	}
+	if (!main.ck_sym) {
+		put "cols(" main.sp_cols ") "
+	}
+	put "value(" constValue ") "
+	stata hidden immediate
+	call addingConstant.setfalse
+END
+
+DIALOG main, label("matrix input - Inputting a matrix") tabtitle("Main")
+BEGIN
+  TEXT     tx_name   lft   ttop  mawd  ., label("Create matrix named:")
+
+  EDIT     ed_name   @     ss    mawd  ., max(32) label("Create matrix named")
+
+  CHECKBOX ck_sym    @     +30   155   ., 				///
+  	label("Create symmetric matrix")				///
+  	onclickon(program main_sym_changed)				///
+  	onclickoff(program main_sym_changed) option(symmetric)
+
+  SPINNER  sp_rows   masep 30    lbwd  ., min(1) default(3) max(18)	///
+  	onchange(program main_size_changed)
+  TEXT     tx_rows   lbsep @     lbtx  ., label("Rows")
+
+  SPINNER  sp_cols   txsep 30    lbwd  ., min(1) default(3) max(18)	///
+  	onchange(program main_size_changed)
+  TEXT     tx_cols   lbsep @     lbtx  ., label("Columns")
+
+  BUTTON   bu_fill   620   ttop  110   ., label("Load constant...")	///
+	onpush(script showConstantDialog)				///
+	tooltip("Load diagonal or entire matrix with a specified constant value")
+
+  BUTTON   bu_fillM  @     +25   110   ., label("Load matrix...")	///
+	onpush(script showGetMatrixDialog)				///
+	tooltip("Load a matrix already in memory")	
+
+  EDIT     ed_r1c1   lft   top   wid   ., label("Row 1, column 1") numonly
+  EDIT     ed_r1c2   sep   @     @     ., label("Row 1, column 2") numonly
+  EDIT     ed_r1c3   sep   @     @     ., label("Row 1, column 3") numonly
+  EDIT     ed_r1c4   sep   @     @     ., label("Row 1, column 4") numonly
+  EDIT     ed_r1c5   sep   @     @     ., label("Row 1, column 5") numonly
+  EDIT     ed_r1c6   sep   @     @     ., label("Row 1, column 6") numonly
+  EDIT     ed_r1c7   sep   @     @     ., label("Row 1, column 7") numonly
+  EDIT     ed_r1c8   sep   @     @     ., label("Row 1, column 8") numonly
+  EDIT     ed_r1c9   sep   @     @     ., label("Row 1, column 9") numonly
+  EDIT     ed_r1c10  sep   @     @     ., label("Row 1, column 10") numonly
+  EDIT     ed_r1c11  sep   @     @     ., label("Row 1, column 11") numonly
+  EDIT     ed_r1c12  sep   @     @     ., label("Row 1, column 12") numonly
+  EDIT     ed_r1c13  sep   @     @     ., label("Row 1, column 13") numonly
+  EDIT     ed_r1c14  sep   @     @     ., label("Row 1, column 14") numonly
+  EDIT     ed_r1c15  sep   @     @     ., label("Row 1, column 15") numonly
+  EDIT     ed_r1c16  sep   @     @     ., label("Row 1, column 16") numonly
+  EDIT     ed_r1c17  sep   @     @     ., label("Row 1, column 17") numonly
+  EDIT     ed_r1c18  sep   @     @     ., label("Row 1, column 18") numonly
+
+  EDIT     ed_r2c1   lft   ms    @     ., label("Row 2, column 1") numonly onchange(program main_cell_changed)
+  EDIT     ed_r2c2   sep   @     @     ., label("Row 2, column 2") numonly
+  EDIT     ed_r2c3   sep   @     @     ., label("Row 2, column 3") numonly
+  EDIT     ed_r2c4   sep   @     @     ., label("Row 2, column 4") numonly
+  EDIT     ed_r2c5   sep   @     @     ., label("Row 2, column 5") numonly
+  EDIT     ed_r2c6   sep   @     @     ., label("Row 2, column 6") numonly
+  EDIT     ed_r2c7   sep   @     @     ., label("Row 2, column 7") numonly
+  EDIT     ed_r2c8   sep   @     @     ., label("Row 2, column 8") numonly
+  EDIT     ed_r2c9   sep   @     @     ., label("Row 2, column 9") numonly
+  EDIT     ed_r2c10  sep   @     @     ., label("Row 2, column 10") numonly
+  EDIT     ed_r2c11  sep   @     @     ., label("Row 2, column 11") numonly
+  EDIT     ed_r2c12  sep   @     @     ., label("Row 2, column 12") numonly
+  EDIT     ed_r2c13  sep   @     @     ., label("Row 2, column 13") numonly
+  EDIT     ed_r2c14  sep   @     @     ., label("Row 2, column 14") numonly
+  EDIT     ed_r2c15  sep   @     @     ., label("Row 2, column 15") numonly
+  EDIT     ed_r2c16  sep   @     @     ., label("Row 2, column 16") numonly
+  EDIT     ed_r2c17  sep   @     @     ., label("Row 2, column 17") numonly
+  EDIT     ed_r2c18  sep   @     @     ., label("Row 2, column 18") numonly
+
+  EDIT     ed_r3c1   lft   ms    @     ., label("Row 3, column 1") numonly onchange(program main_cell_changed)
+  EDIT     ed_r3c2   sep   @     @     ., label("Row 3, column 2") numonly onchange(program main_cell_changed)
+  EDIT     ed_r3c3   sep   @     @     ., label("Row 3, column 3") numonly
+  EDIT     ed_r3c4   sep   @     @     ., label("Row 3, column 4") numonly
+  EDIT     ed_r3c5   sep   @     @     ., label("Row 3, column 5") numonly
+  EDIT     ed_r3c6   sep   @     @     ., label("Row 3, column 6") numonly
+  EDIT     ed_r3c7   sep   @     @     ., label("Row 3, column 7") numonly
+  EDIT     ed_r3c8   sep   @     @     ., label("Row 3, column 8") numonly
+  EDIT     ed_r3c9   sep   @     @     ., label("Row 3, column 9") numonly
+  EDIT     ed_r3c10  sep   @     @     ., label("Row 3, column 10") numonly
+  EDIT     ed_r3c11  sep   @     @     ., label("Row 3, column 11") numonly
+  EDIT     ed_r3c12  sep   @     @     ., label("Row 3, column 12") numonly
+  EDIT     ed_r3c13  sep   @     @     ., label("Row 3, column 13") numonly
+  EDIT     ed_r3c14  sep   @     @     ., label("Row 3, column 14") numonly
+  EDIT     ed_r3c15  sep   @     @     ., label("Row 3, column 15") numonly
+  EDIT     ed_r3c16  sep   @     @     ., label("Row 3, column 16") numonly
+  EDIT     ed_r3c17  sep   @     @     ., label("Row 3, column 17") numonly
+  EDIT     ed_r3c18  sep   @     @     ., label("Row 3, column 18") numonly
+
+  EDIT     ed_r4c1   lft   ms    @     ., label("Row 4, column 1") numonly onchange(program main_cell_changed)
+  EDIT     ed_r4c2   sep   @     @     ., label("Row 4, column 2") numonly onchange(program main_cell_changed)
+  EDIT     ed_r4c3   sep   @     @     ., label("Row 4, column 3") numonly onchange(program main_cell_changed)
+  EDIT     ed_r4c4   sep   @     @     ., label("Row 4, column 4") numonly
+  EDIT     ed_r4c5   sep   @     @     ., label("Row 4, column 5") numonly
+  EDIT     ed_r4c6   sep   @     @     ., label("Row 4, column 6") numonly
+  EDIT     ed_r4c7   sep   @     @     ., label("Row 4, column 7") numonly
+  EDIT     ed_r4c8   sep   @     @     ., label("Row 4, column 8") numonly
+  EDIT     ed_r4c9   sep   @     @     ., label("Row 4, column 9") numonly
+  EDIT     ed_r4c10  sep   @     @     ., label("Row 4, column 10") numonly
+  EDIT     ed_r4c11  sep   @     @     ., label("Row 4, column 11") numonly
+  EDIT     ed_r4c12  sep   @     @     ., label("Row 4, column 12") numonly
+  EDIT     ed_r4c13  sep   @     @     ., label("Row 4, column 13") numonly
+  EDIT     ed_r4c14  sep   @     @     ., label("Row 4, column 14") numonly
+  EDIT     ed_r4c15  sep   @     @     ., label("Row 4, column 15") numonly
+  EDIT     ed_r4c16  sep   @     @     ., label("Row 4, column 16") numonly
+  EDIT     ed_r4c17  sep   @     @     ., label("Row 4, column 17") numonly
+  EDIT     ed_r4c18  sep   @     @     ., label("Row 4, column 18") numonly
+
+  EDIT     ed_r5c1   lft   ms    @     ., label("Row 5, column 1") numonly onchange(program main_cell_changed)
+  EDIT     ed_r5c2   sep   @     @     ., label("Row 5, column 2") numonly onchange(program main_cell_changed)
+  EDIT     ed_r5c3   sep   @     @     ., label("Row 5, column 3") numonly onchange(program main_cell_changed)
+  EDIT     ed_r5c4   sep   @     @     ., label("Row 5, column 4") numonly onchange(program main_cell_changed)
+  EDIT     ed_r5c5   sep   @     @     ., label("Row 5, column 5") numonly
+  EDIT     ed_r5c6   sep   @     @     ., label("Row 5, column 6") numonly
+  EDIT     ed_r5c7   sep   @     @     ., label("Row 5, column 7") numonly
+  EDIT     ed_r5c8   sep   @     @     ., label("Row 5, column 8") numonly
+  EDIT     ed_r5c9   sep   @     @     ., label("Row 5, column 9") numonly
+  EDIT     ed_r5c10  sep   @     @     ., label("Row 5, column 10") numonly
+  EDIT     ed_r5c11  sep   @     @     ., label("Row 5, column 11") numonly
+  EDIT     ed_r5c12  sep   @     @     ., label("Row 5, column 12") numonly
+  EDIT     ed_r5c13  sep   @     @     ., label("Row 5, column 13") numonly
+  EDIT     ed_r5c14  sep   @     @     ., label("Row 5, column 14") numonly
+  EDIT     ed_r5c15  sep   @     @     ., label("Row 5, column 15") numonly
+  EDIT     ed_r5c16  sep   @     @     ., label("Row 5, column 16") numonly
+  EDIT     ed_r5c17  sep   @     @     ., label("Row 5, column 17") numonly
+  EDIT     ed_r5c18  sep   @     @     ., label("Row 5, column 18") numonly
+
+  EDIT     ed_r6c1   lft   ms    @     ., label("Row 6, column 1") numonly onchange(program main_cell_changed)
+  EDIT     ed_r6c2   sep   @     @     ., label("Row 6, column 2") numonly onchange(program main_cell_changed)
+  EDIT     ed_r6c3   sep   @     @     ., label("Row 6, column 3") numonly onchange(program main_cell_changed)
+  EDIT     ed_r6c4   sep   @     @     ., label("Row 6, column 4") numonly onchange(program main_cell_changed)
+  EDIT     ed_r6c5   sep   @     @     ., label("Row 6, column 5") numonly onchange(program main_cell_changed)
+  EDIT     ed_r6c6   sep   @     @     ., label("Row 6, column 6") numonly
+  EDIT     ed_r6c7   sep   @     @     ., label("Row 6, column 7") numonly
+  EDIT     ed_r6c8   sep   @     @     ., label("Row 6, column 8") numonly
+  EDIT     ed_r6c9   sep   @     @     ., label("Row 6, column 9") numonly
+  EDIT     ed_r6c10  sep   @     @     ., label("Row 6, column 10") numonly
+  EDIT     ed_r6c11  sep   @     @     ., label("Row 6, column 11") numonly
+  EDIT     ed_r6c12  sep   @     @     ., label("Row 6, column 12") numonly
+  EDIT     ed_r6c13  sep   @     @     ., label("Row 6, column 13") numonly
+  EDIT     ed_r6c14  sep   @     @     ., label("Row 6, column 14") numonly
+  EDIT     ed_r6c15  sep   @     @     ., label("Row 6, column 15") numonly
+  EDIT     ed_r6c16  sep   @     @     ., label("Row 6, column 16") numonly
+  EDIT     ed_r6c17  sep   @     @     ., label("Row 6, column 17") numonly
+  EDIT     ed_r6c18  sep   @     @     ., label("Row 6, column 18") numonly
+
+  EDIT     ed_r7c1   lft   ms    @     ., label("Row 7, column 1") numonly onchange(program main_cell_changed)
+  EDIT     ed_r7c2   sep   @     @     ., label("Row 7, column 2") numonly onchange(program main_cell_changed)
+  EDIT     ed_r7c3   sep   @     @     ., label("Row 7, column 3") numonly onchange(program main_cell_changed)
+  EDIT     ed_r7c4   sep   @     @     ., label("Row 7, column 4") numonly onchange(program main_cell_changed)
+  EDIT     ed_r7c5   sep   @     @     ., label("Row 7, column 5") numonly onchange(program main_cell_changed)
+  EDIT     ed_r7c6   sep   @     @     ., label("Row 7, column 6") numonly onchange(program main_cell_changed)
+  EDIT     ed_r7c7   sep   @     @     ., label("Row 7, column 7") numonly
+  EDIT     ed_r7c8   sep   @     @     ., label("Row 7, column 8") numonly
+  EDIT     ed_r7c9   sep   @     @     ., label("Row 7, column 9") numonly
+  EDIT     ed_r7c10  sep   @     @     ., label("Row 7, column 10") numonly
+  EDIT     ed_r7c11  sep   @     @     ., label("Row 7, column 11") numonly
+  EDIT     ed_r7c12  sep   @     @     ., label("Row 7, column 12") numonly
+  EDIT     ed_r7c13  sep   @     @     ., label("Row 7, column 13") numonly
+  EDIT     ed_r7c14  sep   @     @     ., label("Row 7, column 14") numonly
+  EDIT     ed_r7c15  sep   @     @     ., label("Row 7, column 15") numonly
+  EDIT     ed_r7c16  sep   @     @     ., label("Row 7, column 16") numonly
+  EDIT     ed_r7c17  sep   @     @     ., label("Row 7, column 17") numonly
+  EDIT     ed_r7c18  sep   @     @     ., label("Row 7, column 18") numonly
+
+  EDIT     ed_r8c1   lft   ms    @     ., label("Row 8, column 1") numonly onchange(program main_cell_changed)
+  EDIT     ed_r8c2   sep   @     @     ., label("Row 8, column 2") numonly onchange(program main_cell_changed)
+  EDIT     ed_r8c3   sep   @     @     ., label("Row 8, column 3") numonly onchange(program main_cell_changed)
+  EDIT     ed_r8c4   sep   @     @     ., label("Row 8, column 4") numonly onchange(program main_cell_changed)
+  EDIT     ed_r8c5   sep   @     @     ., label("Row 8, column 5") numonly onchange(program main_cell_changed)
+  EDIT     ed_r8c6   sep   @     @     ., label("Row 8, column 6") numonly onchange(program main_cell_changed)
+  EDIT     ed_r8c7   sep   @     @     ., label("Row 8, column 7") numonly onchange(program main_cell_changed)
+  EDIT     ed_r8c8   sep   @     @     ., label("Row 8, column 8") numonly
+  EDIT     ed_r8c9   sep   @     @     ., label("Row 8, column 9") numonly
+  EDIT     ed_r8c10  sep   @     @     ., label("Row 8, column 10") numonly
+  EDIT     ed_r8c11  sep   @     @     ., label("Row 8, column 11") numonly
+  EDIT     ed_r8c12  sep   @     @     ., label("Row 8, column 12") numonly
+  EDIT     ed_r8c13  sep   @     @     ., label("Row 8, column 13") numonly
+  EDIT     ed_r8c14  sep   @     @     ., label("Row 8, column 14") numonly
+  EDIT     ed_r8c15  sep   @     @     ., label("Row 8, column 15") numonly
+  EDIT     ed_r8c16  sep   @     @     ., label("Row 8, column 16") numonly
+  EDIT     ed_r8c17  sep   @     @     ., label("Row 8, column 17") numonly
+  EDIT     ed_r8c18  sep   @     @     ., label("Row 8, column 18") numonly
+
+  EDIT     ed_r9c1   lft   ms    @     ., label("Row 9, column 1") numonly onchange(program main_cell_changed)
+  EDIT     ed_r9c2   sep   @     @     ., label("Row 9, column 2") numonly onchange(program main_cell_changed)
+  EDIT     ed_r9c3   sep   @     @     ., label("Row 9, column 3") numonly onchange(program main_cell_changed)
+  EDIT     ed_r9c4   sep   @     @     ., label("Row 9, column 4") numonly onchange(program main_cell_changed)
+  EDIT     ed_r9c5   sep   @     @     ., label("Row 9, column 5") numonly onchange(program main_cell_changed)
+  EDIT     ed_r9c6   sep   @     @     ., label("Row 9, column 6") numonly onchange(program main_cell_changed)
+  EDIT     ed_r9c7   sep   @     @     ., label("Row 9, column 7") numonly onchange(program main_cell_changed)
+  EDIT     ed_r9c8   sep   @     @     ., label("Row 9, column 8") numonly onchange(program main_cell_changed)
+  EDIT     ed_r9c9   sep   @     @     ., label("Row 9, column 9") numonly
+  EDIT     ed_r9c10  sep   @     @     ., label("Row 9, column 10") numonly
+  EDIT     ed_r9c11  sep   @     @     ., label("Row 9, column 11") numonly
+  EDIT     ed_r9c12  sep   @     @     ., label("Row 9, column 12") numonly
+  EDIT     ed_r9c13  sep   @     @     ., label("Row 9, column 13") numonly
+  EDIT     ed_r9c14  sep   @     @     ., label("Row 9, column 14") numonly
+  EDIT     ed_r9c15  sep   @     @     ., label("Row 9, column 15") numonly
+  EDIT     ed_r9c16  sep   @     @     ., label("Row 9, column 16") numonly
+  EDIT     ed_r9c17  sep   @     @     ., label("Row 9, column 17") numonly
+  EDIT     ed_r9c18  sep   @     @     ., label("Row 9, column 18") numonly
+
+  EDIT     ed_r10c1  lft   ms    @     ., label("Row 10, column 1") numonly onchange(program main_cell_changed)
+  EDIT     ed_r10c2  sep   @     @     ., label("Row 10, column 2") numonly onchange(program main_cell_changed)
+  EDIT     ed_r10c3  sep   @     @     ., label("Row 10, column 3") numonly onchange(program main_cell_changed)
+  EDIT     ed_r10c4  sep   @     @     ., label("Row 10, column 4") numonly onchange(program main_cell_changed)
+  EDIT     ed_r10c5  sep   @     @     ., label("Row 10, column 5") numonly onchange(program main_cell_changed)
+  EDIT     ed_r10c6  sep   @     @     ., label("Row 10, column 6") numonly onchange(program main_cell_changed)
+  EDIT     ed_r10c7  sep   @     @     ., label("Row 10, column 7") numonly onchange(program main_cell_changed)
+  EDIT     ed_r10c8  sep   @     @     ., label("Row 10, column 8") numonly onchange(program main_cell_changed)
+  EDIT     ed_r10c9  sep   @     @     ., label("Row 10, column 9") numonly onchange(program main_cell_changed)
+  EDIT     ed_r10c10 sep   @     @     ., label("Row 10, column 10") numonly
+  EDIT     ed_r10c11  sep   @     @     ., label("Row 10, column 11") numonly
+  EDIT     ed_r10c12  sep   @     @     ., label("Row 10, column 12") numonly
+  EDIT     ed_r10c13  sep   @     @     ., label("Row 10, column 13") numonly
+  EDIT     ed_r10c14  sep   @     @     ., label("Row 10, column 14") numonly
+  EDIT     ed_r10c15  sep   @     @     ., label("Row 10, column 15") numonly
+  EDIT     ed_r10c16  sep   @     @     ., label("Row 10, column 16") numonly
+  EDIT     ed_r10c17  sep   @     @     ., label("Row 10, column 17") numonly
+  EDIT     ed_r10c18  sep   @     @     ., label("Row 10, column 18") numonly
+
+  EDIT     ed_r11c1  lft   ms    @     ., label("Row 11, column 1") numonly onchange(program main_cell_changed)
+  EDIT     ed_r11c2  sep   @     @     ., label("Row 11, column 2") numonly onchange(program main_cell_changed)
+  EDIT     ed_r11c3  sep   @     @     ., label("Row 11, column 3") numonly onchange(program main_cell_changed)
+  EDIT     ed_r11c4  sep   @     @     ., label("Row 11, column 4") numonly onchange(program main_cell_changed)
+  EDIT     ed_r11c5  sep   @     @     ., label("Row 11, column 5") numonly onchange(program main_cell_changed)
+  EDIT     ed_r11c6  sep   @     @     ., label("Row 11, column 6") numonly onchange(program main_cell_changed)
+  EDIT     ed_r11c7  sep   @     @     ., label("Row 11, column 7") numonly onchange(program main_cell_changed)
+  EDIT     ed_r11c8  sep   @     @     ., label("Row 11, column 8") numonly onchange(program main_cell_changed)
+  EDIT     ed_r11c9  sep   @     @     ., label("Row 11, column 9") numonly onchange(program main_cell_changed)
+  EDIT     ed_r11c10 sep   @     @     ., label("Row 11, column 10") numonly onchange(program main_cell_changed)
+  EDIT     ed_r11c11  sep   @     @     ., label("Row 11, column 11") numonly
+  EDIT     ed_r11c12  sep   @     @     ., label("Row 11, column 12") numonly
+  EDIT     ed_r11c13  sep   @     @     ., label("Row 11, column 13") numonly
+  EDIT     ed_r11c14  sep   @     @     ., label("Row 11, column 14") numonly
+  EDIT     ed_r11c15  sep   @     @     ., label("Row 11, column 15") numonly
+  EDIT     ed_r11c16  sep   @     @     ., label("Row 11, column 16") numonly
+  EDIT     ed_r11c17  sep   @     @     ., label("Row 11, column 17") numonly
+  EDIT     ed_r11c18  sep   @     @     ., label("Row 11, column 18") numonly
+
+  EDIT     ed_r12c1  lft   ms    @     ., label("Row 12, column 1") numonly onchange(program main_cell_changed)
+  EDIT     ed_r12c2  sep   @     @     ., label("Row 12, column 2") numonly onchange(program main_cell_changed)
+  EDIT     ed_r12c3  sep   @     @     ., label("Row 12, column 3") numonly onchange(program main_cell_changed)
+  EDIT     ed_r12c4  sep   @     @     ., label("Row 12, column 4") numonly onchange(program main_cell_changed)
+  EDIT     ed_r12c5  sep   @     @     ., label("Row 12, column 5") numonly onchange(program main_cell_changed)
+  EDIT     ed_r12c6  sep   @     @     ., label("Row 12, column 6") numonly onchange(program main_cell_changed)
+  EDIT     ed_r12c7  sep   @     @     ., label("Row 12, column 7") numonly onchange(program main_cell_changed)
+  EDIT     ed_r12c8  sep   @     @     ., label("Row 12, column 8") numonly onchange(program main_cell_changed)
+  EDIT     ed_r12c9  sep   @     @     ., label("Row 12, column 9") numonly onchange(program main_cell_changed)
+  EDIT     ed_r12c10 sep   @     @     ., label("Row 12, column 10") numonly onchange(program main_cell_changed)
+  EDIT     ed_r12c11  sep   @     @     ., label("Row 12, column 11") numonly onchange(program main_cell_changed)
+  EDIT     ed_r12c12  sep   @     @     ., label("Row 12, column 12") numonly
+  EDIT     ed_r12c13  sep   @     @     ., label("Row 12, column 13") numonly
+  EDIT     ed_r12c14  sep   @     @     ., label("Row 12, column 14") numonly
+  EDIT     ed_r12c15  sep   @     @     ., label("Row 12, column 15") numonly
+  EDIT     ed_r12c16  sep   @     @     ., label("Row 12, column 16") numonly
+  EDIT     ed_r12c17  sep   @     @     ., label("Row 12, column 17") numonly
+  EDIT     ed_r12c18  sep   @     @     ., label("Row 12, column 18") numonly
+
+  EDIT     ed_r13c1  lft   ms    @     ., label("Row 13, column 1") numonly onchange(program main_cell_changed)
+  EDIT     ed_r13c2  sep   @     @     ., label("Row 13, column 2") numonly onchange(program main_cell_changed)
+  EDIT     ed_r13c3  sep   @     @     ., label("Row 13, column 3") numonly onchange(program main_cell_changed)
+  EDIT     ed_r13c4  sep   @     @     ., label("Row 13, column 4") numonly onchange(program main_cell_changed)
+  EDIT     ed_r13c5  sep   @     @     ., label("Row 13, column 5") numonly onchange(program main_cell_changed)
+  EDIT     ed_r13c6  sep   @     @     ., label("Row 13, column 6") numonly onchange(program main_cell_changed)
+  EDIT     ed_r13c7  sep   @     @     ., label("Row 13, column 7") numonly onchange(program main_cell_changed)
+  EDIT     ed_r13c8  sep   @     @     ., label("Row 13, column 8") numonly onchange(program main_cell_changed)
+  EDIT     ed_r13c9  sep   @     @     ., label("Row 13, column 9") numonly onchange(program main_cell_changed)
+  EDIT     ed_r13c10 sep   @     @     ., label("Row 13, column 10") numonly onchange(program main_cell_changed)
+  EDIT     ed_r13c11  sep   @     @     ., label("Row 13, column 11") numonly onchange(program main_cell_changed)
+  EDIT     ed_r13c12  sep   @     @     ., label("Row 13, column 12") numonly onchange(program main_cell_changed)
+  EDIT     ed_r13c13  sep   @     @     ., label("Row 13, column 13") numonly
+  EDIT     ed_r13c14  sep   @     @     ., label("Row 13, column 14") numonly
+  EDIT     ed_r13c15  sep   @     @     ., label("Row 13, column 15") numonly
+  EDIT     ed_r13c16  sep   @     @     ., label("Row 13, column 16") numonly
+  EDIT     ed_r13c17  sep   @     @     ., label("Row 13, column 17") numonly
+  EDIT     ed_r13c18  sep   @     @     ., label("Row 13, column 18") numonly
+
+  EDIT     ed_r14c1  lft   ms    @     ., label("Row 14, column 1") numonly onchange(program main_cell_changed)
+  EDIT     ed_r14c2  sep   @     @     ., label("Row 14, column 2") numonly onchange(program main_cell_changed)
+  EDIT     ed_r14c3  sep   @     @     ., label("Row 14, column 3") numonly onchange(program main_cell_changed)
+  EDIT     ed_r14c4  sep   @     @     ., label("Row 14, column 4") numonly onchange(program main_cell_changed)
+  EDIT     ed_r14c5  sep   @     @     ., label("Row 14, column 5") numonly onchange(program main_cell_changed)
+  EDIT     ed_r14c6  sep   @     @     ., label("Row 14, column 6") numonly onchange(program main_cell_changed)
+  EDIT     ed_r14c7  sep   @     @     ., label("Row 14, column 7") numonly onchange(program main_cell_changed)
+  EDIT     ed_r14c8  sep   @     @     ., label("Row 14, column 8") numonly onchange(program main_cell_changed)
+  EDIT     ed_r14c9  sep   @     @     ., label("Row 14, column 9") numonly onchange(program main_cell_changed)
+  EDIT     ed_r14c10 sep   @     @     ., label("Row 14, column 10") numonly onchange(program main_cell_changed)
+  EDIT     ed_r14c11  sep   @     @     ., label("Row 14, column 11") numonly onchange(program main_cell_changed)
+  EDIT     ed_r14c12  sep   @     @     ., label("Row 14, column 12") numonly onchange(program main_cell_changed)
+  EDIT     ed_r14c13  sep   @     @     ., label("Row 14, column 13") numonly onchange(program main_cell_changed)
+  EDIT     ed_r14c14  sep   @     @     ., label("Row 14, column 14") numonly
+  EDIT     ed_r14c15  sep   @     @     ., label("Row 14, column 15") numonly
+  EDIT     ed_r14c16  sep   @     @     ., label("Row 14, column 16") numonly
+  EDIT     ed_r14c17  sep   @     @     ., label("Row 14, column 17") numonly
+  EDIT     ed_r14c18  sep   @     @     ., label("Row 14, column 18") numonly
+
+  EDIT     ed_r15c1  lft   ms    @     ., label("Row 15, column 1") numonly onchange(program main_cell_changed)
+  EDIT     ed_r15c2  sep   @     @     ., label("Row 15, column 2") numonly onchange(program main_cell_changed)
+  EDIT     ed_r15c3  sep   @     @     ., label("Row 15, column 3") numonly onchange(program main_cell_changed)
+  EDIT     ed_r15c4  sep   @     @     ., label("Row 15, column 4") numonly onchange(program main_cell_changed)
+  EDIT     ed_r15c5  sep   @     @     ., label("Row 15, column 5") numonly onchange(program main_cell_changed)
+  EDIT     ed_r15c6  sep   @     @     ., label("Row 15, column 6") numonly onchange(program main_cell_changed)
+  EDIT     ed_r15c7  sep   @     @     ., label("Row 15, column 7") numonly onchange(program main_cell_changed)
+  EDIT     ed_r15c8  sep   @     @     ., label("Row 15, column 8") numonly onchange(program main_cell_changed)
+  EDIT     ed_r15c9  sep   @     @     ., label("Row 15, column 9") numonly onchange(program main_cell_changed)
+  EDIT     ed_r15c10 sep   @     @     ., label("Row 15, column 10") numonly onchange(program main_cell_changed)
+  EDIT     ed_r15c11  sep   @     @     ., label("Row 15, column 11") numonly onchange(program main_cell_changed)
+  EDIT     ed_r15c12  sep   @     @     ., label("Row 15, column 12") numonly onchange(program main_cell_changed)
+  EDIT     ed_r15c13  sep   @     @     ., label("Row 15, column 13") numonly onchange(program main_cell_changed)
+  EDIT     ed_r15c14  sep   @     @     ., label("Row 15, column 14") numonly onchange(program main_cell_changed)
+  EDIT     ed_r15c15  sep   @     @     ., label("Row 15, column 15") numonly
+  EDIT     ed_r15c16  sep   @     @     ., label("Row 15, column 16") numonly
+  EDIT     ed_r15c17  sep   @     @     ., label("Row 15, column 17") numonly
+  EDIT     ed_r15c18  sep   @     @     ., label("Row 15, column 18") numonly
+
+  EDIT     ed_r16c1  lft   ms    @     ., label("Row 16, column 1") numonly onchange(program main_cell_changed)
+  EDIT     ed_r16c2  sep   @     @     ., label("Row 16, column 2") numonly onchange(program main_cell_changed)
+  EDIT     ed_r16c3  sep   @     @     ., label("Row 16, column 3") numonly onchange(program main_cell_changed)
+  EDIT     ed_r16c4  sep   @     @     ., label("Row 16, column 4") numonly onchange(program main_cell_changed)
+  EDIT     ed_r16c5  sep   @     @     ., label("Row 16, column 5") numonly onchange(program main_cell_changed)
+  EDIT     ed_r16c6  sep   @     @     ., label("Row 16, column 6") numonly onchange(program main_cell_changed)
+  EDIT     ed_r16c7  sep   @     @     ., label("Row 16, column 7") numonly onchange(program main_cell_changed)
+  EDIT     ed_r16c8  sep   @     @     ., label("Row 16, column 8") numonly onchange(program main_cell_changed)
+  EDIT     ed_r16c9  sep   @     @     ., label("Row 16, column 9") numonly onchange(program main_cell_changed)
+  EDIT     ed_r16c10 sep   @     @     ., label("Row 16, column 10") numonly onchange(program main_cell_changed)
+  EDIT     ed_r16c11  sep   @     @     ., label("Row 16, column 11") numonly onchange(program main_cell_changed)
+  EDIT     ed_r16c12  sep   @     @     ., label("Row 16, column 12") numonly onchange(program main_cell_changed)
+  EDIT     ed_r16c13  sep   @     @     ., label("Row 16, column 13") numonly onchange(program main_cell_changed)
+  EDIT     ed_r16c14  sep   @     @     ., label("Row 16, column 14") numonly onchange(program main_cell_changed)
+  EDIT     ed_r16c15  sep   @     @     ., label("Row 16, column 15") numonly onchange(program main_cell_changed)
+  EDIT     ed_r16c16  sep   @     @     ., label("Row 16, column 16") numonly
+  EDIT     ed_r16c17  sep   @     @     ., label("Row 16, column 17") numonly
+  EDIT     ed_r16c18  sep   @     @     ., label("Row 16, column 18") numonly
+
+  EDIT     ed_r17c1  lft   ms    @     ., label("Row 17, column 1") numonly onchange(program main_cell_changed)
+  EDIT     ed_r17c2  sep   @     @     ., label("Row 17, column 2") numonly onchange(program main_cell_changed)
+  EDIT     ed_r17c3  sep   @     @     ., label("Row 17, column 3") numonly onchange(program main_cell_changed)
+  EDIT     ed_r17c4  sep   @     @     ., label("Row 17, column 4") numonly onchange(program main_cell_changed)
+  EDIT     ed_r17c5  sep   @     @     ., label("Row 17, column 5") numonly onchange(program main_cell_changed)
+  EDIT     ed_r17c6  sep   @     @     ., label("Row 17, column 6") numonly onchange(program main_cell_changed)
+  EDIT     ed_r17c7  sep   @     @     ., label("Row 17, column 7") numonly onchange(program main_cell_changed)
+  EDIT     ed_r17c8  sep   @     @     ., label("Row 17, column 8") numonly onchange(program main_cell_changed)
+  EDIT     ed_r17c9  sep   @     @     ., label("Row 17, column 9") numonly onchange(program main_cell_changed)
+  EDIT     ed_r17c10 sep   @     @     ., label("Row 17, column 10") numonly onchange(program main_cell_changed)
+  EDIT     ed_r17c11  sep   @     @     ., label("Row 17, column 11") numonly onchange(program main_cell_changed)
+  EDIT     ed_r17c12  sep   @     @     ., label("Row 17, column 12") numonly onchange(program main_cell_changed)
+  EDIT     ed_r17c13  sep   @     @     ., label("Row 17, column 13") numonly onchange(program main_cell_changed)
+  EDIT     ed_r17c14  sep   @     @     ., label("Row 17, column 14") numonly onchange(program main_cell_changed)
+  EDIT     ed_r17c15  sep   @     @     ., label("Row 17, column 15") numonly onchange(program main_cell_changed)
+  EDIT     ed_r17c16  sep   @     @     ., label("Row 17, column 16") numonly onchange(program main_cell_changed)
+  EDIT     ed_r17c17  sep   @     @     ., label("Row 17, column 17") numonly
+  EDIT     ed_r17c18  sep   @     @     ., label("Row 17, column 18") numonly
+
+  EDIT     ed_r18c1  lft   ms    @     ., label("Row 18, column 1") numonly onchange(program main_cell_changed)
+  EDIT     ed_r18c2  sep   @     @     ., label("Row 18, column 2") numonly onchange(program main_cell_changed)
+  EDIT     ed_r18c3  sep   @     @     ., label("Row 18, column 3") numonly onchange(program main_cell_changed)
+  EDIT     ed_r18c4  sep   @     @     ., label("Row 18, column 4") numonly onchange(program main_cell_changed)
+  EDIT     ed_r18c5  sep   @     @     ., label("Row 18, column 5") numonly onchange(program main_cell_changed)
+  EDIT     ed_r18c6  sep   @     @     ., label("Row 18, column 6") numonly onchange(program main_cell_changed)
+  EDIT     ed_r18c7  sep   @     @     ., label("Row 18, column 7") numonly onchange(program main_cell_changed)
+  EDIT     ed_r18c8  sep   @     @     ., label("Row 18, column 8") numonly onchange(program main_cell_changed)
+  EDIT     ed_r18c9  sep   @     @     ., label("Row 18, column 9") numonly onchange(program main_cell_changed)
+  EDIT     ed_r18c10 sep   @     @     ., label("Row 18, column 10") numonly onchange(program main_cell_changed)
+  EDIT     ed_r18c11  sep   @     @     ., label("Row 18, column 11") numonly onchange(program main_cell_changed)
+  EDIT     ed_r18c12  sep   @     @     ., label("Row 18, column 12") numonly onchange(program main_cell_changed)
+  EDIT     ed_r18c13  sep   @     @     ., label("Row 18, column 13") numonly onchange(program main_cell_changed)
+  EDIT     ed_r18c14  sep   @     @     ., label("Row 18, column 14") numonly onchange(program main_cell_changed)
+  EDIT     ed_r18c15  sep   @     @     ., label("Row 18, column 15") numonly onchange(program main_cell_changed)
+  EDIT     ed_r18c16  sep   @     @     ., label("Row 18, column 16") numonly onchange(program main_cell_changed)
+  EDIT     ed_r18c17  sep   @     @     ., label("Row 18, column 17") numonly onchange(program main_cell_changed)
+  EDIT     ed_r18c18  sep   @     @     ., label("Row 18, column 18") numonly
+END
+
+PROGRAM validate
+BEGIN
+	// this is just a template... the actual program is built dynamically
+END
+
+PROGRAM build_validate_program
+BEGIN
+	put "matrix_input__dlg generateValidateProgram, "
+	put "clsname(" dlgName ") "
+	put "rows(" main.sp_rows ") "
+	if (main.ck_sym) {
+		put "cols(" main.sp_rows ") "
+	}
+	if (!main.ck_sym) {
+		put "cols(" main.sp_cols ") "
+	}
+	stata hidden immediate
+END
+
+PROGRAM command
+BEGIN
+	require main.ed_name
+	call program build_validate_program
+	put /program validate
+	call program getcommand
+	put "matrix input " main.ed_name " " "= ("
+	put cmd
+	put ")"
+	
+	if isChildContext {
+		stata hidden immediate
+
+		if _rc {
+			stopbox stop "An error occurred while creating the matrix."	///
+				"Perhaps an invalid name was specified"
+		}
+		put main.ed_name // pass the name back to the parent
+	}
+END
+
+PROGRAM getcommand
+BEGIN
+	put "matrix_input__dlg generateCommand, "
+	put "clsname(" dlgName ") "
+	put "rows(" main.sp_rows ") "
+	if (main.ck_sym) {
+		put "cols(" main.sp_rows ") "
+	}
+	if (!main.ck_sym) {
+		put "cols(" main.sp_cols ") "
+	}
+	stata hidden immediate
+END

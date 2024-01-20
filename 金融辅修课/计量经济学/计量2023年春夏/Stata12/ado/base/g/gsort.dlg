@@ -1,0 +1,56 @@
+/*
+ 	gsort
+
+*! VERSION 1.1.0  17nov2004
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+INCLUDE _ht270
+INCLUDE header
+HELP hlp1, view("help gsort")
+RESET res1
+
+DIALOG main, label("gsort - Ascending and descending sort") tabtitle("Main")
+BEGIN
+  TEXT     tx_vars        _lft        _top       _iwd       .,		///
+	label("Variables:")
+  VARLIST  vl_vars        _lft         _ss       _iwd       .,		///
+	label("Variables")
+  TEXT     tx_example        @         _ms    _cwd4_1       .,		///
+	label("Examples:")
+  TEXT     tx_example2     100           @   _comb4_1       .,		///
+	label("+v1 v2 -v3")
+  TEXT     tx_example3       @        _vss          @       .,		///
+	label("v1 +v2 -v3")
+  TEXT     tx_example4       @        _vss          @       .,		///
+	label("v1 v2 -v3")
+  TEXT     tx_example6    _lft         _ms       _iwd       .,		///
+	label("Each of the examples above sort the first two variables in ascending")
+  TEXT     tx_example7       @        _vss          @       .,		///
+	label("order and the third in descending order.")
+  CHECKBOX ck_gen         _lft        _xls       _iwd       .,		///
+	onclickon(main.ed_gen.enable)					///
+	onclickoff(main.ed_gen.disable)					///
+	label("Generate sort index variable:")
+  EDIT     ed_gen     _indent2         _ss      _vnwd       .,		///
+	max(32) option(generate) label("Generate sort index variable")
+  CHECKBOX ck_mfirst      _lft         _ls       _iwd       .,		///
+	label("Place missing values first in descending orderings")	///
+	option(mfirst)
+END
+
+PROGRAM command
+BEGIN
+	put "gsort"
+	varlist main.vl_vars
+	beginoptions
+		if main.ck_gen {
+			require main.ed_gen
+			optionarg main.ed_gen
+		}
+		option main.ck_mfirst
+	endoptions
+END

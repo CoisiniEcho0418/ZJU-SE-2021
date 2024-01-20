@@ -1,0 +1,239 @@
+/*
+  svy jackknife
+
+*!  VERSION 1.2.2  28sep2010
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_large
+DEFINE _dlght 435
+INCLUDE header
+
+HELP hlp1, view("help svy jackknife")
+RESET res1
+
+DIALOG main, tabtitle("Main") ///
+	label("svy jackknife - Jackknife estimation for survey data")
+BEGIN
+  DEFINE _y _top
+  INCLUDE _cmd_exp_list
+
+  GROUPBOX gb_n      _lft      _xls     _iwd      _ht8,			///
+	label("Where are the number of observations used in the calculation stored?")
+
+  RADIO    rb_empty  _indent   _ss       _inwd     .,			///
+	first								///
+	label("Automatically determined by jackknife")			///
+	onclickon(main.ed_n.disable)					///
+	option(NONE)
+  RADIO    rb_eclass @         _ss       @         .,			///
+	label("Saved in e(N)")						///
+	onclickon(main.ed_n.disable)					///
+	option(eclass)
+  RADIO    rb_rclass @         _ss       @         .,			///
+	label("Saved in r(N)")						///
+	onclickon(main.ed_n.disable)					///
+	option(rclass)
+  RADIO    rb_n      @         _ss       _cwd2     .,			///
+	last 								///
+	label("User-specified alternative:")				///
+	onclickon(main.ed_n.enable)					///
+	option(NONE)
+		*/
+  EDIT     ed_n      _lft2     @         @         .,			///
+	label("User-specified alternative") option(n)
+	
+  DEFINE _x _xsetbu
+  DEFINE _y _xls
+  INCLUDE _bu_svyset
+END
+
+INCLUDE sub_by_ifin_over_subpop
+ 
+SCRIPT POSTINIT
+BEGIN
+	script sub_set_svy_on
+END
+
+DIALOG opt, tabtitle("Options")
+BEGIN
+  DEFINE _y _top
+  INCLUDE _saving
+
+  CHECKBOX ck_keep   _lft     _xxls      _iwd      .,			///
+		label("Keep pseudovalues")				///
+		option(keep)
+  CHECKBOX ck_mse    @         _ms       @         .,			///
+		label("Use MSE formula for variance")			///
+		option(mse)
+
+END
+
+INCLUDE _saving_sc
+
+SCRIPT rpt_POSTINIT
+BEGIN
+	create STRING rpt_bu_fmtcoefResults
+	program rpt_bu_fmtcoef_ckResults
+
+	create STRING rpt_bu_eformResults
+	program rpt_bu_eform_ckResults
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr
+  DEFINE _y _top
+  INCLUDE _sp_level
+
+  CHECKBOX ck_noheader _lft    _ls       _cwd1     .,			///
+		label("Suppress the table header")			///
+		clickon(program check_header)				///
+		clickoff(program check_header)				///
+		option("noheader")
+  CHECKBOX ck_nolegend @       _ms       @         .,			///
+		label("Suppress the table legend")			///
+		clickon(program check_legend)				///
+		clickoff(program check_legend)				///
+		option("nolegend")
+  CHECKBOX ck_verbose  @       _ms       @         .,			///
+		label("Display the full table legend")			///
+		option("verbose")
+  CHECKBOX ck_noadjust @       _ms       @         .,			///
+		label("Do not adjust model Wald statistic")		///
+		option(noadjust)
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _cwd1
+  INCLUDE _nocnsreport
+
+  DEFINE _x _lft2
+  DEFINE _y @
+  DEFINE _cx _cwd1
+  INCLUDE _noomitted
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _cwd1
+  INCLUDE _vsquish
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _factor_vars_reporting
+
+  DEFINE _x _lft
+  DEFINE _y _xxxls
+  INCLUDE _bu_coef_table_reporting
+
+  DEFINE _x _lft2
+  DEFINE _y @ 
+  INCLUDE _bu_eform_opts_reporting
+
+  TEXT     tx_title  _lft      _ls     _iwd      .,		///
+		label("Title:")
+  EDIT     ed_title  @         _ss       @         .,		///
+		label("Title") option(title)
+
+  DEFINE _x _lft2
+  DEFINE _cx _cwd1
+  DEFINE _y _top
+  DEFINE _cy _ht6
+  INCLUDE _output_reps
+END
+
+INCLUDE fmt_coef_table_reporting_pr
+INCLUDE eform_option_reporting_pr
+
+PROGRAM check_header
+BEGIN
+	if rpt.ck_noheader {
+		call gaction rpt.ck_nolegend.disable
+		call gaction rpt.ck_verbose.disable
+	}
+	if !rpt.ck_noheader {
+		call gaction rpt.ck_nolegend.enable
+		call program check_legend
+	}
+END
+
+PROGRAM check_legend
+BEGIN
+	if rpt.ck_nolegend {
+		call gaction rpt.ck_verbose.disable
+	}
+	if !rpt.ck_nolegend {
+		call gaction rpt.ck_verbose.enable
+	}
+END
+
+DIALOG adv, tabtitle("Advanced")
+BEGIN
+  CHECKBOX ck_nodrop _lft      _top      _iwd      .,			///
+	label("Do not drop observations")				///
+	option(nodrop)
+
+  TEXT     tx_reject @         _ls       _iwd      .,			///
+	label("Identify invalid results:")
+  EDIT     ed_reject @         _ss       @         .,			///
+	label("Identify invalid results")				///
+	option(reject)
+
+  EDIT     en_dof	_lft	_xls	_en7wd	.,		///
+	label("Design degrees of freedom")			///
+	numonly							///
+	option(dof)
+  TEXT     tx_dof	_en7sep	@	_en7r	.,		///
+	label("Design degrees of freedom")
+END
+
+PROGRAM jknife_options
+BEGIN
+	put "svy jackknife "
+	option main.ck_b
+	option main.ck_se
+	put " " main.ed_explst
+ 	put " " /program ifin_output
+	beginoptions
+		option radio(main rb_empty rb_rclass rb_eclass rb_n)
+		if main.rb_n {
+			require main.ed_n
+			optionarg main.ed_n
+		}
+		put " " /program subpop_output
+		put " "
+		INCLUDE _saving_pr
+		option opt.ck_keep
+		option opt.ck_mse
+		optionarg /hidedefault rpt.sp_level
+		option rpt.ck_noheader
+		option rpt.ck_nolegend
+		option rpt.ck_verbose
+		option rpt.ck_noadjust
+		option rpt.ck_qui
+		option rpt.ck_noi
+		option rpt.ck_trace
+		INCLUDE _nocnsreport_pr
+		INCLUDE _noomitted_pr
+		INCLUDE _vsquish_pr
+		INCLUDE _factor_vars_reporting_pr
+		put " " rpt_bu_fmtcoefResults
+		put " " rpt_bu_eformResults
+		optionarg rpt.ed_title
+		option adv.ck_nodrop
+		optionarg adv.ed_reject
+		optionarg adv.en_dof
+	endoptions
+END
+
+PROGRAM command
+BEGIN
+	put /program jknife_options
+	put " " " : "	/* end of prefix, begin command */
+		require main.vl_cmd
+		put main.vl_cmd
+END

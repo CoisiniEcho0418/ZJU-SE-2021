@@ -1,0 +1,18 @@
+/*
+	include file for the generate variable and its type used at top of
+	main tab for the predict command.  (May also be used elsewhere).
+
+*!  VERSION 1.1.1  08mar2005
+
+*/
+
+
+  TEXT     tx_var        _lft     _top    _vlwd        .,	/*
+		*/ label("New variable name:")
+  EDIT     ed_var           @      _ss    _vnwd        .,	/*
+		*/ label("New variable name")
+
+  DEFINE _x  _vlsep
+  DEFINE _y  _top
+  DEFINE _cx _vnwd
+  INCLUDE _type

@@ -1,0 +1,67 @@
+/*
+  testparm
+
+*!  VERSION 1.1.0  21mar2005
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_large
+INCLUDE _ht260
+INCLUDE header
+
+HELP hlp1, view("help testparm")
+RESET res1
+
+DIALOG main, label("testparm - Test linear hypotheses after estimation")/*
+		*/ tabtitle("Main")
+BEGIN
+  TEXT     tx_var          _lft      _top       _iwd     .,		/*
+  		*/label("Test coefficients of these variables:")
+  VARLIST  vl_var          @         _ss        @        .,		/*
+  		*/label("Test coefficients of these variables")
+  GROUPBOX gb_opt          @         _ls        @        _ht15h,       	/*
+  		*/label("Options")
+  GROUPBOX gb_equal        _indent   _ms        _ibwd    _ht4,		/*
+*/label("Hypothesize that the coefficients of the variables are:")
+  DEFINE holdx @x
+  RADIO    rb_zero         _indent   _ss        _inwd    .,		/*
+		*/label("Jointly equal to zero")			/*
+  		*/first option("NONE")
+  RADIO    rb_equal        @         _ss        @        .,		/*
+		*/label("Equal to each other")				/*
+  		*/last option("equal")
+  GROUPBOX gb_equat        holdx     _xls       _ibwd    _ht4,		/*
+  		*/label("For multiple regression models:")
+  CHECKBOX ck_equat        _indent   _ss        _inwd    .,		/*
+*/label("Specify equation name or number for which the hypothesis is tested:")/*
+  		*/clickon(script equat_on) clickoff(script equat_off)
+  COMBOBOX cb_equat        _indent2  _ss        _vnwd    .,		/*
+*/label("Specify equation name or number for which the hypothesis is tested")/*
+		*/dropdown contents(ereturn eqnames)			/*
+		*/option("equation")
+END
+
+SCRIPT equat_on
+BEGIN
+  main.cb_equat.enable
+END
+
+SCRIPT equat_off
+BEGIN
+  main.cb_equat.disable
+END
+
+PROGRAM command
+BEGIN
+	put "testparm "
+	varlist main.vl_var
+	beginoptions
+		option radio(main rb_zero rb_equal)
+		if main.ck_equat {
+			require main.cb_equat
+			optionarg main.cb_equat
+	  	}
+	endoptions
+END

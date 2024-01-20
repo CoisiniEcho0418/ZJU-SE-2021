@@ -1,0 +1,50 @@
+/*
+	ladder
+
+*!  VERSION 1.0.1  02apr2005
+
+*/
+
+VERSION 8.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help ladder")
+RESET res1
+
+DIALOG main, label("ladder - Ladder of powers") tabtitle("Main")
+BEGIN
+  TEXT     tx_var        _lft     _top     _iwd        .,		/*
+		*/ label("Variable:")
+  VARNAME  vn_var           @      _ss    _vnwd        .,		/*
+		*/ label("Variable")
+  CHECKBOX ck_gen        _lft      _ls     _iwd        .,		/*
+		*/ label("Generate minimum chi-squared variable:") /*
+		*/ clickon("gaction main.ed_gen.enable")		/*
+		*/ clickoff("gaction main.ed_gen.disable")
+  EDIT     ed_gen    _indent2      _ss    _vnwd        .,		/*
+		*/ option("generate")					/*
+		*/ max(32)						/*
+		*/ label("Generate min. chi-squared variable")
+  CHECKBOX ck_noadjust   _lft      _ls     _iwd        .,		/*
+		*/ option("noadjust")					/*
+		*/ label("Suppress Royston adjustment")
+END
+
+INCLUDE byifin
+
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "ladder "
+	varlist main.vn_var
+	INCLUDE _ifin_pr
+	beginoptions
+		if main.ck_gen {
+			optionarg main.ed_gen
+		}
+		option main.ck_noadjust
+	endoptions
+END

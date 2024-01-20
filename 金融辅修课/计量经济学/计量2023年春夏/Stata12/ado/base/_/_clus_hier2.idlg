@@ -1,0 +1,19 @@
+/*
+	_clus_hier2.idlg  include file for advanced tab for hier. -cluster-
+
+	VERSION 1.0.0  21dec2002
+*/
+
+INCLUDE ifin
+
+DIALOG adv, tabtitle("Advanced")
+BEGIN
+  TEXT     tx_gen            _lft      _top      _iwd      .,		/*
+	*/ label("Prefix for generated variables: (leave empty for default)")
+  EDIT     ed_gen            @         _ss       _vnwd     ., max(28)	/*
+		*/ option(generate)					/*
+		*/ label("Prefix for generated variables")
+END
+
+INCLUDE _cl_dist_sc
+

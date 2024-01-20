@@ -1,0 +1,16 @@
+*! version 1.2.1  27apr2011
+*! Stata 12 Import menu
+
+&Import stImport {
+	"Excel spreadsheet (*.xls;*.xlsx)"		"view dialog import_excel_dlg"
+	"Text data created by a spreadsheet"		"DB insheet"
+	"Text data in fixed format"			"DB infix"
+	"Text data in fixed format with a dictionary"	"DB infile_dict"
+	"Unformatted text data"				"DB infile_free"
+	"SAS XPORT"					"DB import_sasxport"
+#if WINDOWS {
+	"Haver Analytics database"			"DB haver"
+}
+	"ODBC data source"				"DB odbc_load"
+	"XML data"					"DB xmluse"
+}

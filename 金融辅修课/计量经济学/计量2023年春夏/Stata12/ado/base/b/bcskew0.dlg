@@ -1,0 +1,74 @@
+/*
+	bcskew0
+
+*!  VERSION 1.1.2  14dec2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_medium
+INCLUDE header
+HELP hlp1, view("help lnskew0")
+RESET res1
+
+DIALOG main, label("bcskew0 - Zero-skewness Box-Cox transform") tabtitle("Main")
+BEGIN
+  INCLUDE  _exp_vareq
+
+  GROUPBOX gb_opt         _lft      _xls       _iwd    _ht13,  		/*
+		*/ label("Options")
+  EDIT     en_delta      _ilft       _ls      _spwd       .,		/*
+		*/ option("delta")					/*
+		*/ label("Delta")					/*
+		*/ default("0.01")					/*
+		*/ numonly
+  TEXT     tx_delta    _en7sep         @      _sprb       .,		/*
+		*/ label("Increment for derivative of skewness function")
+  EDIT     en_zero       _ilft       _ls     _en7wd       .,		/*
+		*/ option("zero")					/*
+		*/ label("Zero")					/*
+		*/ default("0.001")					/*
+		*/ numonly
+  TEXT     tx_zero     _en7sep         @      _sprb       .,		/*
+		*/ label("Value for determining convergence")
+
+
+  CHECKBOX ck_level	_ilft	_ls	_ibwd	_ht3,		///
+	label("Calculate confidence interval")			///
+	onclickon(program check_level)				///
+	onclickoff(program check_level)				///
+	groupbox
+  COMBOBOX sp_level    _indent	_ms	_spwd	.,		///
+	label("Confidence level")				///
+	contents(levels) default(c(level)) dropdown		///
+	option(level)
+  TEXT     tx_level    _spsep	@	_spr2b	.,  		///
+	label("Level")
+END
+
+PROGRAM check_level
+BEGIN
+	if main.ck_level {
+		call main.sp_level.enable
+		call main.tx_level.enable
+	}
+	else {
+		call main.sp_level.disable
+		call main.tx_level.disable
+	}
+END
+
+INCLUDE ifin
+
+PROGRAM command
+BEGIN
+	put "bcskew0 "
+	INCLUDE _exp_vareq_pr
+	INCLUDE _ifin_pr
+	beginoptions
+		optionarg /hidedefault main.en_delta
+		optionarg /hidedefault main.en_zero
+		optionarg main.sp_level
+	endoptions
+END

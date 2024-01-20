@@ -1,0 +1,6 @@
+*! version 1.0.0  11nov2004
+sequence 3700
+
+set width    scheme text_option
+set color    scheme text_option_line
+set pattern  scheme text_option

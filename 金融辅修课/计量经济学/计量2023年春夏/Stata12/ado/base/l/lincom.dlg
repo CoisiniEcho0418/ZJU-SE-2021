@@ -1,0 +1,114 @@
+/*
+  lincom
+
+*! VERSION 2.0.0  04mar2011
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_medium
+INCLUDE _ht270
+INCLUDE header
+
+HELP hlp1, view("help lincom")
+RESET res1
+
+SCRIPT POSTINIT
+BEGIN
+	create STRING bu_fmtcoefResults
+	program bu_fmtcoef_ckResults
+END
+
+DIALOG main, label("lincom - Linear combinations of estimators") 	///
+	tabtitle("Main")
+BEGIN
+  TEXT     tx_exp    _lft      _top      _iwd      .,		///
+	label("Linear expression:")
+  EXP     ex_exp     @         _ss       @         .,		///
+	error("Linear expression")				///
+	label("Create...")
+
+  CHECKBOX ck_eform  @         _xls      @         _ht10h,	///
+	label("Exponentiate coefficients")			///
+	onclickon(script eform_on)				///
+	onclickoff(script eform_off)				///
+	groupbox
+  DEFINE y @y
+  DEFINE cy @cy
+  RADIO    rb_eform  _indent   _ms       _inwd     .,		///
+	label("exp(b)")						///
+	first							///
+	option(eform)
+  RADIO    rb_or     @         _ss       @         .,		///
+	label("Odds ratio")					///
+	option(or)
+  RADIO    rb_hr     @         _ss       @         .,		///
+	label("Hazard ratio")					///
+	option(hr)
+  RADIO    rb_irr    @         _ss       @         .,		///
+	label("Incidence-rate ratio")				///
+	option(irr)
+  RADIO    rb_rrr    @         _ss       @         .,		///
+	label("Relative-risk ratio")				///
+	last							///
+	option(rrr)
+
+  DEFINE _x _lft
+  DEFINE _cx _spr
+  DEFINE _y _xxls
+  INCLUDE _sp_level
+
+  BUTTON bu_fmtcoef   _lft2      @       130    .,		///
+	onpush("program bu_fmtcoef_getOpts")			///
+	label("Set table formats  ")
+END
+
+SCRIPT eform_on
+BEGIN
+	main.rb_or.enable
+	main.rb_hr.enable
+	main.rb_irr.enable
+	main.rb_rrr.enable
+	main.rb_eform.enable
+END
+
+SCRIPT eform_off
+BEGIN
+	main.rb_or.disable
+	main.rb_hr.disable
+	main.rb_irr.disable
+	main.rb_rrr.disable
+	main.rb_eform.disable
+END
+
+PROGRAM bu_fmtcoef_getOpts
+BEGIN
+	call create CHILD fmt_coef_table_reporting AS bu_fmtcoef
+	call bu_fmtcoef.setExitString bu_fmtcoefResults
+	call bu_fmtcoef.setExitAction "program bu_fmtcoef_ckResults"
+END
+
+PROGRAM bu_fmtcoef_ckResults
+BEGIN
+	if bu_fmtcoefResults {
+		call main.bu_fmtcoef.setlabel "Set table formats *"
+	}
+	else {
+		call main.bu_fmtcoef.setlabel "Set table formats  "
+	}
+END
+
+PROGRAM command
+BEGIN
+	put "lincom "
+	require main.ex_exp
+	put main.ex_exp
+	beginoptions
+		if main.ck_eform {
+			option radio(main rb_eform rb_or rb_hr rb_irr rb_rrr)
+		}
+		INCLUDE _level_main_pr
+		put " " bu_fmtcoefResults
+	endoptions
+END

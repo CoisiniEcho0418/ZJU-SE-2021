@@ -1,0 +1,294 @@
+/*
+  arch_common.idlg
+
+*!  VERSION 1.2.6  23aug2010
+
+  Tabs that are common to all arch DIALOGs.
+
+*/
+
+DIALOG model, tabtitle("Model 2")
+BEGIN
+  GROUPBOX gb_archm  _lft      _top      _iwd      _ht10h,		/*
+		*/ label("ARCH-in-mean options")			/*
+		*/
+  CHECKBOX ck_archm  _indent   _ss       _inwd     .,			/*
+*/label("Include ARCH-in-mean term in the mean-equation specification")/*
+		*/ option("archm")					/*
+		*/
+
+  EDIT     ed_archml @         _ls       80        .,			/*
+		*/ label(`"ARCH-in-mean lags"')				/*
+		*/ option("archmlags")					/*
+		*/
+  TEXT     tx_archml +85       @         450       .,			/*
+*/ label(`"Lags of conditional variance to include in mean equation: (e.g., "1 3")"')/*
+		*/
+
+  TEXT     tx_archme _ilft     _ls       @         .,			/*
+		*/ label(`"Transformation of conditional variance for ARCH-in-mean terms:"')/*
+		*/
+  EDIT     ed_archme @         _ss       _vnwd     .,			/*
+		*/ label(`"ARCH-in-mean lags"')				/*
+		*/ option("archmexp")					/*
+		*/
+  TEXT     tx_archme2 _vnsep   @         _vnrb     .,			/*
+*/ label(`"(use "X" to symbolize the value of the conditional variance)"')/*
+		*/
+
+  DEFINE _y _xxls
+  INCLUDE _arima
+
+END
+
+INCLUDE _arima_model_sc
+
+PROGRAM check_dist
+BEGIN
+	if adv.rb_normal {
+		call adv.ck_t.disable
+		call adv.ed_t.disable
+		call adv.tx_t.disable
+		call adv.ck_ged.disable
+		call adv.ed_ged.disable
+		call adv.tx_ged.disable
+	}
+	if adv.rb_t {
+		call adv.ck_t.enable
+		if adv.ck_t {
+			call adv.ed_t.enable
+		}
+		else {
+			call adv.ed_t.disable
+		}
+		call adv.tx_t.enable
+		call adv.ck_ged.disable
+		call adv.ed_ged.disable
+		call adv.tx_ged.disable
+	}
+	if adv.rb_ged {
+		call adv.ck_t.disable
+		call adv.ed_t.disable
+		call adv.tx_t.disable
+		call adv.ck_ged.enable
+		if adv.ck_ged {
+			call adv.ed_ged.enable
+		}
+		else {
+			call adv.ed_ged.disable
+		}
+		call adv.tx_ged.enable
+	}
+END
+
+DIALOG adv, tabtitle("Model 3")
+BEGIN
+  GROUPBOX gb_dist	_lft	_top	_iwd	_ht7,		///
+	label("Distribution")
+  RADIO	   rb_normal	_ilft	+20	_cwd2	.,		///
+	first							///
+	onclickon(program check_dist)				///
+	label("Gaussian (normal)")
+  RADIO	   rb_t		_ilft	+25	_cwd2	.,		///
+	onclickon(program check_dist)				///
+	label("Student's t") option(t)
+  RADIO	   rb_ged	_ilft	+25	_cwd2	.,		///
+	last							///
+	onclickon(program check_dist)				///
+	label("Generalized error distribution") option(ged)
+
+  CHECKBOX ck_t		_lft2	-25	_ckwd	.,		///
+	onclickon(program check_dist)				///
+	onclickoff(program  check_dist)
+  EDIT     ed_t		_cksep	@	_en7wd	.,		///
+	label("Degrees of freedom") option(t) numonly
+  TEXT     tx_t		_en7sep	@	150	.,		///
+	label("Degrees of freedom")
+
+  CHECKBOX ck_ged	_lft2	+25	_ckwd	.,		///
+	onclickon(program check_dist)				///
+	onclickoff(program  check_dist)	
+  EDIT     ed_ged	_cksep	@	_en7wd	.,		///
+	label("Shape parameter") option(ged) numonly
+  TEXT     tx_ged	_en7sep	@	150	.,		///
+	label("Shape parameter")
+
+  GROUPBOX gb_het    _lft      _xls      _iwd      _ht4h,		/*
+  		*/ label("Multiplicative heteroskedasticity")
+  TEXT     tx_het    _ilft     _ss       _ibwd     .,			/*
+		*/ label("Conditional variance model variables: (optional)")
+  VARLIST  vl_het    @         _ss       @         .,			/*
+		*/ label("Conditional variance model variables")	/*
+		*/ option("het") ts					/*
+		*/ allowts						/*
+		*/
+
+  CHECKBOX ck_save   _lft      _xxls     _cwd1     .,			/*
+		*/ label("Conserve memory during estimation")		/*
+		*/ option("savespace")					/*
+		*/
+  TEXT     tx_edarch _lft      _ls       _iwd      .,			/*
+		*/ label("Other ARCH term options to be included:")	/*
+		*/
+  EDIT     ed_edarch _lft      _ss       @         .,			/*
+		*/ label("Other ARCH term options to be included")	/*
+		*/
+END
+
+DIALOG adv2, label("") tabtitle("Priming")
+BEGIN
+  GROUPBOX gb_arch0  _lft      _top      _iwd      _ht12,		/*
+*/ label("Specification of priming (presample) values of ARCH model elements")	/*
+		*/
+  RADIO    rb_xb     _indent   _ss       _ibwd     .,			/*
+		*/ label("Expected unconditional variance of the model")/*
+		*/ clickon("gaction adv2.en_arch0v.disable")		/*
+		*/ first						/*
+		*/ option(NONE)						/*
+		*/
+  RADIO    rb_xb0    @         _ss       @         .,			/*
+		*/ label("Estimated variance of the residuals from OLS")/*
+		*/ clickon("gaction adv2.en_arch0v.disable")		/*
+		*/ option("arch0(xb0)")					/*
+		*/
+  RADIO    rb_xbwt   @         _ss       @         .,			/*
+		*/ label("Weighted sum of squares from OLS residuals")	/*
+		*/ clickon("gaction adv2.en_arch0v.disable")		/*
+		*/ option("arch0(xbwt)")				/*
+		*/
+  RADIO    rb_xb0wt  @         _ss       @         .,			/*
+*/ label("Weighted sum of squares from OLS residuals, with more weight at earlier times")/*
+		*/ clickon("gaction adv2.en_arch0v.disable")		/*
+		*/ option("arch0(xb0wt)")				/*
+		*/
+  RADIO    rb_arch0z @         _ss       @         .,			/*
+		*/ label("All values set to zero")			/*
+		*/ clickon("gaction adv2.en_arch0v.disable")		/*
+		*/ option("arch0(zero)")				/*
+		*/
+  RADIO    rb_arch0v @         _ss       _rbwd     .,			/*
+		*/ label("")						/*
+		*/ clickon("gaction adv2.en_arch0v.enable")		/*
+		*/ last							/*
+		*/ option(NONE)						/*
+		*/
+  EDIT     en_arch0v _rbsep    @         _en7wd    .,			/*
+		*/ label("Value for variances and errors")/*
+		*/ numonly						/*
+		*/ option("arch0")					/*
+		*/
+  TEXT     tx_arch0v _en7sep   @         _rben7rb  .,			/*
+		*/ label("Value for variances and errors")/*
+		*/
+
+  GROUPBOX gb_arma0  _lft      +45      _iwd      _ht10,		/*
+*/ label("Specification of priming (presample) values of ARMA model elements")	/*
+		*/
+  RADIO    rb_armaz  _indent   _ss       _ibwd     .,			/*
+		*/ label("All values set to zero")			/*
+		*/ clickon("gaction adv2.en_arma0v.disable")		/*
+		*/ first						/*
+		*/ option(NONE)						/*
+		*/
+  RADIO    rb_p      @         _ss       @         .,			/*
+	*/ label("Begin estimation after observation p, the AR order")	/*
+		*/ clickon("gaction adv2.en_arma0v.disable")		/*
+		*/ option("arma0(p)")					/*
+		*/
+  RADIO    rb_q      @         _ss       @         .,			/*
+	*/ label("Begin estimation after observation q, the MA order")	/*
+		*/ clickon("gaction adv2.en_arma0v.disable")		/*
+		*/ option("arma0(q)")					/*
+		*/
+  RADIO    rb_pq     @         _ss       @         .,			/*
+		*/ label("Begin estimation after observation p+q")	/*
+		*/ clickon("gaction adv2.en_arma0v.disable")		/*
+		*/ option("arma0(pq)")					/*
+		*/
+  RADIO    rb_arma0v @         _ss       _rbwd     .,			/*
+		*/ label("")						/*
+		*/ clickon("gaction adv2.en_arma0v.enable")		/*
+		*/ last							/*
+		*/ option(NONE)						/*
+		*/
+  EDIT     en_arma0v _rbsep    @         _en7wd    .,			/*
+		*/ label("Value for presample errors")	/*
+		*/ numonly						/*
+		*/ option("arma0")					/*
+		*/
+  TEXT     tx_arma0v _en7sep   @         _rben7rb  .,			/*
+		*/ label("Value for presample errors")	/*
+		*/
+
+  CHECKBOX ck_cond   _lft      _xls      _ckwd     .,			/*
+		*/ label("")						/*
+		*/ clickon("gaction adv2.sp_cond.enable")		/*
+		*/ clickoff("gaction adv2.sp_cond.disable")		/*
+		*/
+  SPINNER  sp_cond   _cksep    @         _spwd     .,			/*
+		*/ label("")					/*
+		*/ min(1)						/*
+		*/ max(10000)						/*
+		*/ default("1")						/*
+		*/ option("condobs")					/*
+		*/
+  TEXT     tx_name   _spsep    @         _ckspr    .,			/*
+*/ label("Number of conditioning observations at the start of the sample")/*
+		*/
+END
+
+INCLUDE byifin
+INCLUDE weights_i
+INCLUDE se
+
+
+SCRIPT rpt_POSTINIT
+BEGIN
+	create STRING rpt_bu_fmtcoefResults
+	program rpt_bu_fmtcoef_ckResults
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr
+  DEFINE _y _top
+  INCLUDE _sp_level
+
+  CHECKBOX ck_detail _lft      _ls       _cwd1     .,			/*
+		*/ label("Report list of gaps in time series")		/*
+		*/ option("detail")					/*
+		*/
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _nocnsreport
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _vsquish
+
+  DEFINE _x _lft
+  DEFINE _y _ls
+  INCLUDE _bu_coef_table_reporting
+END
+
+INCLUDE fmt_coef_table_reporting_pr
+
+INCLUDE max_ml
+
+SCRIPT PREINIT
+BEGIN
+	script se_createAsML
+END
+
+SCRIPT POSTINIT
+BEGIN
+	script max_setDefaultOPG
+	script se_setCluster_off
+	script max_enableGTolerance
+END
+
+/* END: arch_common.idlg */

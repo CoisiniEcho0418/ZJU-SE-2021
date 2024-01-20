@@ -1,0 +1,71 @@
+/*
+	infile
+
+*! VERSION 1.1.4  12apr2011
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_small
+INCLUDE header
+HELP hlp1, view("help infile2")
+RESET res1
+
+DIALOG main, tabtitle("Main")		///
+	label("infile - Import text data in fixed format")
+BEGIN
+  TEXT     tx_dict   _lft      _top      _iwd        .,		///
+	label("Dictionary filename:")
+
+  FILE     fi_dict   @         _ss       @           .,		///
+	error("Dictionary filename") label("Browse...")		///
+	defext(raw)						///
+	filter("Stata Dictionary (*.dct)|*.dct|All (*.*)|*.*")
+
+  TEXT     tx_using  @         _ls       @           .,		///
+	label("Text dataset filename:")
+
+  FILE     fi_using  @         _ss       @           .,		///
+	option(using) defext(raw) label("Browse...")		///
+	error("Text dataset filename")				///
+	filter("Raw Files (*.raw)|*.raw|Text Files (*.txt)|*.txt|All (*.*)|*.*")
+
+  CHECKBOX ck_clear  _lft      _xls      _iwd        .,		///
+	option(clear) nomem					///
+	label("Replace data in memory")
+END
+
+INCLUDE ifin
+
+SCRIPT POSTINIT
+BEGIN
+	script ifin_setNotDataDependent
+END
+
+DIALOG opt, tabtitle("Options")
+BEGIN
+  CHECKBOX ck_auto   _lft      _top      _iwd        .,		///
+	option(automatic)					///
+	label("Create value labels from nonnumeric data")
+  CHECKBOX ck_ebcdic   _lft      _top      _iwd        .,		///
+	option(ebcdic)							///
+	label("Treat text dataset as EBCDIC")
+END
+
+PROGRAM command
+BEGIN
+	put "infile "
+	require main.fi_dict
+	put "using "
+	put `"""' main.fi_dict `"""'
+	put " " /program ifin_output
+	beginoptions
+		if main.fi_using {
+			optionarg /quoted main.fi_using
+		}
+		option opt.ck_auto
+		option opt.ck_ebcdic
+		option main.ck_clear
+	endoptions
+END

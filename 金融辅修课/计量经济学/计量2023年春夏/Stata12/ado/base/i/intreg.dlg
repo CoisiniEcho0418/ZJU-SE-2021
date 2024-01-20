@@ -1,0 +1,213 @@
+/*
+  intreg
+
+*!  VERSION 1.2.6  23aug2010
+
+  keyword:  eclass
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_xlarge
+DEFINE _dlght 370
+INCLUDE header
+HELP hlp1, view("help intreg")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	script se_createAsSvyJknifeBstrapML
+	program svy_check_title
+END
+
+SCRIPT POSTINIT
+BEGIN
+	script sub_set_by_on
+	program se_setFinalInitState
+END
+
+SCRIPT svy_is_on
+BEGIN
+	script max_setDefaultNoLog
+END
+SCRIPT svy_is_off
+BEGIN
+	script max_setDefaultLog
+END
+PROGRAM svy_check_title
+BEGIN
+	if __MESSAGE.contains("-svy-") {
+		call settitle "svy: intreg - Interval regression for survey data"
+	}
+END
+
+DIALOG main,  tabtitle("Model")						///
+	title("intreg - Interval regression") // has svy title
+BEGIN
+  TEXT     tx_dv1    _lft      _top      _iwd      .,			/*
+		*/ label("Dependent variable 1:")			/*
+		*/
+  VARNAME  vn_dv1    @         _ss       _vnwd     .,			/*
+		*/ label("Dependent variable 1")			/*
+		*/ ts
+
+  TEXT     tx_dv2    _vlx      _top      _iwd      .,			/*
+		*/ label("Dependent variable 2:")			/*
+		*/
+  VARNAME  vn_dv2    @         _ss       _vnwd     .,			/*
+		*/ label("Dependent variable 2")			/*
+		*/ ts
+
+  TEXT     tx_iv     _lft      _ls       _iwd      .,			/*
+		*/ label("Independent variables:")			/*
+		*/
+  VARLIST  vl_iv     @         _ss       @         .,			/*
+		*/ label("Independent variables")			/*
+		*/ allowcat ts fv					/*
+		*/
+  CHECKBOX ck_nocons @         _ms       @         .,			/*
+		*/ label("Suppress constant term")			/*
+		*/ option("noconstant")					/*
+		*/
+
+  GROUPBOX gb_output _lft      _ls      _iwd      _ht19,		/*
+		*/ label("Options")					/*
+		*/
+  CHECKBOX ck_het    _ilft     _ss       _ibwd     _ht2h,		/*
+  		*/ groupbox						/*
+		*/ label("Independent variables to model the variance")/*
+		*/ clickon("script het_on")				/*
+		*/ clickoff("script het_off")
+  VARLIST  vl_het    _indent   _ms       _cwd2          .,		/*
+		*/ label("Independent variables to model the variance")	/*
+		*/ allowcat fv
+  CHECKBOX ck_nocon  _ilft2    @         _cwd5              .,		/*
+		*/ label("Suppress constant term")			/*
+		*/ option(noconstant)
+
+  TEXT     tx_offset _ilft     _xls      @         .,			/*
+		*/ label("Offset variable:")				/*
+		*/
+  VARNAME  vn_offset @         _ss       _vnwd     .,			/*
+		*/ label("Offset variable")				/*
+		*/ option("offset")					/*
+		*/
+
+  DEFINE _x _ilft
+  DEFINE _y _ls
+  DEFINE _cx _ilw80
+  DEFINE _bux _islw80
+  INCLUDE _constraints
+  
+  DEFINE _x _ilft
+  DEFINE _xw _ibwd
+  INCLUDE _ck_collinear
+END
+
+INCLUDE _constraints_sc 
+
+SCRIPT het_on
+BEGIN
+	main.vl_het.enable
+	main.ck_nocon.enable
+END
+
+SCRIPT het_off
+BEGIN
+	main.vl_het.disable
+	main.ck_nocon.disable
+END
+
+INCLUDE sub_by_ifin_over_subpop
+INCLUDE weights_fpai
+INCLUDE se
+
+SCRIPT rpt_POSTINIT
+BEGIN
+	create STRING rpt_bu_fmtcoefResults
+	program rpt_bu_fmtcoef_ckResults
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr2b
+  DEFINE _y _top
+  INCLUDE _sp_level
+
+  DEFINE _x _lft
+  DEFINE _y _ls
+  DEFINE _cx _iwd
+  INCLUDE _nocnsreport
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _noomitted
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _vsquish
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _factor_vars_reporting
+
+  DEFINE _x _lft
+  DEFINE _y _xxxls
+  INCLUDE _bu_coef_table_reporting
+END
+
+INCLUDE fmt_coef_table_reporting_pr
+
+PROGRAM rpt_output
+BEGIN
+	optionarg /hidedefault rpt.sp_level
+	INCLUDE _nocnsreport_pr
+	INCLUDE _noomitted_pr
+	INCLUDE _vsquish_pr
+	INCLUDE _factor_vars_reporting_pr
+	put " " rpt_bu_fmtcoefResults
+END
+
+INCLUDE max_ml
+
+PROGRAM subcommand
+BEGIN
+	require main.vl_het
+	put main.vl_het
+	beginoptions
+		option main.ck_nocon
+	endoptions
+END
+
+PROGRAM command
+BEGIN
+	put /program by_output " "
+	put /program se_prefix_output " "
+	put "intreg "
+	varlist main.vn_dv1
+	varlist main.vn_dv2 [main.vl_iv]
+	if !main.vl_iv & main.ck_nocons {
+	  stopbox stop `""Suppress constant term" is selected without independent variables."'
+	}
+	put " " /program ifin_output
+	put " " /program weights_output
+	beginoptions
+		option main.ck_nocons
+		if main.ck_het {
+			put "het("
+			put /program subcommand
+			put ")"
+		}
+		optionarg main.vn_offset
+		INCLUDE _constraints_main_pr
+		option main.ck_collinear
+		put " " /program se_output
+		put " " /program rpt_output
+		put " " /program max_output
+	endoptions
+END

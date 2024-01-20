@@ -1,0 +1,4 @@
+*! version 1.0.0  22dec2002
+sequence 4207
+label "Gray 9"
+set rgb "144 144 144"

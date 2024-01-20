@@ -1,0 +1,71 @@
+/*
+  tsline_9
+
+*! VERSION 1.1.1  08aug2006  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+HELP hlp1, view("help tsline")
+RESET res1
+
+INCLUDE ts1
+INCLUDE ts2
+INCLUDE ts3
+INCLUDE ts4
+
+LIST graph_tstype
+BEGIN
+	""
+	scatter
+	connected
+	area
+	bar
+	spike
+	dropline
+END
+
+LIST graph_tsrtype
+BEGIN
+	""
+	rscatter
+	rconnected
+	rarea
+	rbar
+	rspike
+	rcap
+	rcapsym
+END
+
+INCLUDE gyaxis
+INCLUDE gtaxis
+INCLUDE graxis
+INCLUDE gtitle
+INCLUDE gcaption
+INCLUDE glegend
+INCLUDE gregion_twoway
+INCLUDE gby
+
+PROGRAM command
+BEGIN
+	put "twoway "
+	put /program p1_output " "
+ 	put /program p2_output " "
+	put /program p3_output " "
+ 	put /program p4_output " "
+
+	put /program globalif_output
+	beginoptions
+		put " " /program gyaxis_output
+		put " " /program gtaxis_output
+		put " " /program graxis_output
+		put " " /program gtitle_output
+		put " " /program gcaption_output
+		put " " /program glegend_output
+		put " " /program gregion_output
+		put " " /program gby_output
+	endoptions
+END

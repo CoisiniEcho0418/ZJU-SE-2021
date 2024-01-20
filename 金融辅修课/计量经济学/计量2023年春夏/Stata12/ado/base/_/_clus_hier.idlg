@@ -1,0 +1,19 @@
+/*
+	_clus_hier.idlg include file for the hierarchical -cluster-
+
+*!  VERSION 1.0.1  10jan2006
+*/
+
+  TEXT     tx_var            _lft      _top      _iwd      .,		/*
+		*/ label("Variables:  (leave empty for all variables)")
+  VARLIST  vl_var            @         _ss       @         .,		/*
+		*/ label("Variables") allowcat
+
+  INCLUDE _cl_dist
+
+  TEXT     tx_name           _lft      _ls       @         .,		/*
+	*/ label("Name this cluster analysis:  (leave empty for default name)")
+  EDIT     ed_name           @         _ss       _vnwd     ., max(32)	/*
+		*/ option(name)						/*
+		*/ label("Name this cluster analysis")
+

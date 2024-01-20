@@ -1,0 +1,14 @@
+*! version 1.0.2  19dec2004
+sequence 4701
+
+set symbol     scheme p#arrow
+set size       scheme p#arrow
+set fillcolor  scheme p#arrowfill
+set linestyle  scheme p#arrow
+set angle      scheme p#arrow
+
+set backsymbol  scheme p#back
+set backsize    scheme p#arrowbarb
+set backcolor   scheme p#markbkfill
+set backline    scheme p#markback
+set backangle   scheme p#arrowbarb

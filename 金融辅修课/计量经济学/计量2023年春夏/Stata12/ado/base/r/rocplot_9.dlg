@@ -1,0 +1,77 @@
+/*
+  rocplot_9
+
+*!  VERSION 1.1.3  20aug2006  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+
+HELP hlp1, view("help rocplot")
+RESET res1
+
+DIALOG main, label("rocplot - Plot fitted curve after rocfit") 	///
+	tabtitle("Main")
+BEGIN
+  GROUPBOX gb_opt          _lft      _top      _cwd1     _ht7h,	///
+	label("Options")
+  CHECKBOX ck_conf         _indent   _ss       _inwd     .,	///
+	option(confband)					///
+	onclickon(script p3_opts_enable)			///
+	onclickoff(script p3_opts_disable)			///
+	label("Display confidence bands")
+  CHECKBOX ck_noref        @         _ms       @         .,	///
+	label("Suppress plotting the reference line")		///
+	onclickon(script line_opts_disable)			///
+	onclickoff(script line_opts_enable)			///
+	option(norefline)
+  DEFINE _x @x
+  DEFINE _y _ls
+  DEFINE _cx _spr2b
+  INCLUDE _sp_level
+END
+
+INCLUDE p1_opts
+INCLUDE p2_opts
+INCLUDE p3_opts
+INCLUDE line_opts
+INCLUDE addplot
+INCLUDE gr_twoway
+
+SCRIPT PREINIT
+BEGIN
+	script p1_opts_createAsNoRange
+	script p1_opts_setDefaultScatter
+	script p2_opts_createAsNoRange
+	script p2_opts_setDefaultLine
+	script p3_opts_createAsRange
+	script p3_opts_setDefaultRarea
+END
+
+SCRIPT POSTINIT
+BEGIN
+	p2_opts.settabtitle "Fit line"
+	script p3_opts_setTabtitleCi
+END
+
+PROGRAM command
+BEGIN
+	put "rocplot "
+	beginoptions
+		option main.ck_conf
+		option main.ck_noref
+		INCLUDE _level_main_pr
+
+		call p1_opts_specialOutput.setstring "plotopts"
+		put " " /program p1_opts_special_output
+		call p2_opts_specialOutput.setstring "lineopts"
+		put " " /program p2_opts_special_output
+		put " " /program p3_opts_ci_output
+		put " " /program line_opts_rlopts_output
+		put " " /program addplot_output
+		put " " /program gr_twoway_output
+	endoptions
+END

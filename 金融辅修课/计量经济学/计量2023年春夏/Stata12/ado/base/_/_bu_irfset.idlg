@@ -1,0 +1,15 @@
+/*
+    _bu_irfset.idlg
+
+*!  VERSION 1.0.4  30oct2006
+
+  To be included within a DIALOG.
+
+  Note that macros _x and _y must already be DEFINEd.
+
+*/
+
+  BUTTON   bu_irfset		_rj140	_y	140	.,		///
+		onpush("view dialog irf_set")				///
+		label("Set active IRF file...")
+/* END: _bu_irfset.idlg */

@@ -1,0 +1,82 @@
+/*
+    changeeol.dlg
+
+*!  VERSION 1.0.2  23jun2009
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_large
+DEFINE _dlght 300
+INCLUDE header
+
+HELP hlp1, view("help changeeol")
+RESET res1
+
+DIALOG main, tabtitle("Main")	///
+	label("changeeol - Convert end-of-line characters of text file")
+BEGIN
+ 
+  GROUPBOX gb_files	_lft	_top	_iwd	_ht9h,			///
+	label("Files")
+  TEXT     tx_filename	_ilft	_ss	_ibwd	.,			///
+	label("Source file:")
+  FILE     fi_filename  @       _ss	@	.,			///
+	error("Source")							///
+	filter("Text Files (*.txt)|*.txt)|All Files (*.*)|*.*")		///
+	defext(txt) label("Browse...")
+  TEXT     tx_filename2	_ilft	_ls	_ibwd	.,			///
+	label("Output file:")
+  FILE     fi_filename2	@	_ss	@	.,			///
+	error("Output file")						///
+	label("Save As...")						///
+	filter("Text Files (*.txt|*.txt|All (*.*)|*.*")   		///
+	defext(txt)							///
+	save
+  
+  GROUPBOX gb_type	_lft	+45	_iwd	_ht8,			///
+  	label("Type of end-of-line character")
+  RADIO    rb_win	_ilft	_ss	_inwd	.,			///
+	first								///
+	option(windows)							///
+	label("Convert to Windows-style end-of-line characters")
+  RADIO    rb_unix	@	_ss	@	.,			///
+	middle								///
+	option(unix)							///
+	label("Convert to Unix-style end-of-line characters")
+  RADIO    rb_mac 	@	_ss	@	.,			///
+	middle								///
+	option(mac)							///
+	label("Convert to Mac-style end-of-line characters")
+  RADIO    rb_classicmac @	_ss	@	.,			///
+	last								///
+	option(classicmac)						///
+	label("Convert to classic Mac-style end-of-line characters")
+ 
+  CHECKBOX  ck_force	_lft	_xls	_iwd	.,			///
+	label("Allow source binary file") option(force)
+END
+
+PROGRAM rb_eol_output
+BEGIN
+	option radio(main rb_win rb_unix rb_mac rb_classicmac)
+END
+
+PROGRAM command
+BEGIN
+	require main.fi_filename
+	require main.fi_filename2
+	repfile main.fi_filename2
+	put "changeeol "
+	put `"""' main.fi_filename `"""'
+	put " "
+	put `"""' main.fi_filename2 `"""'
+	beginoptions
+		put "replace "
+		put `"eol(""'
+		put /program rb_eol_output
+		put `"")"'
+		option main.ck_force
+	endoptions
+END

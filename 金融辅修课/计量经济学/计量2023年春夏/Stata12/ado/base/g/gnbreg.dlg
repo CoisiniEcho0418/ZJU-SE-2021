@@ -1,0 +1,210 @@
+/*
+  gnbreg
+
+*!  VERSION 1.2.8  23aug2010
+
+  keyword:  eclass
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_xlarge // long title w/survey
+DEFINE _dlght 360
+INCLUDE header
+HELP hlp1, view("help gnbreg")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	program parseMessage
+	script se_createAsSvyJknifeBstrapML
+	program svy_check_title
+END
+
+PROGRAM parseMessage
+BEGIN
+	if __MESSAGE.contains("__MI__") {
+		call script se_setMI_on
+	}
+END
+
+SCRIPT POSTINIT
+BEGIN
+	program se_setFinalInitState
+END
+
+SCRIPT svy_is_on
+BEGIN
+	script max_setDefaultNoLog
+END
+SCRIPT svy_is_off
+BEGIN
+	script max_setDefaultLog
+END
+PROGRAM svy_check_title
+BEGIN
+	if __MESSAGE.contains("-svy-") {
+		call settitle "svy: gnbreg - Generalized negative binomial regression for survey data"
+	}
+END
+
+DIALOG main, tabtitle("Model")						///
+	/// **** has svy title ****					///
+	title("gnbreg - Generalized negative binomial regression")
+BEGIN
+  TEXT tx_dv 		_lft	_top	_vnwd	.,			///
+	label("Dependent variable:")
+  VARNAME vn_dv		@ 	_ss	@	.,			///
+	label("Dependent variable")
+
+  TEXT tx_iv		_vlx	_top	160	.,			///
+	label("Independent variables:")
+  VARLIST vl_iv		@	_ss	_vlwd	.,			///
+	fv								///
+	allowcat							///
+	label("Independent variables")
+  CHECKBOX ck_nocons @         _ms       @         .,			/*
+		*/ label("Suppress constant term")			/*
+		*/ option("noconstant")					/*
+		*/
+
+  GROUPBOX gb_opt    _lft      _ls       _iwd      _ht17h,		/*
+		*/ label("Options")					/*
+		*/
+
+  TEXT     tx_lnalph _ilft     _ss       _inwd     .,			/*
+		*/ label("Dispersion model variables:")			/*
+		*/
+  VARLIST  vl_lnalph @         _ss       @         .,			/*
+		*/ label("Dispersion model variables")			/*
+		*/ allowcat						/*
+		*/ option("lnalpha") fv					/*
+		*/
+
+  RADIO    rb_expose _ilft     _ls       _cwd3_2   .,			/*
+		*/ label("Exposure variable:")				/*
+		*/ first						/*
+		*/ clickon("script expose")				/*
+		*/
+  RADIO    rb_offset _lft3_2   @         @         .,			/*
+		*/ label("Offset variable:")				/*
+		*/ last							/*
+		*/ clickon("script offset")				/*
+		*/
+
+  VARNAME  vn_expose _ilft     _ss       @         .,			/*
+		*/ label("Exposure variable")				/*
+		*/ option("exposure")					/*
+		*/
+
+  VARNAME  vn_offset _lft3_2   @         @         .,			/*
+		*/ label("Offset variable")				/*
+		*/ option("offset")					/*
+		*/
+
+  DEFINE _x _ilft
+  DEFINE _y _ls
+  DEFINE _cx _ilw80
+  DEFINE _bux _islw80
+  INCLUDE _constraints
+
+  DEFINE _x _ilft
+  DEFINE _xw _ibwd
+  INCLUDE _ck_collinear
+END
+
+INCLUDE _constraints_sc 
+
+SCRIPT expose
+BEGIN
+  main.vn_expose.enable
+  main.vn_offset.disable
+END
+
+SCRIPT offset
+BEGIN
+  main.vn_expose.disable
+  main.vn_offset.enable
+END
+
+INCLUDE sub_by_ifin_over_subpop
+INCLUDE weights_fpi
+INCLUDE se
+
+SCRIPT rpt_POSTINIT
+BEGIN
+	create STRING rpt_bu_fmtcoefResults
+	program rpt_bu_fmtcoef_ckResults
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr
+  DEFINE _y _top
+  INCLUDE _sp_level
+
+  RADIO    rb_default _lft     _ls       _cwd1     .,			/*
+  		*/ label("Report coefficients (default)") first
+  RADIO    rb_irr     @        _ss       @         .,			/*
+  		*/ label("Report incidence-rate ratios")		/*
+  		*/ option(irr) last
+
+  DEFINE _x _lft
+  DEFINE _y _ls
+  DEFINE _cx _iwd
+  INCLUDE _nocnsreport
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _noomitted
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _vsquish
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _factor_vars_reporting
+
+  DEFINE _x _lft
+  DEFINE _y _xxxls
+  INCLUDE _bu_coef_table_reporting
+END
+
+INCLUDE fmt_coef_table_reporting_pr
+
+INCLUDE max_ml
+
+PROGRAM command
+BEGIN
+	put /program se_prefix_output " "
+	put "gnbreg "
+	varlist main.vn_dv [main.vl_iv]
+	if !main.vl_iv & main.ck_nocons {
+	  stopbox stop `""Suppress constant term" is selected without independent variables."'
+	}
+	put " " /program ifin_output
+	put " " /program weights_output
+	beginoptions
+		option main.ck_nocons
+		optionarg main.vl_lnalph
+		optionarg main.vn_expose
+		optionarg main.vn_offset
+		INCLUDE _constraints_main_pr
+		option main.ck_collinear
+		put " " /program se_output
+		optionarg /hidedefault rpt.sp_level
+		option rpt.rb_irr
+		INCLUDE _nocnsreport_pr
+		INCLUDE _noomitted_pr
+		INCLUDE _vsquish_pr
+		INCLUDE _factor_vars_reporting_pr
+		put " " rpt_bu_fmtcoefResults
+		put " " /program max_output
+	endoptions
+END

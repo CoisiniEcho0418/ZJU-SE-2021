@@ -1,0 +1,354 @@
+/*
+  easy graph regression fit - Regression fit
+
+*!  VERSION 1.0.3  03aug2006  (deprecated)
+
+*/
+
+VERSION 10
+
+INCLUDE egraph_header
+INCLUDE header
+HELP hlp1, view("help graph_twoway")
+RESET res1
+
+DIALOG main, label("Regression fit") tabtitle("Main")
+BEGIN
+
+  TEXT     tx_method   _lft        _top      143         .,		///
+  	label("Method:")
+  COMBOBOX cb_method   @           _ss       @           .,		///
+  	label("Method")							///
+  	dropdownlist 							///
+  	contents(main_method) values(main_method_val)			///
+  	onselchangelist(main_method_sel)  	
+  TEXT     tx_x        _lft 	   _ls       _vnwd       .,		///
+  	label("X variable:")
+DEFINE y @y
+  VARNAME  vn_x        @           _ss	     @           .,		///
+  	label("X variables") 	
+  TEXT     tx_y        _vlx        y         @           .,		///
+  	label("Y variable:")
+  VARNAME  vn_y        @           _ss	     @           .,		///
+  	label("Y variable")
+  	
+  CHECKBOX ck_scatter  _lft        _xls      _cwd1       .,		///
+  	label("Plot scatter") default(1)
+  CHECKBOX ck_fit      @	   _ms	     @           .,		///
+  	label("Plot fitted values") default(1)				///
+  	onclickon(script main_fit_on)					///
+  	onclickoff(program main_fit_off)
+  CHECKBOX ck_ci       @           _ms       @           .,		///
+  	label("Plot confidence interval") default(1)			///
+  	onclickoff(script erfitopts_ci_off)				///
+  	onclickon(script erfitopts_ci_on)
+END
+
+INCLUDE ifin
+INCLUDE etitle
+INCLUDE eaxes
+
+LIST main_method
+BEGIN
+	Linear prediction
+	Quadratic prediction
+	Fractional polynomial
+END
+
+LIST main_method_val
+BEGIN
+	lfit
+	qfit
+	fpfit
+END
+
+LIST main_method_sel
+BEGIN
+	program erfitopts_lfit
+	program erfitopts_qfit
+	program erfitopts_fpfit
+END
+
+PROGRAM main_fit_off
+BEGIN
+	if !main.ck_ci & !main.ck_fit {
+		call script erfitopts_fit_off
+		call gaction main.cb_method.disable
+	}
+END
+
+PROGRAM main_fit_on
+BEGIN
+	main.cb_method.enable
+	main.cb_method.withvalue main.cb_method.setvalue "@"
+	eopts.gb_fit.enable
+END
+
+DIALOG eopts, label("") tabtitle("Options")
+BEGIN
+  INCLUDE ecommon_opts_ctrl
+  GROUPBOX gb_fit      _lft        _xxxxxxls _iwd        _ht19,		///
+   	label("Regression fit options")
+  TEXT     tx_range    _ilft       _ms       _txlwd      .,	 	///
+  	label("Range:") right
+DEFINE y @y
+  EDIT     ed_range    _txlsep     @         _cbwd       .,		///
+  	label("Range") option(range)
+  TEXT     tx_estcmd   _ilft       _ms       _txlwd      .,		///
+  	label("Estimation:") right
+  COMBOBOX cb_estcmd   _txlsep     @         _cbwd       .,		///
+  	label("Estimation command") 					///
+  	dropdownlist 							///
+  	contents(erfitopts_estcmd)					///
+  	option(estcmd) default(regress)
+  RADIO    rb_predpts  _lft2       y         _rbwd       .,		///
+  	label("") first							///
+  	onclickon(script erfitopts_predpts_on)
+  SPINNER  sp_lpredpts _rbsep	   @         _spwd       .,		///
+  	label("Prediction points")					///
+  	min(1) default(3) max(100000)					///
+  	option(n)
+  SPINNER  sp_qpredpts @	   @         @           .,		///
+  	label("Prediction points")					///
+  	min(1) default(100) max(100000)  				///
+  	option(n)
+  TEXT     tx_predpts _spsep       @         _vnwd       .,		///
+  	label("Prediction points")
+  RADIO    rb_predx    _lft2       _ms       _cwd2       .,  		///
+  	label("Predict at X values") last				///
+  	onclickon(script erfitopts_predx_on)				///
+  	option(atobs)
+  GROUPBOX gb_ci       _ilft       _ls       _ibwd       _ht10,		///
+  	label("")
+  COMBOBOX cb_cl       _indent     _ms       _spwd       .,		///
+		dropdown						/// 
+		label("Confidence level")				///
+		default(c(level))					///
+		contents(levels)					///
+		option(level)
+
+DEFINE x @x
+  TEXT     tx_cl       _spsep      @         _cwd1       ., 		///
+  	label("Confidence level")
+  TEXT     tx_ciplot   _ilft2      @         _txlwd      .,		///
+  	label("CI plot:") right
+  COMBOBOX cb_ciplot   _txlsep     @         _cbwd       .,		///
+  	label("CI plot") 						///
+  	dropdownlist 							///
+  	contents(erfitopts_ciplot)					///
+  	option(ciplot) default(rarea)
+  RADIO    rb_stdp     x           _ls       _comb4_2    .,		///
+  	label("Confidence interval of mean") first			///
+  	option(stdp)
+  RADIO    rb_stdf     @           _ss       @           .,		///
+  	label("Confidence interval for individual forecast")		///
+  	option(stdf)
+  RADIO    rb_stdr     @           _ss       @           .,		///
+  	label("Confidence interval based on standard error of residual") ///
+  	last								///
+  	option(stdr)
+END
+
+INCLUDE ecommon_opts_sc
+
+LIST erfitopts_estcmd
+BEGIN
+	regress
+	clogit
+	glm
+	logit
+	logistic
+	poisson
+	probit
+	stcox
+	streg
+END
+
+LIST erfitopts_ciplot
+BEGIN
+	rarea
+	rbar
+	rspike
+	rcap
+	rline
+END
+
+SCRIPT erfitopts_predx_on
+BEGIN
+	eopts.tx_range.disable
+	eopts.ed_range.disable
+	eopts.sp_lpredpts.disable
+	eopts.sp_qpredpts.disable
+END
+
+SCRIPT erfitopts_predpts_on
+BEGIN
+	eopts.tx_range.enable
+	eopts.ed_range.enable	
+	eopts.sp_lpredpts.enable
+	eopts.sp_qpredpts.enable
+END
+
+SCRIPT erfitopts_ci_off
+BEGIN	
+	eopts.tx_cl.disable
+	eopts.cb_cl.disable
+	eopts.rb_stdp.disable
+	eopts.rb_stdf.disable
+	eopts.rb_stdr.disable
+	eopts.tx_ciplot.disable
+	eopts.cb_ciplot.disable
+	program main_fit_off
+END
+
+SCRIPT erfitopts_ci_on
+BEGIN	
+	eopts.tx_cl.enable
+	eopts.cb_cl.enable
+	eopts.rb_stdp.enable
+	eopts.rb_stdf.enable
+	eopts.rb_stdr.enable
+	eopts.tx_ciplot.enable
+	eopts.cb_ciplot.enable
+	script main_fit_on
+END
+
+SCRIPT erfitopts_fit_off
+BEGIN
+	eopts.tx_range.disable
+	eopts.ed_range.disable
+	eopts.sp_lpredpts.disable
+	eopts.sp_qpredpts.disable
+	eopts.rb_predx.disable
+	eopts.gb_fit.disable
+	eopts.tx_predpts.disable
+	eopts.tx_estcmd.disable
+	eopts.cb_estcmd.disable
+END
+
+PROGRAM erfitopts_lfit
+BEGIN
+    if main.ck_fit | main.ck_ci {
+	call gaction eopts.gb_fit.setlabel ///
+		"Regression fit options - Linear prediction"
+	if main.ck_ci {
+		call script erfitopts_ci_on
+	}
+	if eopts.rb_predpts {		
+		call gaction eopts.tx_range.enable
+		call gaction eopts.ed_range.enable
+		call gaction eopts.sp_lpredpts.enable
+	}
+	call gaction eopts.rb_predpts.enable
+	call gaction eopts.sp_lpredpts.show
+	call gaction eopts.sp_qpredpts.hide	
+	call gaction eopts.tx_predpts.enable
+	call gaction eopts.rb_predx.enable
+	call gaction eopts.tx_estcmd.disable
+	call gaction eopts.cb_estcmd.disable
+    }
+END
+
+PROGRAM erfitopts_qfit
+BEGIN
+    if main.ck_fit | main.ck_ci {
+	call gaction eopts.gb_fit.setlabel ///
+		"Regression fit options - Quadratic prediction"
+	if main.ck_ci {
+		call script erfitopts_ci_on
+	}
+	if eopts.rb_predpts {		
+		call gaction eopts.tx_range.enable
+		call gaction eopts.ed_range.enable
+		call gaction eopts.sp_qpredpts.enable
+	}
+	call gaction eopts.rb_predpts.enable
+	call gaction eopts.sp_qpredpts.show
+	call gaction eopts.sp_lpredpts.hide	
+	call gaction eopts.tx_predpts.enable
+	call gaction eopts.rb_predx.enable
+	call gaction eopts.tx_estcmd.disable
+	call gaction eopts.cb_estcmd.disable
+    }
+END
+
+PROGRAM erfitopts_fpfit
+BEGIN
+    if main.ck_fit | main.ck_ci {
+	call gaction eopts.gb_fit.setlabel ///
+		"Regression fit options - Fractional polynomial"
+	if main.ck_ci {
+		call gaction eopts.rb_stdp.disable
+		call gaction eopts.rb_stdf.disable
+		call gaction eopts.rb_stdr.disable
+	}
+	call gaction eopts.tx_estcmd.enable
+	call gaction eopts.cb_estcmd.enable
+	call gaction eopts.tx_range.disable
+	call gaction eopts.ed_range.disable
+	call gaction eopts.rb_predpts.disable
+	call gaction eopts.sp_lpredpts.disable
+	call gaction eopts.sp_qpredpts.disable
+	call gaction eopts.tx_predpts.disable
+	call gaction eopts.rb_predx.disable
+    }
+END
+
+PROGRAM erfitopts_output
+BEGIN
+	put /program ecommon_opts_output
+END
+
+PROGRAM rfit_opts
+BEGIN
+	beginoptions
+		optionarg eopts.ed_range
+		optionarg /hidedefault eopts.sp_lpredpts
+		optionarg /hidedefault eopts.sp_qpredpts
+		option eopts.rb_predx
+		optionarg /hidedefault eopts.cb_estcmd
+		optionarg /hidedefault eopts.cb_cl
+		optionarg /hidedefault eopts.cb_ciplot
+		// default so dont output option eopts.rb_stdp
+		option eopts.rb_stdf
+		option eopts.rb_stdr
+		if !main.ck_fit {
+			put "nofit "
+		}
+	endoptions
+END
+
+
+PROGRAM command
+BEGIN
+	if !(main.ck_ci | main.ck_scatter | main.ck_fit) {
+		stopbox stop `"A plot must be selected!"'
+	}
+	put "twoway "
+	if main.ck_fit | main.ck_ci {
+		put "("
+		put main.cb_method
+		if main.ck_ci {
+			put "ci "
+		}
+		require main.vn_x
+		require main.vn_y
+		put " " main.vn_y
+		put " " main.vn_x
+		put /program rfit_opts
+		put ") "
+	}
+	if main.ck_scatter {
+		put "(scatter "
+		put " " main.vn_y
+		put " " main.vn_x
+		put ") "
+	}
+		
+	INCLUDE _ifin_pr
+	beginoptions
+		put " " /program etitle_output
+		put " " /program eaxes_output
+		put " " /program erfitopts_output
+	endoptions
+END

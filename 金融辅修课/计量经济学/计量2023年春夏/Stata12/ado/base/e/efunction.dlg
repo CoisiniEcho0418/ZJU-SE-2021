@@ -1,0 +1,52 @@
+/*
+  easy twoway function - Twoway line plot of function
+
+*!  VERSION 1.0.1  03aug2006  (deprecated)
+
+*/
+VERSION 8.0
+
+INCLUDE egraph_header
+INCLUDE header
+HELP hlp1, view("help twoway_function")
+RESET res1
+
+DIALOG main, label("twoway function - Twoway line plot of function") tabtitle("Main")
+BEGIN
+  TEXT     tx_fcn      _lft        _top      _vlwd       .,		///
+    	label("F(x):") 
+  EXP      ex_fcn      @  	   _ss       @           .,		///	
+  	label("Create...") error("F(x)")
+  TEXT     tx_range    @           _ms       _vnwd       .,		///
+  	label("Range:")
+  TEXT     tx_n        _lft3_2     @         _vnwd       .,             ///
+  	label("Points:")
+  VARNAME  vn_range    _lft        _ss       @           .,		///
+  	label("Range")							///
+  	option(range)
+  SPINNER  sp_n        _lft3_2     @         _spwd       ., 		///
+  	min(1) max(10000) default(300)					///
+  	label("Points")							///
+  	option(n)
+END
+
+INCLUDE esimple_sc
+INCLUDE ifin
+INCLUDE etitle
+INCLUDE eaxes
+INCLUDE eopts
+
+PROGRAM command
+BEGIN
+	put "twoway function "
+	require main.ex_fcn
+	put main.ex_fcn
+	INCLUDE _ifin_pr
+	beginoptions
+		optionarg main.vn_range
+		optionarg /hidedefault main.sp_n 
+		put " "  /program etitle_output
+		put " "  /program eaxes_output
+		put " "  /program eopts_output
+	endoptions
+END

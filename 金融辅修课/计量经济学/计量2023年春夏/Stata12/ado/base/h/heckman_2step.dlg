@@ -1,0 +1,193 @@
+/*
+  heckman , twostep
+
+*!  VERSION 1.1.6  23aug2010
+
+  keyword:  eclass
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_large
+DEFINE _dlght 405
+INCLUDE header
+HELP hlp1, view("help heckman")
+RESET res1
+
+DIALOG main, label("heckman - Heckman two-step selection model")	///
+		tabtitle("Model")
+BEGIN
+  TEXT tx_dv 		_lft	_top	_vnwd	.,			///
+	label("Dependent variable:")
+  VARNAME vn_dv		@ 	_ss	@	.,			///
+	ts								///
+	label("Dependent variable")
+
+  TEXT tx_iv		_vlx	_top	160	.,			///
+	label("Independent variables:")
+  VARLIST vl_iv		@	_ss	_vlwd	.,			///
+	fv ts								///
+	allowcat							///
+	label("Independent variables")
+  CHECKBOX ck_nocons   @           _ms       @          .,		///
+		label("Suppress constant term")				///
+		option(noconstant)
+
+  CHECKBOX ck_sdv      _lft        _ls       _vnwd       .,		///
+		label("Selection DV:")					///
+		onclickon(gaction main.vn_sdv.enable)			///
+		onclickoff(gaction main.vn_sdv.disable)
+
+  DEFINE y @y
+  VARNAME  vn_sdv      @           _ss       @           .,		///
+		label("Selection variable") ts
+
+  TEXT     tx_siv      _vlx        y         _vlwd       .,		///
+		label("Selection independent variables:")
+
+  VARLIST  vl_siv      @           _ss       @           .,		///
+		label("Selection independent variables")		///
+		allowcat ts fv
+
+  CHECKBOX ck_snocon   @           _ms       @           .,		///
+		label("Suppress selection constant term")		///
+		option(noconstant)
+
+  GROUPBOX gb_rho      _lft        _xls      _iwd        _ht9,		///
+		label("Treatment of inadmissible rho")
+
+  RADIO    rb_sigma    _indent     _ms       _inwd       .,		///
+		first							///
+		label("Truncate to [-1,1] with consistent sigma")	///
+		option("rhosigma")
+
+  RADIO    rb_trunc    @           _ss       @           .,		///
+		label("Truncate to [-1,1]")				///
+		option("rhotrunc")
+
+  RADIO    rb_limit    @           _ss       @           .,		///
+		label("Limited truncate")				///
+		option("rholimited")
+
+  RADIO    rb_force    @           _ss       @           .,		///
+		last 							///
+		label("Retain")						///
+		option("rhoforce")
+END
+
+PROGRAM heckman_model_subopts
+BEGIN
+	option main.ck_snocon
+END
+
+PROGRAM heckman_model_opts
+BEGIN
+	if main.ck_sdv {
+		varlist main.vn_sdv
+		put " = "
+	}
+	require main.vl_siv
+	put " " main.vl_siv
+	if main.ck_snocon {
+		beginoptions
+			put /program heckman_model_subopts
+		endoptions
+	}
+END
+
+PROGRAM heckman_model_opts_output
+BEGIN
+	option main.ck_nocons
+	put "twostep select("
+	put /program heckman_model_opts
+	put ")"
+	option radio(main rb_sigma rb_trunc rb_limit rb_force)
+END
+
+PROGRAM heckman_model_output
+BEGIN
+	varlist main.vn_dv [main.vl_iv]
+	put " "
+	if !main.vl_iv & main.ck_nocons {
+	  stopbox stop `""Suppress constant term" is selected without independent variables."'
+	}
+END
+
+INCLUDE byifin
+INCLUDE se
+
+SCRIPT PREINIT
+BEGIN
+	script se_createAsConventJknifeBstrap
+END
+
+SCRIPT rpt_POSTINIT
+BEGIN
+	create STRING rpt_bu_fmtcoefResults
+	program rpt_bu_fmtcoef_ckResults
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr2b
+  DEFINE _y _top
+  INCLUDE _sp_level
+
+  CHECKBOX ck_first  _lft      _ls      _cwd1      .,			/*
+		*/ label("Report first-step probit estimates")		/*
+		*/ option("first")					/*
+		*/
+
+  GROUPBOX gb_genvar _lft      _ls      _iwd       _ht4h,		/*
+  		*/ label("Generate new variables")
+  TEXT     tx_nshaz  _ilft     _ss      _inwd      .,			/*
+		*/ label("Nonselection hazard variable:")		/*
+		*/
+  EDIT     ed_nshaz  @         _ss      _vnwd      .,			/*
+		*/ label("Nonselection hazard")				/*
+		*/ option("nshazard")					/*
+		*/
+
+  DEFINE _x _lft
+  DEFINE _y _xxls
+  DEFINE _cx _iwd
+  INCLUDE _noomitted
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _vsquish
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _factor_vars_reporting
+
+  DEFINE _x _lft
+  DEFINE _y _xxxls
+  INCLUDE _bu_coef_table_reporting
+END
+
+INCLUDE fmt_coef_table_reporting_pr
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "heckman "
+	put " " /program heckman_model_output
+	INCLUDE _ifin_pr
+	beginoptions
+		put " " /program heckman_model_opts_output
+		put " " /program se_output
+		optionarg /hidedefault rpt.sp_level
+		option rpt.ck_first
+		optionarg rpt.ed_nshaz
+		INCLUDE _noomitted_pr
+		INCLUDE _vsquish_pr
+		INCLUDE _factor_vars_reporting_pr
+		put " " rpt_bu_fmtcoefResults
+	endoptions
+END
+

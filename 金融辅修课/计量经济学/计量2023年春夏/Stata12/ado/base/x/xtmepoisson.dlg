@@ -1,0 +1,292 @@
+/*
+ *   xtmepoisson
+ *
+ *!  VERSION 1.0.9  23aug2010
+ *
+ *     keyword:  eclass
+ *
+ *     */
+
+VERSION 12.0
+
+INCLUDE _std_glm
+DEFINE _dlgwd 730
+DEFINE _dlght 485
+INCLUDE header
+
+DEFINE _iwd 710
+
+DEFINE c1 20
+DEFINE c1wd 63
+
+DEFINE c2 90
+DEFINE c2wd 110
+
+DEFINE c3h 225
+DEFINE c3hwd 50
+DEFINE c3 239
+DEFINE c3wd 20
+
+DEFINE c4 280
+DEFINE c4fwd 110
+DEFINE c4wd 200
+
+DEFINE c5 490
+DEFINE c5wd 105
+
+DEFINE c6h 600
+DEFINE c6hwd 57
+DEFINE c6 617
+DEFINE c6wd 20
+
+DEFINE c7h 660
+DEFINE c7hwd 57
+DEFINE c7 673
+DEFINE c7wd 20
+
+HELP hlp1, view("help xtmepoisson")
+RESET res1
+
+PROGRAM POSTINIT_PROGRAM
+BEGIN
+	call program check_bytab
+	call script max_setListNoBHHH
+	call script max_setOptionXTME
+	call create STRING rpt_bu_facvarsResults
+	call program rpt_bu_facvars_ckResults
+END
+
+PROGRAM check_bytab
+BEGIN
+	if __MESSAGE.contains("__MI__") {
+		call script byifin_set_by_off
+	}
+END
+
+DIALOG main, tabtitle("Model")	///
+	label("xtmepoisson -- Multilevel mixed-effects Poisson regression")
+BEGIN
+  TEXT tx_dv 		_lft	_top	_vnwd	.,			///
+	label("Dependent variable:")
+  VARNAME vn_dv		@ 	_ss	@	.,			///
+	ts								///
+	label("Dependent variable")
+
+  TEXT tx_iv		_vlx	_top	160	.,			///
+	label("Independent variables:")
+  VARLIST vl_iv		@	_ss	_vlwd	.,			///
+	fv ts								///
+	allowcat							///
+	label("Independent variables")
+
+  CHECKBOX ck_nocons		_lft	_ls	_cwd2	.,		///
+	label("Suppress constant term")					///
+	option(noconstant)
+
+  GROUPBOX gb_opts		_lft	_ls	_iwd	_ht5,		///
+	label("Exposure / Offset")
+  RADIO    rb_expose		_ilft	_ms	_cwd3_2	.,		///
+	label("Exposure variable:")					///
+	first								///
+	onclickon(script expose)
+  RADIO    rb_offset		_lft3_2	@	@	.,		///
+	label("Offset variable:")					///
+	last								///
+	onclickon(script offset)
+
+  VARNAME  vn_expose		_ilft	_ss	_vnwd	.,		///
+	label("Exposure variable")					///
+	option(exposure)
+  VARNAME  vn_offset   		_lft3_2	@	@	.,		///
+	label("Offset variable")					///
+	option(offset)
+
+  DEFINE y +45
+  INCLUDE xtme_re
+END
+
+INCLUDE xtme_re_pr
+
+SCRIPT expose
+BEGIN
+	main.vn_expose.enable
+	main.vn_offset.disable
+END
+
+SCRIPT offset
+BEGIN
+	main.vn_expose.disable
+	main.vn_offset.enable
+END
+
+INCLUDE _std_glm
+
+DIALOG int,  tabtitle("Integration")
+BEGIN
+  GROUPBOX gb_method		_lft	_top	_iwd	_ht8h,		///
+	label("Integration method")
+  RADIO    rb_default		_ilft	_ss	_ibwd	.,		///
+	first								///
+	label("Adaptive Gauss-Hermite quadrature")			///
+	onclickon(script intpoints_on)
+  RADIO    rb_laplace		@	_ss	@	.,		///
+	last								///
+	label("Laplacian approximation")				///
+	option(laplace)							///
+	onclickon(script intpoints_off)
+
+  EDIT     ed_intpoints		_ilft	+35	_en14wd	.,		///
+	option(intpoints) default(7)
+  TEXT     tx_intpoints		_en14sep @	_en14rb	.,		///
+	label("Number of integration points")
+END
+
+SCRIPT intpoints_on
+BEGIN
+	int.ed_intpoints.enable
+	int.tx_intpoints.enable
+END
+
+SCRIPT intpoints_off
+BEGIN
+	int.ed_intpoints.disable
+	int.tx_intpoints.disable
+END
+
+INCLUDE byifin
+
+PROGRAM rpt_check_options
+BEGIN
+	if rpt.rb_variance | rpt.rb_fixed | rpt.rb_random {
+		call rpt.ck_estmetric.disable
+	}
+	else {
+		call rpt.ck_estmetric.enable
+	}
+END
+
+SCRIPT rpt_POSTINIT
+BEGIN
+	create STRING rpt_bu_fmtcoefResults
+	program rpt_bu_fmtcoef_ckResults
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr2
+  DEFINE _y _top
+  INCLUDE _sp_level
+
+  GROUPBOX gb_or		_lft	_ls	_iwd	_ht4,		///
+	label("Fixed-effects reporting")
+  RADIO    rb_coef		_ilft	_ss	_ibwd	.,		///
+	first								///
+	label("Report estimated coefficients")
+  RADIO    rb_irr		@	_ss	@	.,		///
+	last								///
+	option(irr)							///
+	label("Report incidence-rate ratios")
+
+  GROUPBOX gb_rpt_method	_lft	_xls	_iwd	_ht4,		///
+  	label("Reporting method for variance components")
+  RADIO    rb_stddev		_ilft	_ss	_inwd	.,		///
+	first		  						///
+	label("Report as standard deviations and correlations")		///
+	onclickon(program rpt_check_options)
+  RADIO    rb_variance		@	_ss	@	.,		///
+	last option(variance)  						///
+	label("Report as variances and covariances")			///
+	onclickon(program rpt_check_options)
+
+  GROUPBOX gb_fe_re		_lft	_xls	_iwd	_ht6,		///
+  	label("Fixed-effects and random-effects estimates")
+  RADIO    rb_both		_ilft	_ss	_inwd	.,		///
+	first								///
+	onclickon(program rpt_check_options)				///
+	label("Report both fixed effects and random effects")
+  RADIO    rb_fixed		@	_ss	@	.,		///
+	label("Report only fixed effects")				///
+	onclickon(program rpt_check_options)				///
+	option(noretable)
+  RADIO    rb_random		@	_ss	@	.,		///
+	last								///
+	onclickon(program rpt_check_options)				///
+	label("Report only random effects")				///
+	option(nofetable)
+
+  CHECKBOX ck_estmetric		_lft	_xls	_iwd	.,		///
+	label("Report parameter estimates in the estimation metric") 	///
+	option(estmetric)
+
+  CHECKBOX ck_noheader		_lft	_ms	_iwd	.,		///
+	label("Suppress output header") option(noheader)
+
+  CHECKBOX ck_nogroup		_lft	_ms	_iwd	.,		///
+	label("Suppress table summarizing groups") option(nogroup)
+
+  CHECKBOX ck_nolrtest		@	_ms	@	.,		///
+	option(nolrtest)						///
+	label("Do not perform  LR test comparing with (marginal) logistic regression")
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _noomitted
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _vsquish
+
+  DEFINE _x _lft
+  DEFINE _y _ls
+  INCLUDE _bu_factor_vars_reporting
+
+  DEFINE _x _lft2
+  DEFINE _y @ 
+  INCLUDE _bu_coef_table_reporting
+END
+
+INCLUDE fmt_coef_table_reporting_pr
+
+INCLUDE factor_vars_reporting_pr
+
+INCLUDE max_ml
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "xtmepoisson "
+	varlist main.vn_dv [main.vl_iv]
+        if !main.vl_iv & main.ck_nocons {
+	  stopbox stop `""Suppress constant term" is selected without independent variables""'
+	}
+	put " " /program ifin_output
+
+	beginoptions
+		option main.ck_nocons
+		optionarg main.vn_expose
+		optionarg main.vn_offset
+
+		put " " /program xtme_re_output
+		
+		optionarg /hidedefault int.ed_intpoints
+		option int.rb_laplace
+
+		optionarg /hidedefault rpt.sp_level
+		option rpt.rb_irr
+		option rpt.rb_variance
+		option rpt.rb_fixed
+		option rpt.rb_random
+		option rpt.ck_estmetric
+		option rpt.ck_noheader
+		option rpt.ck_nogroup
+		option rpt.ck_nolrtest
+		INCLUDE _noomitted_pr
+		INCLUDE _vsquish_pr
+		put " " rpt_bu_facvarsResults
+		put " " rpt_bu_fmtcoefResults
+		put " " /program max_output
+	endoptions
+END

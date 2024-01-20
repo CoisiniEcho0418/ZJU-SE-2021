@@ -1,0 +1,120 @@
+/*
+	mkmat 
+
+	VERSION 1.1.0  10jan2007
+
+	which mkmat = *! version 2.0.0  03jan2007
+*/
+
+VERSION 8.0
+
+INCLUDE _std_medium
+INCLUDE _ht370
+INCLUDE header
+
+HELP hlp1, view("help mkmat")
+RESET res1
+
+DIALOG main, label("mkmat - Convert variables to matrix") /*
+		*/ tabtitle("Main")
+BEGIN
+  /*--+----1----+----2----+----3----+----4----+----5----+----6----+----7----+*/ 
+  TEXT     tx_var    _lft      _top      _iwd      .,		/*
+		*/ label("Variables:")
+
+  VARLIST  vl_var    @         _ss       @         .,		/*
+  		*/ label("Variables") 					
+
+  GROUPBOX gb_opt    @         _xls      @         _ht26, 	/*
+  		*/ label("Options")
+
+  CHECKBOX ck_opt    _ilft     _ss       _inwd     ., 		/*
+  		*/ label("Combine vectors in N x k matrix named:")/*
+		*/ clickon("gaction main.ed_mat.enable")	/*
+		*/ clickoff("gaction main.ed_mat.disable")
+
+  EDIT     ed_mat    _indent2  _ms       _vnwd     .,		/*
+		*/ max(32)					/*
+  		*/ label("Combine vectors in N x k matrix")	/*
+		*/ option("matrix")
+  CHECKBOX ck_nomiss _ilft     _ls       _ibwd     .,		/*
+		*/ option("nomissing")				/*
+		*/ label("Exclude observations with missing values")
+  CHECKBOX ck_rownam _ilft     _ms       _ibwd     .,		/*
+		*/ label("Variable containing row names for created matrix:")/*
+		*/ clickon(script rownam_on)			/*
+		*/ clickoff(script rownam_off)
+  VARNAME  vn_rownam _indent2  _ss       _vnwd     .,		/*
+		*/ label("Variable containing row names for created matrix")/*
+		*/ option(rownames)
+  CHECKBOX ck_roweq  _ilft     _ms       _ibwd     .,		/*
+		*/ label("Variable containing row equations for created matrix:")/*
+		*/ clickon("gaction main.vn_roweq.enable")	/*
+		*/ clickoff("gaction main.vn_roweq.disable")
+  VARNAME  vn_roweq  _indent2  _ss       _vnwd     .,		/*
+		*/ label("Variable containing row equations for created matrix")/*
+		*/ option(roweq)
+  CHECKBOX ck_rowpre _ilft     _ms       _ibwd     .,		/*
+		*/ label("Prefix the row names with:")		/*
+		*/ clickon("gaction main.ed_rowpre.enable")	/*
+		*/ clickoff("gaction main.ed_rowpre.disable")
+  EDIT     ed_rowpre _indent2  _ss       _vnwd     .,		/*
+		*/ max(32)					/*
+		*/ label("Prefix the row names with")		/*
+		*/ option(rowprefix)
+  CHECKBOX ck_obs   _ilft      _ms        _ibwd    .,		/*
+		*/ label("Use observation numbers as row names")/*
+		*/ option(obs) clickon("gaction main.ck_rownam.disable")/*
+		*/ clickoff("gaction main.ck_rownam.enable")
+  SPINNER  sp_nchar @          _ms        _spwd    .,		/*
+		*/ min(1) max(32) default(32)			/*
+		*/ label("Truncate row names to this length")	/*
+		*/ option(nchar)
+  TEXT     tx_nchar _spsep     @          _sprb    .,		/*
+		*/ label("Truncate row names to this length")
+
+END
+
+INCLUDE ifin
+
+SCRIPT rownam_on
+BEGIN
+	main.vn_rownam.enable
+	main.ck_obs.disable
+END
+
+SCRIPT rownam_off
+BEGIN
+	main.vn_rownam.disable
+	main.ck_obs.enable
+END
+
+
+PROGRAM command
+BEGIN
+	put "mkmat "
+	varlist main.vl_var
+	INCLUDE _ifin_pr
+	beginoptions
+		if main.ck_opt {
+			require main.ed_mat
+			optionarg main.ed_mat
+		}
+		option main.ck_nomiss
+		if main.ck_rownam {
+			require main.vn_rownam
+			optionarg main.vn_rownam
+		}
+		if main.ck_roweq {
+			require main.vn_roweq
+			optionarg main.vn_roweq
+		}
+		if main.ck_rowpre {
+			require main.ed_rowpre
+			optionarg main.ed_rowpre
+		}
+		option main.ck_obs
+		optionarg /hidedefault main.sp_nchar
+	endoptions
+END
+

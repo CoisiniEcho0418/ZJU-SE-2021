@@ -1,0 +1,128 @@
+/*
+  ac
+
+*! VERSION 1.1.2  07aug2006  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+HELP hlp1, view("help ac")
+RESET res1
+
+DIALOG main, label("ac - Autocorrelations and confidence intervals") /*
+  		*/ tabtitle("Main")
+BEGIN
+  DEFINE _x _xsetbu
+  DEFINE _y _top
+  INCLUDE _bu_tsset
+  TEXT     tx_var          _lft      _top      _cwd2     .,		/*
+  		*/ label("Variable:")
+  VARNAME  vn_var          @         _ss       _vnwd     .,		/*
+  		*/ label("Variable")
+
+  GROUPBOX gb_opt          _lft      _xls      _iwd      _ht19,		/*
+  		*/ label("Options")
+
+  GROUPBOX gb_lags         _indent   _ss       _ibwd     _ht4h,		/*
+  		*/ label("Number of autocorrelations to compute")
+  RADIO    rb_lags1        _indent   _ss       _inwd     .,		/*
+  	*/ label("Default -- min([n/2] - 2, 40)")	/*
+  		*/ clickon(gaction main.sp_lags2.disable)		/*
+  		*/ first
+  RADIO    rb_lags2        @         _ms       _rbwd     .,		/*
+  		*/ clickon(gaction main.sp_lags2.enable)		/*
+  		*/ label("")						/*
+  		*/ last
+  SPINNER  sp_lags2        _rbsep    @         _spwd     .,		/*
+  		*/ label("Autocorrelations") 		 		/*
+  		*/ min(1)						/*
+  		*/ max(100)						/*
+  		*/ default(1)						/*
+  		*/ option("lags")
+  TEXT     tx_lags2        _spsep    @         _rbspr2bb .,		/*
+  		*/ label("Autocorrelations")
+
+  CHECKBOX ck_gen          _ilft     _xls      _ibwd     .,		/*
+  */ label("Generate a variable to hold the autocorrelations: (suppresses the graph)")	/*
+  		*/ clickon("program graph_off")				/*
+  		*/ clickoff("program graph_on")
+  EDIT     ed_gen  	   _indent2  _ss       _vnwd     .,		/*
+  	*/ error("Generate a variable containing the autocorrelations")	/*
+  		*/ max(32)						/*
+  		*/ option("nograph generate")
+
+  DEFINE _x _ilft
+  DEFINE _y +35
+  DEFINE _cx _sprb
+  INCLUDE _sp_level
+
+  CHECKBOX ck_fft          _x        _ls       _ibwd     .,             /*
+  		*/ label("Calculate autocorrelation using Fourier transforms")/*
+  		*/ option("fft")
+
+END
+
+PROGRAM graph_off
+BEGIN
+	call gaction main.ed_gen.enable
+
+	call script p1_opts_disable
+	call script p2_opts_disable
+	call script gr_twoway_disable
+END
+
+PROGRAM graph_on
+BEGIN
+	call gaction main.ed_gen.disable
+
+	call script p1_opts_enable
+	call script p2_opts_enable
+	call script gr_twoway_enable
+END
+
+INCLUDE ifin
+INCLUDE p1_opts
+INCLUDE p2_opts
+INCLUDE addplot
+INCLUDE gr_twoway
+
+SCRIPT PREINIT
+BEGIN
+	script p1_opts_createAsNoRange
+	script p1_opts_setDefaultDropline
+	script p2_opts_createAsRange
+	script p2_opts_setDefaultRarea
+END
+
+SCRIPT POSTINIT
+BEGIN
+	script p2_opts_setTabtitleCi
+END
+
+PROGRAM command
+BEGIN
+	put "ac "
+	varlist main.vn_var
+	INCLUDE _ifin_pr
+	beginoptions
+		if main.rb_lags2 {
+			optionarg main.sp_lags2
+		}
+		if main.ck_gen {
+			require main.ed_gen
+			optionarg main.ed_gen
+		}
+		INCLUDE _level_main_pr
+		option main.ck_fft
+
+		put " " /program p1_opts_output
+		put " " /program p2_opts_ci_output
+		put " " /program addplot_output
+		put " " /program gr_twoway_output
+
+	endoptions
+END
+/* end */

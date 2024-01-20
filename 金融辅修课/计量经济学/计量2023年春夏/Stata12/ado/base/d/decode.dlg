@@ -1,0 +1,80 @@
+/*
+	decode
+	
+*!  VERSION 1.0.2  08apr2011
+
+*/
+
+VERSION 8.0
+
+INCLUDE _std_small
+INCLUDE header
+HELP hlp1, view("help decode")
+RESET res1
+
+DIALOG main,label("decode - Decode numeric into string")              /*
+		*/	tabtitle("Main")
+BEGIN
+  /*--+----1----+----2----+----3----+----4----+----5----+----6----+----7----+*/
+   TEXT	    tx_var        _lft	    _top      _cwd1	.,            /*
+		*/	label("Source-numeric variable:")
+	
+   VARNAME  vn_var        @         _ss       _vnwd     .,            /*
+                */      label("Source-numeric variable")
+
+   TEXT     tx_newvar     _lft2     _top      _cwd1     .,            /*
+                */      label("New-string variable:")
+
+   EDIT     ed_newvar     @         _ss       _vnwd     .,            /*
+                */      label("New-string variable")                  /*
+                */      option(generate)                              /*
+		*/      max(32)
+
+   GROUPBOX gb_maxlen     _lft      _xls      _iwd      _ht2,         /*
+                */      label("Value label") 
+   
+   CHECKBOX ck_maxlen     _ilft     _ss       _ckwd     .,            /*
+                */      label("")                                     /*
+                */      clickon("script maxlength_on")                /*
+                */      clickoff("script maxlength_off")
+
+   SPINNER  sp_maxlen     _cksep    @         _spwd     .,            /*
+                */      label("Value label name")                     /*
+                */      min(1)                                        /*
+		*/      max(80)                                       /*
+		*/      default(80)                                   /*
+                */      option(maxlength)
+
+   TEXT     tx_maxlen     _spsep    @         _cksprb   .,            /*
+                */      label("Number of characters to retain")                  
+END
+
+INCLUDE ifin
+
+PROGRAM command
+BEGIN
+	put "decode "
+	varlist main.vn_var
+	INCLUDE _ifin_pr 
+	beginoptions
+		require main.ed_newvar 
+	        optionarg main.ed_newvar	
+		if main.ck_maxlen{
+			optionarg main.sp_maxlen
+		}
+	endoptions
+END
+
+
+SCRIPT maxlength_on
+BEGIN
+	main.sp_maxlen.enable
+	main.tx_maxlen.enable
+END
+
+SCRIPT maxlength_off
+BEGIN
+	main.sp_maxlen.disable
+	main.tx_maxlen.disable
+END
+

@@ -1,0 +1,144 @@
+/*
+	predict (after slogit)
+
+*!  VERSION 1.1.1  23apr2007
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_large
+INCLUDE header
+
+HELP hlp1, view("help slogit postestimation")
+RESET res1
+
+DIALOG main, label("predict - Prediction after estimation") tabtitle("Main")
+BEGIN
+  TEXT     tx_vars           _lft      _top      _vlwd     .,		/*
+		*/ label("New variable names or variable stub* :")
+  EDIT     ed_vars           @         _ss       @         .,		/*
+		*/ label("New variable names or variable stub*")
+  TEXT     tx_var            _lft      _top      @         .,		/*
+		*/ label("New variable name:")
+  EDIT     ed_var            @         _ss       _vnwd     .,		/*
+		*/ label("New variable name") max(32)
+
+  TEXT     tx_type           _vlsep    _top      _vlr      .,		/*
+		*/ label("New variable type:")
+  COMBOBOX cb_type           @         _ss       @         .,		/*
+		*/ dropdownlist						/*
+		*/ contents(type) default(c(type))			/*
+		*/ label("Type")
+
+  GROUPBOX gb_opts           _lft      _ls       _iwd      _ht10,	/*
+		*/ label("Produce:")
+  RADIO    rb_p_all          _ilft     _ss       _ibwd     ., first	/*
+		*/ option(p)						/*
+		*/ clickon("script offmany")				/*
+		*/ label("Probabilities (specify as many variables as number of outcomes)")
+  DEFINE   holdy@y
+  RADIO    rb_p              _ilft     _ss       _comb3_2  .,		/*
+		*/ option(p)						/*
+		*/ clickon("script off2")				/*
+		*/ label("Probability (specify one variable)")
+  RADIO    rb_xb             @         _ss       @         .,		/*
+		*/ option(xb)						/*
+		*/ clickon("script off2")				/*
+		*/ label("Index (xb)")
+  RADIO    rb_stdp           @         _ss       @         .,		/*
+		*/ option(stdp)						/*
+		*/ clickon("script off2")				/*
+		*/ label("Standard error of index")
+  RADIO    rb_score          _ilft     _ss       _comb3_2  ., last	/*
+		*/ option(scores)					/*
+		*/ clickon("script offmany")				/*
+		*/ label("Equation-level scores")
+
+  TEXT     tx_outcome1       _ilft3_3  holdy     _cwd3_2   .,		/*
+		*/ label("Outcome:")
+  LISTBOX  lb_outcome1       @         _ss       @         _ht3,	/*
+		*/ contents(ereturn labels)				/*
+		*/ label("Outcome")
+END
+
+INCLUDE ifin
+INCLUDE _type_list_fd
+
+SCRIPT offmany
+BEGIN
+	script manyvars
+	script eq1off
+END
+
+SCRIPT off2
+BEGIN
+	script onevar
+	script eq1on
+END
+
+SCRIPT manyvars
+BEGIN
+	main.tx_vars.show
+	main.ed_vars.show
+	main.tx_var.hide
+	main.ed_var.hide
+END
+
+SCRIPT onevar
+BEGIN
+	main.tx_vars.hide
+	main.ed_vars.hide
+	main.tx_var.show
+	main.ed_var.show
+END
+
+SCRIPT eq1on
+BEGIN
+	main.tx_outcome1.show
+	main.lb_outcome1.show
+END
+
+SCRIPT eq1off
+BEGIN
+	main.tx_outcome1.hide
+	main.lb_outcome1.hide
+END
+
+
+PROGRAM command
+BEGIN
+	put "predict "
+	if main.cb_type.isdefault() {
+		if main.rb_p_all | main.rb_score {
+			require main.ed_vars
+			put main.ed_vars " "
+		}
+		if !main.rb_p_all & !main.rb_score {
+			require main.ed_var
+			put main.ed_var " "
+		}
+	}
+	if ! main.cb_type.isdefault() {
+		put main.cb_type " " "("
+		if main.rb_p_all | main.rb_score {
+			require main.ed_vars
+			put main.ed_vars
+		}
+		if !main.rb_p_all | main.rb_score {
+			require main.ed_var
+			put main.ed_var
+		}
+		put ") "
+	}
+	INCLUDE _ifin_pr
+	beginoptions
+		if main.rb_p | main.rb_xb | main.rb_stdp {
+			put "outcome("
+			require main.lb_outcome1
+			put main.lb_outcome1
+			put ") "
+		}
+		option radio(main rb_p_all rb_p rb_xb rb_stdp rb_score)
+	endoptions
+END

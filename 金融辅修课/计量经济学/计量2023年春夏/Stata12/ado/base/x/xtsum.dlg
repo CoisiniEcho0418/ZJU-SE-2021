@@ -1,0 +1,58 @@
+/*
+	xtsum
+	
+*!  VERSION 1.1.0  08feb2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_small
+DEFINE _dlght 200
+INCLUDE header
+
+HELP hlp1, view("help xtsum")
+RESET res1
+
+SCRIPT show_xtset
+BEGIN
+	create CHILD xtset
+END
+
+DIALOG main,label("xtsum - Summarize xt data")			///
+	tabtitle("Main")
+BEGIN
+  BUTTON   bu_xtset	_xsetbu	_top	_setbuwd .,		///
+	onpush(script show_xtset)				///
+	label("Panel settings...")
+	
+   TEXT	    tx_var	_lft	_topph	_cwd0	.,		///
+	label("Variables: (leave empty for all)")
+   VARLIST  vl_var	@	_ss	_iwd	.,		///
+	label("Variables")				
+
+   TEXT     tx_exp	@	_ls	_cwd1	., 		///
+	label("Examples:")
+
+   TEXT     tx_xy	_ilft	_vss	_cwd4_2	.,		///
+	label("yr*")
+
+   TEXT     tx_all	_lft4_2	@	_comb4_1 .,		///
+	label(`"all variables starting with "yr""')
+
+   TEXT     tx_abc	_ilft	_vss	_cwd4_2	.,		///
+	label("xyz-abc")
+
+   TEXT     tx_xyz	_lft4_2	@	_comb4_1 .,		///
+	label("all variables between xyz and abc")
+END
+
+INCLUDE byif
+
+PROGRAM command
+BEGIN
+	put /program by_output " "
+	put "xtsum "
+	varlist [main.vl_var]
+	put " " /program if_output
+END

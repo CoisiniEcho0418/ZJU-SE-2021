@@ -1,0 +1,62 @@
+/*
+    irf_drop.dlg
+
+*!  VERSION 1.2.1  21feb2007
+
+*/
+
+VERSION 10.0
+SYNCHRONOUS_ONLY
+
+INCLUDE _std_msmall
+DEFINE _dlght 200
+INCLUDE header
+HELP hlp1, view("help irf_drop")
+RESET res1
+
+DIALOG main,  tabtitle("Main")	///
+	label("irf drop - Drop IRF results from the active IRF file")
+BEGIN
+  DEFINE _x _xsetbu
+  DEFINE _y _top
+  INCLUDE _bu_irfset
+
+  TEXT     tx_irf            _lft      _ms       _iwd      .,		///
+	label("IRF names to drop from the active IRF file:")
+  COMBOBOX cb_irf            @         _ss       @         ., 		///
+  	dropdown append							///
+  	contents(irf_list)						///
+	label("IRF names to drop from active IRF file")
+  GROUPBOX gb_note           _lft      +35       _iwd     _ht5h,
+  TEXTBOX  tb_note1          _indent   _vss      _inwd     _tb2,	///
+  		label(Refresh IRF selections any time the active IRF 	///
+  			file is set or changed while this dialog is open.)
+  BUTTON   bu_refresh        _irj100   _xls       100       ., 		///
+  	label("Refresh") 						///
+  	onpush(program main_get_irf)
+END
+
+SCRIPT POSTINIT
+BEGIN
+	program main_get_irf
+END
+
+PROGRAM main_get_irf
+BEGIN
+	put "_get_irf, "
+	put "dialog(irf_drop) "
+	put "control(main.cb_irf) "
+	put "irfvalue("
+		put main.cb_irf
+	put ") "
+	put "irfappends"
+	stata hidden
+END
+
+PROGRAM command
+BEGIN
+	require main.cb_irf
+	put "irf drop "
+	put main.cb_irf
+	/* not including -set()- option since set IRF button at top */
+END

@@ -1,0 +1,6 @@
+*! version 1.0.1  05feb2004
+sequence 2530
+label "Quarter tiny"
+set val .34722
+
+* 1 pt based on a 4 inch high graph

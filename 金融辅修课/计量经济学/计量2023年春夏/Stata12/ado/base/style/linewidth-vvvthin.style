@@ -1,0 +1,5 @@
+*! version 1.0.1  10jan2005
+sequence 2098
+label "vvv. Thin"
+
+set val .000001

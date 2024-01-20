@@ -1,0 +1,14 @@
+/* 
+  header_sem_ed.idlg -- header for sem builder
+
+*! VERSION 1.0.0  21jun2011
+
+*/
+
+POSITION . . _dlgwd _dlght
+
+OK ok1, label("OK") target(stata hidden)
+CANCEL can1, label("Cancel")
+SUBMIT sub1, label("Apply") target(stata hidden)
+
+/* END:  header_sem_ed.idlg */

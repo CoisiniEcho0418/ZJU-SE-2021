@@ -1,0 +1,180 @@
+/*
+  graph_pie_9.dlg
+
+*!  VERSION 1.1.1  24jan2007  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+HELP hlp1, view("help graph_pie")
+RESET res1
+
+DIALOG main, label("graph pie - Pie charts") tabtitle("Main")
+BEGIN
+ GROUPBOX gb_type         _lft      _top      _cwd1     _ht11h,	///
+	label("Pie chart")
+  RADIO    rb_over         _ilft     _ss       _inwd     .,		///
+	first label("Graph by categories")				///
+	onclickon(script pie_graph_by_cat)
+  RADIO    rb_varlist      @         _ss       @         .,		///
+	last label("Graph by variables")				///
+	onclickon(script pie_graph_by_var)
+
+  GROUPBOX gb_vars         @         _ms       @         _ht4,
+  TEXT     tx_over         _indent   _ss       _inwd     .,		///
+  	label("Category variable:")
+  DEFINE y @y
+  DEFINE x @x
+  VARNAME  vn_over         @         _ss       _vnwd     .,		///
+	label("Category variable") option(over)
+
+  TEXT     tx_var          +150      y         @         .,		///
+  	label("Variable: (optional)")
+  VARNAME  vn_var          @         _ss       @         .,		///
+  	label("Variable")
+
+  TEXT     tx_vars         x         y         _cwd5     .,		///
+	label("Variables:")
+  VARLIST  vl_var          @         _ss       @         .,		///
+	label("Variables")
+
+  DEFINE holdy @y
+  GROUPBOX gb_missing      _lft2     _top      _cwd1     _ht4h,		///
+	label("Missing values")
+  CHECKBOX ck_miss         _ilft2    _ss       _cwd3     .,		///
+	label("Keep missing values as categories")			///
+	option(missing)
+  CHECKBOX ck_cw           @         _ms       @         .,		///
+	label("Casewise treatment of missing values")			///
+	option(cw)
+
+  GROUPBOX gb_app          _lft2     _xls      _cwd1     _ht21h,	///
+	label("Appearance of pie chart")
+  GROUPBOX gb_ord          _ilft2    _ms       _cwd3     _ht8h,		///
+	label("Order of slices")
+  DEFINE holdy1 @y
+  RADIO    rb_def          _indent   _ss       _cwd4_5   .,		///
+	label("Default order") first					///
+	onclickon(gaction main.vn_order.disable)
+  DEFINE holdy @y
+  RADIO    rb_size         @         _ss       @         .,		///
+ 	label("Size order") option(sort) 				///
+	onclickon(gaction main.vn_order.disable)
+  RADIO    rb_order        @         _ss       @         .,		///
+	label("Order by this variable:") last				///
+	onclickon(gaction main.vn_order.enable)
+  VARNAME  vn_order        _rbsep    _ss       _vnwd     .,		///
+	label("Order by this variable") option(sort)
+  CHECKBOX ck_desc         _lft4_4   holdy     _cwd4_3   .,		///
+	label("Reverse this order") option(descending)
+  CHECKBOX ck_nocl         @         _ms       _cwd4_3   .,		///
+	label("Counterclockwise") option(noclockwise)
+
+  GROUPBOX gb_outl         _ilft2    _xxxxxls  _cwd4_1   _ht5h,		///
+	label("Outline of slices")
+  DEFINE holdy @y
+  TEXT     tx_lcol         _iilft2   _ss       _txswd    .,		///
+	label("Color:") right
+  COMBOBOX cb_lcol         _txssep   @         _tcr2b4gi .,		///
+	contents(colors) option(lcolor)					///
+	onselchangelist(main_lcol_change) dropdownlist
+  COLOR    cl_lcol      _tcr2b4gisep @         _colorwd  .,		///
+	option(lcolor)
+  TEXT     tx_lwid         _iilft2   _ls       _txswd    .,		///
+	label("Width:") right
+  COMBOBOX cb_lwid         _txssep   @         _txr2b4gi .,		///
+	contents(linewidths) option(lwidth) dropdownlist
+  TEXT     tx_angle        _lft4_4   holdy     _cwd4_2   .,		///
+	label("Angle of first slice: (degrees)")
+  SPINNER  sp_angle        _indent2  _ss       _spwd     .,		///
+	default(90) min(0) max(360) option(angle)
+  TEXT     tx_int          _lft4_4   _ls       90        .,		///
+	label("Color intensity:") right
+  EDIT     ed_int          +100       @        _en7wd    .,		///
+	label("Intensity") option(intensity)
+END
+
+INCLUDE ifin
+INCLUDE weights_fpa
+INCLUDE gpieslices
+INCLUDE gpielabels
+INCLUDE gtitle
+INCLUDE gcaption
+INCLUDE glegend
+INCLUDE gregion
+INCLUDE gby
+
+LIST main_lcol_change
+BEGIN
+	main.cl_lcol.hide
+	main.cl_lcol.show
+	main.cl_lcol.hide
+END
+
+SCRIPT pie_graph_by_cat
+BEGIN
+	main.tx_vars.hide
+	main.vl_var.hide
+	main.tx_var.show
+	main.vn_var.show
+	main.tx_over.show
+	main.vn_over.show
+END
+
+SCRIPT pie_graph_by_var
+BEGIN
+	main.tx_var.hide
+	main.vn_var.hide
+	main.tx_over.hide
+	main.vn_over.hide
+	main.tx_vars.show
+	main.vl_var.show
+END
+
+PROGRAM command
+BEGIN
+	put "graph pie "
+	require main.vl_var
+	put " " main.vl_var
+	put main.vn_var
+	INCLUDE _weights_pr
+	INCLUDE _ifin_pr
+	beginoptions
+		if main.rb_over {
+			require main.vn_over
+			optionarg main.vn_over
+		}
+		option main.ck_miss
+		option main.ck_cw
+		option main.rb_size
+		if main.rb_order {
+			require main.vn_order
+			optionarg main.vn_order
+		}
+		option main.ck_desc
+		option main.ck_nocl
+		if main.cb_lcol | Hcc(main.cb_lcol) | main.cb_lwid {
+			put "line("
+			if Hcc(main.cb_lcol) {
+				optionarg /quoted main.cl_lcol
+			}
+			if !Hcc(main.cb_lcol) {
+				optionarg main.cb_lcol
+			}
+			optionarg main.cb_lwid
+			put ") "
+		}
+		optionarg main.sp_angle
+		optionarg main.ed_int
+		put " "/program gpieslices_output
+		put " "/program gpielabels_output
+		put " "/program gtitle_output
+		put " "/program gcaption_output
+		put " "/program glegend_output
+		put " "/program gregion_output
+		put " "/program gby_output
+	endoptions
+END

@@ -1,0 +1,240 @@
+/*
+  regress
+
+*!  VERSION 1.2.8  23aug2010
+
+  keyword:  eclass
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_large
+DEFINE _dlght 420
+INCLUDE header
+
+HELP hlp1, view("help regress")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	program parseMessage
+	script se_createAsSvyOLS
+	script se_setBias_on
+	program svy_check_title
+END
+
+PROGRAM parseMessage
+BEGIN
+	if __MESSAGE.contains("__MI__") {
+		call script se_setMI_on
+	}
+END
+
+SCRIPT POSTINIT
+BEGIN
+	program check_bytab
+	program se_setFinalInitState
+END
+
+PROGRAM check_bytab
+BEGIN
+	if ! __MESSAGE.contains("__MI__") {
+		call script sub_set_by_on
+	}
+END
+
+SCRIPT svy_is_on
+BEGIN
+	main.ck_hascon.disable
+	main.ck_tsscon.disable
+	rpt.ck_beta.disable
+	rpt.gb_output.disable
+	rpt.tx_depn.disable
+	rpt.ed_depn.disable
+END
+SCRIPT svy_is_off
+BEGIN
+	main.ck_hascon.enable
+	main.ck_tsscon.enable
+	rpt.ck_beta.enable
+	rpt.gb_output.enable
+	rpt.tx_depn.enable
+	rpt.ed_depn.enable
+END
+PROGRAM svy_check_title
+BEGIN
+	if __MESSAGE.contains("-svy-") {
+		call settitle "svy: regress - Linear regression for survey data"
+	}
+END
+
+DIALOG main, tabtitle("Model")						///
+	title("regress - Linear regression") // has svy title
+BEGIN
+  TEXT tx_dv 		_lft	_top	_vnwd	.,			///
+	label("Dependent variable:")
+  VARNAME vn_dv		@ 	_ss	@	.,			///
+	ts								///
+	label("Dependent variable")
+
+  TEXT tx_iv		_vlx	_top	160	.,			///
+	label("Independent variables:")
+  VARLIST vl_iv		@	_ss	_vlwd	.,			///
+	fv ts								///
+	allowcat							///
+	label("Independent variables")
+  GROUPBOX gb_cons   _lft      _xls      _iwd      _ht8,		/*
+  		*/ label("Treatment of constant")
+  CHECKBOX ck_nocons _ilft     _ms       _cwd1     .,			/*
+		*/ label("Suppress constant term")			/*
+		*/ option("noconstant")					/*
+		*/
+  CHECKBOX ck_hascon @         _ms       @         .,			/*
+		*/ label("Has user-supplied constant")			/*
+		*/ option("hascons")					/*
+		*/
+  CHECKBOX ck_tsscon @         _ms       @         .,			/*
+		*/ label("Total SS with constant (advanced)")		/*
+		*/ option("tsscons")					/*
+		*/
+END
+
+INCLUDE sub_by_ifin_over_subpop
+INCLUDE weights_fpai
+INCLUDE se
+
+PROGRAM beta_on
+BEGIN
+  if robust.ck_robust {
+    call gaction robust.vn_clust.disable
+  }
+END
+
+PROGRAM beta_off
+BEGIN
+  if robust.ck_robust {
+    call gaction robust.vn_clust.enable
+  }
+END
+
+
+PROGRAM robon
+BEGIN
+  call gaction robust.gb_bias.enable
+  call gaction robust.rb_hc1.enable
+  call gaction robust.rb_hc2.enable
+  call gaction robust.rb_hc3.enable
+  call gaction robust.tx_hc1.enable
+  call gaction robust.tx_hc2.enable
+  call gaction robust.tx_hc3.enable
+  call gaction robust.tx_clust.enable
+  if !rpt.ck_beta {
+    call gaction robust.vn_clust.enable
+  }
+END
+
+SCRIPT roboff
+BEGIN
+  robust.gb_bias.disable
+  robust.rb_hc1.disable
+  robust.rb_hc2.disable
+  robust.rb_hc3.disable
+  robust.tx_hc1.disable
+  robust.tx_hc2.disable
+  robust.tx_hc3.disable
+  robust.tx_clust.disable
+  robust.vn_clust.disable
+END
+
+SCRIPT rpt_POSTINIT
+BEGIN
+	create STRING rpt_bu_fmtcoefResults
+	program rpt_bu_fmtcoef_ckResults
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr2b
+  DEFINE _y _top
+  INCLUDE _sp_level
+
+  CHECKBOX ck_beta   _lft2      @        _cwd2     .,			/*
+		*/ label("Standardized beta coefficients")		/*
+		*/ option("beta")					/*
+		*/ clickon("program beta_on")                           /*
+                */ clickoff("program beta_off")
+
+  RADIO    rb_default _lft     +35       _iwd       .,			/*
+  		*/ label("Report coefficients (default)") first		/*
+  		*/ onclickon(rpt.ed_eform.disable)
+  RADIO    rb_eform   @   _ss       @         .,			/*
+  		*/ label("Report exponentiated coefficients and label as:")/*
+  		*/ last       						/*
+  		*/ onclickon(rpt.ed_eform.enable)
+  EDIT     ed_eform   _indent2 _ss       _vnwd     .,			/*
+		*/ label("Report exponentiated coefficients and label as")/*
+		*/ default("exp(Coef.)")				/*
+		*/ option("eform")					/*
+		*/
+
+  GROUPBOX gb_output _lft      _ls      _iwd      _ht4,		/*
+		*/ label("Advanced table options")			/*
+		*/
+  TEXT     tx_depn   _ilft     _ss       _cwd1         .,		/*
+		*/ label("Substitute dependent variable name:")		/*
+		*/
+  EDIT     ed_depn   @         _ss       @         .,			/*
+		*/ label("Substitute dependent variable name")		/*
+		*/ option("depname")					/*
+		*/
+
+  DEFINE _x _lft
+  DEFINE _y _xls
+  DEFINE _cx _cwd1
+  INCLUDE _noomitted
+
+  DEFINE _x _lft2
+  DEFINE _y @
+  DEFINE _cx _cwd1
+  INCLUDE _vsquish
+
+  DEFINE _x _lft
+  DEFINE _y _ls
+  DEFINE _cx _iwd
+  INCLUDE _factor_vars_reporting
+
+  DEFINE _x _lft
+  DEFINE _y _xxxls
+  INCLUDE _bu_coef_table_reporting
+END
+
+INCLUDE fmt_coef_table_reporting_pr
+
+PROGRAM command
+BEGIN
+	put /program by_output " "
+	put /program se_prefix_output " "
+	put "regress "
+	varlist main.vn_dv [main.vl_iv]
+	put " " /program ifin_output
+	put " " /program weights_output
+	beginoptions
+		option main.ck_nocons
+		option main.ck_hascon
+		option main.ck_tsscon
+		put " " /program se_output
+		optionarg /hidedefault rpt.sp_level
+		option rpt.ck_beta
+		optionarg rpt.ed_depn
+		if rpt.rb_eform {
+			require rpt.ed_eform
+		}
+		optionarg rpt.ed_eform
+		INCLUDE _noomitted_pr
+		INCLUDE _vsquish_pr
+		INCLUDE _factor_vars_reporting_pr
+		put " " rpt_bu_fmtcoefResults
+	endoptions
+END

@@ -1,0 +1,79 @@
+/*
+	mi ptrace ...
+
+*!  VERSION 1.0.0  29jun2007
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_medium
+INCLUDE header
+HELP hlp1, view("help mi ptrace")
+RESET res1
+
+DIALOG main, label("mi ptrace - Load parameter-trace file into Stata")	///
+	tabtitle("Main")
+BEGIN
+  RADIO rb_describe	_lft	_top	_iwd	., first		///
+	option(describe)						///
+	onclickon("script main_rb_describe_on")				///
+	label("Describe data")
+  RADIO rb_use		@	_ss	@	., last			///
+	option(use)							///
+	onclickon("script main_rb_use_on")				///
+	label("Load data")
+
+  TEXT tx_using		@	_ls	_iwd	.,			///
+	label("Name of mi ptrace file:")
+  FILE	fi_using	@	_ss	@	.,			///
+	filter("Ptrace file (*.stptrace)|*.stptrace|All (*.*)|*.*")	///
+	defext(stptrace)						///
+	error("Name of mi ptrace file")					///
+	label("Browse...")
+
+  GROUPBOX gb_opts	@	_ls	@	_ht9h,			///
+	label("Options")
+  TEXT tx_select	_indent	_ss	_inwd	.,			///
+	label("Selections:")
+  EDIT ed_select	@	_ss	@	.,			///
+	option(select)							///
+	label("Selections")
+  CHECKBOX ck_clear	@	_ls	@	.,			///
+	option(clear)							///
+	label("Replace data in memory")
+  CHECKBOX ck_double 	@	_ms	@	.,			///
+	option(double)							///
+	label("Load variables as doubles")
+END
+
+SCRIPT main_rb_describe_on
+BEGIN
+	main.gb_opts.hide
+	main.tx_select.hide
+	main.ed_select.hide
+	main.ck_clear.hide
+	main.ck_double.hide
+END
+
+SCRIPT main_rb_use_on
+BEGIN
+	main.gb_opts.show
+	main.tx_select.show
+	main.ed_select.show
+	main.ck_clear.show
+	main.ck_double.show
+END
+
+PROGRAM command
+BEGIN
+	require main.fi_using
+	put "mi ptrace "
+	option radio(main rb_describe rb_use)
+	put `"""' main.fi_using `"""'
+	beginoptions
+		option main.ck_double
+		option main.ck_clear
+		optionarg main.ed_select
+	endoptions
+END

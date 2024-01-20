@@ -1,0 +1,23 @@
+/*
+   _clusmat_hier_pr.idlg  include file for the hierarch. -clustermat- PROGRAM
+
+*!  VERSION 1.1.0  19jul2006
+
+*/
+
+	require main.cb_mat
+        put main.cb_mat
+	put " " /program ifin_output
+
+	beginoptions
+		optionarg main.cb_shape
+		option main.rb_add
+		option main.rb_clear
+		if main.ck_labelvar {
+			require main.ed_labelvar
+		}
+		optionarg main.ed_labelvar
+		optionarg main.ed_name
+		option adv.ck_force
+		optionarg adv.ed_gen
+	endoptions

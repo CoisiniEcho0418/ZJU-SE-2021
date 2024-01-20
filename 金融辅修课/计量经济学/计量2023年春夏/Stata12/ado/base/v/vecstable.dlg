@@ -1,0 +1,27 @@
+/*
+ vecstable
+
+*!  VERSION 2.0.0  28aug2006
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_wide
+DEFINE _dlght 380
+INCLUDE header
+
+HELP hlp1, view("help vecstable")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	settitle "vecstable - Check stability condition of VECM estimates"
+END
+
+INCLUDE _varstable_common
+
+PROGRAM command
+BEGIN
+	put /program vecstable_output
+END

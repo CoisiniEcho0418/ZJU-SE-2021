@@ -1,0 +1,249 @@
+/*
+    gr_marker_options.dlg
+    
+*!  VERSION 1.0.1  08dec2009
+
+	// SCRIPTS and PROGRAMS for external use
+		* SCRIPT  gr_marker_setHeadlabelOn
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_small
+DEFINE _dlght 360
+INCLUDE header_gr_child
+
+DEFINE _clwd	15
+DEFINE _wd	130
+DEFINE _sep	+135
+DEFINE _wd2	120
+DEFINE _sep2	+125
+DEFINE _cbwd	120
+DEFINE _cbsep	+125
+
+HELP hlp1, view("help scatter##marker_options")
+RESET res1
+
+SCRIPT gr_marker_setHeadlabelOn
+BEGIN
+	main.ck_head.show
+	main.ck_labels.setposition . . . 220
+	markerHeadLabelAllowed.settrue
+END
+
+PROGRAM PREINIT_PROGRAM
+BEGIN
+	call create PBOOLEAN markerHeadLabelAllowed
+	call main.ck_head.hide
+	if markerHeadLabelAllowed {
+		call script gr_marker_setHeadlabelOn
+	}
+END
+
+DIALOG main, label("Marker properties") tabtitle("Main")
+BEGIN
+  GROUPBOX gb_markers	_lft	_top	_iwd	_ht8,		///
+	label("Marker properties")
+
+  TEXT     tx_symbol	_ilft	_ss	_wd	.,		///
+	label("Symbol:") right
+  COMBOBOX cb_symbol	_sep	@	_cbwd	.,		///
+	dropdownlist option(msymbol)				///
+	contents(symbols)
+
+  TEXT     tx_clr	_ilft	_mls	_wd	.,		///
+	label("Color:") right
+  COMBOBOX cb_clr	_sep	@	_cbwd	.,		///
+	dropdownlist contents(colors) option(mcolor)		///
+	onselchangelist(main_cl_clr_sel)
+  COLOR    cl_clr	_cbsep	@	_clwd	., option(mcolor)
+
+  TEXT     tx_size	_ilft	_mls	_wd	.,		///
+	label("Size:") right
+  COMBOBOX cb_size	_sep	@	_cbwd	.,		///
+	dropdown option(msize)					///
+	contents(symbolsizes)
+
+  CHECKBOX ck_labels	_lft	+45	_iwd	195,		///
+	label("Add labels to markers")				///
+	groupbox						///
+	onclickon(program marker_check) 			///
+	onclickoff(program marker_check)
+
+  TEXT     tx_mlabel	_ilft	_ss	_wd	.,		///
+	label("Variable:") right
+  VARNAME  vn_mlabel	_sep	@	_cbwd	.,		///
+	label("Variable") option(mlabel) 			///
+	tooltip("Variable containing labels")
+
+  TEXT     tx_labclr	_ilft	_mls	_wd	.,		///
+	label("Label color:") right
+  COMBOBOX cb_labclr	_sep	@	_cbwd	.,		///
+	option(mlabcolor)					///
+	dropdownlist						///
+	contents(colors) onselchangelist(main_cl_labclr_sel)
+  COLOR    cl_labclr	_cbsep	@	_clwd	.,		///
+	option(mlabcolor)
+
+  TEXT     tx_labsize	_ilft	_mls	_wd	.,		///
+	label("Label size:") right
+  COMBOBOX cb_labsize	_sep	@	_cbwd	.,		///
+	dropdown contents(textsizes) option(mlabsize)
+
+  TEXT     tx_labpos	_ilft	_mls	_wd	.,		///
+	label("Label position:") right
+  COMBOBOX cb_labpos	_sep	@	_cbwd	.,		///
+	option(mlabposition) 					///
+	dropdownlist						///
+	contents(clockpos)
+
+  TEXT     tx_labangle	_ilft	_mls	_wd	.,		///
+	label("Label angle:") right
+  COMBOBOX cb_labangle	_sep	@	_cbwd	.,		///
+	option(mlabangle) 					///
+	dropdown						///
+	contents(angles)
+
+  TEXT     tx_labgap	_ilft	_mls	_wd	.,		///
+	label("Label gap:") right
+  COMBOBOX cb_labgap	_sep	@	_cbwd	.,		///
+	option(mlabgap) dropdown contents(textsizes)
+
+  CHECKBOX ck_head	_ilft	_mls	_ibwd	.,		///
+	label("Label second coordinate, not first")		///
+	option(headlabel)
+END
+
+LIST main_cl_clr_sel
+BEGIN
+	main.cl_clr.hide
+	main.cl_clr.show
+	main.cl_clr.hide
+END
+
+LIST main_cl_labclr_sel
+BEGIN
+	main.cl_labclr.hide
+	main.cl_labclr.show
+	main.cl_labclr.hide
+END
+
+DIALOG adv, tabtitle("Advanced")
+BEGIN
+  INCLUDE gr_marker_adv
+
+  CHECKBOX ck_jitt	_lft	+45	_iwd	_ht5,		///
+	label("Add jitter to markers") groupbox			///
+	onclickon(script jitter_on) onclickoff(script jitter_off)
+  TEXT tx_jitt		_ilft	_ss	_wd	.,		///
+	label("Noise factor:") right
+  EDIT	   en_jitt	_sep	@	_cbwd	.,numonly	///
+	label("Jitter") option(jitter)
+
+  TEXT tx_jitt_s	_ilft	_mls	_wd	.,		///
+	label("Seed: (optional)") right
+  EDIT	   en_jitt_s	_sep	@	_cbwd	.,numonly	///
+	option(jitterseed) tooltip("Random number seed")
+END
+INCLUDE gr_marker_adv_pr
+
+SCRIPT jitter_on
+BEGIN
+	adv.en_jitt.enable
+	adv.tx_jitt.enable
+	adv.en_jitt_s.enable
+	adv.tx_jitt_s.enable
+END
+
+SCRIPT jitter_off
+BEGIN
+	adv.en_jitt.disable
+	adv.tx_jitt.disable
+	adv.en_jitt_s.disable
+	adv.tx_jitt_s.disable
+END
+
+PROGRAM marker_check
+BEGIN
+	if main.ck_labels {
+		call main.tx_mlabel.enable
+		call main.vn_mlabel.enable
+		call main.tx_labsize.enable
+		call main.cb_labsize.enable
+		call main.tx_labclr.enable
+		call main.cb_labclr.enable
+		call main.cl_labclr.enable
+		call main.tx_labpos.enable
+		call main.cb_labpos.enable
+		call main.tx_labangle.enable
+		call main.cb_labangle.enable
+		call main.tx_labgap.enable
+		call main.cb_labgap.enable
+		call main.ck_head.enable
+
+		call adv.ck_jitt.disable
+		call adv.tx_jitt.disable
+		call adv.en_jitt.disable
+		call adv.tx_jitt_s.disable	
+		call adv.en_jitt_s.disable
+	}
+	if ! main.ck_labels {
+		call main.tx_mlabel.disable
+		call main.vn_mlabel.disable
+		call main.tx_labsize.disable
+		call main.cb_labsize.disable
+		call main.tx_labclr.disable
+		call main.cb_labclr.disable
+		call main.cl_labclr.disable
+		call main.tx_labpos.disable
+		call main.cb_labpos.disable
+		call main.tx_labangle.disable
+		call main.cb_labangle.disable
+		call main.tx_labgap.disable
+		call main.cb_labgap.disable
+		call main.ck_head.disable
+		
+		call adv.ck_jitt.enable
+		if adv.ck_jitt {
+			call script jitter_on
+		}
+	}
+END
+
+PROGRAM command
+BEGIN
+	if main.cl_clr.isvisible() {
+		optionarg /quoted main.cl_clr
+	}
+	if ! main.cl_clr.isvisible() {
+		optionarg /hidedefault main.cb_clr
+	}
+	optionarg /hidedefault main.cb_size
+	optionarg /hidedefault main.cb_symbol
+	
+	if main.ck_labels {
+		require main.vn_mlabel
+	}
+	optionarg main.vn_mlabel
+	option main.ck_head
+	optionarg /hidedefault main.cb_labsize
+	if main.cl_labclr.isvisible() {
+		optionarg /quoted main.cl_labclr
+	}
+	if ! main.cl_labclr.isvisible() {
+		optionarg /hidedefault main.cb_labclr
+	}
+	optionarg /hidedefault main.cb_labpos
+	optionarg /hidedefault main.cb_labangle
+	optionarg main.cb_labgap
+	
+	put " " /program gr_marker_adv_output
+	
+	if adv.ck_jitt {
+		require adv.en_jitt
+	}
+	optionarg adv.en_jitt
+	optionarg adv.en_jitt_s
+END
+

@@ -1,0 +1,40 @@
+/*
+  gr_orientation.idlg
+
+*!  VERSION 1.0.0  29jun2006
+
+*/
+
+LIST orientation
+BEGIN
+	"Default"
+	"Horizontal"
+	"Vertical"
+	"Rev. Horizontal"
+	"Rev. Vertical"
+END
+
+LIST orientation_values
+BEGIN
+	""
+	"horizontal"
+	"vertical"
+	"rhorizontal"
+	"rvertical"
+END
+
+LIST _orientation
+BEGIN
+	"Horizontal"
+	"Vertical"
+	"Rev. Horizontal"
+	"Rev. Vertical"
+END
+
+LIST _orientation_values
+BEGIN
+	"horizontal"
+	"vertical"
+	"rhorizontal"
+	"rvertical"
+END

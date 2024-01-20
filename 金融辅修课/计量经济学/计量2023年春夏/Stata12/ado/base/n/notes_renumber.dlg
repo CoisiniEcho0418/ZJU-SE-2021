@@ -1,0 +1,42 @@
+/*
+	notes renumber
+
+*! VERSION 1.0.2  23jun2009
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_small
+DEFINE _dlght 90
+INCLUDE header
+
+HELP hlp1, view("help notes")
+RESET res1
+
+DIALOG main, label("notes - Renumber notes") tabtitle("Main")
+BEGIN
+  RADIO rb_dta		_lft	_top	_iwd	., first		///
+	label("Renumber notes for dataset")
+
+  RADIO rb_var		@	_ms	@	., last			///
+	clickon("gaction main.vn_var.enable")				///
+	clickoff("gaction main.vn_var.disable")				///
+	label("Renumber notes for variable:")
+
+  VARNAME  vn_var	_indent2 _ss	_vnwd	.,			///
+	label("Variable")
+END
+
+PROGRAM command
+BEGIN
+	put "notes renumber "
+	if main.rb_dta {
+		put "_dta "
+	}
+	if main.rb_var {
+		require main.vn_var
+		varlist [main.vn_var]
+	}
+END
+

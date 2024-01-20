@@ -1,0 +1,99 @@
+/*
+ qladder
+
+*!  VERSION 2.0.1  27feb2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_large
+DEFINE _dlght 250
+INCLUDE header
+
+HELP hlp1, view("help qladder")
+RESET res1
+
+SCRIPT main_PREINIT
+BEGIN
+	create STRING graphCombineResults
+END
+
+SCRIPT main_POSTINIT
+BEGIN
+	program checkgraphCombineResults
+        gr_line_options.settabtitle "Reference line"
+        gr_line_options_optionName.setstring "rlopts"
+	script gr_plots_setDefaultScatter
+END
+
+DIALOG main, tabtitle("Main")						///
+label("qladder - Ladder-of-powers quantile-normal plots")
+BEGIN
+  TEXT tx_var			_lft	_top	_iwd	.,		///
+        label("Variable:")
+  VARNAME vn_var		@	_ss	_vnwd	.,		///
+        label("Variable")
+
+  CHECKBOX ck_grid		_lft	_ls	_iwd	.,		///
+	label("Show grid at percentiles: 5, 10, 25, 50, 75, 90, 95")	///
+	option(grid)
+
+  BUTTON   bu_combine		_lft	+30	130	.,		///
+	label("Combine properties")					///
+	onpush(script show_graph_combine_dialog)			///
+	tooltip("Affect how subgraphs are organized")
+END
+
+SCRIPT show_graph_combine_dialog
+BEGIN
+	create CHILD gr_combine_options AS graph_combine_opts, 	///
+		allowsubmit
+	graph_combine_opts.setExitString graphCombineResults
+	graph_combine_opts.settitle "Graph combine options"
+	graph_combine_opts.setExitAction "program checkgraphCombineResults"
+	graph_combine_opts.setSubmitAction "program GraphCombineSubmit"
+END
+PROGRAM checkgraphCombineResults
+BEGIN
+	if graphCombineResults {
+		call main.bu_combine.setlabel "Combine properties *"
+	}
+	else {
+		call main.bu_combine.setlabel "Combine properties  "
+	}
+END
+PROGRAM GraphCombineSubmit
+BEGIN
+	call program checkgraphCombineResults
+	call Submit
+END
+
+INCLUDE ifin
+INCLUDE gr_line_options
+INCLUDE gr_plots
+INCLUDE gr_yaxis
+INCLUDE gr_xaxis
+INCLUDE gr_titles
+INCLUDE gr_legend
+INCLUDE gr_overall
+
+PROGRAM command
+BEGIN
+	put "qladder "
+	varlist main.vn_var
+	put " " /program ifin_output
+	beginoptions
+		option main.ck_grid
+		if graphCombineResults & ! H(main.bu_combine) {
+			put " " graphCombineResults " "
+		}
+		put " " /program gr_line_options_output
+		put " " /program gr_plots_output
+		put " " /program gr_yaxis_output
+		put " " /program gr_xaxis_output
+		put " " /program gr_titles_output
+		put " " /program gr_legend_output
+		put " " /program gr_overall_output
+	endoptions
+END

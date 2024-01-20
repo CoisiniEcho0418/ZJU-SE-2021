@@ -1,0 +1,325 @@
+/*
+	tabstat
+
+*!  VERSION 1.2.2  07may2011
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_medium
+DEFINE _dlght 270
+INCLUDE header
+
+HELP hlp1, view("help tabstat")
+RESET res1
+
+DIALOG main, label("tabstat - Display table of summary statistics") tabtitle("Main")
+BEGIN
+  TEXT     tx_vars        _lft     _top     _iwd        .,		/*
+		*/ label("Variables:")
+  VARLIST  vl_vars        _lft      _ss     _iwd        .,		/*
+		*/ label("Variables")
+  CHECKBOX ck_by          _lft      _ls    _cwd1        .,		/*
+                */ clickon("gaction main.vn_by.enable")			/*
+                */ clickoff("gaction main.vn_by.disable")		/*
+		*/ label("Group statistics by variable:")
+  VARNAME  vn_by        _cksep      _ss    _vnwd        .,		/*
+		*/ option("by")						/*
+		*/ label("Group statistics by variable")
+  GROUPBOX gb_stats       _lft      +35     _iwd    _ht10h,		/*
+		*/ label("Statistics to display")
+  CHECKBOX ck_stat1    _indent      _ms    _ckwd        .,		/*
+		*/ clickon("gaction main.cb_stat1.enable")		/*
+		*/ clickoff("gaction main.cb_stat1.disable")		/*
+		*/ label("")
+  DEFINE   holdx @x
+  DEFINE   holdy @y
+  COMBOBOX cb_stat1     _cksep        @    _vnwd        .,         	/*
+		*/ dropdownlist						/*
+		*/ option(NONE)	 /* handled elsewhere */		/*
+		*/ contents("stat_txt")  value("stat_val")		/*
+		*/ label("Statistic 1")
+  CHECKBOX ck_stat2      holdx      _ms    _ckwd        .,		/*
+		*/ clickon("gaction main.cb_stat2.enable")		/*
+		*/ clickoff("gaction main.cb_stat2.disable")		/*
+		*/ label("")
+  COMBOBOX cb_stat2     _cksep        @    _vnwd        .,         	/*
+		*/ dropdownlist						/*
+		*/ option(NONE)	 /* handled elsewhere */		/*
+		*/ contents("stat_txt")  value("stat_val")		/*
+		*/ label("Statistic 2")
+  CHECKBOX ck_stat3      holdx      _ms    _ckwd        .,		/*
+		*/ clickon("gaction main.cb_stat3.enable")		/*
+		*/ clickoff("gaction main.cb_stat3.disable")		/*
+		*/ label("")
+  COMBOBOX cb_stat3     _cksep        @    _vnwd        .,         	/*
+		*/ dropdownlist						/*
+		*/ option(NONE)	 /* handled elsewhere */			/*
+		*/ contents("stat_txt")  value("stat_val")		/*
+		*/ label("Statistic 3")
+  CHECKBOX ck_stat4      _lft2    holdy    _ckwd        .,		/*
+		*/ clickon("gaction main.cb_stat4.enable")		/*
+		*/ clickoff("gaction main.cb_stat4.disable")		/*
+		*/ label("")
+  COMBOBOX cb_stat4     _cksep        @    _vnwd        .,         	/*
+		*/ dropdownlist						/*
+		*/ option(NONE)	 /* handled elsewhere */			/*
+		*/ contents("stat_txt")  value("stat_val")		/*
+		*/ label("Statistic 4")
+  CHECKBOX ck_stat5      _lft2      _ms    _ckwd        .,		/*
+		*/ clickon("gaction main.cb_stat5.enable")		/*
+		*/ clickoff("gaction main.cb_stat5.disable")		/*
+		*/ label("")
+  COMBOBOX cb_stat5     _cksep        @    _vnwd        .,         	/*
+		*/ dropdownlist						/*
+		*/ option(NONE)	 /* handled elsewhere */			/*
+		*/ contents("stat_txt")  value("stat_val")		/*
+		*/ label("Statistic 5")
+  CHECKBOX ck_stat6      _lft2      _ms    _ckwd        .,		/*
+		*/ clickon("gaction main.cb_stat6.enable")		/*
+		*/ clickoff("gaction main.cb_stat6.disable")		/*
+		*/ label("")
+  COMBOBOX cb_stat6     _cksep        @    _vnwd        .,         	/*
+		*/ dropdownlist						/*
+		*/ option(NONE)	 /* handled elsewhere */			/*
+		*/ contents("stat_txt")  value("stat_val")		/*
+		*/ label("Statistic 6")
+  CHECKBOX ck_stat7       holdx     _ms    _ckwd        .,		/*
+		*/ clickon("gaction main.cb_stat7.enable")		/*
+		*/ clickoff("gaction main.cb_stat7.disable")		/*
+		*/ label("")
+  COMBOBOX cb_stat7     _cksep        @    _vnwd        .,         	/*
+		*/ dropdownlist						/*
+		*/ option(NONE)	 /* handled elsewhere */			/*
+		*/ contents("stat_txt")  value("stat_val")		/*
+		*/ label("Statistic 7")
+  CHECKBOX ck_stat8      _lft2        @    _ckwd        .,		/*
+		*/ clickon("gaction main.cb_stat8.enable")		/*
+		*/ clickoff("gaction main.cb_stat8.disable")		/*
+		*/ label("")
+  COMBOBOX cb_stat8     _cksep        @    _vnwd        .,         	/*
+		*/ dropdownlist						/*
+		*/ option(NONE)	 /* handled elsewhere */			/*
+		*/ contents("stat_txt")  value("stat_val")		/*
+		*/ label("Statistic 8")
+END
+
+INCLUDE byifin
+INCLUDE weights_fa
+
+DIALOG opt, tabtitle("Options")
+BEGIN
+  CHECKBOX ck_label        _lft     _top   _ckwd         .,  		/*
+		*/ clickon("gaction opt.en_label.enable")		/*
+		*/ clickoff("gaction opt.en_label.disable")		/*
+		*/ label("")
+  EDIT     en_label     _cksep         @  _en7wd         .,		/*
+		*/ option("labelwidth")					/*
+		*/ default("0")						/*
+		*/ numonly						/*
+		*/ label("Label width")
+  TEXT     tx_label     _en7sep        @ _cken7r2        ., 		/*
+		*/ label("Label width")
+  CHECKBOX ck_varwd        _lft      _ms   _ckwd         .,  		/*
+		*/ clickon("gaction opt.en_varwd.enable")		/*
+		*/ clickoff("gaction opt.en_varwd.disable")		/*
+		*/ label("")
+  EDIT     en_varwd      _cksep        @  _en7wd         .,		/*
+		*/ option("varwidth")					/*
+		*/ default("0")						/*
+		*/ numonly						/*
+		*/ label("Variable width")
+  TEXT     tx_varwd     _en7sep        @ _cken7r2        ., 		/*
+		*/ label("Variable width")
+
+  CHECKBOX ck_format       _lft      _ms   _cwd1         .,		///
+	onclickon(script format_on)					///
+	onclickoff(script format_off)					///
+	label("Override display format")
+  EDIT     ed_format     _cksep      _ss     200         .,		///
+	option(format)							///
+	label("Display format")
+  BUTTON   bn_format       +205        @      80         .,		///
+	label("Create...") onpush(script opt_GetFormat)			///
+	tooltip("Create display format")
+
+  CHECKBOX ck_casewise     _lft      _ls    _iwd         .,		/*
+		*/ option("casewise")					/*
+		*/ label("Casewise deletion of observations")
+  CHECKBOX ck_nototal         @      _ms       @         .,		/*
+		*/ option("nototal")					/*
+		*/ label("No overall statistic")
+  CHECKBOX ck_missing         @      _ms       @         .,		/*
+		*/ option("missing")					/*
+		*/ label("Show missing-value statistics")
+  CHECKBOX ck_nosep           @      _ms       @         .,		/*
+		*/ option("noseparator")				/*
+		*/ label("No separator line")
+  CHECKBOX ck_longstub        @      _ms       @         .,		/*
+		*/ option("longstub")					/*
+		*/ label("Wide table for left stub")
+  CHECKBOX ck_save            @      _ms       @         .,		/*
+		*/ option("save")					/*
+		*/ label("Save summary statistics")
+
+  TEXT     tx_columns     _lft2     _top   _cwd1         .,		/*
+		*/ label("Use as columns:")
+  COMBOBOX cb_columns         @      _ss       @         .,         	/*
+		*/ option(columns)					/*
+		*/ dropdownlist						/*
+		*/ contents("col_txt") value("col_val")			/*
+		*/ label("Use as columns")
+END
+
+SCRIPT opt_GetFormat
+BEGIN
+	create STRING optFormat
+	create CHILD format_chooser
+	format_chooser.setExitString optFormat
+	format_chooser.setExitAction "opt.ed_format.setvalue class optFormat.value"
+END
+
+SCRIPT format_on
+BEGIN
+	opt.ed_format.enable
+	opt.bn_format.enable
+END
+
+SCRIPT format_off
+BEGIN
+	opt.ed_format.disable
+	opt.bn_format.disable
+END
+
+
+LIST stat_txt
+BEGIN
+  Mean
+  Count
+  Sum
+  Maximum
+  Minimum
+  Range
+  Standard deviation
+  Variance
+  Coefficient of variation (sd/mean)
+  Std error of mean (sd/sqrt(n))
+  Skewness
+  Kurtosis
+  Median
+  Interquartile range (75-25)
+  1st percentile
+  5th percentile
+  10th percentile
+  25th percentile
+  50th percentile
+  75th percentile
+  90th percentile
+  95th percentile
+  99th percentile
+END
+
+LIST stat_val
+BEGIN
+  mean
+  count
+  sum
+  max
+  min
+  range
+  sd
+  var
+  cv
+  semean
+  skewness
+  kurtosis
+  median
+  iqr
+  p1
+  p5
+  p10
+  p25
+  p50
+  p75
+  p90
+  p95
+  p99
+END
+
+LIST col_txt
+BEGIN
+  Variables
+  Statistics
+END
+
+LIST col_val
+BEGIN
+  variables
+  statistics
+END
+
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "tabstat "
+	varlist main.vl_vars
+	INCLUDE _weights_pr
+	INCLUDE _ifin_pr
+	beginoptions
+		/* statistics(clist) */
+		if main.ck_stat1 | main.ck_stat2 | main.ck_stat3 | /*
+		*/ main.ck_stat4 | main.ck_stat5 | main.ck_stat6 | /*
+		*/ main.ck_stat7 | main.ck_stat8 {
+			put " statistics("
+			if main.ck_stat1 {
+				put " " main.cb_stat1 " "
+			}
+			if main.ck_stat2 {
+				put " " main.cb_stat2 " "
+			}
+			if main.ck_stat3 {
+				put " " main.cb_stat3 " "
+			}
+			if main.ck_stat7 {
+				put " " main.cb_stat7 " "
+			}
+			if main.ck_stat4 {
+				put " " main.cb_stat4 " "
+			}
+			if main.ck_stat5 {
+				put " " main.cb_stat5 " "
+			}
+			if main.ck_stat6 {
+				put " " main.cb_stat6 " "
+			}
+			if main.ck_stat8 {
+				put " " main.cb_stat8 " "
+			}
+
+			put ")"
+		}
+		if main.ck_by {
+			require main.vn_by
+			optionarg main.vn_by            /* by(varname) */
+		}
+		option opt.ck_casewise		/* casewise */
+		option opt.ck_nototal		/* nototal */
+		option opt.ck_missing		/* missing */
+		option opt.ck_nosep		/* nosep */
+
+		if opt.ck_label {
+			optionarg opt.en_label /* labelwidth(#) */
+		}
+		if opt.ck_varwd {
+			optionarg opt.en_varwd /* varwidth(#) */
+		}
+		optionarg opt.cb_columns /* columns(variables|statistics) */
+		option opt.ck_longstub          /* longstub */
+		if opt.ck_format {
+			optionarg opt.ed_format	/* format(fmt) */
+		}
+		option opt.ck_save              /* save */
+	endoptions
+END

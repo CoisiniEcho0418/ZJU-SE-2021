@@ -1,0 +1,5 @@
+*! version 1.0.0  05apr2005
+sequence 9990
+label "Light bluish-gray 8"
+
+set rgb "225 230 240"

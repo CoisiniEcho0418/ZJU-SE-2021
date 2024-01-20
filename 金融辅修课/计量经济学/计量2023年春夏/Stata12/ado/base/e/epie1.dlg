@@ -1,0 +1,35 @@
+/*
+  easy graph pie - Pie chart (by variables)
+
+*!  VERSION 1.0.1  03aug2006  (deprecated)
+
+*/
+VERSION 8.0
+
+INCLUDE egraph_header
+INCLUDE header
+HELP hlp1, view("help graph_pie")
+RESET res1
+
+DIALOG main, label("graph pie - Pie chart (by variables)") tabtitle("Main")
+BEGIN
+  TEXT     tx_varlist  _lft        _top      _iwd        .,		///
+  	label("Variables:")
+  VARLIST  vl_varlist  @           _ss       @           .,		///
+  	label("Variables")
+END
+
+INCLUDE ifin
+INCLUDE etitle
+INCLUDE epieopts
+
+PROGRAM command
+BEGIN
+	put "graph pie "
+	varlist main.vl_varlist
+	INCLUDE _ifin_pr
+	beginoptions
+		put " " /program etitle_output
+		put " " /program epieopts_output
+	endoptions
+END

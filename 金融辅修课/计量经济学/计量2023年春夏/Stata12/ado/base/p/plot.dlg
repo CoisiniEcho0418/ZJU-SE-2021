@@ -1,0 +1,112 @@
+/*
+	plot
+
+*!  VERSION 1.1.0  30mar2005
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_large
+INCLUDE header
+
+HELP hlp1, view("help plot")
+RESET res1
+
+DIALOG main,label("plot - Draw scatterplot using typewriter characters") /*
+		*/ tabtitle("Main")
+BEGIN
+
+  TEXT     tx_yvar1       _lft      _top      _cwd3_1    .,             /*
+                */      label("Y variable 1:")
+  VARNAME  vn_yvar1       @         _ss       _vnwd      .,             /*
+                */      label("Y variable 1")
+  TEXT     tx_yvar2       _lft3_2   _top      _cwd3_1    .,             /*
+                */      label("Y variable 2:")
+  VARNAME  vn_yvar2       @         _ss       _vnwd      .,             /*
+                */      label("Y variable 2")
+  TEXT     tx_yvar3       _lft3_3   _top      _cwd3_1    .,             /*
+                */      label("Y variable 3:")
+  VARNAME  vn_yvar3       @         _ss       _vnwd      .,             /*
+                */      label("Y variable 3")
+  TEXT     tx_xvar        _lft      _ls       _cwd3_1    .,             /*
+                */      label("X variable:")
+  VARNAME  vn_xvar        @         _ss       _vnwd      .,             /*
+                */      label("X variable")
+  GROUPBOX gb_opt         _lft      _xls      _iwd       _ht12,         /*
+                */      label("Options")
+  SPINNER  sp_col         _ilft     _ss       _spwd      .,             /*
+                */      label("Column width of the plot")               /*
+                */      min(30)                                         /*
+                */      max(133)                                        /*
+                */      default(75)                                     /*
+                */      option(columns)
+  TEXT     tx_col         _spsep    @         _sprb      .,             /*
+                */      label("Column width of the plot")
+  SPINNER  sp_lines       _ilft     _ms       _spwd      .,             /*
+                */      label("Height of the plot")                     /*
+                */      min(10)                                         /*
+                */      max(83)                                         /*
+                */      default(23)                                     /*
+                */      option(lines)
+  TEXT     tx_lines       _spsep    @         _sprb      .,             /*
+                */      label("Height of the plot")
+  SPINNER  sp_hlines      _ilft     _ms       _spwd      .,             /*
+                */      label("Horizontal lines gap")                   /*
+                */      min(0)                                          /*
+                */      max(100)                                        /*
+                */      default(0)                                      /*
+                */      option(hlines)
+  TEXT     tx_hlines      _spsep    @         _sprb      .,             /*
+                */      label("Horizontal lines gap")
+  SPINNER  sp_vlines      _ilft    _ms       _spwd       .,             /*
+                */      label("Vertical lines gap")                     /*
+                */      min(0)                                          /*
+                */      max(100)                                        /*
+                */      default(0)                                      /*
+                */      option(vlines)
+  TEXT     tx_vlines      _spsep    @         _sprb      .,             /*
+                */  label("Vertical lines gap")
+  CHECKBOX ck_encode      _ilft     _ms       _ibwd      .,             /*
+ */ label("Replace points with symbol representing number of occurrences") /*
+                */      option(encode)					/*
+                */ onclickon(script main_y2_off)			/*
+                */ onclickoff(script main_y2_on)
+END
+
+SCRIPT main_y2_off
+BEGIN
+	main.tx_yvar2.disable
+	main.vn_yvar2.disable
+	main.tx_yvar3.disable
+	main.vn_yvar3.disable
+END
+SCRIPT main_y2_on
+BEGIN
+	main.tx_yvar2.enable
+	main.vn_yvar2.enable
+	main.tx_yvar3.enable
+	main.vn_yvar3.enable
+END
+
+INCLUDE byifin
+
+PROGRAM command
+BEGIN
+	require main.vn_yvar1
+	require main.vn_xvar
+	INCLUDE _by_pr
+        put "plot "
+	put main.vn_yvar1 " "
+	put main.vn_yvar2 " "
+	put main.vn_yvar3 " "
+	put main.vn_xvar " "
+	INCLUDE _ifin_pr
+	beginoptions
+		optionarg /hidedefault main.sp_col
+		option  main.ck_encode
+		optionarg /hidedefault main.sp_lines
+		optionarg /hidedefault main.sp_hlines
+		optionarg /hidedefault main.sp_vlines
+	endoptions
+END

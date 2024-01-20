@@ -1,0 +1,134 @@
+/*
+	tetrachoric
+
+*! VERSION 2.1.1  17may2011
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_large
+DEFINE  _dlght 500
+INCLUDE header
+
+HELP hlp1, view("help tetrachoric")
+RESET res1
+
+PROGRAM POSTINIT_PROGRAM
+BEGIN
+	if __MESSAGE.iseq("-exact-") {
+		call main.ck_p.seton
+	}
+END
+
+DIALOG main, label("tetrachoric -  Tetrachoric correlations for binary variables") ///
+	tabtitle("Main")
+BEGIN
+   TEXT	    tx_var	_lft	_top	_iwd	.,		///
+	label("Variables:")
+   VARLIST  vl_var	@	_ss	@	.,		///
+	label("Variables")
+
+  GROUPBOX gb_stats	_lft	_ls	_iwd	_ht5,           ///
+        label("List of statistics")
+
+  CHECKBOX ck_rho	_indent	_ss	_cwd2	.,              ///
+        label("Display rho (default)") option(rho)
+  DEFINE holdx @x
+  DEFINE holdy @y
+  CHECKBOX ck_se	@	_ms	@	.,              ///
+        label("Display standard error of rho") option(se)
+  CHECKBOX ck_obs	_lft2	holdy	@	.,              ///
+        label("Display number of observations") option(obs)
+  CHECKBOX ck_p		@	_ms	_cwd2	.,              ///
+        label("Display exact significance level") option(p)
+
+  CHECKBOX ck_ed	_lft	_xxls	_iwd	.,		///
+	label("Use noniterative Edwards and Edwards estimator") option(edwards)
+
+  GROUPBOX gb_dadj	_lft	_ls	_iwd	_ht4h,		///
+        label("Display adjustment")
+  CHECKBOX ck_print	_indent	_ss	_ckwd	.,		///
+        onclickoff(main.ed_print.disable)			///
+        onclickon(main.ed_print.enable)
+  EDIT     ed_print	_cksep	@	_spwd	.,		///
+        default(0.10) option(print)
+  TEXT     tx_print	_spsep	@	_rbsprb	.,		///
+        label("Significance level for displaying coefficients")
+
+  CHECKBOX ck_star	_ilft	_ms	_ckwd	.,		///
+        label("")						///
+        onclickoff(main.ed_star.disable)			///
+        onclickon(main.ed_star.enable)
+  EDIT     ed_star	_cksep	@	_spwd	.,		///
+        default(0.05) option(star)
+
+  TEXT     tx_star	_spsep	@	_rbsprb	.,		///
+        label("Significance level for displaying with a star")
+
+  GROUPBOX gb_sig	_lft	_xls	_iwd	_ht6,		///
+        label("Significance levels")
+  RADIO    rb_none	_indent	_ss	_inwd	.,		///
+        label("Do not adjust significance level") option(NONE) first
+  RADIO    rb_bonf	@	_ss	@	.,		///
+        label("Use Bonferroni-adjusted significance level")	///
+        option(bonferroni)
+  RADIO    rb_sidak	@	_ss	@	.,		///
+        label("Use Sidak-adjusted significance level")		///
+        option(sidak)  last
+
+
+  CHECKBOX ck_pw	_lft	_xls	_iwd	.,		///
+	option(pw)						///
+	label("Calculate all the pairwise correlation coefficients by using all available data")
+  CHECKBOX ck_adj	_lft	_ms	_iwd	.,		///
+	option(zeroadjust)						///
+	label("Adjust frequencies when one cell has a zero count")
+  CHECKBOX ck_mat	_lft	_ms	@	.,		///
+	label("Force matrix table output") option(matrix)
+  CHECKBOX ck_notable	_lft	_ms	@	.,		///
+	label("Suppress display of correlations") option(notable)
+  CHECKBOX ck_posdef	_lft	_ms	@	.,		///
+   	 option(posdef)						///
+	label("Modify correlations to be positive semidefinite")
+END
+
+INCLUDE byifin
+INCLUDE weights_f
+
+PROGRAM stats_option_output
+BEGIN
+	option main.ck_rho
+	option main.ck_se
+	option main.ck_obs
+	option main.ck_p
+END
+
+PROGRAM command
+BEGIN
+  	INCLUDE _by_pr
+        put "tetrachoric "
+        varlist main.vl_var
+ 	INCLUDE _weights_pr
+        INCLUDE _ifin_pr
+        beginoptions
+		if (main.ck_rho | main.ck_se | main.ck_obs | main.ck_p){
+			put "stats("
+			put /program stats_option_output
+			put ") "
+		}
+		option main.ck_ed
+		if main.ck_print{
+                        optionarg main.ed_print
+                }
+                if main.ck_star{
+                        optionarg main.ed_star
+                }
+		option radio(main rb_none rb_bonf rb_sidak)
+        	option main.ck_pw
+        	option main.ck_adj
+                option main.ck_mat
+		option main.ck_notable
+		option main.ck_posdef
+      endoptions
+END

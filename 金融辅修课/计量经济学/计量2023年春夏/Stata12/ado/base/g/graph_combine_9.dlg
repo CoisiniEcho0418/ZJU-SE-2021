@@ -1,0 +1,165 @@
+/*
+  graph combine - combine multiple graphs into one
+
+*!  VERSION 1.1.3  16aug2006  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+HELP hlp1, view("help graph_combine")
+RESET res1
+
+DIALOG main, label("graph combine - Combine multiple graphs into one") 	///
+		tabtitle("Main")
+BEGIN
+  GROUPBOX gb_graph          _lft      _top      _iwd      _ht9,	///
+  		label("Graphs to combine")
+  EDIT     ed_graph          _ilft     _ss       _ibwd     .,		///
+  		label("Graphs to combine")
+  TEXT     tx_gsaved         _lft2     +45       205       .,		///
+  		label("Include graph saved on disk:")
+  TEXT     tx_gmem           _ilft     @         205       .,		///
+  		label("Include memory graph(s):")
+
+  BUTTON   bu_gsaved         599       -5        140       .,		///
+  		label("Add selected graph") onpush(program main_graph_add)
+  BUTTON   bu_gmem           230       @         140       .,		///
+  		label("Add selected graphs") onpush(script main_graph_add2)
+  FILE     fi_gsaved         _lft2     _ms       _cwd2     .,		///
+  		label("Browse...") error("Saved graph")			///
+  		defext(gph)						///
+  		filter("Stata Graphs (*.gph)|*.gph|All Files (*.*)|*.*")
+  COMBOBOX cb_gmem           _ilft     @         _cwd2     .,		///
+  		label("Graphs from memory") contents(graphs) dropdown append
+  GROUPBOX gb_opts           _lft      _xxls     _iwd      _ht14h,	///
+  		label("Options")
+  TEXT     tx_margin         _lft2     _ss       _txwd     .,		///
+  		label("Margins:")
+DEFINE y @y
+  COMBOBOX cb_margin         @         _ss       _txr4g    .,		///
+  		label("Margins") option(imargin) contents(margin)	///
+  		dropdownlist
+DEFINE y2 @y
+  TEXT     tx_holes          _lft4_4   y         _txwd     .,		///
+  		label("Holes:")
+  EDIT     ed_holes          @         _ss       _tcr4gi   .,		///
+  		label("Holes") option(holes)
+  BUTTON   bu_holes          _tcr4gisep @        _btwd     ., 		///
+  		label("?") onpush(view help numlist##|_new)
+  TEXT     tx_layout         _lft2     _ls       _txwd     ., 		///
+  		label("Layout:")
+  TEXT     tx_scale          _lft4_4   @         _txwd     .,		///
+  		label("Scale text:")
+  COMBOBOX cb_layout         _lft2     _ss       _txr4g    .,		///
+  		label("Layout") contents(main_layout) dropdownlist	///
+  		onselchangelist(main_layout_action)
+  EDIT     en_scale          _lft4_4   @         _tcr4gi   .,		///
+  		label("Scale text") numonly option(iscale) default(1.0)
+  TEXT     tx_rows           _lft2     _ls       _txwd     .,		///
+  		label("Rows:")
+  TEXT     tx_cols           @         @         _txwd     .,		///
+  		label("Columns:")
+  SPINNER  sp_rows           @         _ss       _spwd     .,		///
+ 		label("Number of rows") default(1) min(1) max(100) 	///
+ 		option(rows)
+  SPINNER  sp_cols           @         @         _spwd     .,		///
+  		label("Number of columns") min(1) default(1) max(100) 	///
+  		option(cols)
+
+  CHECKBOX ck_colf           _ilft     y2        _cwd2     .,		///
+  		label("Display individual graphs down columns first") 	///
+  		option(colfirst)
+  CHECKBOX ck_ycom           @         _ms       @         .,		///
+  		label("Use common scale for Y-axes") option(ycommon)
+  CHECKBOX ck_xcom           @         _ms       @         .,		///
+  		label("Use common scale for X-axes") option(xcommon)
+END
+
+INCLUDE gtitle
+INCLUDE gcaption
+INCLUDE gregion_combine
+
+LIST main_layout
+BEGIN
+	Default
+	Rows
+	Columns
+END
+
+LIST main_layout_action
+BEGIN
+	script main_hide_rc
+	script main_rows_show
+	script main_cols_show
+END
+
+SCRIPT main_rows_show
+BEGIN
+	main.tx_rows.show
+	main.sp_rows.show
+	main.tx_cols.hide
+	main.sp_cols.hide
+END
+
+SCRIPT main_cols_show
+BEGIN
+	main.tx_cols.show
+	main.sp_cols.show
+	main.tx_rows.hide
+	main.sp_rows.hide
+END
+
+SCRIPT main_hide_rc
+BEGIN
+	main.tx_cols.hide
+	main.tx_rows.hide
+	main.sp_rows.hide
+	main.sp_cols.hide
+END
+
+SCRIPT main_graph_add2
+BEGIN
+	main.cb_gmem.withvalue main.ed_graph.smartinsert "@"
+	main.cb_gmem.setvalue ""
+END
+
+PROGRAM main_graph_add
+BEGIN
+	if main.fi_gsaved {
+		call script add_filename
+	}
+END
+
+SCRIPT add_filename
+BEGIN
+	main.fi_gsaved.withvalue main.ed_graph.smartinsert `""@""'
+	main.fi_gsaved.setvalue ""
+END
+
+PROGRAM command
+BEGIN
+	require main.ed_graph
+	put "graph combine "
+	put main.ed_graph
+	beginoptions
+		option main.ck_colf
+		optionarg main.sp_cols
+		optionarg main.sp_rows
+		optionarg main.ed_holes
+		if !default(main.en_scale) {
+			if (main.en_scale) {
+				put " iscale(*" main.en_scale ")"
+			}
+		}
+		optionarg main.cb_margin
+		option main.ck_ycom
+		option main.ck_xcom
+		put " " /program gtitle_output
+		put " " /program gcaption_output
+		put " " /program gregion_output
+	endoptions
+
+END

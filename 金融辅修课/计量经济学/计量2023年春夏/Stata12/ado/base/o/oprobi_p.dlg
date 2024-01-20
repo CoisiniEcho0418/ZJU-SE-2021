@@ -1,0 +1,16 @@
+/*
+	predict (after oprobit)
+
+*!  VERSION 1.1.2  28mar2005
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_large
+INCLUDE header
+
+HELP hlp1, view("help oprobit postestimation")
+RESET res1
+
+INCLUDE ologit_common_p

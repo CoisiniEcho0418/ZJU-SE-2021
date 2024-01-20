@@ -1,0 +1,256 @@
+/*
+  rolling
+
+*!  VERSION 1.1.2  28sep2010
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_glm
+INCLUDE _ht370
+INCLUDE header
+
+HELP hlp1, view("help rolling")
+RESET res1
+
+DIALOG main, tabtitle("Main")						///
+	label("rolling - Rolling-window and recursive estimation")
+BEGIN
+  DEFINE _y _top
+  INCLUDE _cmd_exp_list
+
+  TEXT	tx_bywindow	_lft	_xls	_cwd1	.,			///
+	label("Window:")
+  EDIT	ed_window	@	_ss	_vnwd	.,   	          	///
+  	label("Number of consecutive data points in each sample")	///
+  	option(window)
+  TEXT	tx_span		_vnsep	@	_cksprb	.,   	          	///
+	label("Number of consecutive data points in each sample")
+
+  GROUPBOX gb_recur  _lft      _xls      _iwd      _ht6,		///
+	label("Recursive analysis")
+  RADIO	rb_default	_ilft	_ss	_ibwd	_ht8,			///
+	first label("No recursive analysis (default)") option(NONE)
+  RADIO	rb_recur	@	_ss	@	.,			///
+	label("Use recursive samples") option(recursive)
+  RADIO	rb_rrecur	@	_ss	@ 	.,			///
+	last label("Use reverse recursive samples") option(rrecursive)
+END
+
+INCLUDE ifin
+
+INCLUDE weights_a
+
+DIALOG opt, tabtitle("Options")
+BEGIN
+  RADIO	rb_default	_lft	_top	_iwd	_ht8,			///
+	first label("Replace data if not modified") option(NONE)	///
+	onclickon(script opt_save_off)
+
+  DEFINE holdx @x
+  RADIO	rb_clear	@	_ss	@	., 			///
+	option(clear)							///
+	label("Replace data even if modified")				///
+	onclickon(script opt_save_off)
+
+  RADIO	rb_sav		@	_ss	@ 	.,			///
+	last label("Save results to file")				///
+	onclickon(program opt_save_on)
+
+  GROUPBOX gb_save	_lft	_ms	_iwd	_ht10, label("Save")
+
+  TEXT	tx_sav		_indent	_ss	_ibwd	.,			///
+  	label("Filename:")
+  FILE	fi_sav		@	_ss	@	.,			///
+	label("Browse...")						///
+	option(saving)							///
+	filter("Stata Dataset (*.dta)|*.dta|All (*.*)|*.*")		///
+	defext(dta)							///
+	save								///
+	error("Filename to save")
+  CHECKBOX ck_double	@	_ls	_cwd2	.,			///
+	label("Save statistics in double precision")			///
+	option(double)
+  CHECKBOX ck_every	_ilft	_ms	_ckwd	.,			///
+	onclickon(script opt_every_on)					///
+	onclickoff(script opt_every_off)
+  SPINNER sp_every	_cksep	@	_spwd	.,			///
+	label("save every #")						///
+	min(1)								///
+	max(10000)							///
+	default(1)							///
+	option(every)
+  TEXT	tx_every	_spsep	@	_cksprb	.,			///
+	label("Save results to file every #th replication")
+
+  TEXT	tx_optstepsize	_lft	+45	_cwd1	.,			///
+	label("Step size:")
+  SPINNER sp_stepsize	@	_ss	_spwd	.,			///
+		label("Number of time periods to advance window")	///
+		min(1)							///
+		max(c(N))						///
+		default(1)						///
+		option(stepsize)
+  TEXT	tx_stepsize	_spsep	@	_cksprb	.,   	          	///
+  		label("Number of time periods to advance window")
+
+  GROUPBOX gb_tol		_lft	+35	_cwd1	_ht6,		///
+	label("Period at which rolling is to start and end")
+  DEFINE holdy @y
+  TEXT	tx_start	_ilft	_ms	40	.,			///
+	label("Start:") right
+  EDIT	ed_start	+45	@	_en7r2b	.,   	          	///
+  		label("Start")						///
+  		option(start)
+  TEXT	tx_end		_ilft	_ls	40	.,			///
+	label("End:") right
+  EDIT	ed_end		+45	@	_en7r2b	.,   	     	     	///
+  		label("End")						///
+  		option(end)
+
+  CHECKBOX ck_keep		_lft2	holdy	_cwd1	_ht6,		///
+	label("Save a variable along with results") groupbox		///
+	onclickon(script opt_ck_keep_on)				///
+	onclickoff(script opt_ck_keep_off)
+  TEXT	tx_var		       _indent2	_ms	50	.,		///
+	label("Variable:") right
+  DEFINE holdx @x
+  EDIT	ed_var			+55	@	_vnwd	.,   		///
+  		label("Variable")					///
+  		option(variable)
+  CHECKBOX ck_leftedge		holdx	_ls	_cwd4	.,		///
+	label("Use value at left edge of window")
+END
+
+SCRIPT opt_ck_keep_on
+BEGIN
+	opt.tx_var.enable
+	opt.ed_var.enable
+	opt.ck_leftedge.enable
+END
+
+SCRIPT opt_ck_keep_off
+BEGIN
+	opt.tx_var.disable
+	opt.ed_var.disable
+	opt.ck_leftedge.disable
+END
+
+PROGRAM opt_save_on
+BEGIN
+	call opt.gb_save.enable
+	call opt.fi_sav.enable
+	call opt.ck_double.enable
+	call opt.ck_every.enable
+	call opt.tx_every.enable
+	call opt.tx_sav.enable
+	if opt.ck_every {
+		call opt.sp_every.enable
+	}
+END
+
+SCRIPT opt_save_off
+BEGIN
+	opt.gb_save.disable
+	opt.fi_sav.disable
+	opt.ck_double.disable
+	opt.sp_every.disable
+	opt.tx_every.disable
+	opt.ck_every.disable
+	opt.tx_sav.disable
+END
+
+SCRIPT opt_every_on
+BEGIN
+	opt.sp_every.enable
+END
+
+SCRIPT opt_every_off
+BEGIN
+	opt.sp_every.disable
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _iwd
+  DEFINE _y _top
+  DEFINE _cy _ht6
+  INCLUDE _output_reps
+END
+
+DIALOG adv, tabtitle("Advanced")
+BEGIN
+  TEXT     tx_reject	_lft	_top	_iwd	.,			///
+		label("Identify invalid results:")
+  EDIT     ed_reject	@	_ss	@	.,			///
+		label("Identify invalid results")			///
+		option("reject")
+END
+
+PROGRAM check_legend
+BEGIN
+	if rpt.ck_nolegend {
+		call gaction rpt.ck_verbose.disable
+	}
+	if !rpt.ck_nolegend {
+		call gaction rpt.ck_verbose.enable
+	}
+END
+
+PROGRAM rolling_options
+BEGIN
+	put "rolling "
+	option main.ck_b
+	option main.ck_se
+	put " " main.ed_explst
+ 	INCLUDE _weights_pr
+	INCLUDE _ifin_pr
+	beginoptions
+		require main.ed_window
+		optionarg main.ed_window
+		option main.rb_recur
+		option main.rb_rrecur
+		if opt.rb_sav {
+			require opt.fi_sav
+			repfile opt.fi_sav
+			put `"saving("'
+			put opt.fi_sav
+			put `", "'
+			optionarg opt.sp_every
+			option opt.ck_double
+			put "replace)"
+		}
+		if opt.rb_default {
+			stopbox rusure "This command will replace your data in memory."	///
+				"Do you wish to continue?"
+			put " clear "
+		}
+		option opt.rb_clear
+		optionarg /hidedefault opt.sp_stepsize
+		optionarg opt.ed_start
+		optionarg opt.ed_end
+		if opt.ck_keep {
+			require opt.ed_var
+			put `"keep("'
+			put opt.ed_var
+			if opt.ck_leftedge {
+				put `", start"'
+			}
+			put ")"
+		}
+		option rpt.ck_qui
+		option rpt.ck_noi
+		option rpt.ck_trace
+		optionarg adv.ed_reject
+	endoptions
+END
+
+PROGRAM command
+BEGIN
+	require main.vl_cmd
+	put /program rolling_options
+	put " " " : "	/* end of prefix, begin command */
+	put main.vl_cmd
+END

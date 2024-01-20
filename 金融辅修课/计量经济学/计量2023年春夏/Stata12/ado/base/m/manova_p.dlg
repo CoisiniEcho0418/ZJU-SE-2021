@@ -1,0 +1,90 @@
+/*
+	predict (after manova)
+
+*!  VERSION 1.2.0  30may2007
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_large
+INCLUDE _ht290
+INCLUDE header
+
+HELP hlp1, view("help manova postestimation")
+RESET res1
+
+DIALOG main, label("predict - Prediction after estimation") tabtitle("Main")
+BEGIN
+  INCLUDE  _p_gentype
+
+  GROUPBOX gb_opts           _lft      _ls       _iwd      _ht19,	/*
+		*/ label("Produce:")
+  RADIO    rb_xb             _ilft     _ss       _cwd2     ., first	/*
+		*/ option(xb)						/*
+		*/ clickon("script off2")				/*
+		*/ label("Fitted values (xb)")
+  DEFINE   holdy@y
+  RADIO    rb_stdp           @         _ms       @         .,		/*
+		*/ option(stdp)						/*
+		*/ clickon("script off2")				/*
+		*/ label("Standard error of the fitted value")
+  RADIO    rb_residuals      @         _ms       @         .,		/*
+		*/ option(residuals)					/*
+		*/ clickon("script off2")				/*
+		*/ label("Residuals")
+  RADIO    rb_difference     @         _ms       @         .,		/*
+		*/ option(difference)					/*
+		*/ clickon("script on2")				/*
+		*/ label("Difference between fitted values")
+  RADIO    rb_stddp          @         _ms       @         ., last	/*
+		*/ option(stddp)					/*
+		*/ clickon("script on2")				/*
+		*/ label("Standard error of the difference")
+
+  TEXT     tx_equation1      _lft2     holdy     @         .,		/*
+		*/ label("Dependent variable:")
+  LISTBOX  lb_equation1      @         _ss       @         _ht4,	/*
+		*/ contents(ereturn depvars)				/*
+		*/ label("Dependent variable")
+  TEXT     tx_equation2      @         _vs4      @         .,		/*
+		*/ label("Compared to dependent variable:")
+  LISTBOX  lb_equation2      @         _ss       @         _ht4,	/*
+		*/ contents(ereturn depvars)				/*
+		*/ label("Compared to dependent variable")
+END
+
+INCLUDE _p_gentype_sc
+INCLUDE ifin
+INCLUDE _type_list_fd
+
+SCRIPT off2
+BEGIN
+  main.tx_equation2.disable
+  main.lb_equation2.disable
+END
+
+SCRIPT on2
+BEGIN
+  main.tx_equation2.enable
+  main.lb_equation2.enable
+END
+
+PROGRAM command
+BEGIN
+	put "predict "
+	put " " /program _p_gentype_output
+	INCLUDE _ifin_pr
+	beginoptions
+		put "equation("
+		require main.lb_equation1
+		put main.lb_equation1
+		if main.rb_difference | main.rb_stddp {
+			require main.lb_equation2
+			put ", " main.lb_equation2
+		}
+		put ") "
+		option radio(main rb_xb rb_stdp rb_residuals /*
+						*/ rb_difference rb_stddp)
+	endoptions
+END

@@ -1,0 +1,4 @@
+*! version 1.0.0  22dec2002
+sequence 420
+label "Light blue"
+set rgb "173 216 230"

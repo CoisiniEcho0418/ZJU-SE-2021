@@ -1,0 +1,13 @@
+/*
+	predict (after xtgls)
+
+*!  VERSION 1.1.2  01apr2005
+
+*/
+
+VERSION 9.0
+
+INCLUDE xtgls_common_p
+
+HELP hlp1, view("help xtgls postestimation")
+RESET res1

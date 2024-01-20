@@ -1,0 +1,119 @@
+/*
+  pkcollapse
+
+*! VERSION 1.1.0  07dec2004
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_large
+INCLUDE _ht320
+INCLUDE header
+
+HELP hlp1, view("help pkcollapse")
+RESET res1
+
+DIALOG main, tabtitle("Main")	///
+	label("pkcollapse - Generate pharmacokinetic measurement dataset")
+BEGIN
+  TEXT     tx_vart         _lft      _top      _cwd1     .,		///
+	label("Time variable:")
+  TEXT     tx_vari         _lft2     @         @         .,		///
+	label("Identification variable:")
+  VARNAME  vn_vart         _lft      _ss       _vnwd     .,		///
+	label("Time variable")
+  VARNAME  vn_vari         _lft2     @         _vnwd     .,		///
+	label("Identification variable") option(id)
+
+  TEXT     tx_varc         _lft      _ms       _iwd      .,		///
+	label("Concentration variables:")
+  VARLIST  vl_varc         @         _ss       _iwd      .,		///
+	label("Concentration variables")
+
+  GROUPBOX gb_opt          _lft      _ls       _iwd      _ht17,		///
+	label("Options")
+  CHECKBOX ck_stat         _indent   _ss       _ibwd     .,		///
+	label("Measure only these statistics:")				///
+	onclickon(main.cb_stat.enable)					///
+	onclickoff(main.cb_stat.disable)
+DEFINE _x @x
+  COMBOBOX cb_stat         _indent2  _ss       _inwd     .,		///
+	append dropdown	option(stat)					///
+	contents(measure_long) values(measure)				///
+	label("Measure only these statistics")
+  CHECKBOX ck_trap         _x        _ls      _cwd2     .,		///
+	label("Use trapezoidal rule") option(trapezoid)
+  DEFINE holdy @y
+  CHECKBOX ck_fit          _x        _ms       _cwd2     .,		///
+	label("Points to use to extend AUC:")				///
+	onclickon(main.sp_fit.enable)					///
+	onclickoff(main.sp_fit.disable)
+  SPINNER  sp_fit          _indent2  _ss       _spwd     .,		///
+	option(fit) min(3) max(100000000) default(3)			///
+	label("Points to use to extend AUC")
+  CHECKBOX ck_keep         _x        _ls       _ibwd     .,		///
+	label("Keep these variables:")					///
+	onclickon(main.vl_keep.enable)					///
+	onclickoff(main.vl_keep.disable)
+  VARLIST  vl_keep	   _indent2  _ss       _inwd     .,		///
+	label("Keep these variables") option(keep)
+  CHECKBOX ck_force        _lft2     holdy     @         .,		///
+	label("Force collapse") option(force)
+  CHECKBOX ck_nodots       _lft2     _ms       _cwd2     .,		///
+	option(nodots) label("Suppress dots during calculation")
+END
+
+INCLUDE if
+
+LIST measure_long
+BEGIN
+  AUC - area under the concentration-time curve
+  AUCline - AUC from 0 to infinity with linear extension
+  AUCexp - AUC from 0 to infinity with an exponential extension
+  AUClog - area under the log conc.-time curve extended with a linear fit
+  half - half life of a drug
+  ke - elimination rate
+  cmax - maximum concentration
+  tmax - time at last concentration
+  tomc - time of maximum concentration
+END
+
+LIST measure
+BEGIN
+	    auc
+	    aucline
+	    aucexp
+	    auclog
+	    half
+	    ke
+	    cmax
+	    tmax
+	    tomc
+END
+
+PROGRAM command
+BEGIN
+	put "pkcollapse "
+	varlist main.vn_vart
+	varlist main.vl_varc
+	INCLUDE _if_pr
+	beginoptions
+		require main.vn_vari
+		optionarg main.vn_vari
+	        option main.ck_trap
+		option main.ck_force
+		option main.ck_nodots
+		if main.ck_stat {
+			require main.cb_stat
+			optionarg main.cb_stat
+		}
+		if main.ck_keep {
+			require main.vl_keep
+			optionarg main.vl_keep
+		}
+		if main.ck_fit {
+			optionarg main.sp_fit
+		}
+	endoptions
+END

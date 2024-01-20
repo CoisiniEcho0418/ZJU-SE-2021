@@ -1,0 +1,30 @@
+/*
+   label list
+
+*!  VERSION 1.2.0  07feb2007
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_msmall
+INCLUDE header
+
+HELP hlp1, view("help label")
+RESET res1
+
+DIALOG main, label("label list - List names and contents of value labels") tabtitle("Main")
+BEGIN
+  TEXT     tx_lab    _lft      _top      _iwd      .,		/*
+		*/ label("Labels to list: (leave empty for all)")
+
+  COMBOBOX cb_lab    @         _ss       @         _ht13,	/*
+		*/ append					/*
+		*/ contents(valuelabels)			/*
+		*/ label("Label")
+END
+
+PROGRAM command
+BEGIN
+	put "label list " main.cb_lab
+END

@@ -1,0 +1,39 @@
+/*
+  odbc_setauth.dlg
+
+*! VERSION 1.0.0  19sep2008
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_vsmall
+POSITION . . 250 120
+OK ok1, label("OK")
+CANCEL can1, label("Cancel")
+
+DIALOG setauth, title("Set Username and Password") 
+BEGIN
+  TEXT tx_user 	55	_top	_cwd1	.,	/// 
+	label("Username:")
+  EDIT ed_user	@	_ss	_cwd1	.,	///
+	nomemory				///
+	label("Database username")		
+  TEXT tx_pass 	@	_ms	_cwd1	.,	/// 
+	label("Password:")
+  EDIT ed_pass	@	_ss	_cwd1	., 	///
+	nomemory				///
+	password				///	
+	label("Database password")		
+END
+
+PROGRAM command
+BEGIN
+	put `"odbc _setauth ""'
+	put setauth.ed_user
+	put `"" ""'
+	put setauth.ed_pass
+	put `"""'
+	stata hidden immediate
+END
+

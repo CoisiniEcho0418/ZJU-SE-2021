@@ -1,0 +1,39 @@
+/*
+	ksmirnov	
+
+*!  VERSION 1.1.0  07feb2007
+
+*/
+
+VERSION 8.0
+
+INCLUDE _std_medium
+DEFINE _dlght 200
+INCLUDE header
+HELP hlp1, view("help ksmirnov")
+RESET res1
+
+DIALOG main, label("ksmirnov - One-sample Kolmogorov-Smirnov test") /*
+		*/ tabtitle("Main")
+BEGIN
+  TEXT     tx_var      _lft      _top       _iwd       .,		/*
+		*/ label("Variable:")
+  VARNAME  vn_var         @       _ss      _vnwd       .,		/*
+		*/ label("Variable")
+  TEXT     tx_exp         @       _ls       _iwd       .,		/*
+		*/ label("Expression (theoretical cumulative):")	
+  EXP      ex_exp         @       _ss          @       .,		/*
+		*/ label("Create...")	
+END
+
+INCLUDE ifin
+
+
+PROGRAM command
+BEGIN
+	put "ksmirnov "
+	varlist main.vn_var
+	put " = "
+	put main.ex_exp
+	INCLUDE _ifin_pr
+END

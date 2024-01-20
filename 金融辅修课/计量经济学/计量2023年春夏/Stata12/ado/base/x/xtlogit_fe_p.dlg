@@ -1,0 +1,60 @@
+/*
+	predict (after xtlogit, fe)
+
+*!  VERSION 1.1.1  27may2010
+
+*/
+
+VERSION 10
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help xtlogit postestimation")
+RESET res1
+
+DIALOG main, label("predict - Prediction after estimation") tabtitle("Main")
+BEGIN
+  INCLUDE  _p_gentype
+
+  GROUPBOX gb_opts       _lft      _ls     _iwd     _ht10,	/*
+		*/ label("Produce:")
+  RADIO    rb_pc1     _indent      _ss    _inwd        ., first /*
+		*/ option(pc1)					/*
+		*/ onclickon(script _p_gentype_score_off)	/*
+		*/ label("Pr(outcome | single outcome within group)")
+  RADIO    rb_pu0           @      _ss        @        .,	/*
+		*/ option(pu0)					/*
+		*/ onclickon(script _p_gentype_score_off)	/*
+		*/ label("Pr(outcome | fixed effect is zero)")
+  RADIO    rb_xb            @      _ss        @        .,	/*
+		*/ option(xb)					/*
+		*/ onclickon(script _p_gentype_score_off)	/*
+		*/ label("Linear prediction (xb)")
+  RADIO    rb_stdp          @      _ss        @        .,	/*
+		*/ option(stdp)					/*
+		*/ onclickon(script _p_gentype_score_off)	/*
+		*/ label("Standard error of the linear prediction")
+  RADIO    rb_score         @      _ss        @        ., last	/*
+		*/ option(score)				/*
+		*/ onclickon(script _p_gentype_score_on)	/*
+		*/ label("Equation-level scores")
+
+  INCLUDE  _p_nooffset
+END
+
+INCLUDE _p_gentype_sc
+INCLUDE ifin
+
+INCLUDE _type_list_fd
+
+PROGRAM command
+BEGIN
+	put "predict "
+	put " " /program _p_gentype_output
+	INCLUDE _ifin_pr
+	beginoptions
+		option radio(main rb_pc1 rb_pu0 rb_xb rb_stdp rb_score)
+	endoptions
+	INCLUDE _p_nooffset_pr
+END

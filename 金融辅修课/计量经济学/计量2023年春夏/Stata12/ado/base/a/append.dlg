@@ -1,0 +1,101 @@
+/*
+    append.dlg
+
+*!  VERSION 2.0.0  31mar2009
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_large
+DEFINE _dlght 400
+INCLUDE header
+HELP hlp1, view("help append")
+RESET res1
+
+DIALOG main,label("append - Append datasets")  tabtitle("Main")
+BEGIN
+  GROUPBOX gb_using       _lft     _top     _iwd        _ht12,      	///
+	label("Append datasets on disk to current dataset")
+  TEXT     tx_using       _ilft    _ss      _ibwd       .,		///
+	label("Filename of dataset on disk:")
+  FILE     fi_filename       @        _ss      @           .,		///
+	filter("Stata Dataset (*.dta)|*.dta|All (*.*)|*.*")		///
+	defext(dta)							///
+	error("Filename of dataset on disk")				///
+	label("Browse...")
+  BUTTON   bu_dtaadd    @	_ms	_cwd3_2	.,			///
+	label("Select an additional file") onpush(program main_dta_add)
+  TEXT     tx_include	@	_ls	_cwd1	.,			///
+	label("List of files on disks:")
+  EDIT     ed_multiple	@	_ss    _ibwd	.,
+
+  GROUPBOX gb_opt         _lft     _xxls     _iwd        _ht18h, 	///
+	label("Options")
+  TEXT tx_generate	_ilft	_ss	_inwd	.,			///
+	label("Name of new variable to mark results:")
+  DEFINE holdcx @cx
+  EDIT ed_generate	@	_ss	_vnwd	.,			///
+	max(32)	option(generate)			 		///
+	label("Name of new variable to mark merge results")
+
+  RADIO    rb_all       @    _ms      holdcx      ., first		///
+	label("Keep all variables from appending dataset")		///
+	onclickon(main.vl_keep.disable)
+  RADIO    rb_keep      @   _ss      @           ., last		///
+	label("Variables to be kept from appending dataset:")		///
+	onclickon(main.vl_keep.enable)
+  VARLIST  vl_keep        _indent2 _ss      _inwd       .,		///
+	label("Variables to be kept from appending dataset")		///
+	option(keep)
+
+  CHECKBOX ck_nolabel     _ilft    _ls      _ibwd       .,		///
+	option(nolabel)							///
+	label("Do not copy value label definitions from dataset on disk")
+  CHECKBOX ck_nonotes     @        _ms      @           .,		///
+	label("Do not copy notes from dataset on disk")			///
+	option(nonotes)
+  CHECKBOX ck_force       @        _ms      @           .,		///
+	label("Append string variables to numeric or numeric to string without error") ///
+	option(force)
+END
+
+PROGRAM main_dta_add
+BEGIN
+	if main.fi_filename {
+		call script main_add
+	}
+END
+
+SCRIPT main_add
+BEGIN
+	main.fi_filename.withvalue main.ed_multiple.smartinsert `""@""'
+	main.fi_filename.setvalue ""
+END
+
+PROGRAM command
+BEGIN
+	if ! main.ed_multiple & ! main.fi_filename {
+		stopbox stop `"On the "Main" tab,"'     ///
+			`"A dataset on disk must be selected""'
+	}
+
+	put "append using "
+	put main.ed_multiple " "
+	if main.fi_filename {
+		put `"""'
+		put main.fi_filename
+		put `"""' " "
+	}
+
+	beginoptions
+		optionarg main.ed_generate
+		if main.rb_keep {
+			require main.vl_keep
+			optionarg main.vl_keep
+		}
+		option main.ck_nolabel
+		option main.ck_nonotes
+		option main.ck_force
+	endoptions
+END

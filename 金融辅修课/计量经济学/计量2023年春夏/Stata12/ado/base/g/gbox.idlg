@@ -1,0 +1,210 @@
+ /*
+
+*!  VERSION 1.0.1  21apr2005
+
+	// SCRIPTS and PROGRAMS for external use
+		* PROGRAM gbox_args_output
+		* PROGRAM gbox_opts_output
+
+*/
+
+
+
+SCRIPT gbox_PREINIT
+BEGIN
+	create STRING gbox_commandName
+	gbox_commandName.setstring "box"
+END
+
+SCRIPT gbox_POSTINIT
+BEGIN
+	script gbarstyle_setBoxTab
+	script weights_setLayout_fpa
+END
+
+DIALOG gbox, label("graph box - Box plots") tabtitle("Main")
+BEGIN
+  TEXT     tx_var          _lft       _top      _gwd4_1   .,		///
+	label("Variables:")
+  VARLIST  vl_var          @          _ss       _iwd      .,		///
+	label("Variables")
+
+  GROUPBOX gb_opts         _lft       _xls      _iwd      _ht12,	///
+	label("Median options")
+  GROUPBOX gb_median       _igft      _ss       _gwd4_2   _ht6h,	///
+	label("Median type")
+  DEFINE _holdy @y
+  RADIO    rb_line         _iigft     _ss       _gwd4_4   .,		///
+	label("Line") first option("medtype(line)") 			///
+	onclickon(script gbox_lineon)
+  RADIO    rb_cline        @          _ss       @         .,		///
+	label("Custom line") option("medtype(cline)") 			///
+	onclickon(script gbox_clineon)
+  RADIO    rb_mark         @          _ss       @         .,		///
+	label("Marker") option("medtype(marker)")			///
+	last onclickon(script gbox_markon)
+  GROUPBOX gb_mark         _gft4_3    _holdy    _gwd4_1   _ht9,		///
+	label("Marker options")
+  TEXT     tx_msymb        _ilft4_3   _ms       _txwd     .,		///
+	label("Symbol:") right
+  COMBOBOX cb_msymb        _txsep     @         _txr4gi   .,		///
+	contents(symbols) option(msymbol) dropdownlist
+  TEXT     tx_msize        _lft4_3gi  _ls       _txwd     .,		///
+	label("Size:") right
+  COMBOBOX cb_msize        _txsep     @         _txr4gi   .,		///
+	contents(symbolsizes) option(msize) dropdownlist
+  TEXT     tx_mcol         _lft4_3gi  _ls       _txwd     .,		///
+	label("Color:") right
+  COMBOBOX cb_mcol         _txsep     @         _tcr4gi   .,		///
+	contents(colors) dropdownlist option(mcolor)			///
+	onselchangelist(gbox_mcol_change)
+  COLOR    cl_mcol         _tcr4gisep @         _colorwd  .,		///
+	option(mcolor)
+  GROUPBOX gb_line         _gft4_2    _holdy    _gwd4_1   _ht9,		///
+	label("Custom line options")
+  TEXT     tx_lcol         _lft4_2gi  _ms       _txwd    .,		///
+	label("Color:") right
+  COMBOBOX cb_lcol         _txsep     @         _tcr4gi .,		///
+	dropdownlist contents(colors) option(lcolor)			///
+	onselchangelist(gbox_lcol_change)
+  COLOR    cl_lcol         _tcr4gisep @         _colorwd .,		///
+	option(lcolor)
+  TEXT     tx_lpat         _lft4_2gi  _ls       _txwd    .,		///
+	label("Pattern:") right
+  COMBOBOX cb_lpat         _txsep     @         _txr4gi  .,		///
+	contents(linepatterns) option(lpattern) dropdownlist
+  TEXT     tx_lwid         _lft4_2gi  _ls       _txwd    .,		///
+	label("Width:") right
+  COMBOBOX cb_lwid         _txsep     @         _txr4gi  .,		///
+	option(lwidth) contents(linewidths) dropdownlist
+
+  GROUPBOX gb_orientation	_lft	_xxxls	195	_ht2,		///
+  	label("Orientation")
+  RADIO    rb_vertical		_ilft	_ss	85	.,		///
+  	first label("Vertical") onclickon(gbox_commandName.setstring "box")
+  RADIO    rb_horizontal	+90	@	@	.,		///
+  	last label("Horizontal") onclickon(gbox_commandName.setstring "hbox")
+END
+
+LIST gbox_mcol_change
+BEGIN
+	gbox.cl_mcol.hide
+	gbox.cl_mcol.show
+	gbox.cl_mcol.hide
+END
+
+LIST gbox_lcol_change
+BEGIN
+	gbox.cl_lcol.hide
+	gbox.cl_lcol.show
+	gbox.cl_lcol.hide
+END
+
+SCRIPT gbox_markon
+BEGIN
+	script gbox_clineoff
+	script gbox_rectoff
+	gbox.gb_mark.enable
+	gbox.tx_msymb.enable
+	gbox.cb_msymb.enable
+	gbox.tx_msize.enable
+	gbox.cb_msize.enable
+	gbox.tx_mcol.enable
+	gbox.cb_mcol.enable
+	gbox.cl_mcol.enable
+END
+
+SCRIPT gbox_markoff
+BEGIN
+	gbox.gb_mark.disable
+	gbox.tx_msymb.disable
+	gbox.cb_msymb.disable
+	gbox.tx_msize.disable
+	gbox.cb_msize.disable
+	gbox.tx_mcol.disable
+	gbox.cb_mcol.disable
+	gbox.cl_mcol.disable
+END
+
+
+SCRIPT gbox_clineon
+BEGIN
+	script gbox_markoff
+	gbox.gb_line.enable
+	gbox.tx_lcol.enable
+	gbox.cb_lcol.enable
+	gbox.cl_lcol.enable
+	gbox.tx_lpat.enable
+	gbox.cb_lpat.enable
+	gbox.tx_lwid.enable
+	gbox.cb_lwid.enable
+END
+
+SCRIPT gbox_clineoff
+BEGIN
+ 	gbox.gb_line.disable
+	gbox.tx_lcol.disable
+	gbox.cb_lcol.disable
+	gbox.cl_lcol.disable
+	gbox.tx_lpat.disable
+	gbox.cb_lpat.disable
+	gbox.tx_lwid.disable
+	gbox.cb_lwid.disable
+END
+
+SCRIPT gbox_lineon
+BEGIN
+	script gbox_markoff
+	script gbox_clineoff
+END
+
+PROGRAM _gbox_cline_opts
+BEGIN
+	if !H(gbox.cl_lcol) {
+		optionarg gbox.cl_lcol
+	}
+	if H(gbox.cl_lcol) {
+		optionarg /hidedefault gbox.cb_lcol
+	}
+	optionarg /hidedefault gbox.cb_lpat
+	optionarg /hidedefault gbox.cb_lwid
+END
+
+PROGRAM _gbox_marker_opts
+BEGIN
+	optionarg /hidedefault gbox.cb_msymb
+	optionarg /hidedefault gbox.cb_msize
+	if !H(gbox.cl_mcol) {
+		optionarg gbox.cl_mcol
+	}
+	if H(gbox.cl_mcol) {
+		optionarg /hidedefault gbox.cb_mcol
+	}
+END
+
+PROGRAM gbox_opts_output // For external use
+BEGIN
+	option radio (gbox rb_line rb_cline rb_mark)
+	if gbox.rb_cline {
+		if !H(gbox.cl_lcol) | gbox.cb_lcol | gbox.cb_lpat | 	///
+		    gbox.cb_lwid {
+			put " " "medline("
+			put /program _gbox_cline_opts
+			put ")"
+		}
+	}
+	if gbox.rb_mark {
+		if gbox.cb_msize | gbox.cb_msymb | !H(gbox.cl_mcol) |	///
+		    gbox.cb_mcol {
+			put " " "medmarker("
+			put /program _gbox_marker_opts
+			put ") "
+		}
+	}
+END
+
+PROGRAM gbox_args_output // For external use
+BEGIN
+	put "graph " gbox_commandName " "
+	varlist gbox.vl_var
+END

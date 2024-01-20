@@ -1,0 +1,625 @@
+/*
+	margins_at
+
+*!  VERSION 1.0.5  01oct2009
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_wide
+DEFINE _dlght 395
+INCLUDE header
+HELP hlp1, view("help margins")
+RESET res1
+
+DEFINE swd 175
+DEFINE vwd 330
+DEFINE nwd 365
+
+DIALOG main, tabtitle("Main") label("Specification")
+BEGIN
+  TEXT	tx_note1		_lft	_top	_iwd	.,		///
+	label("Create an at specification by setting covariates to statistics or fixed values.")
+
+  GROUPBOX gb_stat		_lft	_ms	_iwd	_ht12,		///
+	label("Statistics")
+
+  TEXT tx_stat			60	_ss	swd	.,		///
+  	label("Statistic")
+  TEXT tx_vars			+190	@	@	.,		///
+  	label("Covariates")
+
+  CHECKBOX ck_stat1		_ilft	_ss	35	.,		///
+  	label(" 1:")							///
+  	onclickon(script main_stat1_enable)				///
+  	onclickoff(script main_stat1_disable)
+  COMBOBOX cb_stat1		+40	@	swd	.,		///
+	dropdown							///
+	contents(statistic_labels) 					///
+	values(statistic_values) 			 		///
+	onselchange(program main_stat1_change) 				///
+	label("Statistic")
+  SPINNER sp_stat1		+130	@	45	.,		///
+	min(1)								///
+	max(99)								///
+	default(50)
+  COMBOBOX cb_list1_1		+60	@	vwd	.,		///
+	append								///
+	dropdown							///
+	contents(margins_atlist)					///
+	label("Statistic 1 covariates")
+  COMBOBOX cb_list1_2		@	@	vwd	.,		///
+	append								///
+	dropdown							///
+	contents(margins_clist)						///
+	label("Statistic 1 covariates")
+  COMBOBOX cb_list1_3		@	@	vwd	.,		///
+	append								///
+	dropdown							///
+	contents(margins_flist)						///
+	label("Statistic 1 covariates")
+
+  CHECKBOX ck_stat2		_ilft	_ms	35	.,		///
+  	label(" 2:")							///
+  	onclickon(script main_stat2_enable)				///
+  	onclickoff(script main_stat2_disable)
+  COMBOBOX cb_stat2		+40	@	swd	.,		///
+	dropdown							///
+	contents(statistic_labels) 					///
+	values(statistic_values) 			 		///
+	onselchange(program main_stat2_change) 				///
+	label("Statistic")
+  SPINNER sp_stat2		+130	@	45	.,		///
+	min(1)								///
+	max(99)								///
+	default(50)
+  COMBOBOX cb_list2_1		+60	@	vwd	.,		///
+	append								///
+	dropdown							///
+	contents(margins_atlist)					///
+	label("Statistic 2 covariates")
+  COMBOBOX cb_list2_2		@	@	vwd	.,		///
+	append								///
+	dropdown							///
+	contents(margins_clist)						///
+	label("Statistic 2 covariates")
+  COMBOBOX cb_list2_3		@	@	vwd	.,		///
+	append								///
+	dropdown							///
+	contents(margins_flist)						///
+	label("Statistic 2 covariates")
+
+  CHECKBOX ck_stat3		_ilft	_ms	35	.,		///
+  	label(" 3:")							///
+  	onclickon(script main_stat3_enable)				///
+  	onclickoff(script main_stat3_disable)
+  COMBOBOX cb_stat3		+40	@	swd	.,		///
+	dropdown							///
+	contents(statistic_labels) 					///
+	values(statistic_values) 			 		///
+	onselchange(program main_stat3_change) 				///
+	label("Statistic")
+  SPINNER sp_stat3		+130	@	45	.,		///
+	min(1)								///
+	max(99)								///
+	default(50)
+  COMBOBOX cb_list3_1		+60	@	vwd	.,		///
+	append								///
+	dropdown							///
+	contents(margins_atlist)					///
+	label("Statistic 3 covariates")
+  COMBOBOX cb_list3_2		@	@	vwd	.,		///
+	append								///
+	dropdown							///
+	contents(margins_clist)						///
+	label("Statistic 3 covariates")
+  COMBOBOX cb_list3_3		@	@	vwd	.,		///
+	append								///
+	dropdown							///
+	contents(margins_flist)						///
+	label("Statistic 3 covariates")
+
+  CHECKBOX ck_stat4		_ilft	_ms	35	.,		///
+  	label(" 4:")							///
+  	onclickon(script main_stat4_enable)				///
+  	onclickoff(script main_stat4_disable)
+  COMBOBOX cb_stat4		+40	@	swd	.,		///
+	dropdown							///
+	contents(statistic_labels) 					///
+	values(statistic_values) 			 		///
+	onselchange(program main_stat4_change) 				///
+	label("Statistic")
+  SPINNER sp_stat4		+130	@	45	.,		///
+	min(1)								///
+	max(99)								///
+	default(50)
+  COMBOBOX cb_list4_1		+60	@	vwd	.,		///
+	append								///
+	dropdown							///
+	contents(margins_atlist)					///
+	label("Statistic 4 covariates")
+  COMBOBOX cb_list4_2		@	@	vwd	.,		///
+	append								///
+	dropdown							///
+	contents(margins_clist)						///
+	label("Statistic 4 covariates")
+  COMBOBOX cb_list4_3		@	@	vwd	.,		///
+	append								///
+	dropdown							///
+	contents(margins_flist)						///
+	label("Statistic 4 covariates")
+
+  TEXTBOX tb_note		_lft	+45	_iwd	.,		///
+	label("NOTE:  Covariates may also be _all (all covariates), _factor (all factor covariates), and _continuous (all continuous covariates).")
+
+  GROUPBOX gb_fixed		_lft	_xls	_iwd	_ht12,		///
+	label("Fixed values")
+  TEXT tx_varname		60	_ss	145	.,		///
+  	label("Covariate")
+  TEXT tx_numlist		+155	@	@	.,		///
+  	label("Numlist")
+
+  CHECKBOX ck_fixed1		_ilft	_ss	35	.,		///
+  	label(" 1:")							///
+  	onclickon(script main_fixed1_enable)				///
+  	onclickoff(script main_fixed1_disable)
+  COMBOBOX cb_fixed1		+40	@	130	.,		///
+	append								///
+	dropdown							///
+	contents(margins_atlist)					///
+	label("Fixed value 1 covariate")
+  TEXT tx_equals1		+135	@	10	.,		///
+  	label("=")
+  EDIT ed_fixed1		+15	@	nwd	.,		///
+	label("Fixed value 1 numlist")
+
+  CHECKBOX ck_fixed2		_ilft	_ms	35	.,		///
+  	label(" 2:")							///
+  	onclickon(script main_fixed2_enable)				///
+  	onclickoff(script main_fixed2_disable)
+  COMBOBOX cb_fixed2		+40	@	130	.,		///
+	append								///
+	dropdown							///
+	contents(margins_atlist)					///
+	label("Fixed value 2 covariate")
+  TEXT tx_equals2		+135	@	10	.,		///
+  	label("=")
+  EDIT ed_fixed2		+15	@	nwd	.,		///
+	label("Fixed value 2 numlist")
+
+  CHECKBOX ck_fixed3		_ilft	_ms	35	.,		///
+  	label(" 3:")							///
+  	onclickon(script main_fixed3_enable)				///
+  	onclickoff(script main_fixed3_disable)
+  COMBOBOX cb_fixed3		+40	@	130	.,		///
+	append								///
+	dropdown							///
+	contents(margins_atlist)					///
+	label("Fixed value 3 covariate")
+  TEXT tx_equals3		+135	@	10	.,		///
+  	label("=")
+  EDIT ed_fixed3		+15	@	nwd	.,		///
+	label("Fixed value 3 numlist")
+
+  CHECKBOX ck_fixed4		_ilft	_ms	35	.,		///
+  	label(" 4:")							///
+  	onclickon(script main_fixed4_enable)				///
+  	onclickoff(script main_fixed4_disable)
+  COMBOBOX cb_fixed4		+40	@	130	.,		///
+	append								///
+	dropdown							///
+	contents(margins_atlist)					///
+	label("Fixed value 4 covariate")
+  TEXT tx_equals4		+135	@	10	.,		///
+  	label("=")
+  EDIT ed_fixed4		+15	@	nwd	.,		///
+	label("Fixed value 4 numlist")
+END
+
+LIST statistic_labels
+BEGIN
+	"Observed values"
+	"Means"
+	"Medians"
+	"Percentile"
+	"Minimums"
+	"Maximums"
+	"Fixed at zero"
+	"Base level"
+	"As though balanced"
+	"Overall observed values"
+	"Overall means"
+	"Overall medians"
+	"Overall percentile"
+	"Overall minimums"
+	"Overall maximums"
+END
+
+LIST statistic_values
+BEGIN
+	asobserved
+	mean
+	median
+	p
+	min
+	max
+	zero
+	base
+	asbalanced
+	oasobserved
+	omean
+	omedian
+	op
+	omin
+	omax
+END
+
+PROGRAM main_stat1_change
+BEGIN
+	if (main.cb_stat1.iseq("p") | main.cb_stat1.iseq("op"))  {
+		call main.sp_stat1.show
+		call main.cb_stat1.setposition . . 125 .
+	}
+	else {
+		call main.sp_stat1.hide
+		call main.cb_stat1.setposition . . 175 .
+	}
+	if (main.cb_stat1.iseq("asobserved") | main.cb_stat1.iseq("mean") ///
+	  | main.cb_stat1.iseq("oasobserved") | main.cb_stat1.iseq("omean")) {
+		call main.cb_list1_1.show
+		call main.cb_list1_2.hide
+		call main.cb_list1_3.hide
+	}
+	if (main.cb_stat1.iseq("asbalanced") | main.cb_stat1.iseq("base") ///
+	  | main.cb_stat1.iseq("oasbalanced") | main.cb_stat1.iseq("obase")) {
+		call main.cb_list1_1.hide
+		call main.cb_list1_2.hide
+		call main.cb_list1_3.show
+	}
+	if (!main.cb_stat1.iseq("asbalanced") & !main.cb_stat1.iseq("base") ///
+        & !main.cb_stat1.iseq("asobserved") & !main.cb_stat1.iseq("mean")   ///
+	& !main.cb_stat1.iseq("oasobserved") & !main.cb_stat1.iseq("omean") ///
+	& !main.cb_stat1.iseq("oasbalanced") & !main.cb_stat1.iseq("obase")) {
+		call main.cb_list1_1.hide
+		call main.cb_list1_2.show
+		call main.cb_list1_3.hide
+	}
+END
+
+SCRIPT main_stat1_enable
+BEGIN
+	main.cb_stat1.enable
+	main.sp_stat1.enable
+	main.cb_list1_1.enable
+	main.cb_list1_2.enable
+	main.cb_list1_3.enable
+END
+
+SCRIPT main_stat1_disable
+BEGIN
+	main.cb_stat1.disable
+	main.sp_stat1.disable
+	main.cb_list1_1.disable
+	main.cb_list1_2.disable
+	main.cb_list1_3.disable
+END
+
+PROGRAM main_stat2_change
+BEGIN
+	if (main.cb_stat2.iseq("p") | main.cb_stat2.iseq("op"))  {
+		call main.sp_stat2.show
+		call main.cb_stat2.setposition . . 125 .
+	}
+	else {
+		call main.sp_stat2.hide
+		call main.cb_stat2.setposition . . 175 .
+	}
+	if (main.cb_stat2.iseq("asobserved") | main.cb_stat2.iseq("mean") ///
+	  | main.cb_stat2.iseq("oasobserved") | main.cb_stat2.iseq("omean")) {
+		call main.cb_list2_1.show
+		call main.cb_list2_2.hide
+		call main.cb_list2_3.hide
+	}
+	if (main.cb_stat2.iseq("asbalanced") | main.cb_stat2.iseq("base") ///
+	  | main.cb_stat2.iseq("oasbalanced") | main.cb_stat2.iseq("obase")) {
+		call main.cb_list2_1.hide
+		call main.cb_list2_2.hide
+		call main.cb_list2_3.show
+	}
+	if (!main.cb_stat2.iseq("asbalanced") & !main.cb_stat2.iseq("base") ///
+        & !main.cb_stat2.iseq("asobserved") & !main.cb_stat2.iseq("mean")   ///
+	& !main.cb_stat2.iseq("oasobserved") & !main.cb_stat2.iseq("omean") ///
+	& !main.cb_stat2.iseq("oasbalanced") & !main.cb_stat2.iseq("obase")) {
+		call main.cb_list2_1.hide
+		call main.cb_list2_2.show
+		call main.cb_list2_3.hide
+	}
+END
+
+SCRIPT main_stat2_enable
+BEGIN
+	main.cb_stat2.enable
+	main.sp_stat2.enable
+	main.cb_list2_1.enable
+	main.cb_list2_2.enable
+	main.cb_list2_3.enable
+END
+
+SCRIPT main_stat2_disable
+BEGIN
+	main.cb_stat2.disable
+	main.sp_stat2.disable
+	main.cb_list2_1.disable
+	main.cb_list2_2.disable
+	main.cb_list2_3.disable
+END
+
+PROGRAM main_stat3_change
+BEGIN
+	if (main.cb_stat3.iseq("p") | main.cb_stat3.iseq("op"))  {
+		call main.sp_stat3.show
+		call main.cb_stat3.setposition . . 125 .
+	}
+	else {
+		call main.sp_stat3.hide
+		call main.cb_stat3.setposition . . 175 .
+	}
+	if (main.cb_stat3.iseq("asobserved") | main.cb_stat3.iseq("mean") ///
+	  | main.cb_stat3.iseq("oasobserved") | main.cb_stat3.iseq("omean")) {
+		call main.cb_list3_1.show
+		call main.cb_list3_2.hide
+		call main.cb_list3_3.hide
+	}
+	if (main.cb_stat3.iseq("asbalanced") | main.cb_stat3.iseq("base") ///
+	  | main.cb_stat3.iseq("oasbalanced") | main.cb_stat3.iseq("obase")) {
+		call main.cb_list3_1.hide
+		call main.cb_list3_2.hide
+		call main.cb_list3_3.show
+	}
+	if (!main.cb_stat3.iseq("asbalanced") & !main.cb_stat3.iseq("base") ///
+        & !main.cb_stat3.iseq("asobserved") & !main.cb_stat3.iseq("mean")   ///
+	& !main.cb_stat3.iseq("oasobserved") & !main.cb_stat3.iseq("omean") ///
+	& !main.cb_stat3.iseq("oasbalanced") & !main.cb_stat3.iseq("obase")) {
+		call main.cb_list3_1.hide
+		call main.cb_list3_2.show
+		call main.cb_list3_3.hide
+	}
+END
+
+SCRIPT main_stat3_enable
+BEGIN
+	main.cb_stat3.enable
+	main.sp_stat3.enable
+	main.cb_list3_1.enable
+	main.cb_list3_2.enable
+	main.cb_list3_3.enable
+END
+
+SCRIPT main_stat3_disable
+BEGIN
+	main.cb_stat3.disable
+	main.sp_stat3.disable
+	main.cb_list3_1.disable
+	main.cb_list3_2.disable
+	main.cb_list3_3.disable
+END
+
+PROGRAM main_stat4_change
+BEGIN
+	if (main.cb_stat4.iseq("p") | main.cb_stat4.iseq("op"))  {
+		call main.sp_stat4.show
+		call main.cb_stat4.setposition . . 125 .
+	}
+	else {
+		call main.sp_stat4.hide
+		call main.cb_stat4.setposition . . 175 .
+	}
+	if (main.cb_stat4.iseq("asobserved") | main.cb_stat4.iseq("mean") ///
+	  | main.cb_stat4.iseq("oasobserved") | main.cb_stat4.iseq("omean")) {
+		call main.cb_list4_1.show
+		call main.cb_list4_2.hide
+		call main.cb_list4_3.hide
+	}
+	if (main.cb_stat4.iseq("asbalanced") | main.cb_stat4.iseq("base") ///
+	  | main.cb_stat4.iseq("oasbalanced") | main.cb_stat4.iseq("obase")) {
+		call main.cb_list4_1.hide
+		call main.cb_list4_2.hide
+		call main.cb_list4_3.show
+	}
+	if (!main.cb_stat4.iseq("asbalanced") & !main.cb_stat4.iseq("base") ///
+        & !main.cb_stat4.iseq("asobserved") & !main.cb_stat4.iseq("mean")   ///
+	& !main.cb_stat4.iseq("oasobserved") & !main.cb_stat4.iseq("omean") ///
+	& !main.cb_stat4.iseq("oasbalanced") & !main.cb_stat4.iseq("obase")) {
+		call main.cb_list4_1.hide
+		call main.cb_list4_2.show
+		call main.cb_list4_3.hide
+	}
+END
+
+SCRIPT main_stat4_enable
+BEGIN
+	main.cb_stat4.enable
+	main.sp_stat4.enable
+	main.cb_list4_1.enable
+	main.cb_list4_2.enable
+	main.cb_list4_3.enable
+END
+
+SCRIPT main_stat4_disable
+BEGIN
+	main.cb_stat4.disable
+	main.sp_stat4.disable
+	main.cb_list4_1.disable
+	main.cb_list4_2.disable
+	main.cb_list4_3.disable
+END
+
+SCRIPT main_fixed1_enable
+BEGIN
+	main.cb_fixed1.enable
+	main.ed_fixed1.enable
+	main.cb_fixed1.setfocus
+END
+
+SCRIPT main_fixed1_disable
+BEGIN
+	main.cb_fixed1.disable
+	main.ed_fixed1.disable
+END
+
+SCRIPT main_fixed2_enable
+BEGIN
+	main.cb_fixed2.enable
+	main.ed_fixed2.enable
+	main.cb_fixed2.setfocus
+END
+
+SCRIPT main_fixed2_disable
+BEGIN
+	main.cb_fixed2.disable
+	main.ed_fixed2.disable
+END
+
+SCRIPT main_fixed3_enable
+BEGIN
+	main.cb_fixed3.enable
+	main.ed_fixed3.enable
+	main.cb_fixed3.setfocus
+END
+
+SCRIPT main_fixed3_disable
+BEGIN
+	main.cb_fixed3.disable
+	main.ed_fixed3.disable
+END
+
+SCRIPT main_fixed4_enable
+BEGIN
+	main.cb_fixed4.enable
+	main.ed_fixed4.enable
+	main.cb_fixed4.setfocus
+END
+
+SCRIPT main_fixed4_disable
+BEGIN
+	main.cb_fixed4.disable
+	main.ed_fixed4.disable
+END
+
+SCRIPT main_fixed5_enable
+BEGIN
+	main.cb_fixed5.enable
+	main.ed_fixed5.enable
+	main.cb_fixed5.setfocus
+END
+
+SCRIPT main_fixed5_disable
+BEGIN
+	main.cb_fixed5.disable
+	main.ed_fixed5.disable
+END
+
+PROGRAM command
+BEGIN
+	put "at("
+	if ! (main.ck_stat1 | main.ck_stat2 | main.ck_stat3 		///
+		| main.ck_stat4 | main.ck_fixed1 | main.ck_fixed2	///
+		| main.ck_fixed3 | main.ck_fixed4)			///
+	{
+		stopbox stop `"At least one "Statistic" or "Fixed value" must be specified"'
+	}
+
+	if main.ck_stat1 {
+		require main.cb_stat1
+		put "("
+		put main.cb_stat1
+		put main.sp_stat1
+		put ")"
+  		put " " main.cb_list1_1
+  		put " " main.cb_list1_2
+  		put " " main.cb_list1_3
+	}
+
+	if main.ck_stat2 {
+		require main.cb_stat2
+		put " ("
+		put main.cb_stat2
+		put main.sp_stat2
+		put ")"
+  		put " " main.cb_list2_1
+  		put " " main.cb_list2_2
+  		put " " main.cb_list2_3
+	}
+
+	if main.ck_stat3 {
+		require main.cb_stat3
+		put " ("
+		put main.cb_stat3
+		put main.sp_stat3
+		put ")"
+  		put " " main.cb_list3_1
+  		put " " main.cb_list3_2
+  		put " " main.cb_list3_3
+	}
+
+	if main.ck_stat4 {
+		require main.cb_stat4
+		put " ("
+		put main.cb_stat4
+		put main.sp_stat4
+		put ")"
+  		put " " main.cb_list4_1
+  		put " " main.cb_list4_2
+  		put " " main.cb_list4_3
+	}
+
+	if main.ck_fixed1 {
+		require main.cb_fixed1
+		require main.ed_fixed1
+		if ! (main.ed_fixed1.isnumlist()) {
+			stopbox stop `"There is an invalid "Numlist" for "Fixed values 1""'
+		}
+		put " " main.cb_fixed1
+		put "=("
+		put main.ed_fixed1
+		put ")"
+	}
+
+	if main.ck_fixed2 {
+		require main.cb_fixed2
+		require main.ed_fixed2
+		if ! (main.ed_fixed2.isnumlist()) {
+			stopbox stop `"There is an invalid "Numlist" for "Fixed values 2""'
+		}
+		put " " main.cb_fixed2
+		put "=("
+		put main.ed_fixed2
+		put ")"
+	}
+
+	if main.ck_fixed3 {
+		require main.cb_fixed3
+		require main.ed_fixed3
+		if ! (main.ed_fixed3.isnumlist()) {
+			stopbox stop `"There is an invalid "Numlist" for "Fixed values 3""'
+		}
+		put " " main.cb_fixed3
+		put "=("
+		put main.ed_fixed3
+		put ")"
+	}
+
+	if main.ck_fixed4 {
+		require main.cb_fixed4
+		require main.ed_fixed4
+		if ! (main.ed_fixed4.isnumlist()) {
+			stopbox stop `"There is an invalid "Numlist" for "Fixed values 4""'
+		}
+		put " " main.cb_fixed4
+		put "=("
+		put main.ed_fixed4
+		put ")"
+	}
+	put ") "
+END

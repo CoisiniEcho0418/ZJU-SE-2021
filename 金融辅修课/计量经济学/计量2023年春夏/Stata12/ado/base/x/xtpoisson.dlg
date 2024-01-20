@@ -1,0 +1,285 @@
+/*
+  xtpoisson
+
+*!  VERSION 1.3.7  26mar2011
+
+  keyword:  eclass
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_wide
+DEFINE _dlght 420
+INCLUDE header
+
+HELP hlp1, view("help xtpoisson")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	program parseMessage
+	script se_createAsGEE
+END
+
+PROGRAM parseMessage
+BEGIN
+	if __MESSAGE.contains("__MI__") {
+		call script se_setMI_on
+		call main.bu_xtset.hide
+	}
+	else {
+		call main.bu_mi_xtset.hide
+	}
+END
+
+SCRIPT POSTINIT
+BEGIN
+	program check_bytab
+	program check_se_status
+	script corr_setForceVisible
+	script weights_setLayout_i
+END
+
+PROGRAM check_bytab
+BEGIN
+	if __MESSAGE.contains("__MI__") {
+		call script byifin_set_by_off
+	}
+END
+
+SCRIPT show_xtset
+BEGIN
+	create STRING note
+	note.setvalue `"For a population-averaged model,"'
+	note.append   `" correlation structures other than"'
+	note.append   `" "exchangeable" and "independent""'
+	note.append   `" require that a time variable be specified."'
+	note.withvalue create CHILD xtset, message(`"" " `"@"'"')
+END
+
+DIALOG main, tabtitle("Model")	///
+	label("xtpoisson - Fixed-effects, random-effects, and population-averaged Poisson models")
+BEGIN
+  BUTTON   bu_xtset	_xsetbu	_top	_setbuwd .,		///
+	onpush(script show_xtset)				///
+	label("Panel settings...")
+  BUTTON   bu_mi_xtset  _xsetbu	_top	_setbuwd	.,		///
+	onpush("view dialog mi_xtset")					///
+	label("Panel settings...")
+
+  TEXT tx_dv 		_lft	_topph	_vnwd	.,			///
+	label("Dependent variable:")
+  VARNAME vn_dv		@ 	_ss	@	.,			///
+	ts								///
+	label("Dependent variable")
+
+  TEXT tx_iv		_vlx	_topph	160	.,			///
+	label("Independent variables:")
+  VARLIST vl_iv		@	_ss	_vlwd	.,			///
+	fv ts								///
+	allowcat							///
+	label("Independent variables")
+
+  CHECKBOX ck_nocons @         _ms       @         .,			/*
+		*/ label("Suppress constant term")			/*
+		*/ option("noconstant")					/*
+		*/
+
+  GROUPBOX gb_model  _lft      _ms       _iwd      _ht2,		/*
+	*/ label("Model type (affects which options are available)")	/*
+		*/
+  RADIO    rb_re     _ilft     _ss       _cwd3_2   .,			/*
+		*/ label("Random-effects (RE)")				/*
+		*/ clickon("script re_opts")				/*
+		*/ first						/*
+		*/ option("re")						/*
+		*/
+  RADIO    rb_fe     _ilft3_2  @         @         .,			/*
+		*/ label("Fixed-effects (FE)")				/*
+		*/ clickon("script fe_opts")				/*
+		*/ option("fe")						/*
+		*/
+  RADIO    rb_pa     _ilft3_3  @         @         .,			/*
+		*/ label("Population-averaged (PA)")			/*
+		*/ clickon("script pa_opts")				/*
+		*/ last							/*
+		*/ option("pa")						/*
+		*/
+
+  GROUPBOX gb_opts   _lft      _xls      _iwd      _ht14h,		/*
+		*/ label("Options")					/*
+		*/
+
+  RADIO    rb_expose _ilft     _ss       _cwd4_1   .,			/*
+		*/ label("Exposure variable:")				/*
+		*/ first						/*
+		*/ clickon("script expose")				/*
+		*/
+  RADIO    rb_offset _ilft4_2  @         @         .,			/*
+		*/ label("Offset variable:")				/*
+		*/ last							/*
+		*/ clickon("script offset")				/*
+		*/
+
+  VARNAME  vn_expose _ilft     _ss       _cwd4_1   .,			/*
+		*/ label("Exposure variable")				/*
+		*/ option("exposure")					/*
+		*/
+  VARNAME  vn_offset _ilft4_2  @         @         .,			/*
+		*/ label("Offset variable")				/*
+		*/ option("offset")					/*
+		*/
+
+  CHECKBOX ck_normal _ilft     _ls       _ibwd    .,			/*
+  		*/ onclickon(program main_normal_on)			/*
+  		*/ onclickoff(script main_normal_off)			/*
+  		*/ option(normal)					/*
+  		*/ label("Use normal distribution for random effects (default = gamma)")
+
+  DEFINE _x _ilft
+  DEFINE _y _ms
+  DEFINE _cx _ilw80
+  DEFINE _bux _islw80
+  INCLUDE _constraints
+
+  DEFINE _x _ilft
+  DEFINE _xw _ibwd
+  INCLUDE _ck_collinear
+END
+
+INCLUDE _constraints_sc 
+
+PROGRAM main_normal_on
+BEGIN
+	if main.ck_normal {
+		call script intopts_re_enable
+		call script intopts_re_reset
+		script max_ml_on
+	}
+END
+
+SCRIPT main_normal_off
+BEGIN
+	script intopts_re_disable
+	script max_ml_on
+	main.tx_constr.enable
+	main.cb_constr.enable
+	rpt.ck_nocnsreport.enable
+	main.ck_collinear.enable
+END
+
+SCRIPT expose
+BEGIN
+	main.vn_expose.enable
+	main.vn_offset.disable
+END
+
+SCRIPT offset
+BEGIN
+	main.vn_expose.disable
+	main.vn_offset.enable
+END
+
+SCRIPT re_opts
+BEGIN
+	program check_se_status
+	program disable_xtgee_common
+	main.ck_nocons.enable
+	main.tx_constr.enable
+	main.cb_constr.enable
+	rpt.ck_nocnsreport.enable
+	main.ck_collinear.enable
+	main.ck_normal.enable
+	script max_ml_on
+	program main_normal_on
+	script rpt_lrtest_enable
+	script weights_setLayout_i
+END
+
+SCRIPT fe_opts
+BEGIN
+	program check_se_status
+	program disable_xtgee_common
+	main.ck_nocons.disable
+	main.tx_constr.enable
+	main.cb_constr.enable
+	rpt.ck_nocnsreport.enable
+	main.ck_collinear.enable
+	main.ck_normal.disable
+	script intopts_re_disable
+	script rpt_lrtest_disable
+	script max_ml_on
+	script weights_setLayout_i
+END
+
+SCRIPT pa_opts
+BEGIN
+	program check_se_status
+	program enable_xtgee_common
+	main.ck_nocons.enable
+	main.tx_constr.disable
+	main.cb_constr.disable
+	rpt.ck_nocnsreport.disable
+	main.ck_collinear.disable
+	main.ck_normal.disable
+	script intopts_re_disable
+	script rpt_lrtest_disable
+	script max_pa_on
+	script weights_setLayout_fpi
+END
+
+INCLUDE xtgee_common
+INCLUDE byifin
+INCLUDE weights
+INCLUDE se
+INCLUDE rpt_xt_irr
+INCLUDE intopts_re
+INCLUDE max_ml
+
+PROGRAM check_se_status
+BEGIN
+	if main.rb_pa {
+		call script se_setIOIM_off
+		call script se_setGEE_on
+	}
+	if !main.rb_pa {
+		call script se_setIOIM_on
+		call script se_setGEE_off
+	}
+  	if main.rb_fe {
+		call script se_setRobust_on
+	}
+  	if !main.rb_fe {
+		call script se_setRobust_off
+	}
+END
+
+PROGRAM command
+BEGIN
+	put /program by_output " " 
+	put "xtpoisson "
+	varlist main.vn_dv [main.vl_iv]
+	if !main.vl_iv & main.ck_nocons & !D(main.ck_nocons) {
+	  stopbox stop `""Suppress constant term" is selected without independent variables."'
+	}
+	if main.rb_fe & !main.vl_iv {
+	  stopbox stop `""Independent variables" must be filled in with "Fixed-effects" model"'
+	}
+	put " " /program ifin_output
+	put " " /program weights_output
+	beginoptions
+		option main.ck_nocons
+		option radio(main rb_re rb_fe rb_pa)
+		optionarg main.vn_expose
+		optionarg main.vn_offset
+		option main.ck_normal
+		INCLUDE _constraints_main_pr
+		option main.ck_collinear
+		put " " /program xtgee_common_output
+		put " " /program se_output
+		put " " /program rpt_output
+		put " " /program intopts_re_output
+		put " " /program max_output
+	endoptions
+END

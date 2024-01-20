@@ -1,0 +1,98 @@
+/*
+  bsqreg
+
+*!  VERSION 1.0.3  15may2011
+
+  keyword:  eclass
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_medium
+INCLUDE header
+HELP hlp1, view("help bsqreg")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	program parseMessage
+END
+
+PROGRAM parseMessage
+BEGIN
+	if __MESSAGE.contains("__MI__") {
+		call script byifin_set_by_off
+	}
+END
+
+DIALOG main, label("bsqreg - Bootstrapped quantile regression")		/*
+		*/ tabtitle("Model")
+BEGIN
+
+  INCLUDE  _dviv
+
+  /*--+----1----+----2----+----3----+----4----+----5----+----6----+----7----+*/
+  SPINNER  sp_quantile    _lft      _xls      _spwd     .,		/*
+ 		*/ label("Quantile to estimate")			/*
+                */ min(1)						/*
+                */ max(100)						/*
+                */ default(50)						/*
+		*/ option("quantile")					/*
+		*/
+
+  TEXT     tx_quantile    _spsep    @         _spr      .,		/*
+                */ label("Quantile to estimate")			/*
+		*/
+
+  SPINNER  sp_reps        _lft      _ls       _spwd     .,		/*
+                */ label("Bootstrap replications")			/*
+		*/ option("reps")					/*
+                */ min(1)						/*
+                */ max(100000)						/*
+                */ default(20)						/*
+		*/
+
+  TEXT     tx_reps        _spsep    @         _sprb     .,		/*
+                */ label("Bootstrap replications")			/*
+		*/
+  
+END
+
+INCLUDE byifin
+
+SCRIPT rpt_POSTINIT
+BEGIN
+	create STRING rpt_bu_fmtcoefResults
+	program rpt_bu_fmtcoef_ckResults
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr
+  DEFINE _y 20
+  INCLUDE _sp_level
+
+  DEFINE _x _lft
+  DEFINE _y _ls
+  INCLUDE _bu_coef_table_reporting
+END
+
+INCLUDE fmt_coef_table_reporting_pr
+
+PROGRAM command
+BEGIN
+	allowxi
+	INCLUDE _by_pr
+	put "bsqreg "
+	varlist main.vn_dv [main.vl_iv]
+	INCLUDE _ifin_pr
+	beginoptions
+		optionarg main.sp_quantile
+		optionarg main.sp_reps
+		optionarg /hidedefault rpt.sp_level
+		put " " rpt_bu_fmtcoefResults
+	endoptions
+END
+

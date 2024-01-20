@@ -1,0 +1,17 @@
+/*
+	arch_estat
+
+*!  VERSION 1.0.0  08aug2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_large
+DEFINE _dlght 350
+INCLUDE header
+
+HELP hlp1, view("help estat")
+RESET res1
+
+INCLUDE estat

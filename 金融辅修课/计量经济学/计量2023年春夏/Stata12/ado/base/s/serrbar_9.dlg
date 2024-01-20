@@ -1,0 +1,77 @@
+/*
+	serrbar_9.dlg
+
+*! VERSION 1.1.1  09aug2006  (deprecated)
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+
+HELP hlp1, view("help serrbar")
+RESET res1
+
+DIALOG main,label("serrbar - Graph standard error bar chart")	///
+	tabtitle("Main")
+BEGIN
+  TEXT     tx_mvar        _lft      _top       _iwd	  .,	///
+	label("Means variable:")
+  VARNAME  vn_mvar        @         _ss        _vnwd 	  .,	///
+	label("Means variable")
+
+  TEXT     tx_svar        @         _ls        _iwd       .,	///
+	label("Standard deviations/error variable:")
+  VARNAME  vn_svar        @         _ss        _vnwd      .,	///
+	label("Standard deviations/error variable")
+
+  TEXT     tx_xvar        @         _ls        _iwd       .,	///
+	label("X variable:")
+  VARNAME  vn_xvar        @         _ss        _vnwd      .,	///
+	label("X variable")
+
+  GROUPBOX gb_opts        @         _ls        _cwd1      _ht2,	///
+	label("Options")
+  EDIT     ed_scale       _ilft     _ss        _en7wd     .,	///
+	label("Scale length of the graph bars")			///
+	numonly  default(1) option(scale)
+  TEXT     tx_scale       _en7sep    @          _en7r2b   .,	///
+	label("Scale length of the graph bars")
+END
+
+INCLUDE ifin
+INCLUDE p1_opts
+INCLUDE p2_opts
+INCLUDE addplot
+INCLUDE gr_twoway
+
+SCRIPT PREINIT
+BEGIN
+	script p1_opts_createAsRange
+	script p1_opts_setDefaultSpikec
+	script p2_opts_createAsNoRange
+	script p2_opts_setDefaultScatter
+END
+
+SCRIPT POSTINIT
+BEGIN
+	p1_opts.settabtitle "Error bars"
+	p2_opts.settabtitle "Plotted points"
+END
+
+PROGRAM command
+BEGIN
+	put "serrbar "
+	varlist main.vn_mvar
+        varlist main.vn_svar
+	varlist main.vn_xvar
+	INCLUDE _ifin_pr
+	beginoptions
+		optionarg /hidedefault main.ed_scale
+		put " " /program p1_opts_output
+		put " " /program p2_opts_mv_output
+		put " " /program addplot_output
+		put " " /program gr_twoway_output
+	endoptions
+END
+/* end */

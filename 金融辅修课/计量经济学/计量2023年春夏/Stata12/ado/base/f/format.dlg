@@ -1,0 +1,52 @@
+/*
+	format
+
+*!  VERSION 2.0.0  26jan2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_small
+DEFINE _dlght 160
+INCLUDE header
+HELP hlp1, view("help format")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	create STRING formatString
+END
+
+DIALOG main, label("format - Set variables' output format")
+BEGIN
+  TEXT     tx_var	_lft	_top	_iwd	.,	///
+	label("Variables:")
+  VARLIST  vl_var	@	_ss	@	.,	///
+	label("Variables")
+
+  TEXT     tx_format	_lft	+35	_iwd	.,	///
+	label("Format:") 
+  EDIT     ed_format	@	_ss	_lw80	.,	///
+	label("Format")
+  BUTTON   bu_format	_slw80	@	80	.,	///
+	label("Create...")				///
+	onpush(script showFormatDialog)			///
+	tooltip("Create display format")
+END
+
+SCRIPT showFormatDialog
+BEGIN
+	create CHILD format_chooser
+	format_chooser.setExitString formatString
+	format_chooser.setExitAction "main.ed_format.setvalue class formatString.value"
+END
+
+PROGRAM command
+BEGIN
+	require main.vl_var
+	require main.ed_format
+	put "format"
+	put " " main.ed_format
+	put " " main.vl_var
+END

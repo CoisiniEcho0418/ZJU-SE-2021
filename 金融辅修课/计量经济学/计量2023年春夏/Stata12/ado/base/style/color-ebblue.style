@@ -1,0 +1,6 @@
+*! version 1.0.0  22dec2002
+sequence 5450
+label "ebrightblue"
+
+* 313 C
+set rgb "0 139 188"

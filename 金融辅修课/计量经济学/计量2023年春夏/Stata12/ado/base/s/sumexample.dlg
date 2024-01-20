@@ -1,0 +1,78 @@
+// sumexample 
+// version 1.0.0
+
+VERSION 8.0
+
+POSITION . . 320 200
+
+DIALOG main, title("Example simple summarize dialog") tabtitle("Main")
+BEGIN
+  TEXT     lab      10   10  300    ., label("Variables to summarize:")
+  VARLIST  vars      @  +20    @    ., label("Variables to sum")
+END
+
+DIALOG options, tabtitle("Options")
+BEGIN
+  CHECKBOX detail   10   10  300    ., label("Show detailed statistics")  ///
+	option("detail")						  ///
+	onclickon(`"gaction options.status.setlabel "(detail is on)""')   ///
+	onclickoff(`"options.status.setlabel "(detail is off)""')
+
+  TEXT     status    @  +20    @    ., label("This label won't be seen")
+
+  BUTTON   btnhide   @  +30  200    ., label("Hide other controls")       ///
+	push("script hidethem")
+  BUTTON   btnshow   @  +30    @    ., label("Show other controls")       ///
+	push("script showthem")
+  BUTTON   btngrey   @  +30    @    ., label("Disable other controls")    ///
+	push("script disablethem")
+  BUTTON   btnnorm   @  +30    @    ., label("Enable other controls")     ///
+	push("script enablethem")
+END
+
+SCRIPT hidethem
+BEGIN
+  gaction main.lab.hide
+  main.vars.hide
+  options.detail.hide
+  options.status.hide
+END
+
+SCRIPT showthem
+BEGIN
+  main.lab.show
+  main.vars.show
+  options.detail.show
+  options.status.show
+END
+
+SCRIPT disablethem
+BEGIN
+  main.lab.disable
+  main.vars.disable
+  options.detail.disable
+  options.status.disable
+END
+
+SCRIPT enablethem
+BEGIN
+  main.lab.enable
+  main.vars.enable
+  options.detail.enable
+  options.status.enable
+END
+
+OK      ok1, label("Ok")
+CANCEL  can1
+SUBMIT  sub1
+HELP    hlp1, view("help summarize")
+RESET   res1
+
+PROGRAM command
+BEGIN
+  put "summarize"
+  varlist main.vars	/* varlist [main.vars] to make it optional */
+  beginoptions
+    option options.detail
+  endoptions
+END

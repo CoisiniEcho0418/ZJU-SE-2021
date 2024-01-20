@@ -1,0 +1,57 @@
+/*
+	predict (after svar)
+
+*!  VERSION 1.1.2  28mar2005
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_large
+INCLUDE _ht230
+INCLUDE header
+
+HELP hlp1, view("help svar postestimation")
+RESET res1
+
+DIALOG main, label("predict - Prediction after estimation") tabtitle("Main")
+BEGIN
+  INCLUDE  _p_gentype
+
+  GROUPBOX gb_opts           _lft      _ls       _iwd      _ht13,	///
+		label("Produce:")
+  RADIO    rb_xb             _ilft     _ss       _cwd2     ., first	///
+	option(xb)							///
+	label("Linear prediction (xb)")
+  DEFINE   holdy@y
+  RADIO    rb_stdp           @         _ss       @         ., 		///
+	option(stdp)							///
+	label("Standard error of the prediction")
+  RADIO    rb_residuals      @         _ss       @         ., 	last	///
+	option(residuals)						///
+	label("Residuals")
+
+  TEXT     tx_equation1      _lft2     holdy     @         .,		///
+	label("Equation (dependent variable):")
+  LISTBOX  lb_equation1      @         _ss       @         _ht8,	///
+	contents(ereturn eqnames_var)					///
+	label("Equation (dependent variable)")
+END
+
+INCLUDE _p_gentype_sc
+INCLUDE ifin
+INCLUDE _type_list_fd
+
+PROGRAM command
+BEGIN
+	put "predict "
+
+	put " " /program _p_gentype_output
+	INCLUDE _ifin_pr
+	beginoptions
+		option radio(main rb_xb rb_residuals rb_stdp)
+		put "equation("
+		put main.lb_equation1
+		put ") "
+	endoptions
+END

@@ -1,0 +1,21 @@
+//				barlab_textbox.class
+//
+//  A positioned textbox for bar, dot, box labels.  Used solely to allow the
+//  style of a label to be customized from its group.
+//  
+//  See as_custom_ed.class for customization
+
+*! version 1.2.0  29jan2007
+
+version 9
+
+class {
+
+} , inherit(pos_textbox)
+
+
+program new
+	.Super.new `0'
+	.already_custom = 0
+end
+

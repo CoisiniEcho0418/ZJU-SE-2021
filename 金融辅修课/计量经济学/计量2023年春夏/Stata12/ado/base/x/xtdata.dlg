@@ -1,0 +1,109 @@
+/*
+  xtdata
+
+*!  VERSION 1.1.0  08feb2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_large
+INCLUDE _ht250
+INCLUDE header
+
+HELP hlp1, view("help xtdata")
+RESET res1
+
+SCRIPT show_xtset
+BEGIN
+	create CHILD xtset,
+END
+
+DIALOG main, label("xtdata - Faster specification searches with xt data") /*
+		*/ tabtitle("Main")
+BEGIN
+  BUTTON   bu_xtset	_xsetbu	_top	_setbuwd .,		///
+	onpush(script show_xtset)				///
+	label("Panel settings...")
+
+  TEXT      tx_var         _lft      _topph    _comb4_3     .,		/*
+  	*/label("Convert these variables:  (leave empty for all variables)")/*
+  		*/
+  VARLIST   vl_var         @         _ss       _iwd         .,		/*
+		*/allowcat						/*
+  		*/label("Convert these variables")
+		
+  GROUPBOX  gb_opt         _lft      _ls       _iwd      _ht14, 	/*
+  		*/label("Options")
+  GROUPBOX  gb_type        _indent   _ss       _cwd2     _ht11,		/*
+  		*/label("Convert data to a form suitable for:")
+  DEFINE holdy @y
+  DEFINE holdx @x
+  RADIO     rb_re          _indent   _ss       _inwd     .,		/*
+		*/label("Random-effects estimation")			/*
+  		*/clickon("script re_on")				/*
+  		*/option("re") first
+  DEFINE holdxi @x
+  DEFINE skip +27
+  EDIT      en_ratio       _indent2  skip      _en7wd    .,		/*
+*/label("Ratio of random eff. to pure residual (std. devs.)") 	/*
+		*/option("ratio")					/*
+		*/numonly
+  TEXT      tx_ratio       _en7sep   -5        115       .,		/*
+		*/label("Ratio of random eff.") 			/*
+		*/  		
+  TEXT      tx_ratio2      @         _vss      @         .,		/*
+  		*/label("to pure residual (sd)")
+  RADIO     rb_be          holdxi    _ss        _cwd4    .,		/* 
+		*/label("Between estimation")				/*
+  		*/clickon("script re_off")				/*
+  		*/option("be")
+  RADIO     rb_fe          @         _ms       @         .,		/*
+  		*/label("Fixed-effects (within) estimation")		/*
+  		*/clickon("script re_off")				/*
+  		*/option("fe")  last
+  GROUPBOX  gb_doub        _lft2     holdy     _cwd2     _ht4,		/*
+  		*/label("Transformed variables have type:")
+  RADIO     rb_doub        _indent   _ss       _inwd     .,		/*
+  		*/label("Double")					/*
+  		*/option("NONE") first
+  RADIO     rb_nodoub      @         _ss       @         .,		/*
+		*/label("Keep original type")				/*
+  		*/option("nodouble") last  
+  CHECKBOX  ck_clear       _lft2   _xls        _cwd2     .,		/*
+  		*/label("Overwrite current data in memory")		/*
+  		*/option("clear") nomem
+END
+
+INCLUDE ifin
+
+SCRIPT re_on
+BEGIN
+  main.en_ratio.enable
+  main.tx_ratio.enable
+  main.tx_ratio2.enable
+END
+
+SCRIPT re_off
+BEGIN
+  main.en_ratio.disable
+  main.tx_ratio.disable
+  main.tx_ratio2.disable
+END
+PROGRAM command
+BEGIN
+	allowxi
+	put "xtdata "
+	varlist [main.vl_var]
+	INCLUDE _ifin_pr
+	beginoptions
+		option radio(main rb_re rb_be rb_fe)
+		if main.rb_re {
+			require main.en_ratio
+			optionarg main.en_ratio
+		}
+		option radio(main rb_doub rb_nodoub)
+		option main.ck_clear
+	endoptions
+END
+

@@ -1,0 +1,27 @@
+/*
+  fvset
+
+*!  VERSION 1.0.3  29jun2009
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_medium
+DEFINE _dlght 450
+INCLUDE header
+
+HELP hlp1, view("help fvset")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	create BOOLEAN isMI
+	isMI.setfalse
+END
+
+DIALOG main, tabtitle("Main")					///
+	title("fvset - Declare factor-variable settings")
+BEGIN
+
+INCLUDE fvset

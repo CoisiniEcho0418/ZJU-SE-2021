@@ -1,0 +1,117 @@
+/*
+	stbase
+
+*!  VERSION 1.1.1  13mar2005
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_large
+INCLUDE _ht270
+INCLUDE header
+
+HELP hlp1, view("help stbase")
+RESET res1
+
+DIALOG main,label("stbase - Form baseline dataset")                     /*
+		*/ tabtitle("Main")
+BEGIN
+  DEFINE  _x _xsetbu
+  DEFINE  _y _top
+  INCLUDE _bu_stset
+
+  RADIO    rb_stdata      _lft      _ms       _iwd       .,             /*
+	*/label("Convert multiple-record st data to st data at baseline")/*
+                */      first                                           /*
+                */      clickon("script at_off")
+  RADIO    rb_cross       _lft      _ss       @          .,             /*
+ */label("Convert single/multiple-record st data to cross-sectional dataset at")/*
+		*/      last                                            /*
+                */      clickon("script at_on")
+  SPINNER  sp_at          _indent2  _ms       _spwd      .,             /*
+                */      label("at")                                     /*
+		*/      min(0)                                          /*
+                */      max(100000)                                     /*
+                */      default(1)                                      /*
+                */      option(at)
+  DEFINE tx @x
+  TEXT     tx_at          _spsep    @         _rbspr       .,           /*
+                */      label("Analysis time")
+
+  GROUPBOX gb_opt         tx        _ls       _ibwd      _ht6,          /*
+                */label("Name of a new variable containing gap time")
+  RADIO    rb_gap         _indent   _ss       _inwd      .,             /*
+                */      first                                           /*
+                */      clickon("gaction main.ed_name.disable")         /*
+                */      option(gap)					/*
+		*/label(`""gap" (or "gaptime" if "gap" already exists)"')
+  RADIO    rb_name        @         _ss       @          .,             /*
+                */      label("User-specified:")                        /*
+                */      last                                            /*
+                */      clickon("gaction main.ed_name.enable")          /*
+		*/      option(NONE)
+
+  EDIT     ed_name        _indent2  _ss       _vnwd      .,             /*
+                */      label("User-specified variable")                /*
+                */      max(32)                                         /*
+                */      option(gap)
+  CHECKBOX ck_replace     _lft      _xls      _iwd       .,             /*
+		*/      label("Overwrite current data in memory")       /*
+		*/      option(replace) nomem
+
+// preserve option is not shown on dialog , coz it is for programmers
+//CHECKBOX ck_preserve   @         _ms       @          .,		/*
+//              */      label ("Do not preserve the original data")     /*
+//              */      option(preserve)
+
+  CHECKBOX  ck_noshow     @         _ms       @          . ,            /*
+                */      label("Do not show st setting information")      /*
+                */      option(noshow)
+END
+
+INCLUDE ifin
+
+SCRIPT at_off
+BEGIN
+	main.sp_at.disable
+	main.tx_at.disable
+	main.rb_name.disable
+	main.ed_name.disable
+	main.rb_gap.disable
+	main.gb_opt.disable
+END
+
+SCRIPT at_on
+BEGIN
+        main.sp_at.enable
+        main.tx_at.enable
+        main.rb_name.enable
+        program rb_name_check
+        main.rb_gap.enable
+        main.gb_opt.enable
+END
+
+PROGRAM rb_name_check
+BEGIN
+	if main.rb_name {
+		call gaction main.ed_name.enable
+	}
+END
+
+PROGRAM command
+BEGIN
+        put "stbase "
+	INCLUDE _ifin_pr
+	beginoptions
+		if main.rb_cross {
+			optionarg main.sp_at
+			if main.rb_name {
+				require main.ed_name
+				optionarg main.ed_name
+			}
+		}
+		option main.ck_replace
+		option main.ck_noshow
+	endoptions
+END

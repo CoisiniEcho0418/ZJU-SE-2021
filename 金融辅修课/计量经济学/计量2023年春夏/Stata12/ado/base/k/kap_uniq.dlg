@@ -1,0 +1,122 @@
+/*
+	kap (two unique raters, two or more ratings)
+
+*!  VERSION 1.0.3  16aug2006
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_medium
+INCLUDE header
+HELP hlp1, view("help kap")
+RESET res1
+
+DIALOG main, label("kap - Interrater agreement") tabtitle("Main")
+BEGIN
+  TEXT     tx_var1           _lft      _top      _vnwd     .,		/*
+		*/ label("Rater 1 variable:")
+  VARNAME  vn_var1           @         _ss       @         .,		/*
+		*/ label("Rater 1 variable")
+
+  TEXT     tx_var2           _vnsep    _top      @         .,		/*
+		*/ label("Rater 2 variable:")
+  VARNAME  vn_var2           @         _ss       @         .,		/*
+		*/ label("Rater 2 variable")
+
+  CHECKBOX ck_tab            _lft      _ls       _iwd      .,		/*
+		*/ option(tab)						/*
+		*/ label("Display table of assessments")
+  CHECKBOX ck_wgt            @         _ms       @         _ht11,	/*
+		*/ groupbox						/*
+		*/ clickon("program wgton")				/*
+		*/ clickoff("script wgtoff")				/*
+		*/ label("Weight disagreements")
+  RADIO    rb_wgtw           _indent   _ss       _inwd     ., first	/*
+		*/ option("wgt(w)")					/*
+		*/ clickon("script kwgtoff")				/*
+		*/ label("Use 1 - |row-col|/(max_number_of_ratings-1)")
+  RADIO    rb_wgtw2          @         _ss       @         .,		/*
+		*/ option("wgt(w2)")					/*
+		*/ clickon("script kwgtoff")				/*
+		*/ label("Use 1 - ((row-col)/(max_number_of_ratings-1))^2")
+  RADIO    rb_wgt            @         _ss       @         ., last	/*
+		*/ option(NONE)  /* handled another way */		/*
+		*/ clickon("script kwgton")				/*
+		*/ label("Use weight previously defined by kapwgt:")
+  DEFINE   holdx @x
+  DEFINE   holdcx @cx
+  EDIT     ed_wgt            _indent2  _ss       _vnwd     .,		/*
+		*/ option(wgt)						/*
+		*/ label("Using weight previously defined by kapwgt")
+  BUTTON   bu_wgt            _lft2     @         _buwd     .,		/*
+		*/ onpush("view dialog kapwgt")				/*
+		*/ label("Define...")					/*
+		*/ tooltip("Define weights for kap")
+  CHECKBOX ck_absolute       holdx     _ls       holdcx    .,		/*
+		*/ option(absolute)					/*
+		*/ label("Treat rating categories as absolute")
+
+END
+
+
+INCLUDE ifin
+INCLUDE weights_f
+
+
+PROGRAM wgton
+BEGIN
+	call gaction main.ck_absolute.enable
+	call gaction main.rb_wgtw.enable
+	call gaction main.rb_wgtw2.enable
+	call gaction main.rb_wgt.enable
+	if main.rb_wgt {
+		call gaction main.ed_wgt.enable
+		call gaction main.bu_wgt.enable
+	}
+	if !main.rb_wgt {
+		call gaction main.ed_wgt.disable
+		call gaction main.bu_wgt.disable
+	}
+END
+
+SCRIPT wgtoff
+BEGIN
+	main.ck_absolute.disable
+	main.rb_wgtw.disable
+	main.rb_wgtw2.disable
+	main.rb_wgt.disable
+	main.ed_wgt.disable
+	main.bu_wgt.disable
+END
+
+SCRIPT kwgton
+BEGIN
+	main.ed_wgt.enable
+	main.bu_wgt.enable
+END
+
+SCRIPT kwgtoff
+BEGIN
+	main.ed_wgt.disable
+	main.bu_wgt.disable
+END
+
+PROGRAM command
+BEGIN
+	put "kap "
+	varlist main.vn_var1 main.vn_var2
+	INCLUDE _weights_pr
+	INCLUDE _ifin_pr
+	beginoptions
+		option main.ck_tab
+		if main.ck_wgt {
+			option radio(main rb_wgtw rb_wgtw2 rb_wgt)
+			if main.rb_wgt {
+				require main.ed_wgt
+				optionarg main.ed_wgt
+			}
+			option main.ck_absolute
+		}
+	endoptions
+END

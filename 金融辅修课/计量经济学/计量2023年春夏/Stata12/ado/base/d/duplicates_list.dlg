@@ -1,0 +1,90 @@
+/*
+	duplicates list
+
+*!  VERSION 1.1.2  31mar2005
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_large
+INCLUDE header
+HELP hlp1, view("help duplicates")
+RESET res1
+
+DIALOG main,  tabtitle("Main")	///
+	label("duplicates list - List all duplicated observations")
+BEGIN
+  TEXT     tx_var		_lft	_top	_iwd	.,	///
+	label("Variables: (leave empty for all)")
+  VARLIST  vl_var		@	_ss	@	.,	///
+	label("Variables")
+
+  GROUPBOX gb_sty		@	_ls	@	_ht12, 	///
+	label("Column widths")
+
+  RADIO    rb_no		_indent	_ss	_inwd	.,	///
+	first label("Default")
+
+  DEFINE holdx @x
+
+  RADIO    rb_com		@	_ss	@	.,	///
+	option(compress)					///
+	label("Compress width of columns in both table and display formats")
+
+  RADIO    rb_nocom		@	_ss	@	.,	///
+	option(nocompress)					///
+	last label("Use display format of each variable")
+
+  CHECKBOX ck_abbr		@	_ls	_ckwd	.,	///
+	option(abbreviate)					///
+	onclickon(main.sp_abbr.enable)				///
+	onclickoff(main.sp_abbr.disable)
+
+  SPINNER  sp_abbr		_cksep	@	_spwd	.,	///
+	option(abbreviate)					///
+	min(1) max(32) default(8)				///
+	label("Minimum abbreviation of variable names")
+
+  TEXT	   tx_abbr		_spsep	@	_cksprb	.,	///
+	label("Minimum abbreviation of variable names")
+
+  CHECKBOX ck_str		holdx	_ls	_ckwd	.,	///
+	onclickon(main.sp_str.enable)				///
+	onclickoff(main.sp_str.disable)
+
+  SPINNER  sp_str		_cksep	@	_spwd	.,	///
+	option(string)						///
+	min(1) max(80) default(10)				///
+	label("Truncate string variables to N characters")
+
+  TEXT	   tx_str		_spsep	@	_cksprb	.,	///
+	label("Truncate string variables to N characters")
+END
+
+INCLUDE ifin
+INCLUDE list_opts
+
+SCRIPT POSTINIT
+BEGIN
+	script list_opts_subvarname_disable
+END
+
+PROGRAM command
+BEGIN
+	allowxi
+	put "duplicates list"
+	varlist [main.vl_var]
+	INCLUDE _ifin_pr
+	beginoptions
+		option main.rb_com
+		option main.rb_nocom
+		if main.ck_abbr {
+			optionarg main.sp_abbr
+		}
+		if main.ck_str {
+			optionarg main.sp_str
+		}
+		put " " /program list_opts_output
+	endoptions
+END

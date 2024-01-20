@@ -1,0 +1,73 @@
+/*
+	avplot_9.dlg
+
+*!  VERSION 1.1.3  07aug2006  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+
+HELP hlp1, view("help avplot")
+RESET res1
+
+DIALOG main,label("avplot/avplots - Graph added-variable plots") 	///
+	tabtitle("Main")
+BEGIN
+  GROUPBOX gb_var       _lft       _top       _cwd1	 _ht6h,		///
+		label("Variables")
+
+  RADIO    rb_all       _ilft      _ss        _inwd      .,		///
+		label("All variables")              			///
+		first                                     		///
+		onclickon(script main_all_on)   			///
+		option(avplots)
+
+  RADIO    rb_invar     @          _ss        @          .,		///
+		label("One independent variable:")      		///
+		last onclickon(script main_indvar_on)			///
+		option(avplot)
+
+  VARNAME  vn_invar     _indent2   _ss        _vnwd      .,		///
+		label("Independent variable")
+END
+
+SCRIPT main_all_on
+BEGIN
+	main.vn_invar.disable
+	script addplot_disable
+END
+
+SCRIPT main_indvar_on
+BEGIN
+	main.vn_invar.enable
+	script addplot_enable
+END
+
+INCLUDE p1_opts
+INCLUDE line_opts
+INCLUDE addplot
+INCLUDE gr_twoway
+
+SCRIPT PREINIT
+BEGIN
+	script p1_opts_createAsNoRange
+	script p1_opts_setDefaultScatter
+END
+
+PROGRAM command
+BEGIN
+	option radio(main rb_all rb_invar)
+        if main.rb_invar{
+		varlist main.vn_invar
+ 	}
+	beginoptions
+
+		put " " /program p1_opts_output
+		put " " /program line_opts_rlopts_output
+		put " " /program addplot_output
+		put " " /program gr_twoway_output
+	endoptions
+END

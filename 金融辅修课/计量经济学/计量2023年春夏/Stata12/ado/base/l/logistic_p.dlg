@@ -1,0 +1,17 @@
+/*
+	predict (after logistic)
+
+*!  VERSION 1.1.0  28jun2006
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_large
+INCLUDE _ht360
+INCLUDE header
+
+HELP hlp1, view("help logistic postestimation")
+RESET res1
+
+INCLUDE logit_common_p

@@ -1,0 +1,93 @@
+/*
+	predict (after probit, dprobit)
+
+*!  VERSION 1.2.1  24apr2007
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_large
+INCLUDE _ht330
+INCLUDE header
+
+HELP hlp1, view("help probit postestimation")
+RESET res1
+
+DIALOG main, label("predict - Prediction after estimation") tabtitle("Main")
+BEGIN
+  INCLUDE  _p_gentype
+
+  GROUPBOX gb_opts           _lft      _ls       _iwd      _ht10h,	/*
+		*/ label("Produce:")
+  RADIO    rb_p              _indent   _ss       _inwd     ., first	/*
+		*/ option(p)						/*
+		*/ onclickon(script score_off)				/*
+		*/ label("Probability of a positive outcome")
+  RADIO    rb_xb             @         _ss       @         .,		/*
+		*/ option(xb)						/*
+		*/ onclickon(script score_off)				/*
+		*/ label("Linear prediction")
+  RADIO    rb_stdp           @         _ss       @         .,		/*
+		*/ option(stdp)						/*
+		*/ onclickon(script score_off)				/*
+		*/ label("Standard error of the linear prediction")
+  RADIO    rb_deviance       @         _ss       @         .,		/*
+		*/ option(deviance)					/*
+		*/ onclickon(script score_off)				/*
+		*/ label("Deviance residual")
+  RADIO    rb_score          @         _ss       @         ., last	/*
+		*/ option(score)					/*
+		*/ onclickon(script score_on)				/*
+		*/ label("Equation-level scores")
+
+  GROUPBOX gb_opt            _lft      _xls      _iwd      _ht9,	/*
+		*/ label("Options")
+
+  CHECKBOX ck_nooffset       _ilft     _ss       _ibwd     .,		/*
+		*/ option(nooffset)					/*
+		*/ label("Ignore offset variable (if any)")
+  RADIO    rb_default        @         _ls       @         ., first	/*
+		*/ option(NONE)						/*
+	*/ label(`"Produce missing for observations excluded by the "rules""')
+  RADIO    rb_rules          @         _ss       @         .,		/*
+		*/ option(rules)					/*
+	*/ label(`"Use any model identifying "rules" when making predictions"')
+  RADIO    rb_asif           @         _ss       @         ., last	/*
+		*/ option(asif)						/*
+  */ label(`"Ignore the "rules" and exclusion criteria in making predictions"')
+END
+
+SCRIPT score_off
+BEGIN
+	main.ck_nooffset.enable
+	main.rb_default.enable
+	main.rb_rules.enable
+	main.rb_asif.enable
+END
+SCRIPT score_on
+BEGIN
+	main.ck_nooffset.disable
+	main.rb_default.disable
+	main.rb_rules.disable
+	main.rb_asif.disable
+END
+
+INCLUDE _p_gentype_sc
+INCLUDE ifin
+INCLUDE _type_list_fd
+
+PROGRAM command
+BEGIN
+	put "predict "
+	put " " /program _p_gentype_output
+	INCLUDE _ifin_pr
+	beginoptions
+		option radio(main rb_p rb_xb rb_stdp rb_deviance rb_score)
+		option main.ck_nooffset
+		if !main.rb_score {
+			option radio(main rb_default rb_rules rb_asif)
+		}
+	endoptions
+END
+

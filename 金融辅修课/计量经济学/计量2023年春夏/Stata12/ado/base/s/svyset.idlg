@@ -1,0 +1,1617 @@
+/*
+  svyset INCLUDE file
+
+*!  VERSION 1.1.1  20aug2010
+
+*/
+
+  DEFINE col1 70
+  DEFINE col2 210
+  DEFINE col3 350
+  DEFINE colwd0 55
+  DEFINE colwd1 130
+
+  DEFINE _x _xsetbu
+  DEFINE _y _top
+  BUTTON   bu_reset  _xsetbu   _top      _setbuwd  .,		///
+  	onpush(script clear_all)				///
+  	label("Clear settings")
+
+  TEXT     tx_stages _lft      _top      105       .,		///
+	label("Number of stages:") right
+  COMBOBOX cb_stages +110      @         50        _ht8,	///
+	default(char _dta[_svy_stages])				///
+  	contents(stage_contents)				///
+  	values(stage_values)					///
+  	onselchangelist(stage_change)				///
+	dropdownlist						///
+	nomemory
+
+  TEXT     tx_strata col1      _ms       colwd1    .,		///
+	label("Sampling units")
+  TEXT     tx_su     col2      @         @         .,		///
+	label("Strata")
+  TEXT     tx_fpc    col3      @         @         .,		///
+	label("Finite pop. correction")
+
+  TEXT     tx_stage1 _lft      _ss       colwd0    .,		///
+	label("Stage 1:") right
+  VARNAME  vn_su1    col1      @         colwd1    .,		///
+	default(char _dta[_svy_su1])				///
+	label("Sampling unit variable for stage 1")		///
+	nomemory
+  VARNAME  vn_str1   col2      @         @         .,		///
+	default(char _dta[_svy_strata1])			///
+	option(strata)						///
+	label("Strata variable for stage 1")			///
+	nomemory
+  VARNAME  vn_fpc1   col3      @         @         .,		///
+	default(char _dta[_svy_fpc1])				///
+	option(fpc)						///
+	label("Finite pop. correction for stage 1")		///
+	nomemory
+
+  TEXT     tx_stage2 _lft      _ms       colwd0    .,		///
+	label("Stage 2:") right
+  VARNAME  vn_su2    col1      @         colwd1    .,		///
+	default(char _dta[_svy_su2])				///
+	option(strata)						///
+	label("Sampling unit variable for stage 2")		///
+	nomemory
+  VARNAME  vn_str2   col2      @         @         .,		///
+	default(char _dta[_svy_strata2])			///
+	option(strata)						///
+	label("Strata variable for stage 2")
+  VARNAME  vn_fpc2   col3      @         @         .,		///
+	default(char _dta[_svy_fpc2])				///
+	option(fpc)						///
+	label("Finite pop. correction for stage 2")		///
+	nomemory
+
+  TEXT     tx_stage3 _lft      _ms       colwd0    .,		///
+	label("Stage 3:") right
+  VARNAME  vn_su3    col1      @         colwd1    .,		///
+	default(char _dta[_svy_su3])				///
+	option(strata)						///
+	label("Sampling unit variable for stage 3")		///
+	nomemory
+  VARNAME  vn_str3   col2      @         @         .,		///
+	default(char _dta[_svy_strata3])			///
+	option(strata)						///
+	label("Strata variable for stage 3")			///
+	nomemory
+  VARNAME  vn_fpc3   col3      @         @         .,		///
+	default(char _dta[_svy_fpc3])				///
+	option(fpc)						///
+	label("Finite pop. correction for stage 3")		///
+	nomemory
+
+  TEXT     tx_stage4 _lft      _ms       colwd0    .,		///
+	label("Stage 4:") right
+  VARNAME  vn_su4    col1      @         colwd1    .,		///
+	default(char _dta[_svy_su4])				///
+	option(strata)						///
+	label("Sampling unit variable for stage 4")		///
+	nomemory
+  VARNAME  vn_str4   col2      @         @         .,		///
+	default(char _dta[_svy_strata4])			///
+	option(strata)						///
+	label("Strata variable for stage 4")			///
+	nomemory
+  VARNAME  vn_fpc4   col3      @         @         .,		///
+	default(char _dta[_svy_fpc4])				///
+	option(fpc)						///
+	label("Finite pop. correction for stage 4")		///
+	nomemory
+
+  TEXT     tx_stage5 _lft      _ms       colwd0    .,		///
+	label("Stage 5:") right
+  VARNAME  vn_su5    col1      @         colwd1    .,		///
+	default(char _dta[_svy_su5])				///
+	option(strata)						///
+	label("Sampling unit variable for stage 5")		///
+	nomemory
+  VARNAME  vn_str5   col2      @         @         .,		///
+	default(char _dta[_svy_strata5])			///
+	option(strata)						///
+	label("Strata variable for stage 5")			///
+	nomemory
+  VARNAME  vn_fpc5   col3      @         @         .,		///
+	default(char _dta[_svy_fpc5])				///
+	option(fpc)						///
+	label("Finite pop. correction for stage 5")		///
+	nomemory
+
+  TEXT     tx_stage6 _lft      _ms       colwd0    .,		///
+	label("Stage 6:") right
+  VARNAME  vn_su6    col1      @         colwd1    .,		///
+	default(char _dta[_svy_su6])				///
+	option(strata)						///
+	label("Sampling unit variable for stage 6")		///
+	nomemory
+  VARNAME  vn_str6   col2      @         @         .,		///
+	default(char _dta[_svy_strata6])			///
+	option(strata)						///
+	label("Strata variable for stage 6")			///
+	nomemory
+  VARNAME  vn_fpc6   col3      @         @         .,		///
+	default(char _dta[_svy_fpc6])				///
+	option(fpc)						///
+	label("Finite pop. correction for stage 6")		///
+	nomemory
+
+  TEXT     tx_stage7 _lft      _ms       colwd0    .,		///
+	label("Stage 7:") right
+  VARNAME  vn_su7    col1      @         colwd1    .,		///
+	default(char _dta[_svy_su7])				///
+	option(strata)						///
+	label("Sampling unit variable for stage 7")		///
+	nomemory
+  VARNAME  vn_str7   col2      @         @         .,		///
+	default(char _dta[_svy_strata7])			///
+	option(strata)						///
+	label("Strata variable for stage 7")			///
+	nomemory
+  VARNAME  vn_fpc7   col3      @         @         .,		///
+	default(char _dta[_svy_fpc7])				///
+	option(fpc)						///
+	label("Finite pop. correction for stage 7")		///
+	nomemory
+
+  TEXT     tx_stage8 _lft      _ms       colwd0    .,		///
+	label("Stage 8:") right
+  VARNAME  vn_su8    col1      @         colwd1    .,		///
+	default(char _dta[_svy_su8])				///
+	option(strata)						///
+	label("Sampling unit variable for stage 8")		///
+	nomemory
+  VARNAME  vn_str8   col2      @         @         .,		///
+	default(char _dta[_svy_strata8])			///
+	option(strata)						///
+	label("Strata variable for stage 8")			///
+	nomemory
+  VARNAME  vn_fpc8   col3      @         @         .,		///
+	default(char _dta[_svy_fpc8])				///
+	option(fpc)						///
+	label("Finite pop. correction for stage 8")		///
+	nomemory
+
+  TEXT     tx_stage9 _lft      _ms       colwd0    .,		///
+	label("Stage 9:") right
+  VARNAME  vn_su9    col1      @         colwd1    .,		///
+	default(char _dta[_svy_su9])				///
+	option(strata)						///
+	label("Sampling unit variable for stage 9")		///
+	nomemory
+  VARNAME  vn_str9   col2      @         @         .,		///
+	default(char _dta[_svy_strata9])			///
+	option(strata)						///
+	label("Strata variable for stage 9")			///
+	nomemory
+  VARNAME  vn_fpc9   col3      @         @         .,		///
+	default(char _dta[_svy_fpc9])				///
+	option(fpc)						///
+	label("Finite pop. correction for stage 9")		///
+	nomemory
+
+  TEXT     tx_stage10 _lft      _ms       colwd0    .,		///
+	label("Stage 10:") right
+  VARNAME  vn_su10    col1      @         colwd1    .,		///
+	default(char _dta[_svy_su10])				///
+	option(strata)						///
+	label("Sampling unit variable for stage 10")		///
+	nomemory
+  VARNAME  vn_str10   col2      @         @         .,		///
+	default(char _dta[_svy_strata10])			///
+	option(strata)						///
+	label("Strata variable for stage 10")			///
+	nomemory
+  VARNAME  vn_fpc10   col3      @         @         .,		///
+	default(char _dta[_svy_fpc10])				///
+	option(fpc)						///
+	label("Finite pop. correction for stage 10")		///
+	nomemory
+
+  TEXT     tx_stage11 _lft      _ms       colwd0    .,		///
+	label("Stage 11:") right
+  VARNAME  vn_su11    col1      @         colwd1    .,		///
+	default(char _dta[_svy_su11])				///
+	option(strata)						///
+	label("Sampling unit variable for stage 11")		///
+	nomemory
+  VARNAME  vn_str11   col2      @         @         .,		///
+	default(char _dta[_svy_strata11])			///
+	option(strata)						///
+	label("Strata variable for stage 11")			///
+	nomemory
+  VARNAME  vn_fpc11   col3      @         @         .,		///
+	default(char _dta[_svy_fpc11])				///
+	option(fpc)						///
+	label("Finite pop. correction for stage 11")		///
+	nomemory
+
+  TEXT     tx_note1  _lft      420       _iwd      .,		///
+label(`"Note: empty or "_n" in "Sampling units" above indicates sampling of observations."')
+
+  TEXT     tx_note2  _lft      _ss       _iwd      .,		///
+label(`"Note: see the "More" tab for the rest of the stages"')
+
+END
+
+SCRIPT clear_all
+BEGIN
+	main.cb_stages.setvalue "1"
+	main.vn_su1.setvalue ""
+	main.vn_str1.setvalue ""
+	main.vn_fpc1.setvalue ""
+	main.vn_su2.setvalue ""
+	main.vn_str2.setvalue ""
+	main.vn_fpc2.setvalue ""
+	main.vn_su3.setvalue ""
+	main.vn_str3.setvalue ""
+	main.vn_fpc3.setvalue ""
+	main.vn_su4.setvalue ""
+	main.vn_str4.setvalue ""
+	main.vn_fpc4.setvalue ""
+	main.vn_su5.setvalue ""
+	main.vn_str5.setvalue ""
+	main.vn_fpc5.setvalue ""
+	main.vn_su6.setvalue ""
+	main.vn_str6.setvalue ""
+	main.vn_fpc6.setvalue ""
+	main.vn_su7.setvalue ""
+	main.vn_str7.setvalue ""
+	main.vn_fpc7.setvalue ""
+	main.vn_su8.setvalue ""
+	main.vn_str8.setvalue ""
+	main.vn_fpc8.setvalue ""
+	main.vn_su9.setvalue ""
+	main.vn_str9.setvalue ""
+	main.vn_fpc9.setvalue ""
+	main.vn_su10.setvalue ""
+	main.vn_str10.setvalue ""
+	main.vn_fpc10.setvalue ""
+	main.vn_su11.setvalue ""
+	main.vn_str11.setvalue ""
+	main.vn_fpc11.setvalue ""
+	more.vn_su12.setvalue ""
+	more.vn_str12.setvalue ""
+	more.vn_fpc12.setvalue ""
+	more.vn_su13.setvalue ""
+	more.vn_str13.setvalue ""
+	more.vn_fpc13.setvalue ""
+	more.vn_su14.setvalue ""
+	more.vn_str14.setvalue ""
+	more.vn_fpc14.setvalue ""
+	more.vn_su15.setvalue ""
+	more.vn_str15.setvalue ""
+	more.vn_fpc15.setvalue ""
+	more.vn_su16.setvalue ""
+	more.vn_str16.setvalue ""
+	more.vn_fpc16.setvalue ""
+	more.vn_su17.setvalue ""
+	more.vn_str17.setvalue ""
+	more.vn_fpc17.setvalue ""
+	weights.ed_wtype.setvalue ""
+	weights.rb_none.seton
+	weights.vn_pw.setvalue ""
+	weights.vn_iw.setvalue ""
+	weights.vl_brr.setvalue ""
+	weights.ed_fay.setvalue ""
+	weights.vl_bsr.setvalue ""
+	weights.ed_bsn.setvalue ""
+	weights.vl_jkr.setvalue ""
+	weights.vl_sdr.setvalue ""
+	post.vn_posts.setvalue ""
+	post.vn_postw.setvalue ""
+	script svy_se_clear
+END
+
+DIALOG more, tabtitle("More")
+BEGIN
+  DEFINE col1 70
+  DEFINE col2 210
+  DEFINE col3 350
+  DEFINE colwd0 55
+  DEFINE colwd1 130
+
+  TEXT     tx_note   _lft      _top      _iwd      .,		///
+  	label(`"If more than 11 stages are selected on the "Main" tab, they will show up here."')
+  TEXT     tx_strata col1      _top      colwd1    .,		///
+	label("Sampling units")
+  TEXT     tx_su     col2      @         @         .,		///
+	label("Strata")
+  TEXT     tx_fpc    col3      @         @         .,		///
+	label("Finite pop. correction")
+
+  TEXT     tx_stage12 _lft      _ss       colwd0    .,		///
+	label("Stage 12:") right
+  VARNAME  vn_su12    col1      @         colwd1    .,		///
+	default(char _dta[_svy_su12])				///
+	option(strata)						///
+	label("Sampling unit variable for stage 12")		///
+	nomemory
+  VARNAME  vn_str12   col2      @         @         .,		///
+	default(char _dta[_svy_strata12])			///
+	option(strata)						///
+	label("Strata variable for stage 12")			///
+	nomemory
+  VARNAME  vn_fpc12   col3      @         @         .,		///
+	default(char _dta[_svy_fpc12])				///
+	option(fpc)						///
+	label("Finite pop. correction for stage 12")		///
+	nomemory
+
+  TEXT     tx_stage13 _lft      _ms       colwd0    .,		///
+	label("Stage 13:") right
+  VARNAME  vn_su13    col1      @         colwd1    .,		///
+	default(char _dta[_svy_su13])				///
+	option(strata)						///
+	label("Sampling unit variable for stage 13")		///
+	nomemory
+  VARNAME  vn_str13   col2      @         @         .,		///
+	default(char _dta[_svy_strata13])			///
+	option(strata)						///
+	label("Strata variable for stage 13")			///
+	nomemory
+  VARNAME  vn_fpc13   col3      @         @         .,		///
+	default(char _dta[_svy_fpc13])				///
+	option(fpc)						///
+	label("Finite pop. correction for stage 13")		///
+	nomemory
+
+  TEXT     tx_stage14 _lft      _ms       colwd0    .,		///
+	label("Stage 14:") right
+  VARNAME  vn_su14    col1      @         colwd1    .,		///
+	default(char _dta[_svy_su14])				///
+	option(strata)						///
+	label("Sampling unit variable for stage 14")		///
+	nomemory
+  VARNAME  vn_str14   col2      @         @         .,		///
+	default(char _dta[_svy_strata14])			///
+	option(strata)						///
+	label("Strata variable for stage 14")			///
+	nomemory
+  VARNAME  vn_fpc14   col3      @         @         .,		///
+	default(char _dta[_svy_fpc14])				///
+	option(fpc)						///
+	label("Finite pop. correction for stage 14")		///
+	nomemory
+
+  TEXT     tx_stage15 _lft      _ms       colwd0    .,		///
+	label("Stage 15:") right
+  VARNAME  vn_su15    col1      @         colwd1    .,		///
+	default(char _dta[_svy_su15])				///
+	option(strata)						///
+	label("Sampling unit variable for stage 15")		///
+	nomemory
+  VARNAME  vn_str15   col2      @         @         .,		///
+	default(char _dta[_svy_strata15])			///
+	option(strata)						///
+	label("Strata variable for stage 15")			///
+	nomemory
+  VARNAME  vn_fpc15   col3      @         @         .,		///
+	default(char _dta[_svy_fpc15])				///
+	option(fpc)						///
+	label("Finite pop. correction for stage 15")		///
+	nomemory
+
+  TEXT     tx_stage16 _lft      _ms       colwd0    .,		///
+	label("Stage 16:") right
+  VARNAME  vn_su16    col1      @         colwd1    .,		///
+	default(char _dta[_svy_su16])				///
+	option(strata)						///
+	label("Sampling unit variable for stage 16")		///
+	nomemory
+  VARNAME  vn_str16   col2      @         @         .,		///
+	default(char _dta[_svy_strata16])			///
+	option(strata)						///
+	label("Strata variable for stage 16")			///
+	nomemory
+  VARNAME  vn_fpc16   col3      @         @         .,		///
+	default(char _dta[_svy_fpc16])				///
+	option(fpc)						///
+	label("Finite pop. correction for stage 16")		///
+	nomemory
+
+  TEXT     tx_stage17 _lft      _ms       colwd0    .,		///
+	label("Stage 17:") right
+  VARNAME  vn_su17    col1      @         colwd1    .,		///
+	default(char _dta[_svy_su17])				///
+	option(strata)						///
+	label("Sampling unit variable for stage 17")		///
+	nomemory
+  VARNAME  vn_str17   col2      @         @         .,		///
+	default(char _dta[_svy_strata17])			///
+	option(strata)						///
+	label("Strata variable for stage 17")			///
+	nomemory
+  VARNAME  vn_fpc17   col3      @         @         .,		///
+	default(char _dta[_svy_fpc17])				///
+	option(fpc)						///
+	label("Finite pop. correction for stage 17")		///
+	nomemory
+
+  TEXT     tx_note1  _lft      _ms       _iwd      .,		///
+label(`"Note: Empty or "_n" in "Sampling units" above indicates sampling of observations."')
+
+END
+
+PROGRAM weights_check_wtype
+BEGIN
+	if weights.ed_wtype.equals("pweight") {
+		call weights.rb_pw.seton
+		call program wgt_on
+	}
+	if weights.ed_wtype.equals("iweight") {
+		call weights.rb_iw.seton
+		call program wgt_on
+	}
+END
+
+LIST stage_contents
+BEGIN
+	1
+	2
+	3
+	4
+	5
+	6
+	7
+	8
+	9
+	10
+	11
+	12
+	13
+	14
+	15
+	16
+	17
+END
+
+LIST stage_change
+BEGIN
+	script stage1
+	script stage2
+	script stage3
+	script stage4
+	script stage5
+	script stage6
+	script stage7
+	script stage8
+	script stage9
+	script stage10
+	script stage11
+	script stage12
+	script stage13
+	script stage14
+	script stage15
+	script stage16
+	script stage17
+END
+
+SCRIPT stage1
+BEGIN
+	has_stage1.settrue
+	has_stage2.setfalse
+	has_stage3.setfalse
+	has_stage4.setfalse
+	has_stage5.setfalse
+	has_stage6.setfalse
+	has_stage7.setfalse
+	has_stage8.setfalse
+	has_stage9.setfalse
+	has_stage10.setfalse
+	has_stage11.setfalse
+	has_stage12.setfalse
+	has_stage13.setfalse
+	has_stage14.setfalse
+	has_stage15.setfalse
+	has_stage16.setfalse
+	has_stage17.setfalse
+	program check_stages
+END
+
+SCRIPT stage2
+BEGIN
+	has_stage1.settrue
+	has_stage2.settrue
+	has_stage3.setfalse
+	has_stage4.setfalse
+	has_stage5.setfalse
+	has_stage6.setfalse
+	has_stage7.setfalse
+	has_stage8.setfalse
+	has_stage9.setfalse
+	has_stage10.setfalse
+	has_stage11.setfalse
+	has_stage12.setfalse
+	has_stage13.setfalse
+	has_stage14.setfalse
+	has_stage15.setfalse
+	has_stage16.setfalse
+	has_stage17.setfalse
+	program check_stages
+END
+
+SCRIPT stage3
+BEGIN
+	has_stage1.settrue
+	has_stage2.settrue
+	has_stage3.settrue
+	has_stage4.setfalse
+	has_stage5.setfalse
+	has_stage6.setfalse
+	has_stage7.setfalse
+	has_stage8.setfalse
+	has_stage9.setfalse
+	has_stage10.setfalse
+	has_stage11.setfalse
+	has_stage12.setfalse
+	has_stage13.setfalse
+	has_stage14.setfalse
+	has_stage15.setfalse
+	has_stage16.setfalse
+	has_stage17.setfalse
+	program check_stages
+END
+
+SCRIPT stage4
+BEGIN
+	has_stage1.settrue
+	has_stage2.settrue
+	has_stage3.settrue
+	has_stage4.settrue
+	has_stage5.setfalse
+	has_stage6.setfalse
+	has_stage7.setfalse
+	has_stage8.setfalse
+	has_stage9.setfalse
+	has_stage10.setfalse
+	has_stage11.setfalse
+	has_stage12.setfalse
+	has_stage13.setfalse
+	has_stage14.setfalse
+	has_stage15.setfalse
+	has_stage16.setfalse
+	has_stage17.setfalse
+	program check_stages
+END
+
+SCRIPT stage5
+BEGIN
+	has_stage1.settrue
+	has_stage2.settrue
+	has_stage3.settrue
+	has_stage4.settrue
+	has_stage5.settrue
+	has_stage6.setfalse
+	has_stage7.setfalse
+	has_stage8.setfalse
+	has_stage9.setfalse
+	has_stage10.setfalse
+	has_stage11.setfalse
+	has_stage12.setfalse
+	has_stage13.setfalse
+	has_stage14.setfalse
+	has_stage15.setfalse
+	has_stage16.setfalse
+	has_stage17.setfalse
+	program check_stages
+END
+
+SCRIPT stage6
+BEGIN
+	has_stage1.settrue
+	has_stage2.settrue
+	has_stage3.settrue
+	has_stage4.settrue
+	has_stage5.settrue
+	has_stage6.settrue
+	has_stage7.setfalse
+	has_stage8.setfalse
+	has_stage9.setfalse
+	has_stage10.setfalse
+	has_stage11.setfalse
+	has_stage12.setfalse
+	has_stage13.setfalse
+	has_stage14.setfalse
+	has_stage15.setfalse
+	has_stage16.setfalse
+	has_stage17.setfalse
+	program check_stages
+END
+
+SCRIPT stage7
+BEGIN
+	has_stage1.settrue
+	has_stage2.settrue
+	has_stage3.settrue
+	has_stage4.settrue
+	has_stage5.settrue
+	has_stage6.settrue
+	has_stage7.settrue
+	has_stage8.setfalse
+	has_stage9.setfalse
+	has_stage10.setfalse
+	has_stage11.setfalse
+	has_stage12.setfalse
+	has_stage13.setfalse
+	has_stage14.setfalse
+	has_stage15.setfalse
+	has_stage16.setfalse
+	has_stage17.setfalse
+	program check_stages
+END
+
+SCRIPT stage8
+BEGIN
+	has_stage1.settrue
+	has_stage2.settrue
+	has_stage3.settrue
+	has_stage4.settrue
+	has_stage5.settrue
+	has_stage6.settrue
+	has_stage7.settrue
+	has_stage8.settrue
+	has_stage9.setfalse
+	has_stage10.setfalse
+	has_stage11.setfalse
+	has_stage12.setfalse
+	has_stage13.setfalse
+	has_stage14.setfalse
+	has_stage15.setfalse
+	has_stage16.setfalse
+	has_stage17.setfalse
+	program check_stages
+END
+
+SCRIPT stage9
+BEGIN
+	has_stage1.settrue
+	has_stage2.settrue
+	has_stage3.settrue
+	has_stage4.settrue
+	has_stage5.settrue
+	has_stage6.settrue
+	has_stage7.settrue
+	has_stage8.settrue
+	has_stage9.settrue
+	has_stage10.setfalse
+	has_stage11.setfalse
+	has_stage12.setfalse
+	has_stage13.setfalse
+	has_stage14.setfalse
+	has_stage15.setfalse
+	has_stage16.setfalse
+	has_stage17.setfalse
+	program check_stages
+END
+
+SCRIPT stage10
+BEGIN
+	has_stage1.settrue
+	has_stage2.settrue
+	has_stage3.settrue
+	has_stage4.settrue
+	has_stage5.settrue
+	has_stage6.settrue
+	has_stage7.settrue
+	has_stage8.settrue
+	has_stage9.settrue
+	has_stage10.settrue
+	has_stage11.setfalse
+	has_stage12.setfalse
+	has_stage13.setfalse
+	has_stage14.setfalse
+	has_stage15.setfalse
+	has_stage16.setfalse
+	has_stage17.setfalse
+	program check_stages
+END
+
+SCRIPT stage11
+BEGIN
+	has_stage1.settrue
+	has_stage2.settrue
+	has_stage3.settrue
+	has_stage4.settrue
+	has_stage5.settrue
+	has_stage6.settrue
+	has_stage7.settrue
+	has_stage8.settrue
+	has_stage9.settrue
+	has_stage10.settrue
+	has_stage11.settrue
+	has_stage12.setfalse
+	has_stage13.setfalse
+	has_stage14.setfalse
+	has_stage15.setfalse
+	has_stage16.setfalse
+	has_stage17.setfalse
+	program check_stages
+END
+
+SCRIPT stage12
+BEGIN
+	has_stage1.settrue
+	has_stage2.settrue
+	has_stage3.settrue
+	has_stage4.settrue
+	has_stage5.settrue
+	has_stage6.settrue
+	has_stage7.settrue
+	has_stage8.settrue
+	has_stage9.settrue
+	has_stage10.settrue
+	has_stage11.settrue
+	has_stage12.settrue
+	has_stage13.setfalse
+	has_stage14.setfalse
+	has_stage15.setfalse
+	has_stage16.setfalse
+	has_stage17.setfalse
+	program check_stages
+END
+
+SCRIPT stage13
+BEGIN
+	has_stage1.settrue
+	has_stage2.settrue
+	has_stage3.settrue
+	has_stage4.settrue
+	has_stage5.settrue
+	has_stage6.settrue
+	has_stage7.settrue
+	has_stage8.settrue
+	has_stage9.settrue
+	has_stage10.settrue
+	has_stage11.settrue
+	has_stage12.settrue
+	has_stage13.settrue
+	has_stage14.setfalse
+	has_stage15.setfalse
+	has_stage16.setfalse
+	has_stage17.setfalse
+	program check_stages
+END
+
+SCRIPT stage14
+BEGIN
+	has_stage1.settrue
+	has_stage2.settrue
+	has_stage3.settrue
+	has_stage4.settrue
+	has_stage5.settrue
+	has_stage6.settrue
+	has_stage7.settrue
+	has_stage8.settrue
+	has_stage9.settrue
+	has_stage10.settrue
+	has_stage11.settrue
+	has_stage12.settrue
+	has_stage13.settrue
+	has_stage14.settrue
+	has_stage15.setfalse
+	has_stage16.setfalse
+	has_stage17.setfalse
+	program check_stages
+END
+
+SCRIPT stage15
+BEGIN
+	has_stage1.settrue
+	has_stage2.settrue
+	has_stage3.settrue
+	has_stage4.settrue
+	has_stage5.settrue
+	has_stage6.settrue
+	has_stage7.settrue
+	has_stage8.settrue
+	has_stage9.settrue
+	has_stage10.settrue
+	has_stage11.settrue
+	has_stage12.settrue
+	has_stage13.settrue
+	has_stage14.settrue
+	has_stage15.settrue
+	has_stage16.setfalse
+	has_stage17.setfalse
+	program check_stages
+END
+
+SCRIPT stage16
+BEGIN
+	has_stage1.settrue
+	has_stage2.settrue
+	has_stage3.settrue
+	has_stage4.settrue
+	has_stage5.settrue
+	has_stage6.settrue
+	has_stage7.settrue
+	has_stage8.settrue
+	has_stage9.settrue
+	has_stage10.settrue
+	has_stage11.settrue
+	has_stage12.settrue
+	has_stage13.settrue
+	has_stage14.settrue
+	has_stage15.settrue
+	has_stage16.settrue
+	has_stage17.setfalse
+	program check_stages
+END
+
+SCRIPT stage17
+BEGIN
+	has_stage1.settrue
+	has_stage2.settrue
+	has_stage3.settrue
+	has_stage4.settrue
+	has_stage5.settrue
+	has_stage6.settrue
+	has_stage7.settrue
+	has_stage8.settrue
+	has_stage9.settrue
+	has_stage10.settrue
+	has_stage11.settrue
+	has_stage12.settrue
+	has_stage13.settrue
+	has_stage14.settrue
+	has_stage15.settrue
+	has_stage16.settrue
+	has_stage17.settrue
+	program check_stages
+END
+
+PROGRAM check_stages
+BEGIN
+	if has_stage1 {
+		call main.tx_stage1.show
+		call main.vn_str1.show
+		call main.vn_su1.show
+		call main.vn_fpc1.show
+	}
+	if !has_stage1 {
+		call main.tx_stage1.hide
+		call main.vn_str1.hide
+		call main.vn_su1.hide
+		call main.vn_fpc1.hide
+	}
+	if has_stage2 {
+		call main.tx_stage2.show
+		call main.vn_str2.show
+		call main.vn_su2.show
+		call main.vn_fpc2.show
+	}
+	if !has_stage2 {
+		call main.tx_stage2.hide
+		call main.vn_str2.hide
+		call main.vn_su2.hide
+		call main.vn_fpc2.hide
+	}
+	if has_stage3 {
+		call main.tx_stage3.show
+		call main.vn_str3.show
+		call main.vn_su3.show
+		call main.vn_fpc3.show
+	}
+	if !has_stage3 {
+		call main.tx_stage3.hide
+		call main.vn_str3.hide
+		call main.vn_su3.hide
+		call main.vn_fpc3.hide
+	}
+	if has_stage4 {
+		call main.tx_stage4.show
+		call main.vn_str4.show
+		call main.vn_su4.show
+		call main.vn_fpc4.show
+	}
+	if !has_stage4 {
+		call main.tx_stage4.hide
+		call main.vn_str4.hide
+		call main.vn_su4.hide
+		call main.vn_fpc4.hide
+	}
+	if has_stage5 {
+		call main.tx_stage5.show
+		call main.vn_str5.show
+		call main.vn_su5.show
+		call main.vn_fpc5.show
+	}
+	if !has_stage5 {
+		call main.tx_stage5.hide
+		call main.vn_str5.hide
+		call main.vn_su5.hide
+		call main.vn_fpc5.hide
+	}
+	if has_stage6 {
+		call main.tx_stage6.show
+		call main.vn_str6.show
+		call main.vn_su6.show
+		call main.vn_fpc6.show
+	}
+	if !has_stage6 {
+		call main.tx_stage6.hide
+		call main.vn_str6.hide
+		call main.vn_su6.hide
+		call main.vn_fpc6.hide
+	}
+	if has_stage7 {
+		call main.tx_stage7.show
+		call main.vn_str7.show
+		call main.vn_su7.show
+		call main.vn_fpc7.show
+	}
+	if !has_stage7 {
+		call main.tx_stage7.hide
+		call main.vn_str7.hide
+		call main.vn_su7.hide
+		call main.vn_fpc7.hide
+	}
+	if has_stage8 {
+		call main.tx_stage8.show
+		call main.vn_str8.show
+		call main.vn_su8.show
+		call main.vn_fpc8.show
+	}
+	if !has_stage8 {
+		call main.tx_stage8.hide
+		call main.vn_str8.hide
+		call main.vn_su8.hide
+		call main.vn_fpc8.hide
+	}
+	if has_stage9 {
+		call main.tx_stage9.show
+		call main.vn_str9.show
+		call main.vn_su9.show
+		call main.vn_fpc9.show
+	}
+	if !has_stage9 {
+		call main.tx_stage9.hide
+		call main.vn_str9.hide
+		call main.vn_su9.hide
+		call main.vn_fpc9.hide
+	}
+	if has_stage10 {
+		call main.tx_stage10.show
+		call main.vn_str10.show
+		call main.vn_su10.show
+		call main.vn_fpc10.show
+	}
+	if !has_stage10 {
+		call main.tx_stage10.hide
+		call main.vn_str10.hide
+		call main.vn_su10.hide
+		call main.vn_fpc10.hide
+	}
+	if has_stage11 {
+		call main.tx_stage11.show
+		call main.vn_str11.show
+		call main.vn_su11.show
+		call main.vn_fpc11.show
+	}
+	if !has_stage11 {
+		call main.tx_stage11.hide
+		call main.vn_str11.hide
+		call main.vn_su11.hide
+		call main.vn_fpc11.hide
+	}
+	call program check_more_stages
+END
+
+PROGRAM check_more_stages
+BEGIN
+	if has_stage12 {
+		call main.tx_note2.show
+		call more.tx_strata.show
+		call more.tx_su.show
+		call more.tx_fpc.show
+		call more.tx_note1.show
+		call more.tx_stage12.show
+		call more.vn_str12.show
+		call more.vn_su12.show
+		call more.vn_fpc12.show
+		call more.tx_note.hide
+	}
+	if !has_stage12 {
+		call main.tx_note2.hide
+		call more.tx_strata.hide
+		call more.tx_su.hide
+		call more.tx_fpc.hide
+		call more.tx_note1.hide
+		call more.tx_stage12.hide
+		call more.vn_str12.hide
+		call more.vn_su12.hide
+		call more.vn_fpc12.hide
+		call more.tx_note.show
+	}
+	if has_stage13 {
+		call more.tx_stage13.show
+		call more.vn_str13.show
+		call more.vn_su13.show
+		call more.vn_fpc13.show
+	}
+	if !has_stage13 {
+		call more.tx_stage13.hide
+		call more.vn_str13.hide
+		call more.vn_su13.hide
+		call more.vn_fpc13.hide
+	}
+	if has_stage14 {
+		call more.tx_stage14.show
+		call more.vn_str14.show
+		call more.vn_su14.show
+		call more.vn_fpc14.show
+	}
+	if !has_stage14 {
+		call more.tx_stage14.hide
+		call more.vn_str14.hide
+		call more.vn_su14.hide
+		call more.vn_fpc14.hide
+	}
+	if has_stage15 {
+		call more.tx_stage15.show
+		call more.vn_str15.show
+		call more.vn_su15.show
+		call more.vn_fpc15.show
+	}
+	if !has_stage15 {
+		call more.tx_stage15.hide
+		call more.vn_str15.hide
+		call more.vn_su15.hide
+		call more.vn_fpc15.hide
+	}
+	if has_stage16 {
+		call more.tx_stage16.show
+		call more.vn_str16.show
+		call more.vn_su16.show
+		call more.vn_fpc16.show
+	}
+	if !has_stage16 {
+		call more.tx_stage16.hide
+		call more.vn_str16.hide
+		call more.vn_su16.hide
+		call more.vn_fpc16.hide
+	}
+	if has_stage17 {
+		call more.tx_stage17.show
+		call more.vn_str17.show
+		call more.vn_su17.show
+		call more.vn_fpc17.show
+	}
+	if !has_stage17 {
+		call more.tx_stage17.hide
+		call more.vn_str17.hide
+		call more.vn_su17.hide
+		call more.vn_fpc17.hide
+	}
+END
+
+DIALOG weights, label("") tabtitle("Weights")
+BEGIN
+  // NOTE: This EDIT control is used to activate the currently svyset weight
+  // type RADIO.  It should be invisible.
+  EDIT     ed_wtype  0         0         0         0,		///
+  	default(char _dta[_svy_wtype])				///
+	nomemory
+
+  TEXT     tx_wgttyp _lft      _top      _cwd1     .,		///
+	label("Weight type:")
+
+  BUTTON   bu_help   _xsetbu   @         _setbuwd  .,		///
+	label("Help weights")					///
+	push(script help4wgt)
+
+  RADIO    rb_none   _lft      _ss       _iwd      ., 		///
+	first 							///
+	label("None")						///
+	clickon("program wgt_off")				///
+	option(NONE)
+
+  RADIO    rb_pw     _lft      _ms       _iwd      .,		///
+	label("Sampling weight variable")			///
+	clickon(program wgt_on)
+
+  RADIO    rb_iw     _lft      +45       _iwd      ., 		///
+	label("Importance weight variable (rare)")		///
+	clickon(program wgt_on)					///
+	last
+
+  VARNAME  vn_pw     _rbsep    -25       _vnwd     .,		///
+	label("Sampling weight variable")			///
+	default(char _dta[_svy_wvar])				///
+	nomemory						///
+	option(pweight)
+
+  VARNAME  vn_iw     @         +45       _vnwd     .,		///
+	label("Importance weight variable (rare)")		///
+	default(char _dta[_svy_wvar])				///
+	nomemory						///
+	option(iweight)
+
+  TEXT     tx_brr    _lft      _ls       _iwd      ., 		///
+	label("Balanced repeated replicate (BRR) weight variables:")
+
+  VARLIST  vl_brr    @         _ss       @         .,		///
+	label("Balanced repeated replicate weight variables")	///
+	default(char _dta[_svy_brrweight])			///
+	nomemory						///
+	option(brrweight)
+
+  TEXT     tx_fay	@	_ls	_vnwd	.,		///
+	label("Fay's adjustment:")
+
+  EDIT     ed_fay	@	_ss	@    	.,		///
+  	numonly							///
+	label("Fay's adjustment")				///
+	option(fay)
+
+  TEXT     tx_bs     _lft      _ls      _iwd       ., 		///
+	label("Bootstrap weight variables:")
+
+  VARLIST  vl_bsr   @         _ss       @         .,		///
+	label("Bootstrap weight variables")			///
+	default(char _dta[_svy_bsrweight])			///
+	nomemory						///
+	option(bsrweight)
+
+  TEXT     tx_bsn	@	_ls	 _iwd	.,		///
+	label("Bootstrap mean-weight adjustment:")
+
+  EDIT     ed_bsn	@	_ss	_vnwd	.,		///
+  	numonly							///
+	label("Bootstrap mean-weight adjustment")		///
+	option(bsn)
+
+  TEXT      tx_jkr   _lft      _ls       _iwd      ., 		///
+	label("Jackknife replicate weight variables:")
+
+  VARLIST  vl_jkr    @         _ss       @         .,		///
+	label("Jackknife replicate weight variables")		///
+	default(char _dta[_svy_jkrweight])			///
+	nomemory						///
+	option(jkrweight)
+
+  TEXT      tx_sdr   _lft      _ls       _iwd      ., 		///
+	label("Successive difference replicate (SDR) weight variables:")
+
+  VARLIST  vl_sdr    @         _ss       @         .,		///
+	label("Successive difference replicate (SDR) weight variables") ///
+	default(char _dta[_svy_sdrweight])			///
+	nomemory						///
+	option(sdrweight)
+
+END
+
+SCRIPT help4wgt
+BEGIN
+	view help svyweights##|_new
+END
+
+PROGRAM wgt_off
+BEGIN
+	call gaction weights.vn_pw.disable
+	call gaction weights.vn_iw.disable
+END
+
+PROGRAM wgt_on
+BEGIN
+	call program wgt_off
+	if weights.rb_pw {
+		call gaction weights.vn_pw.enable
+	}
+	if weights.rb_iw {
+		call gaction weights.vn_iw.enable
+	}
+END
+
+INCLUDE svy_se
+
+DIALOG post, label("") tabtitle("Poststratification")
+BEGIN
+  TEXT     tx_posts  _lft      _top      _cwd3_1   .,		///
+	label("Poststrata:")
+
+  VARNAME  vn_posts  @         _ss       _vnwd     .,		///
+	label("Poststrata")					///
+	option("poststrata")					///
+	default(char _dta[_svy_poststrata])			///
+	nomemory
+
+  TEXT     tx_postw  _lft3_2   _top      _cwd3_1   .,		///
+	label("Poststratum weights:")
+
+  VARNAME  vn_postw  @         _ss       _vnwd     .,		///
+	label("Poststratum weights")				///
+	option("postweight")					///
+	default(char _dta[_svy_postweight])			///
+	nomemory
+END
+
+SCRIPT POSTINIT
+BEGIN
+	script svy_se_IS_SVYSET
+END
+
+PROGRAM stage1_output
+BEGIN
+	if has_stage2 {
+		require main.vn_su1
+	}
+	if main.vn_su1 {
+		put main.vn_su1
+	}
+	if !main.vn_su1 {
+		put "_n"
+	}
+	if weights.rb_pw {
+		require weights.vn_pw
+		weight weights.vn_pw weights.vn_pw
+	}
+	if weights.rb_iw {
+		require weights.vn_iw
+		weight weights.vn_iw weights.vn_iw
+	}
+	beginoptions
+		optionarg main.vn_str1
+		optionarg main.vn_fpc1
+		if post.vn_posts | post.vn_postw {
+			require post.vn_posts
+			require post.vn_postw
+			optionarg post.vn_posts
+			optionarg post.vn_postw
+		}
+		optionarg weights.vl_brr
+		optionarg weights.ed_fay
+		optionarg weights.vl_bsr
+		optionarg weights.ed_bsn
+		optionarg weights.vl_jkr
+		optionarg weights.vl_sdr
+		put " " /program svy_se_output
+	endoptions
+END
+
+PROGRAM stage2_output
+BEGIN
+	if has_stage2 {
+		put "|| "
+		if has_stage3 {
+			require main.vn_su2
+		}
+		if main.vn_su2 {
+			put main.vn_su2
+		}
+		if !main.vn_su2 {
+			put "_n"
+		}
+		beginoptions
+			optionarg main.vn_str2
+			optionarg main.vn_fpc2
+		endoptions
+	}
+END
+
+PROGRAM stage3_output
+BEGIN
+	if has_stage3 {
+		put "|| "
+		if has_stage4 {
+			require main.vn_su3
+		}
+		if main.vn_su3 {
+			put main.vn_su3
+		}
+		if !main.vn_su3 {
+			put "_n"
+		}
+		beginoptions
+			optionarg main.vn_str3
+			optionarg main.vn_fpc3
+		endoptions
+	}
+END
+
+PROGRAM stage4_output
+BEGIN
+	if has_stage4 {
+		put "|| "
+		if has_stage5 {
+			require main.vn_su4
+		}
+		if main.vn_su4 {
+			put main.vn_su4
+		}
+		if !main.vn_su4 {
+			put "_n"
+		}
+		beginoptions
+			optionarg main.vn_str4
+			optionarg main.vn_fpc4
+		endoptions
+	}
+END
+
+PROGRAM stage5_output
+BEGIN
+	if has_stage5 {
+		put "|| "
+		if has_stage6 {
+			require main.vn_su5
+		}
+		if main.vn_su5 {
+			put main.vn_su5
+		}
+		if !main.vn_su5 {
+			put "_n"
+		}
+		beginoptions
+			optionarg main.vn_str5
+			optionarg main.vn_fpc5
+		endoptions
+	}
+END
+
+PROGRAM stage6_output
+BEGIN
+	if has_stage6 {
+		put "|| "
+		if has_stage7 {
+			require main.vn_su6
+		}
+		if main.vn_su6 {
+			put main.vn_su6
+		}
+		if !main.vn_su6 {
+			put "_n"
+		}
+		beginoptions
+			optionarg main.vn_str6
+			optionarg main.vn_fpc6
+		endoptions
+	}
+END
+
+PROGRAM stage7_output
+BEGIN
+	if has_stage7 {
+		put "|| "
+		if has_stage8 {
+			require main.vn_su7
+		}
+		if main.vn_su7 {
+			put main.vn_su7
+		}
+		if !main.vn_su7 {
+			put "_n"
+		}
+		beginoptions
+			optionarg main.vn_str7
+			optionarg main.vn_fpc7
+		endoptions
+	}
+END
+
+PROGRAM stage8_output
+BEGIN
+	if has_stage8 {
+		put "|| "
+		if has_stage9 {
+			require main.vn_su8
+		}
+		if main.vn_su8 {
+			put main.vn_su8
+		}
+		if !main.vn_su8 {
+			put "_n"
+		}
+		beginoptions
+			optionarg main.vn_str8
+			optionarg main.vn_fpc8
+		endoptions
+	}
+END
+
+PROGRAM stage9_output
+BEGIN
+	if has_stage9 {
+		put "|| "
+		if has_stage10 {
+			require main.vn_su9
+		}
+		if main.vn_su9 {
+			put main.vn_su9
+		}
+		if !main.vn_su9 {
+			put "_n"
+		}
+		beginoptions
+			optionarg main.vn_str9
+			optionarg main.vn_fpc9
+		endoptions
+	}
+END
+
+PROGRAM stage10_output
+BEGIN
+	if has_stage10 {
+		put "|| "
+		if has_stage11 {
+			require main.vn_su10
+		}
+		if main.vn_su10 {
+			put main.vn_su10
+		}
+		if !main.vn_su10 {
+			put "_n"
+		}
+		beginoptions
+			optionarg main.vn_str10
+			optionarg main.vn_fpc10
+		endoptions
+	}
+END
+
+PROGRAM stage11_output
+BEGIN
+	if has_stage11 {
+		put "|| "
+		if has_stage12 {
+			require main.vn_su11
+		}
+		if main.vn_su11 {
+			put main.vn_su11
+		}
+		if !main.vn_su11 {
+			put "_n"
+		}
+		beginoptions
+			optionarg main.vn_str11
+			optionarg main.vn_fpc11
+		endoptions
+	}
+END
+
+PROGRAM stage12_output
+BEGIN
+	if has_stage12 {
+		put "|| "
+		if has_stage13 {
+			require more.vn_su12
+		}
+		if more.vn_su12 {
+			put more.vn_su12
+		}
+		if !more.vn_su12 {
+			put "_n"
+		}
+		beginoptions
+			optionarg more.vn_str12
+			optionarg more.vn_fpc12
+		endoptions
+	}
+END
+
+PROGRAM stage13_output
+BEGIN
+	if has_stage13 {
+		put "|| "
+		if has_stage14 {
+			require more.vn_su13
+		}
+		if more.vn_su13 {
+			put more.vn_su13
+		}
+		if !more.vn_su13 {
+			put "_n"
+		}
+		beginoptions
+			optionarg more.vn_str13
+			optionarg more.vn_fpc13
+		endoptions
+	}
+END
+
+PROGRAM stage14_output
+BEGIN
+	if has_stage14 {
+		put "|| "
+		if has_stage15 {
+			require more.vn_su14
+		}
+		if more.vn_su14 {
+			put more.vn_su14
+		}
+		if !more.vn_su14 {
+			put "_n"
+		}
+		beginoptions
+			optionarg more.vn_str14
+			optionarg more.vn_fpc14
+		endoptions
+	}
+END
+
+PROGRAM stage15_output
+BEGIN
+	if has_stage15 {
+		put "|| "
+		if has_stage16 {
+			require more.vn_su15
+		}
+		if more.vn_su15 {
+			put more.vn_su15
+		}
+		if !more.vn_su15 {
+			put "_n"
+		}
+		beginoptions
+			optionarg more.vn_str15
+			optionarg more.vn_fpc15
+		endoptions
+	}
+END
+
+PROGRAM stage16_output
+BEGIN
+	if has_stage16 {
+		put "|| "
+		if has_stage17 {
+			require more.vn_su16
+		}
+		if more.vn_su16 {
+			put more.vn_su16
+		}
+		if !more.vn_su16 {
+			put "_n"
+		}
+		beginoptions
+			optionarg more.vn_str16
+			optionarg more.vn_fpc16
+		endoptions
+	}
+END
+
+PROGRAM stage17_output
+BEGIN
+	if has_stage17 {
+		put "|| "
+		if more.vn_su17 {
+			put more.vn_su17
+		}
+		if !more.vn_su17 {
+			put "_n"
+		}
+		beginoptions
+			optionarg more.vn_str17
+			optionarg more.vn_fpc17
+		endoptions
+	}
+END
+
+PROGRAM command
+BEGIN
+	if isMI {
+		put "mi "
+	}
+	put "svyset "
+	put " " /program stage1_output
+	put " " /program stage2_output
+	put " " /program stage3_output
+	put " " /program stage4_output
+	put " " /program stage5_output
+	put " " /program stage6_output
+	put " " /program stage7_output
+	put " " /program stage8_output
+	put " " /program stage9_output
+	put " " /program stage10_output
+	put " " /program stage11_output
+	put " " /program stage12_output
+	put " " /program stage13_output
+	put " " /program stage14_output
+	put " " /program stage15_output
+	put " " /program stage16_output
+	put " " /program stage17_output
+END

@@ -1,0 +1,4 @@
+*! version 1.0.0  22dec2002
+sequence 4208
+label "Gray 8"
+set rgb "128 128 128"

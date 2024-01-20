@@ -1,0 +1,1447 @@
+/*
+	discrim_knn_estat
+
+*!  VERSION 1.0.3  14mar2011
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_wide
+DEFINE _dlght 470
+INCLUDE header
+
+HELP hlp1, view("help discrim postestimation")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	create STRING tiesSpecification
+	tiesSpecification.setvalue e(ties)
+END
+
+SCRIPT POSTINIT
+BEGIN
+	opt.cb_ties.setvalue class tiesSpecification.value
+	opt.cb_ties.setdefault class tiesSpecification.value
+END
+
+DIALOG main, tabtitle("Main") label("estat - Postestimation tools for discrim")
+BEGIN
+  TEXT     tx_subcmd		_lft	_top	_cwd1	.,		///
+  	label("Reports and statistics: (subcommand)")
+  LISTBOX  lb_subcmd		@	_ss	_iwd	70,		///
+  	contents(main_subcommand_contents)				///
+  	values(main_subcommand_values)					///
+  	onselchangelist(main_subcommand_scripts)
+
+  DEFINE holdy 110
+
+  // classtable options
+  TEXT tx_cltbltype	_lft	holdy	_cwd1	.,			///
+	label("Table type:")
+  COMBOBOX cb_cltbltype	@	_ss	@	.,			///
+	dropdownlist							///
+	contents(main_cltbl_table_type_contents)			///
+	values(main_table_type_values)					///
+	label("Table type")
+
+  // errorrate options
+  TEXT tx_errtbltype	_lft	holdy	_cwd1	.,			///
+	label("Table type:")
+  COMBOBOX cb_errtbltype @	_ss	@	.,			///
+	dropdownlist							///
+	contents(main_errtbl_table_type_contents)			///
+	values(main_table_type_values)					///
+	label("Table type")
+
+  GROUPBOX gb_estbasis	_lft	_ls	_iwd	_ht8,			///
+	label("Error-rate estimate basis")
+
+  RADIO rb_count	_ilft	_ss	_ibwd	.,			///
+	first								///
+	option(count)							///
+	onclickon(script main_rb_count_on)				///
+	label("Misclassification counts")
+
+  RADIO rb_pp		@	_ss	@	.,			///
+	last								///
+	option(pp)							///
+	onclickon(script main_rb_count_off)				///
+	label("Posterior probabilities")
+  CHECKBOX ck_strat	+20	_ss	@	.,			///
+	option(stratified)						///
+	label("Present stratified estimates")
+  CHECKBOX ck_unstrat	@	_ss	@	.,			///
+	option(unstratified)						///
+	label("Present unstratified estimates")
+
+  // grsummarize options
+  GROUPBOX gb_grsummary	_lft	holdy	_iwd	_ht22h,			///
+	label("Group summary statistics to display")
+  TEXT tx_stat		40	_ss	145	.,			///
+	label("Statistic")
+  TEXT tx_format	+200	@	@	.,			///
+	label("Format (optional)")
+
+  CHECKBOX ck_n		_ilft	_ms	215	.,			///
+	option(n)							///
+	onclickon(script main_nformat_on)				///
+	onclickoff(script main_nformat_off)				///
+	label("Group sizes")
+  EDIT ed_nformat	+220	@	200	.,			///
+	option(n) label("Display format")
+  BUTTON bn_nformat	+205	@	80	.,			///
+	label("Create...")						///
+	onpush(script showNFormatDialog)				///
+	tooltip("Create display format")
+
+  CHECKBOX ck_mean	_ilft	_ms	215	.,			///
+	option(mean)							///
+	onclickon(script main_meanformat_on)				///
+	onclickoff(script main_meanformat_off)				///
+	label("Means")
+  EDIT ed_meanformat	+220	@	200	.,			///
+	option(mean) label("Display format")
+  BUTTON bn_meanformat	+205	@	80	.,			///
+	label("Create...")						///
+	onpush(script showMeanFormatDialog)				///
+	tooltip("Create display format")
+
+  CHECKBOX ck_median	_ilft	_ms	215	.,			///
+	option(median)							///
+	onclickon(script main_medianformat_on)				///
+	onclickoff(script main_medianformat_off)			///
+	label("Medians")
+  EDIT ed_medianformat	+220	@	200	.,			///
+	option(median) label("Display format")
+  BUTTON bn_medianformat +205	@	80	.,			///
+	label("Create...")						///
+	onpush(script showMedianFormatDialog)				///
+	tooltip("Create display format")
+
+  CHECKBOX ck_sd	_ilft	_ms	215	.,			///
+	option(sd)							///
+	onclickon(script main_sdformat_on)				///
+	onclickoff(script main_sdformat_off)				///
+	label("Standard deviations")
+  EDIT ed_sdformat	+220	@	200	.,			///
+	option(sd) label("Display format")
+  BUTTON bn_sdformat	+205	@	80	.,			///
+	label("Create...")						///
+	onpush(script showSdFormatDialog)				///
+	tooltip("Create display format")
+
+  CHECKBOX ck_cv	_ilft	_ms	215	.,			///
+	option(cv)							///
+	onclickon(script main_cvformat_on)				///
+	onclickoff(script main_cvformat_off)				///
+	label("Coefficients of variation")
+  EDIT ed_cvformat	+220	@	200	.,			///
+	option(cv) label("Display format")
+  BUTTON bn_cvformat	+205	@	80	.,			///
+	label("Create...")						///
+	onpush(script showCvFormatDialog)				///
+	tooltip("Create display format")
+
+  CHECKBOX ck_semean	_ilft	_ms	215	.,			///
+	option(semean)							///
+	onclickon(script main_semeanformat_on)				///
+	onclickoff(script main_semeanformat_off)			///
+	label("Standard errors of the means")
+  EDIT ed_semeanformat	+220	@	200	.,			///
+	option(semean) label("Display format")
+  BUTTON bn_semeanformat +205	@	80	.,			///
+	label("Create...")						///
+	onpush(script showSemeanFormatDialog)				///
+	tooltip("Create display format")
+
+  CHECKBOX ck_min	_ilft	_ms	215	.,			///
+	option(min)							///
+	onclickon(script main_minformat_on)				///
+	onclickoff(script main_minformat_off)				///
+	label("Minimums")
+  EDIT ed_minformat	+220	@	200	.,			///
+	option(min) label("Display format")
+  BUTTON bn_minformat	+205	@	80	.,			///
+	label("Create...")						///
+	onpush(script showMinFormatDialog)				///
+	tooltip("Create display format")
+
+  CHECKBOX ck_max	_ilft	_ms	215	.,			///
+	option(max)							///
+	onclickon(script main_maxformat_on)				///
+	onclickoff(script main_maxformat_off)				///
+	label("Maximums")
+  EDIT ed_maxformat	+220	@	200	.,			///
+	option(max) label("Display format")
+  BUTTON bn_maxformat	+205	@	80	.,			///
+	label("Create...")						///
+	onpush(script showMaxFormatDialog)				///
+	tooltip("Create display format")
+
+  TEXT tx_note		_lft	_xxls	_iwd	.,			///
+	label("By default, group sizes and means are presented.")
+
+  // list options
+  CHECKBOX ck_misclassified _lft holdy	_iwd	.,			///
+	option(misclassified)						///
+	label("List misclassified observations only")
+
+  GROUPBOX gb_class	_lft	_ls	_cwd1	_ht14h,			///
+	label("Classification display")
+DEFINE classhold @y
+  CHECKBOX ck_noclass	_indent	_ss	_inwd	.,			///
+	option(noclass)							///
+	default(1)							///
+	label("Regular classification")
+
+  CHECKBOX ck_looclass	@	_ss	@	.,			///
+	option(looclass)						///
+	label("Leave-one-out classification")
+
+  CHECKBOX ck_notrue	@	_ss	@	.,			///
+	option(notrue)							///
+	default(1)							///
+	label("Group variable")
+
+  CHECKBOX ck_nostar	@	_ss	@	.,                      ///
+	option(nostar)							///
+	default(1)							///
+	label("Stars indicating misclassified observations")
+
+  CHECKBOX ck_nolabel	@	_ss	@	.,			///
+	option(nolabel)							///
+	default(1)							///
+	label("Value labels for the group variable")
+
+  CHECKBOX ck_format	@	_ss	@	.,			///
+	onclickon(script class_format_on)				///
+	onclickoff(script class_format_off)				///
+	label("Override display format")
+  EDIT ed_format	+20	_ss	_en14wd	.,			///
+	option(format) label("Classification display format")
+  BUTTON bn_format	_en14sep @	80	.,			///
+	label("Create...")						///
+	onpush(script showFormatDialog)					///
+	tooltip("Create display format")
+
+  CHECKBOX ck_varlist	_lft	+45	_cwd1	_ht9h,			///
+	groupbox							///
+	onclickon(program varlist_on)					///
+	onclickoff(script varlist_off)					///
+	label("Discriminating variables display")
+DEFINE varlisty @y
+  RADIO rb_first	_indent	_ss	_inwd	.,			///
+	first								///
+	option(first)							///
+	label("Before classifications and probabilities")
+
+  RADIO rb_last		@	_ss	@	.,			///
+	last								///
+	option(last)							///
+	label("After classifications and probabilities")
+
+  CHECKBOX ck_vlformat	@	_ls	@	.,			///
+	onclickon(script var_vlformat_on)				///
+	onclickoff(script var_vlformat_off)				///
+	label("Override display format")
+  EDIT ed_vlformat	+20	_ss	_en14wd	.,			///
+	option(format) label("Discriminating variable display format")
+  BUTTON bn_vlformat	_en14sep @	80	.,			///
+	label("Create...")						///
+	onpush(script showVlFormatDialog)				///
+	tooltip("Create display format")
+
+  GROUPBOX gb_probs	_lft2	classhold _cwd1	_ht8h,			///
+	label("Probabilities display")
+
+  CHECKBOX ck_nopr	_indent	_ss	_inwd	.,			///
+	option(nopr)							///
+	default(1)							///
+	label("Regular posterior probabilities")
+
+  CHECKBOX ck_loopr	@	_ss	@	.,			///
+	option(loopr)							///
+	label("Leave-one-out posterior probabilities")
+
+  CHECKBOX ck_prformat	@	_ss	@	.,			///
+	onclickon(script prob_prformat_on)				///
+	onclickoff(script prob_prformat_off)				///
+	label("Override display format")
+  EDIT ed_prformat	+20	_ss	_en14wd	.,			///
+	option(format) label("Probabilities display format")
+  BUTTON bn_prformat	_en14sep @	80	.,			///
+	label("Create...")						///
+	onpush(script showPrFormatDialog)				///
+	tooltip("Create display format")
+
+  TEXT tx_obs		_lft2	+45	_cwd1	.,			///
+	label("Observation numbers:")
+
+  COMBOBOX cb_obs	@	_ss	@	.,			///
+	dropdownlist							///
+	contents(main_obs_contents)					///
+	values(main_obs_values)						///
+	label("Display observation numbers")
+
+  GROUPBOX gb_id	_lft2	varlisty _cwd1	_ht9h,			///
+	label("Identification variable options")
+
+  TEXT tx_idvar		_indent _ss	_inwd	.,			///
+	label("ID variable:")
+DEFINE holdinwd @cx
+  VARLIST vl_idvar	@	_ss	_vnwd	.,			///
+	label("ID variable")
+
+  CHECKBOX ck_idformat	@	_ls	holdinwd .,			///
+	onclickon(script id_idformat_on)				///
+	onclickoff(script id_idformat_off)				///
+	label("Override display format")
+  EDIT ed_idformat	_indent2 _ss	_en14wd	.,			///
+	option(format) label("ID variable display format")
+  BUTTON bn_idformat	_en14sep @	80	.,			///
+	label("Create...")						///
+	onpush(script showIdFormatDialog)				///
+	tooltip("Create display format")
+
+  // summarize options
+  CHECKBOX ck_labels	_lft	holdy	_iwd	.,			///
+	label("Display variable labels")				///
+	option(labels)
+  CHECKBOX ck_noheader	@	_ms	@	.,			///
+	option(noheader)						///
+	label("Suppress the header")
+  CHECKBOX ck_noweights	@	_ms	@	.,			///
+	option(noweights)						///
+	label("Ignore weights")
+END
+
+SCRIPT showFormatDialog
+BEGIN
+	create STRING formatString
+	create CHILD format_chooser
+	format_chooser.setExitString formatString
+	format_chooser.setExitAction "main.ed_format.setvalue class formatString.value"
+END
+
+SCRIPT class_format_on
+BEGIN
+	main.ed_format.enable
+	main.bn_format.enable
+END
+
+SCRIPT class_format_off
+BEGIN
+	main.ed_format.disable
+	main.bn_format.disable
+END
+
+PROGRAM classification_output
+BEGIN
+	if ! main.ck_noclass {
+		put "noclass"
+	}
+	option main.ck_looclass
+	if ! main.ck_notrue {
+		put " notrue"
+	}
+	if ! main.ck_nostar {
+		put " nostar"
+	}
+	if ! main.ck_nolabel {
+		put " nolabel"
+	}
+	optionarg main.ed_format
+END
+
+SCRIPT showPrFormatDialog
+BEGIN
+	create STRING prformatString
+	create CHILD format_chooser
+	format_chooser.setExitString prformatString
+	format_chooser.setExitAction "main.ed_prformat.setvalue class prformatString.value"
+END
+
+SCRIPT prob_prformat_on
+BEGIN
+	main.ed_prformat.enable
+	main.bn_prformat.enable
+END
+
+SCRIPT prob_prformat_off
+BEGIN
+	main.ed_prformat.disable
+	main.bn_prformat.disable
+END
+
+PROGRAM probabilities_output
+BEGIN
+	if ! main.ck_nopr {
+		put "nopr"
+	}
+	option main.ck_loopr
+	optionarg main.ed_prformat
+END
+
+PROGRAM varlist_on
+BEGIN
+	call main.rb_first.enable
+	call main.rb_last.enable
+	call main.ck_vlformat.enable
+	if main.ck_vlformat {
+		call main.ed_vlformat.enable
+		call main.bn_vlformat.enable
+	}
+END
+
+SCRIPT varlist_off
+BEGIN
+	main.rb_first.disable
+	main.rb_last.disable
+	main.ck_vlformat.disable
+	main.ed_vlformat.disable
+	main.bn_vlformat.disable
+END
+
+SCRIPT showVlFormatDialog
+BEGIN
+	create STRING vlformatString
+	create CHILD format_chooser
+	format_chooser.setExitString vlformatString
+	format_chooser.setExitAction "main.ed_vlformat.setvalue class vlformatString.value"
+END
+
+SCRIPT var_vlformat_on
+BEGIN
+	main.ed_vlformat.enable
+	main.bn_vlformat.enable
+END
+
+SCRIPT var_vlformat_off
+BEGIN
+	main.ed_vlformat.disable
+	main.bn_vlformat.disable
+END
+
+PROGRAM varlist_output
+BEGIN
+	option main.rb_last
+	optionarg main.ed_vlformat
+END
+
+SCRIPT showIdFormatDialog
+BEGIN
+	create STRING idformatString
+	create CHILD format_chooser
+	format_chooser.setExitString idformatString
+	format_chooser.setExitAction "main.ed_idformat.setvalue class idformatString.value"
+END
+
+SCRIPT id_idformat_on
+BEGIN
+	main.ed_idformat.enable
+	main.bn_idformat.enable
+END
+
+SCRIPT id_idformat_off
+BEGIN
+	main.ed_idformat.disable
+	main.bn_idformat.disable
+END
+
+PROGRAM id_output
+BEGIN
+	varlist [main.vl_idvar]
+	optionarg main.ed_idformat
+END
+
+LIST main_obs_contents
+BEGIN
+	"Default behavior for observation numbers"
+	"Display observation numbers"
+	"Suppress display of observation numbers"
+END
+
+LIST main_obs_values
+BEGIN
+	""
+	"obs"
+	"noobs"
+END
+
+INCLUDE ifin
+INCLUDE weights_f
+
+DIALOG opt, tabtitle("Options") label("")
+BEGIN
+  // summarize		- no additional options
+  TEXT tx_noopts	_lft	_top	_iwd	.,			///
+	label("There are no additional options")
+
+  // list options
+  CHECKBOX ck_weight	_lft	_top	_iwd	_ht6,			///
+	groupbox							///
+	onclickon(program opt_weight_on)				///
+	onclickoff(script opt_weight_off)				///
+	label("Weight options")
+
+  CHECKBOX ck_wnone	_ilft	_ss	_ibwd	.,			///
+	option(none)							///
+	onclickon(script noweight_on)					///
+	onclickoff(program noweight_off)				///
+	label("Suppress display of weights")
+
+  CHECKBOX ck_wformat	@	_ss	@	.,			///
+	onclickon(script weights_wformat_on)				///
+	onclickoff(script weights_wformat_off)				///
+	label("Override default display format for weights")
+  EDIT ed_wformat	+20	_ss	200	.,			///
+	option(format) label("Display format")
+  BUTTON bn_wformat	+205	@	80	.,			///
+	label("Create...")						///
+	onpush(script showWFormatDialog)				///
+	tooltip("Create display format")
+
+  GROUPBOX gb_priors	_lft	+45	_iwd	_ht10h,			///
+	label("Group prior probabilities")
+
+  RADIO rb_priordefault	_indent	_ss	_ibwd	.,			///
+	first								///
+	option(NONE)							///
+	onclickon(opt.lb_matname.disable)				///
+	label("Use default (defined by estimation command)")
+
+  RADIO rb_equal	@	_ss	@	.,			///
+	option(equal)							///
+	onclickon(opt.lb_matname.disable)				///
+	label("Equal prior probabilities")
+
+  RADIO rb_proportional	@	_ss	@	.,			///
+	option(proportional)						///
+	onclickon(opt.lb_matname.disable)				///
+	label("Group-size-proportional prior probabilities")
+
+  RADIO rb_matrix	@	_ss	@	.,			///
+	last								///
+	onclickon(opt.lb_matname.enable)				///
+	label("Matrix or matrix expression containing group prior probabilities")
+  COMBOBOX lb_matname	_rbsep	_ss	200	60,			///
+	dropdown							///
+	label("Vector containing coefficients for the model")		///
+	contents(vector)
+
+  CHECKBOX ck_nopriors	_lft	+45	_iwd	.,			///
+	option(nopriors)						///
+	label("Suppress display of the prior probabilities")
+
+  TEXT tx_ties		@	_ls	@	.,			///
+	label("Ties in group classification:")
+  COMBOBOX cb_ties	@	_ss	@	.,			///
+	dropdownlist							///
+	option(ties)							///
+	contents(main_ties_contents)					///
+	values(main_ties_values)					///
+	label("Ties in group classification")
+
+  TEXT tx_sephdr	_lft	_ls	_iwd	.,			///
+	label("Place separators every N lines")
+  SPINNER sp_sep	@	_ss	_spwd	.,			///
+	option(separator)						///
+	min(0) max(10000) default(5)
+  TEXT tx_sep		_spsep	@	_rbspr2b .,			///
+	label("Lines (default: 5)")
+
+  // classtable options
+  TEXT tx_title		_lft	_ls	_iwd	.,			///
+	label("Title for classification table")
+
+  EDIT ed_title		@	_ss	_vlwd	.,			///
+	option(title)							///
+	label("Title for classification table")
+
+  CHECKBOX ck_probs	@	_ls	_iwd	.,			///
+	option(probabilities)						///
+	label("Display the average posterior probability classified into each group")
+
+  CHECKBOX ck_nopcts	@	_ms	@	.,			///
+	option(nopercents)						///
+	label("Suppress display of percentages")
+
+  CHECKBOX ck_nototals	@	_ms	@	.,			///
+	option(nototals)						///
+	label("Suppress display of row and column totals")
+
+  CHECKBOX ck_norow	@	_ms	@	.,			///
+	option(norowtotals)						///
+	label("Suppress display of row totals")
+
+  CHECKBOX ck_nocol	@	_ms	@	.,			///
+	option(nocoltotals)						///
+	label("Suppress display of column totals")
+
+  // errorrate options
+  TEXT tx_errtitle	_lft	_ls	_iwd	.,			///
+	label("Title for error-rate-estimate table")
+  EDIT ed_errtitle	@	_ss	_vlwd	.,			///
+	option(title)							///
+	label("Title for error-rate-estimate table")
+
+  CHECKBOX ck_errnototal @	_ls	@	.,			///
+	option(nototal)							///
+	label("Suppress display of total column")
+
+  // grsummarize options
+  CHECKBOX ck_grnototal _lft	_top	_iwd	.,			///
+	option(nototal)							///
+	label("Suppress overall statistics")
+
+  CHECKBOX ck_transpose @	_ms	@	.,			///
+	option(transpose)						///
+	label("Display groups by row instead of column")
+END
+
+PROGRAM opt_weight_on
+BEGIN
+	call opt.ck_wnone.enable
+	call opt.ck_wformat.enable
+	if opt.ck_wformat {
+		call opt.ed_wformat.enable
+		call opt.bn_wformat.enable
+	}
+END
+
+SCRIPT opt_weight_off
+BEGIN
+	opt.ck_wnone.disable
+	opt.ck_wformat.disable
+	opt.ed_wformat.disable
+	opt.bn_wformat.disable
+END
+
+SCRIPT showWFormatDialog
+BEGIN
+	create STRING wformatString
+	create CHILD format_chooser
+	format_chooser.setExitString wformatString
+	format_chooser.setExitAction "opt.ed_wformat.setvalue class wformatString.value"
+END
+
+SCRIPT noweight_on
+BEGIN
+	opt.ck_wformat.disable
+	opt.ed_wformat.disable
+	opt.bn_wformat.disable
+END
+
+PROGRAM noweight_off
+BEGIN
+	if opt.ck_weight {
+		call opt.ck_wformat.enable
+		if opt.ck_wformat {
+			call opt.ed_wformat.enable
+			call opt.bn_wformat.enable
+		}
+	}
+END
+
+SCRIPT weights_wformat_on
+BEGIN
+	opt.ed_wformat.enable
+	opt.bn_wformat.enable
+END
+
+SCRIPT weights_wformat_off
+BEGIN
+	opt.ed_wformat.disable
+	opt.bn_wformat.disable
+END
+
+PROGRAM opt_weights_output
+BEGIN
+	option opt.ck_wnone
+	optionarg opt.ed_wformat
+END
+
+SCRIPT showNFormatDialog
+BEGIN
+        create STRING nformatString
+        create CHILD format_chooser
+        format_chooser.setExitString nformatString
+        format_chooser.setExitAction "main.ed_nformat.setvalue class nformatString.value"
+END
+
+SCRIPT showMeanFormatDialog
+BEGIN
+        create STRING meanformatString
+        create CHILD format_chooser
+        format_chooser.setExitString meanformatString
+        format_chooser.setExitAction "main.ed_meanformat.setvalue class meanformatString.value"
+END
+
+SCRIPT showMedianFormatDialog
+BEGIN
+        create STRING medianformatString
+        create CHILD format_chooser
+        format_chooser.setExitString medianformatString
+        format_chooser.setExitAction "main.ed_medianformat.setvalue class medianformatString.value"
+END
+
+SCRIPT showSdFormatDialog
+BEGIN
+        create STRING sdformatString
+        create CHILD format_chooser
+        format_chooser.setExitString sdformatString
+        format_chooser.setExitAction "main.ed_sdformat.setvalue class sdformatString.value"
+END
+
+SCRIPT showCvFormatDialog
+BEGIN
+        create STRING cvformatString
+        create CHILD format_chooser
+        format_chooser.setExitString cvformatString
+        format_chooser.setExitAction "main.ed_cvformat.setvalue class cvformatString.value"
+END
+
+SCRIPT showSemeanFormatDialog
+BEGIN
+        create STRING semeanformatString
+        create CHILD format_chooser
+        format_chooser.setExitString semeanformatString
+        format_chooser.setExitAction "main.ed_semeanformat.setvalue class semeanformatString.value"
+END
+
+SCRIPT showMinFormatDialog
+BEGIN
+        create STRING minformatString
+        create CHILD format_chooser
+        format_chooser.setExitString minformatString
+        format_chooser.setExitAction "main.ed_minformat.setvalue class minformatString.value"
+END
+
+SCRIPT showMaxFormatDialog
+BEGIN
+        create STRING maxformatString
+        create CHILD format_chooser
+        format_chooser.setExitString maxformatString
+        format_chooser.setExitAction "main.ed_maxformat.setvalue class maxformatString.value"
+END
+
+LIST main_subcommand_contents
+BEGIN
+	"Classification table (classtable)"
+	"Classification error-rate estimation (errorrate)"
+	"Group summaries (grsummarize)"
+	"Classification listing (list)"
+ 	"Summarize estimation sample (summarize)"
+END
+
+LIST main_subcommand_values
+BEGIN
+	classtable
+	errorrate
+	grsummarize
+	list
+	summarize
+END
+
+LIST main_subcommand_scripts
+BEGIN
+	script sel_classtable
+	script sel_errorrate
+	script sel_grsummarize
+	script sel_list
+	script sel_summarize
+END
+
+LIST main_cltbl_table_type_contents
+BEGIN
+	"Regular classification table"
+	"Leave-one-out classification table"
+END
+
+LIST main_errtbl_table_type_contents
+BEGIN
+	"Regular error-rate-estimates table"
+	"Leave-one-out error-rate-estimates table"
+END
+
+LIST main_table_type_values
+BEGIN
+	""
+	looclass
+END
+
+LIST main_ties_contents
+BEGIN
+	"Produce a missing value"
+	"Are broken randomly"
+	"Are set to the first tied group"
+	"Are assigned based on the closest observations, or missing if this still results in a tie"
+END
+
+LIST main_ties_values
+BEGIN
+	missing
+	random
+	first
+	nearest
+END
+
+SCRIPT main_hide_all
+BEGIN
+	// shared options
+	opt.tx_noopts.hide
+	opt.gb_priors.hide
+	opt.rb_priordefault.hide
+	opt.rb_equal.hide
+	opt.rb_proportional.hide
+	opt.rb_matrix.hide
+	opt.lb_matname.hide
+	opt.ck_nopriors.hide
+	opt.tx_ties.hide
+	opt.cb_ties.hide
+
+	// classtable options
+	main.tx_cltbltype.hide
+	main.cb_cltbltype.hide
+	opt.tx_title.hide
+	opt.ed_title.hide
+	opt.ck_probs.hide
+	opt.ck_nopcts.hide
+	opt.ck_nototals.hide
+	opt.ck_norow.hide
+	opt.ck_nocol.hide
+
+	// errorrate options
+	main.tx_errtbltype.hide
+	main.cb_errtbltype.hide
+	main.gb_estbasis.hide
+	main.rb_count.hide
+	main.rb_pp.hide
+	main.ck_strat.hide
+	main.ck_unstrat.hide
+
+	opt.tx_errtitle.hide
+	opt.ed_errtitle.hide
+	opt.ck_errnototal.hide
+
+	// grsummarize options
+	main.gb_grsummary.hide
+	main.tx_stat.hide
+	main.tx_format.hide
+	main.ck_n.hide
+	main.ed_nformat.hide
+	main.bn_nformat.hide
+	main.ck_mean.hide
+	main.ed_meanformat.hide
+	main.bn_meanformat.hide
+	main.ck_median.hide
+	main.ed_medianformat.hide
+	main.bn_medianformat.hide
+	main.ck_sd.hide
+	main.ed_sdformat.hide
+	main.bn_sdformat.hide
+	main.ck_cv.hide
+	main.ed_cvformat.hide
+	main.bn_cvformat.hide
+	main.ck_semean.hide
+	main.ed_semeanformat.hide
+	main.bn_semeanformat.hide
+	main.ck_min.hide
+	main.ed_minformat.hide
+	main.bn_minformat.hide
+	main.ck_max.hide
+	main.ed_maxformat.hide
+	main.bn_maxformat.hide
+	main.tx_note.hide
+
+	opt.ck_grnototal.hide
+	opt.ck_transpose.hide
+
+	// list options
+	main.ck_misclassified.hide
+	main.gb_class.hide
+	main.ck_noclass.hide
+	main.ck_looclass.hide
+	main.ck_notrue.hide
+	main.ck_nostar.hide
+	main.ck_nolabel.hide
+	main.ck_format.hide
+	main.ed_format.hide
+	main.bn_format.hide
+	main.ck_varlist.hide
+	main.rb_first.hide
+	main.rb_last.hide
+	main.ck_vlformat.hide
+	main.ed_vlformat.hide
+	main.bn_vlformat.hide
+	main.gb_probs.hide
+	main.ck_nopr.hide
+	main.ck_loopr.hide
+	main.ck_prformat.hide
+	main.ed_prformat.hide
+	main.bn_prformat.hide
+	main.gb_id.hide
+	main.tx_idvar.hide
+	main.vl_idvar.hide
+	main.ck_idformat.hide
+	main.ed_idformat.hide
+	main.bn_idformat.hide
+	main.tx_obs.hide
+	main.cb_obs.hide
+
+	opt.ck_weight.hide
+	opt.ck_wnone.hide
+	opt.ck_wformat.hide
+	opt.ed_wformat.hide
+	opt.bn_wformat.hide
+	opt.tx_sephdr.hide
+	opt.sp_sep.hide
+	opt.tx_sep.hide
+
+	// summarize options
+	main.ck_labels.hide
+	main.ck_noheader.hide
+	main.ck_noweights.hide
+END
+
+SCRIPT sel_classtable
+BEGIN
+	script main_hide_all
+
+	main.tx_cltbltype.setposition . 110 . .
+	main.cb_cltbltype.setposition . 130 . .
+
+	main.tx_cltbltype.show
+	main.cb_cltbltype.show
+
+	opt.gb_priors.setposition . 10 . .
+	opt.rb_priordefault.setposition . 30 . .
+	opt.rb_equal.setposition . 50 . .
+	opt.rb_proportional.setposition . 70 . .
+	opt.rb_matrix.setposition . 90 . .
+	opt.lb_matname.setposition . 110 . .
+	opt.ck_nopriors.setposition . 155 . .
+	opt.tx_ties.setposition . 180 . .
+	opt.cb_ties.setposition . 200 . .
+
+	opt.tx_title.setposition . 230 . .
+	opt.ed_title.setposition . 250 . .
+	opt.ck_probs.setposition . 280 . .
+	opt.ck_nopcts.setposition . 305 . .
+	opt.ck_nototals.setposition . 330 . .
+	opt.ck_norow.setposition . 355 . .
+	opt.ck_nocol.setposition . 380 . .
+
+	opt.gb_priors.show
+	opt.rb_priordefault.show
+	opt.rb_equal.show
+	opt.rb_proportional.show
+	opt.rb_matrix.show
+	opt.lb_matname.show
+	opt.ck_nopriors.show
+	opt.tx_ties.show
+	opt.cb_ties.show
+	opt.tx_title.show
+	opt.ed_title.show
+	opt.ck_probs.show
+	opt.ck_nopcts.show
+	opt.ck_nototals.show
+	opt.ck_norow.show
+	opt.ck_nocol.show
+
+	script ifin_enable
+	script weights_enable
+
+END
+
+SCRIPT sel_errorrate
+BEGIN
+	script main_hide_all
+
+	main.tx_errtbltype.show
+	main.cb_errtbltype.show
+	main.gb_estbasis.show
+	main.rb_count.show
+	main.rb_pp.show
+	main.ck_strat.show
+	main.ck_unstrat.show
+
+	opt.gb_priors.setposition . 10 . .
+	opt.rb_priordefault.setposition . 30 . .
+	opt.rb_equal.setposition . 50 . .
+	opt.rb_proportional.setposition . 70 . .
+	opt.rb_matrix.setposition . 90 . .
+	opt.lb_matname.setposition . 110 . .
+	opt.ck_nopriors.setposition . 155 . .
+	opt.tx_ties.setposition . 180 . .
+	opt.cb_ties.setposition . 200 . .
+
+	opt.tx_errtitle.setposition . 230 . .
+	opt.ed_errtitle.setposition . 250 . .
+	opt.ck_errnototal.setposition . 280 . .
+
+	opt.gb_priors.show
+	opt.rb_priordefault.show
+	opt.rb_equal.show
+	opt.rb_proportional.show
+	opt.rb_matrix.show
+	opt.lb_matname.show
+	opt.ck_nopriors.show
+	opt.tx_ties.show
+	opt.cb_ties.show
+	opt.tx_errtitle.show
+	opt.ed_errtitle.show
+	opt.ck_errnototal.show
+
+	script ifin_enable
+	script weights_enable
+END
+
+SCRIPT sel_grsummarize
+BEGIN
+	script main_hide_all
+
+	main.gb_grsummary.show
+	main.tx_stat.show
+	main.tx_format.show
+	main.ck_n.show
+	main.ed_nformat.show
+	main.bn_nformat.show
+	main.ck_mean.show
+	main.ed_meanformat.show
+	main.bn_meanformat.show
+	main.ck_median.show
+	main.ed_medianformat.show
+	main.bn_medianformat.show
+	main.ck_sd.show
+	main.ed_sdformat.show
+	main.bn_sdformat.show
+	main.ck_cv.show
+	main.ed_cvformat.show
+	main.bn_cvformat.show
+	main.ck_semean.show
+	main.ed_semeanformat.show
+	main.bn_semeanformat.show
+	main.ck_min.show
+	main.ed_minformat.show
+	main.bn_minformat.show
+	main.ck_max.show
+	main.ed_maxformat.show
+	main.bn_maxformat.show
+	main.tx_note.show
+
+	opt.ck_grnototal.show
+	opt.ck_transpose.show
+
+	script ifin_disable
+	script weights_disable
+END
+
+SCRIPT sel_list
+BEGIN
+	script main_hide_all
+
+	main.ck_misclassified.show
+	main.gb_class.show
+	main.ck_noclass.show
+	main.ck_looclass.show
+	main.ck_notrue.show
+	main.ck_nostar.show
+	main.ck_nolabel.show
+	main.ck_format.show
+	main.ed_format.show
+	main.bn_format.show
+	main.ck_varlist.show
+	main.rb_first.show
+	main.rb_last.show
+	main.ck_vlformat.show
+	main.ed_vlformat.show
+	main.bn_vlformat.show
+	main.gb_probs.show
+	main.ck_nopr.show
+	main.ck_loopr.show
+	main.ck_prformat.show
+	main.ed_prformat.show
+	main.bn_prformat.show
+	main.gb_id.show
+	main.tx_idvar.show
+	main.vl_idvar.show
+	main.ck_idformat.show
+	main.ed_idformat.show
+	main.bn_idformat.show
+	main.tx_obs.show
+	main.cb_obs.show
+
+	opt.ck_weight.setposition . 10 . .
+	opt.ck_wnone.setposition . 30 . .
+	opt.ck_wformat.setposition . 50 . .
+	opt.ed_wformat.setposition . 70 . .
+	opt.bn_wformat.setposition . 70 . .
+
+	opt.gb_priors.setposition . 115 . .
+	opt.rb_priordefault.setposition . 135 . .
+	opt.rb_equal.setposition . 155 . .
+	opt.rb_proportional.setposition . 175 . .
+	opt.rb_matrix.setposition . 195 . .
+	opt.lb_matname.setposition . 215 . .
+	opt.tx_ties.setposition . 260 . .
+	opt.cb_ties.setposition . 280 . .
+	opt.tx_sephdr.setposition . 310 . .
+	opt.sp_sep.setposition . 330 . .
+	opt.tx_sep.setposition . 330 . .
+
+	opt.ck_weight.show
+	opt.ck_wnone.show
+	opt.ck_wformat.show
+	opt.ed_wformat.show
+	opt.bn_wformat.show
+	opt.gb_priors.show
+	opt.rb_priordefault.show
+	opt.rb_equal.show
+	opt.rb_proportional.show
+	opt.rb_matrix.show
+	opt.lb_matname.show
+	opt.tx_ties.show
+	opt.cb_ties.show
+	opt.tx_sephdr.show
+	opt.sp_sep.show
+	opt.tx_sep.show
+
+	script ifin_enable
+	script weights_disable
+END
+
+SCRIPT sel_summarize
+BEGIN
+	script main_hide_all
+
+	main.ck_labels.show
+	main.ck_noheader.show
+	main.ck_noweights.show
+	opt.tx_noopts.show
+
+	script ifin_disable
+	script weights_disable
+END
+
+SCRIPT main_rb_count_on
+BEGIN
+	main.ck_strat.disable
+	main.ck_unstrat.disable
+END
+
+SCRIPT main_rb_count_off
+BEGIN
+	main.ck_strat.enable
+	main.ck_unstrat.enable
+END
+
+SCRIPT main_nformat_on
+BEGIN
+	main.ed_nformat.enable
+	main.bn_nformat.enable
+END
+
+SCRIPT main_nformat_off
+BEGIN
+	main.ed_nformat.disable
+	main.bn_nformat.disable
+END
+
+SCRIPT main_meanformat_on
+BEGIN
+	main.ed_meanformat.enable
+	main.bn_meanformat.enable
+END
+
+SCRIPT main_meanformat_off
+BEGIN
+	main.ed_meanformat.disable
+	main.bn_meanformat.disable
+END
+
+SCRIPT main_medianformat_on
+BEGIN
+	main.ed_medianformat.enable
+	main.bn_medianformat.enable
+END
+
+SCRIPT main_medianformat_off
+BEGIN
+	main.ed_medianformat.disable
+	main.bn_medianformat.disable
+END
+
+SCRIPT main_sdformat_on
+BEGIN
+	main.ed_sdformat.enable
+	main.bn_sdformat.enable
+END
+
+SCRIPT main_sdformat_off
+BEGIN
+	main.ed_sdformat.disable
+	main.bn_sdformat.disable
+END
+
+SCRIPT main_cvformat_on
+BEGIN
+	main.ed_cvformat.enable
+	main.bn_cvformat.enable
+END
+
+SCRIPT main_cvformat_off
+BEGIN
+	main.ed_cvformat.disable
+	main.bn_cvformat.disable
+END
+
+SCRIPT main_semeanformat_on
+BEGIN
+	main.ed_semeanformat.enable
+	main.bn_semeanformat.enable
+END
+
+SCRIPT main_semeanformat_off
+BEGIN
+	main.ed_semeanformat.disable
+	main.bn_semeanformat.disable
+END
+
+SCRIPT main_minformat_on
+BEGIN
+	main.ed_minformat.enable
+	main.bn_minformat.enable
+END
+
+SCRIPT main_minformat_off
+BEGIN
+	main.ed_minformat.disable
+	main.bn_minformat.disable
+END
+
+SCRIPT main_maxformat_on
+BEGIN
+	main.ed_maxformat.enable
+	main.bn_maxformat.enable
+END
+
+SCRIPT main_maxformat_off
+BEGIN
+	main.ed_maxformat.disable
+	main.bn_maxformat.disable
+END
+
+PROGRAM opt_priors_output
+BEGIN
+	if opt.rb_equal {
+		put "priors(equal)"
+	}
+	if opt.rb_proportional {
+		put "priors(proportional)"
+	}
+	if opt.rb_matrix {
+		put "priors("
+		put opt.lb_matname
+		put ")"
+	}
+END
+
+PROGRAM main_pp_output
+BEGIN
+	option main.ck_strat
+	option main.ck_unstrat
+END
+
+PROGRAM command
+BEGIN
+	put "estat "
+	put main.lb_subcmd
+	INCLUDE _ifin_pr
+	INCLUDE _weights_pr
+	beginoptions
+		// classtable options
+		if main.lb_subcmd.iseq("classtable") {
+			put " " main.cb_cltbltype
+			put " " /program opt_priors_output
+			option opt.ck_nopriors
+			optionarg /hidedefault opt.cb_ties
+			optionarg opt.ed_title
+			option opt.ck_probs
+			option opt.ck_nopcts
+			option opt.ck_nototals
+			option opt.ck_norow
+			option opt.ck_nocol
+		}
+
+		// errorrate options
+		if main.lb_subcmd.iseq("errorrate") {
+			put " " main.cb_errtbltype
+			if main.rb_pp {
+				put "pp"
+				if main.ck_strat | main.ck_unstrat {
+					put "("
+					put /program main_pp_output
+					put ")"
+				}
+			}
+			put " " /program opt_priors_output
+			option opt.ck_nopriors
+			optionarg /hidedefault opt.cb_ties
+			optionarg opt.ed_errtitle
+			option opt.ck_errnototal
+		}
+
+		// grsummarize options
+		if main.lb_subcmd.iseq("grsummarize") {
+			if main.ck_n {
+				if main.ed_nformat {
+					optionarg main.ed_nformat
+				}
+				else {
+					option main.ck_n
+				}
+			}
+
+			if main.ck_mean {
+				if main.ed_meanformat {
+					optionarg main.ed_meanformat
+				}
+				else {
+					option main.ck_mean
+				}
+			}
+
+			if main.ck_median {
+				if main.ed_medianformat {
+					optionarg main.ed_medianformat
+				}
+				else {
+					option main.ck_median
+				}
+			}
+
+			if main.ck_sd {
+				if main.ed_sdformat {
+					optionarg main.ed_sdformat
+				}
+				else {
+					option main.ck_sd
+				}
+			}
+
+			if main.ck_cv {
+				if main.ed_cvformat {
+					optionarg main.ed_cvformat
+				}
+				else {
+					option main.ck_cv
+				}
+			}
+
+			if main.ck_semean {
+				if main.ed_semeanformat {
+					optionarg main.ed_semeanformat
+				}
+				else {
+					option main.ck_semean
+				}
+			}
+
+			if main.ck_min {
+				if main.ed_minformat {
+					optionarg main.ed_minformat
+				}
+				else {
+					option main.ck_min
+				}
+			}
+
+			if main.ck_max {
+				if main.ed_maxformat {
+					optionarg main.ed_maxformat
+				}
+				else {
+					option main.ck_max
+				}
+			}
+
+			option opt.ck_grnototal
+			option opt.ck_transpose
+		}
+
+		// list options
+		if main.lb_subcmd.iseq("list") {
+			option main.ck_misclassified
+
+			if main.ck_format {
+				require main.ed_format
+			}
+			if ! main.ck_noclass | main.ck_looclass |	///
+			   ! main.ck_notrue | ! main.ck_nostar |	///
+			   ! main.ck_nolabel | main.ed_format {
+				put " classification("
+				put /program classification_output
+				put ")"
+			}
+
+			if main.ck_prformat {
+				require main.ed_prformat
+			}
+			if ! main.ck_nopr | main.ck_loopr | main.ed_prformat {
+				put " probabilities("
+				put /program probabilities_output
+				put ")"
+			}
+
+			if main.ck_vlformat & main.ck_vlformat.isenabled() {
+				require main.ed_vlformat
+			}
+			if main.ck_varlist {
+				put " varlist"
+				if main.rb_last | main.ck_vlformat {
+					put "("
+					put /program varlist_output
+					put ")"
+				}
+			}
+
+			put " " main.cb_obs
+
+			if main.ck_idformat {
+				require main.vl_idvar
+				require main.ed_idformat
+			}
+			if main.vl_idvar.isneq("") {
+				put " id("
+				put /program id_output
+				put ")"
+			}
+
+			if opt.ck_weight {
+				put " weight"
+				if opt.ck_wformat {
+					require opt.ed_wformat
+				}
+				if opt.ck_wnone | opt.ed_wformat.isneq("") {
+					put "("
+						put /program opt_weights_output
+					put ")"
+				}
+			}
+
+			put " " /program opt_priors_output
+			optionarg /hidedefault opt.cb_ties
+			optionarg /hidedefault opt.sp_sep
+		}
+
+		// summarize options
+		if main.lb_subcmd.iseq("summarize") {
+			option main.ck_labels
+			option main.ck_noheader
+			option main.ck_noweights
+		}
+	endoptions
+END

@@ -1,0 +1,13 @@
+/*
+	predict (after cnreg)
+
+*!  VERSION 1.0.0  01apr2005
+
+*/
+
+VERSION 9.0
+
+INCLUDE tobit_common_p
+
+HELP hlp1, view("help cnreg postestimation")
+RESET res1

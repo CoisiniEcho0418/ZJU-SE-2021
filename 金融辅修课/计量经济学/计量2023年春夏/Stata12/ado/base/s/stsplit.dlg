@@ -1,0 +1,27 @@
+/*
+    stsplit
+
+*!  VERSION 2.1.1  29may2009
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_large
+DEFINE _dlght 405
+INCLUDE header
+
+HELP hlp1, view("help stsplit")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	create BOOLEAN isMI
+	isMI.setfalse
+END
+
+DIALOG main, tabtitle("Main")					///
+	label("stsplit - Split time-span records")
+BEGIN
+
+INCLUDE stsplit

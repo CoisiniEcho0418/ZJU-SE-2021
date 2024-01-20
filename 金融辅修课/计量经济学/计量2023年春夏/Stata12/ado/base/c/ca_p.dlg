@@ -1,0 +1,66 @@
+/*
+	predict (after ca)
+
+*!  VERSION 1.0.2  28mar2005
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help ca postestimation")
+RESET res1
+
+DIALOG main, label("predict - Prediction after estimation") tabtitle("Main")
+BEGIN
+  TEXT     tx_var		_lft	_top	_vnwd	.,		///
+	label("New variables:")
+  EDIT     ed_var		@	_ss	@	.,		///
+	label("New variables") max(32)
+
+  DEFINE _x  _lft2
+  DEFINE _y  _top
+  DEFINE _cx _cwd1
+  INCLUDE _type
+
+  GROUPBOX gb_produce		_lft	_ls	_iwd	_ht11,		///
+	label("Produce:")
+  RADIO    rb_fit		_ilft	_ss	_ibwd	.,	first	///
+	option(fit) label("Fitted values")
+  RADIO    rb_rowscore		@	_ms	@	.,		///
+  	onclickon(main.en_rowscore.enable)				///
+  	onclickoff(main.en_rowscore.disable)				///
+	label("Row score for dimension #:")
+  EDIT     en_rowscore	       _indent2	_ss	_en7wd	.,		///
+	option(rowscore) label("Row score for dimension #")
+  RADIO    rb_colscore		_ilft	_ms	_ibwd	.,	last	///
+  	onclickon(main.en_colscore.enable)				///
+  	onclickoff(main.en_colscore.disable)				///
+	label("Column score for dimension #:")
+  EDIT     en_colscore	       _indent2	_ss	_en7wd	.,		///
+	option(colscore) label("Column score for dimension #")
+END
+
+INCLUDE _p_gentype_sc
+INCLUDE ifin
+INCLUDE _type_list_all
+
+PROGRAM command
+BEGIN
+	put "predict "
+	put " " /program _p_gentype_output
+	INCLUDE _ifin_pr
+	beginoptions
+		option main.rb_fit
+		if main.rb_rowscore {
+			require main.en_rowscore
+			optionarg main.en_rowscore
+		}
+		if main.rb_colscore {
+			require main.en_colscore
+			optionarg main.en_colscore
+		}
+	endoptions
+END

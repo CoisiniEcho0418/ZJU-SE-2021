@@ -1,0 +1,6 @@
+*! version 1.0.0  22dec2002
+sequence 5412
+label "edkbackground"
+
+* 5445 C-
+set rgb "178 191 203"

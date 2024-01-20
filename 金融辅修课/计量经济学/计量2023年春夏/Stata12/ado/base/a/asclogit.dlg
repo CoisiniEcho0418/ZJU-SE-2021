@@ -1,0 +1,178 @@
+/*
+  asclogit
+
+*!  VERSION 1.0.8  15may2011
+
+  keyword:  eclass
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_xlarge
+DEFINE _dlght 340
+INCLUDE header
+
+HELP hlp1, view("help asclogit")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+        script se_createAsAsclogit
+END
+
+SCRIPT POSTINIT
+BEGIN
+	script max_setListNoBHHH
+END
+
+SCRIPT main_PREINIT
+BEGIN
+	script _constraints_main_setOptionalOn
+END
+
+DIALOG main, tabtitle("Model")						///
+	title("asclogit - Alternative-specific conditional logit (McFadden's choice) model")
+BEGIN
+  INCLUDE _dviv
+
+  TEXT     tx_case		_lft	_ls	_vnwd	.,		///
+	label("Case variable:")
+  DEFINE holdy @y
+  VARNAME  vn_case		@	_ss	@	.,		///
+	label("Case variable") option(case)
+
+  TEXT     tx_casevars		_vlx	holdy	_vlwd	.,		///
+	label("Case-specific variables: (optional)")
+  VARLIST  vl_casevars		@	_ss	_vlwd	.,		///
+	label("Case-specific variables") option(casevars) 		///
+	allowcat
+
+  TEXT     tx_alternatives	_lft	_ls	_vnwd	.,		///
+	label("Alternatives variable:")
+  DEFINE holdy @y
+  VARNAME  vn_alternatives	@	_ss	@	.,		///
+	label("Alternatives variable")					///
+	option(alternatives)
+
+  TEXT     tx_offset 		_vlx	holdy	_vnwd	.,		///
+	label("Offset variable:")				
+  VARNAME  vn_offset 		@	_ss	@	.,		///
+	label("Offset variable")					///
+	option(offset)
+
+  CHECKBOX ck_noconstant	_lft	_ls	_iwd	.,		///
+	option(noconstant) label("Suppress alternative-specific constant terms")
+  CHECKBOX ck_altwise		_lft	_ms	_iwd	.,		///
+	option(altwise) label("Use alternativewise deletion")
+  CHECKBOX ck_basealt		_lft	_ms	_iwd	.,		///
+	onclickon(script basealt_on)					///
+	onclickoff(script basealt_off)					///
+	label("Specify alternative to normalize location")
+
+  EDIT     ed_basealt	       _indent2	_ss	_en14wd	.,		///
+  	label("Base alternative") option(basealternative)
+  TEXT     tx_basealt		_en14sep @	120	.,		///
+	label("Base alternative")
+
+  DEFINE _x _lft
+  DEFINE _y _ls
+  DEFINE _cx _lw80
+  DEFINE _bux _slw80
+  INCLUDE _constraints
+  
+  DEFINE _x _lft
+  DEFINE _xw _iwd
+  INCLUDE _ck_collinear
+END
+
+INCLUDE _constraints_sc 
+
+SCRIPT basealt_on
+BEGIN
+	main.ed_basealt.enable
+	main.tx_basealt.enable
+END
+
+SCRIPT basealt_off
+BEGIN
+	main.ed_basealt.disable
+	main.tx_basealt.disable
+END
+
+INCLUDE byifin
+INCLUDE weights_fpi
+INCLUDE se
+
+SCRIPT rpt_POSTINIT
+BEGIN
+	create STRING rpt_bu_fmtcoefResults
+	program rpt_bu_fmtcoef_ckResults
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr2b
+  DEFINE _y _top
+  INCLUDE _sp_level
+  
+  RADIO    rb_default	_lft	_ls	_cwd1	.,			///
+	first								///
+	label("Report coefficients (default)")
+  RADIO    rb_or	@	_ss	@	.,			///
+	last								///
+	label("Report odds ratios")					///
+	option(or) 
+
+  CHECKBOX ck_header	_lft	_ms	_iwd	.,			///
+  	label("Do not display header on coefficient table")		///
+  	option(noheader)
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _nocnsreport
+
+  DEFINE _x _lft
+  DEFINE _y _ls
+  INCLUDE _bu_coef_table_reporting
+END
+
+INCLUDE fmt_coef_table_reporting_pr
+INCLUDE max_ml
+
+PROGRAM command
+BEGIN
+	put /program by_output " "
+	put "asclogit "
+	varlist main.vn_dv [main.vl_iv]
+	put " " /program ifin_output
+	put " " /program weights_output	
+	beginoptions
+		require main.vn_case
+		optionarg main.vn_case
+		require main.vn_alternatives
+		optionarg main.vn_alternatives
+		optionarg main.vl_casevars
+		optionarg main.vn_offset
+		option main.ck_noconstant
+		option main.ck_altwise
+		if main.ck_basealt {
+			require main.ed_basealt
+			optionarg main.ed_basealt
+		}
+
+		INCLUDE _constraints_main_pr
+		option main.ck_collinear
+		
+		put " " /program se_output
+
+		optionarg /hidedefault rpt.sp_level
+		option rpt.rb_or
+		option rpt.ck_header
+		INCLUDE _nocnsreport_pr
+		put " " rpt_bu_fmtcoefResults
+		put " " /program max_output
+	endoptions
+END

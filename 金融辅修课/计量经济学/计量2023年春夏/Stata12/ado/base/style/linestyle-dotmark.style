@@ -1,0 +1,6 @@
+*! version 1.0.0  05may2004
+sequence 3529
+
+set width    scheme dotmark 
+set color    scheme dotmarkline 
+set pattern  scheme dotmark 

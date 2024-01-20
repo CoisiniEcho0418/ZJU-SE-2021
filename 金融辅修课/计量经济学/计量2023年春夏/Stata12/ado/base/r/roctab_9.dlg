@@ -1,0 +1,205 @@
+/*
+  roctab_9
+
+*!  VERSION 1.1.4  20aug2006  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+
+HELP hlp1, view("help roctab")
+RESET res1
+
+DIALOG main, label("roctab - Nonparametric receiver operating characteristic analysis") /*
+		*/ tabtitle("Main")
+BEGIN
+  TEXT     tx_varr         _lft      _top      _cwd1     .,		/*
+		*/label("Reference variable:")
+  TEXT     tx_varc         _lft4_2   @         @         .,		/*
+  		*/label("Classification variable:")			/*
+  		*/
+DEFINE holdy @y
+  VARNAME  vn_varr         _lft      _ss       _vnwd     .,             /*
+  		*/label("Reference variable")
+  VARNAME  vn_varc         _lft4_2   @         @         .,		/*
+  		*/label("Classification variable")
+
+  TEXT     tx_note1        _lft2     holdy      _cwd3     .,		///
+  	label(`"Note: graph tabs active only when "Graph the ROC curve""')
+  TEXT     tx_note2        _lft2     _vss       _cwd3     .,		///
+  	label(`"is checked."')
+
+  GROUPBOX gb_opt          _lft      +35       _iwd      _ht25,        /*
+  		*/label("Options")
+  CHECKBOX ck_lorenz       _indent   _ss       _cwd3_1   .,		/*
+  		*/ label("Report Gini and Pietra indices")		/*
+  		*/ option("lorenz")					/*
+		*/ clickon("program lorenz_on")				/*
+		*/ clickoff("program lorenz_off")
+DEFINE _x @x
+  GROUPBOX gb_ste          _ilft     _ms       _ibwd      _ht2,         /*
+  		*/label("Method for calculating standard errors")
+  RADIO    rb_delong       _indent   _ss       _cwd4_4    .,		/*
+ 		*/label("DeLong")					/*
+  		*/option("NONE")					/*
+		*/first
+  RADIO    rb_bamber       _ilft4_2  @         _cwd4_2    .,		/*
+  		*/label("Bamber")					/*
+  		*/option("bamber")					/*
+		*/
+  RADIO    rb_hanley       _ilft4_3  @         _cwd4_4    .,		/*
+  		*/ label("Hanley")					/*
+  		*/ option("hanley")					/*
+  		*/ last
+  CHECKBOX ck_binom        _x        _xls      _cwd2      .,		/*
+  		*/ label("Calculate exact binomial confidence intervals") /*
+  		*/ option("binomial")
+  CHECKBOX ck_detail       _lft2     @         _cwd2      .,		/*
+  		*/ option("detail")					/*
+		*/ label("Show details on sensitivity/specificity for each cutpoint")
+  CHECKBOX ck_table        _x        _ms       @          .,		/*
+  		*/label("Display the raw data in a 2 x k contingency table")/*
+  		*/ option("table")
+  DEFINE _y _ls
+  DEFINE _cx _sprb
+  INCLUDE _sp_level
+
+  CHECKBOX ck_graph        _ilft     _ls       _ibwd     _ht5,		/*
+  		*/ groupbox						/*
+  		*/ clickon(program graph_on)				/*
+		*/ clickoff("program graph_off")			/*
+  		*/ label("Graph the ROC curve")				/*
+		*/ option("graph")
+  CHECKBOX ck_noref        _indent   _ms       _cwd3     .,		/*
+  		*/label("Suppress plotting the 45-degree reference line")/*
+		*/clickon("program check_noref")			/*
+		*/clickoff("program check_noref")			/*
+  		*/option("norefline")
+DEFINE holdx @x
+  CHECKBOX ck_spec         _lft2     @         _cwd3     .,		/*
+  		*/option(specificity)					/*
+  		*/label("Graph specificity instead of (1 - specificity)")
+  CHECKBOX ck_summ         holdx     _ms       @         .,		/*
+  		*/label("Report the area under the ROC curve")		/*
+  		*/option("summary")
+
+END
+
+INCLUDE ifin
+INCLUDE weights_f
+INCLUDE p1_opts
+INCLUDE line_opts
+INCLUDE addplot
+INCLUDE gr_twoway
+
+SCRIPT PREINIT
+BEGIN
+	script p1_opts_createAsNoRange
+	script p1_opts_setDefaultConnected
+END
+
+PROGRAM check_noref
+BEGIN
+	if main.ck_graph {
+		if ! main.ck_noref {
+			call script line_opts_enable
+		}
+		if !H(main.ck_noref) & main.ck_noref {
+			call script line_opts_disable
+		}
+	}
+END
+
+PROGRAM graph_on
+BEGIN
+	if ! main.ck_lorenz {
+		call gaction main.ck_noref.enable
+	}
+	call gaction main.ck_summ.enable
+	call gaction main.ck_spec.enable
+
+	call script p1_opts_enable
+	if ! main.ck_lorenz {
+		call program check_noref
+	}
+	call script addplot_enable
+	call script gr_twoway_enable
+END
+
+PROGRAM graph_off
+BEGIN
+	call gaction main.ck_noref.disable
+	call gaction main.ck_summ.disable
+	call gaction main.ck_spec.disable
+
+	call script p1_opts_disable
+	call script line_opts_disable
+	call script addplot_disable
+	call script gr_twoway_disable
+END
+
+PROGRAM lorenz_on
+BEGIN
+	call gaction main.gb_ste.disable
+	call gaction main.rb_hanley.disable
+	call gaction main.rb_delong.disable
+	call gaction main.rb_bamber.disable
+	call gaction main.ck_binom.disable
+	if main.ck_graph {
+    		call gaction main.ck_noref.disable
+    		call gaction main.ck_spec.disable
+		call script grlopts_disable
+	}
+END
+
+PROGRAM lorenz_off
+BEGIN
+	call gaction main.gb_ste.enable
+	call gaction main.rb_hanley.enable
+	call gaction main.rb_delong.enable
+	call gaction main.rb_bamber.enable
+	call gaction main.ck_binom.enable
+	if main.ck_graph {
+		call gaction main.ck_noref.enable
+		call gaction main.ck_spec.enable
+		if ! main.ck_noref {
+			call script grlopts_enable
+		}
+	}
+END
+
+PROGRAM command
+BEGIN
+	put "roctab "
+	varlist main.vn_varr
+	varlist main.vn_varc
+	INCLUDE _weights_pr
+	INCLUDE _ifin_pr
+	beginoptions
+	        option main.ck_lorenz
+		if !(main.ck_lorenz) {
+			option radio(main rb_delong rb_bamber rb_hanley)
+			option main.ck_binom
+		}
+		option main.ck_detail
+		option main.ck_table
+		INCLUDE _level_main_pr
+		option main.ck_graph
+		if main.ck_graph {
+			option main.ck_spec
+			if !(main.ck_lorenz){
+				option main.ck_noref
+			}
+			option main.ck_summ
+		}
+
+		call p1_opts_specialOutput.setstring "plotopts"
+		put " " /program p1_opts_special_output
+		put " " /program line_opts_rlopts_output
+		put " " /program addplot_output
+		put " " /program gr_twoway_output
+	endoptions
+END

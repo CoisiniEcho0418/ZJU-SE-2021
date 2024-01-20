@@ -1,0 +1,338 @@
+/*
+  tsfilter
+
+*!  VERSION 1.0.5  14mar2011
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_large /* DO NOT CHANGE WIDTH UNLESS YOU CHANGE -setposition- */
+DEFINE _dlght 380 
+INCLUDE header
+
+HELP hlp1, view("help tsfilter")
+RESET res1
+
+PROGRAM POSTINIT_PROGRAM
+BEGIN
+	if __MESSAGE.iseq("-bk-") {
+		call main.rb_bk.seton
+	}
+	if __MESSAGE.iseq("-cf-") {
+		call main.rb_cf.seton
+	}
+	if __MESSAGE.iseq("-bw-") {
+		call main.rb_bw.seton
+	}
+	if __MESSAGE.iseq("-hp-") {
+		call main.rb_hp.seton
+	}
+END
+
+DIALOG main, tabtitle("Main")						///
+	title("tsfilter - Filter for cyclical components")
+BEGIN
+  DEFINE _x _xsetbu
+  DEFINE _y _top
+  INCLUDE _bu_tsset
+  BUTTON bu_xtset		240	_top	_setbuwd .,		///
+	onpush(script show_xtset)					///
+	label("Panel settings...")
+
+  GROUPBOX gb_filter		_lft	_ms	_iwd	_ht2,		///
+	label("Filter")
+  DEFINE holdy @y
+  RADIO	rb_bk			_indent	_ss	90	., first	///
+	onclickon("script main_bk_on")					///
+	option("bk")							///
+	label("Baxter-King")
+  RADIO	rb_cf			+95	@	140	.,		///
+	onclickon("script main_cf_on")					///
+	option("cf")							///
+	label("Christiano-Fitzgerald")
+  RADIO	rb_bw			+145	@	90	.,		///
+	onclickon("script main_bw_on")					///
+	option("bw")							///
+	label("Butterworth")
+  RADIO	rb_hp			+95	@	120	., last		///
+	onclickon("script main_hp_on")					///
+	option("hp")							///
+	label("Hodrick-Prescott")
+
+  TEXT tx_vars			_lft	_xls	_iwd	.,		///
+	label("Original series:")
+  VARLIST vl_vars		@	_ss	@	.,		///
+	ts								///
+	label("Original series")
+  
+  TEXT tx_stub_or_var		@	_ls	@	.,		///
+	label("New variable names/stub*:")
+  EDIT ed_stub_or_var		@	_ss	@	.,		///
+	label("New variable names/stub*:")
+
+  TEXT tx_type			@	_ls	_vnwd	.,		///
+	label("Variable type:")
+  COMBOBOX cb_type		@	_ss	@	.,		///
+	label("Type") dropdownlist contents(type)			///
+	onselchangelist(main_type_actions) default(c(type))
+
+  GROUPBOX gb_opts		_lft	_ls	_iwd	_ht6h,		///
+	label("Filter settings")
+  TEXT tx_minperiod		_ilft	_ss	_vnwd	.,		///
+	label("Minimum period:")
+  DEFINE holdy4 @y
+  EDIT ed_minperiod		@	_ss	@	.,		///
+	numonly								///
+	option("minperiod")						///
+	label("Minimum period")
+  TEXT tx_smooth		@	holdy4	_vnwd	.,		///
+	label("Smoothing parameter:")
+  DEFINE holdy5 @y
+  EDIT ed_smooth		@	_ss	@	.,		///
+	numonly								///
+	option("smooth")						///
+	label("Smoothing parameter")
+
+  TEXT tx_maxperiod		+170	holdy5	@	.,		///
+	label("Maximum period:")
+  EDIT ed_maxperiod		@	_ss	@	.,		///
+	numonly								///
+	option("maxperiod")						///
+	label("Maximum period")
+  TEXT tx_maorder		@	holdy5	_vnwd	.,		///
+	label("Moving average order:")
+  SPINNER sp_maorder		@	_ss	_spwd	.,		///
+	option("maorder")						///
+	default("2")							///
+	label("Moving average order")
+
+  TEXT tx_smaorder		+115	holdy5	160	.,		///
+	label("Symmetric moving average:")
+  SPINNER sp_smaorder		@	_ss	_spwd	.,		///
+	option("smaorder")						///
+	label("Symmetric moving average")
+  CHECKBOX ck_stationary 	_ilft	_ls	_ivlwd	.,		///
+	option("stationary")						///
+	label("Use calculations for a stationary time series")
+  CHECKBOX ck_drift 		_ilft	_ms	@	.,		///
+	option("drift")							///
+	label("Remove drift from the time series")
+END
+
+SCRIPT show_xtset
+BEGIN
+	create CHILD xtset
+END
+
+SCRIPT main_bk_on
+BEGIN
+	main.gb_opts.setposition . . 480 100 
+	main.tx_minperiod.show
+	main.ed_minperiod.show
+	main.tx_smooth.hide
+	main.ed_smooth.hide
+	main.tx_maxperiod.show
+	main.ed_maxperiod.show
+	main.tx_maxperiod.setposition 160 . . .
+	main.ed_maxperiod.setposition 160 . . .
+	main.tx_maorder.hide
+	main.sp_maorder.hide
+	main.tx_smaorder.show
+	main.sp_smaorder.show
+	main.ck_stationary.show
+	main.ck_drift.hide
+END
+
+SCRIPT main_cf_on
+BEGIN
+	main.gb_opts.setposition . . 480 120
+	main.tx_minperiod.show
+	main.ed_minperiod.show
+	main.tx_smooth.hide
+	main.ed_smooth.hide
+	main.tx_maxperiod.show
+	main.ed_maxperiod.show
+	main.tx_maxperiod.setposition 160 . . .
+	main.ed_maxperiod.setposition 160 . . .
+	main.tx_maorder.hide
+	main.sp_maorder.hide
+	main.tx_smaorder.show
+	main.sp_smaorder.show
+	main.ck_stationary.show
+	main.ck_drift.show
+END
+
+SCRIPT main_bw_on
+BEGIN
+	main.gb_opts.setposition . . 275 70
+	main.tx_minperiod.hide
+	main.ed_minperiod.hide
+	main.tx_smooth.hide
+	main.ed_smooth.hide
+	main.tx_maxperiod.show
+	main.ed_maxperiod.show
+	main.tx_maxperiod.setposition 20 . . .
+	main.ed_maxperiod.setposition 20 . . .
+	main.tx_maorder.show
+	main.sp_maorder.show
+	main.tx_maorder.setposition 160 . . .
+	main.sp_maorder.setposition 160 . . .
+	main.tx_smaorder.hide
+	main.sp_smaorder.hide
+	main.ck_stationary.hide
+	main.ck_drift.hide
+END
+
+SCRIPT main_hp_on
+BEGIN
+	main.gb_opts.setposition . . 275 70
+	main.tx_minperiod.hide
+	main.ed_minperiod.hide
+	main.tx_smooth.show
+	main.ed_smooth.show
+	main.tx_maxperiod.hide
+	main.ed_maxperiod.hide
+	main.tx_maorder.hide
+	main.sp_maorder.hide
+	main.tx_smaorder.hide
+	main.sp_smaorder.hide
+	main.ck_stationary.hide
+	main.ck_drift.hide
+END
+
+INCLUDE _type_list_fd
+INCLUDE ifin
+
+DIALOG trend, tabtitle("Trend")
+BEGIN
+  GROUPBOX gb_trend 		_lft	_top	_iwd	_ht4,		///
+	label("Save trends in new variables")
+  TEXT tx_tr_type		_ilft	_ss	_vnwd	.,		///
+	label("Variable type:")
+  DEFINE holdy @y
+  COMBOBOX cb_tr_type		@	_ss	@	.,		///
+	label("Type") dropdownlist contents(type)			///
+	onselchangelist(main_type_actions) default(c(type))
+  TEXT tx_trend			_vlx	holdy	_ivlwd	.,		///
+	label("New variable names/stub*:")
+  EDIT ed_trend			@	_ss 	@	.,		///
+	label("New variable name/stub*")
+END
+
+PROGRAM trend_output
+BEGIN
+	if trend.ed_trend {
+		put "trend("
+		if ! trend.cb_tr_type.isdefault() {
+			put trend.cb_tr_type " "
+			put "(" trend.ed_trend "))"
+		}
+		else {
+			put trend.ed_trend ")"
+		}
+	}
+END
+
+DIALOG gain, tabtitle("Gain")
+BEGIN
+  GROUPBOX gb_gain 		_lft	_top	_iwd	_ht9,		///
+	label("Save gain and angular frequency in new variables")
+  TEXT tx_g_type		_ilft	_ss	_vnwd	.,		///
+	label("Variable type:")
+  DEFINE holdy2 @y
+  COMBOBOX cb_g_type		@	_ss	@	.,		///
+	label("Type") dropdownlist contents(type)			///
+	onselchangelist(main_type_actions) default(c(type))
+  TEXT tx_gain1			_vlx	holdy2	_ivlwd	.,		///
+	label("New gain variable name:")
+  EDIT ed_gain1			@	_ss	_vnwd	.,		///
+	label("New gain variable name")
+  TEXT tx_f_type		_ilft	_ls	_vnwd	.,		///
+	label("Variable type:")
+  DEFINE holdy3 @y
+  COMBOBOX cb_f_type		@	_ss	@	.,		///
+	label("Type") dropdownlist contents(type)			///
+	onselchangelist(main_type_actions) default(c(type))
+  TEXT tx_gain2			_vlx	holdy3	_ivlwd	.,		///
+	label("New frequency variable name:")
+  EDIT ed_gain2			@	_ss	_vnwd	.,		///
+	label("New frequency variable name")
+END
+
+PROGRAM gain_output
+BEGIN
+	put "gain("
+	if ! gain.cb_g_type.isdefault() {
+		put gain.cb_g_type " "
+	}
+	put gain.ed_gain1 " "
+	if ! gain.cb_f_type.isdefault() {
+		put gain.cb_f_type " "
+	}
+	put gain.ed_gain2 ")"
+END
+
+PROGRAM command
+BEGIN
+	put "tsfilter "
+	option radio(main rb_bk rb_bw rb_cf rb_hp)
+	require main.vl_vars
+	if ! main.cb_type.isdefault() {
+		put " " main.cb_type " ("
+		require main.ed_stub_or_var
+		put main.ed_stub_or_var ") ="
+	}
+	else {
+		require main.ed_stub_or_var
+		put main.ed_stub_or_var " ="
+	}
+	varlist [main.vl_vars]
+	put " " /program ifin_output
+	beginoptions
+		if main.ed_minperiod {
+			if main.ed_minperiod.islt("2") {
+				stopbox stop "Invalid minimum period."	///
+`""Minimum period" must be greater than or equal to 2."'
+			}
+			if main.ed_maxperiod &				///
+				main.ed_minperiod.isgt(main.ed_maxperiod) {
+				stopbox stop "Invalid minimum period."	///
+`""Minimum period" must be less than maximum period."'
+			}
+		}
+		if main.ed_maxperiod {
+			if main.ed_maxperiod.islt("2") {
+				stopbox stop "Invalid maximum period."	///
+`""Maximum period" must be greater than or equal to 2."'
+			}
+		}
+		if main.ed_maxperiod {
+			if main.ed_maxperiod.islt("2") {
+				stopbox stop "Invalid maximum period."	///
+`""Maximum period" must be greater than or equal to 2."'
+			}
+		}
+		if main.ed_smooth &					///
+				main.ed_smooth.islt("0") {
+				stopbox stop "Invalid smooth parameter." ///
+`""Smoothing parameter" must be greater than or equal to 0."'
+		}
+
+		optionarg main.ed_minperiod
+		optionarg main.ed_maxperiod
+		optionarg /hidedefault main.sp_maorder
+		optionarg /hidedefault main.sp_smaorder
+		optionarg /hidedefault main.ed_smooth
+
+		put " " /program trend_output
+		if gain.ed_gain1 | gain.ed_gain2 {
+			require gain.ed_gain1
+			require gain.ed_gain2
+			put " " /program gain_output
+		}
+		option main.ck_stationary
+		option main.ck_drift
+	endoptions
+END
+

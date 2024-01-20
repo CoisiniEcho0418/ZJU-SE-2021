@@ -1,0 +1,14 @@
+*! version 1.0.1  19dec2004
+sequence 3012
+
+set symbol     scheme ci2
+set size       scheme ci2
+set fillcolor  scheme ci2_symbol
+set linestyle  scheme ci2
+set angle      scheme
+
+set backsymbol  scheme none
+set backsize    scheme ci
+set backcolor   scheme ci_symbol
+set backline    scheme ci
+set backangle   scheme

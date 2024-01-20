@@ -1,0 +1,4 @@
+*! version 1.0.0  22dec2002
+sequence 230
+label "Medium green"
+set rgb "0 176 0"

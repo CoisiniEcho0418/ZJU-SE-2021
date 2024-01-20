@@ -1,0 +1,40 @@
+/*
+	kwallis
+
+*!  VERSION 1.1.1  09mar2005
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+INCLUDE header
+HELP hlp1, view("help kwallis")
+RESET res1
+
+DIALOG main, tabtitle("Main")	///
+	label("kwallis - Kruskal-Wallis equality-of-populations rank test")
+BEGIN
+  TEXT	   tx_var	_lft	_top	_iwd	.,	///
+	label("Outcome variable:")
+  VARNAME  vn_var	@	_ss	_vnwd	.,	///
+	label("Outcome variable")
+
+  TEXT	   tx_byopt	@	_ls	_iwd	.,	///
+	label("Variable defining groups:")
+  VARNAME  vn_byopt	@	_ss	_vnwd	., 	///
+	label("Variable defining groups") option(by)
+END
+
+INCLUDE ifin
+
+PROGRAM command
+BEGIN
+	put "kwallis "
+	varlist main.vn_var
+	require main.vn_byopt
+	INCLUDE _ifin_pr
+	beginoptions
+		optionarg main.vn_byopt
+	endoptions
+END

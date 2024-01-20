@@ -1,0 +1,4 @@
+*! version 1.0.0  22dec2002
+sequence 430
+label "Medium blue"
+set rgb "0 128 255"

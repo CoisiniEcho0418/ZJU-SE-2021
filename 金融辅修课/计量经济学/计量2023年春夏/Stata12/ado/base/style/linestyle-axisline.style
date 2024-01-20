@@ -1,0 +1,6 @@
+*! version 1.0.0  08nov2004
+sequence 3650
+
+set width    scheme axisline
+set color    scheme axisline
+set pattern  scheme axisline

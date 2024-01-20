@@ -1,0 +1,57 @@
+/*
+	mi reset
+
+*!  VERSION 1.0.1  25may2009
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_small
+DEFINE _dlght 170
+INCLUDE header
+HELP hlp1, view("help mi_reset")
+RESET res1
+
+DEFINE ewd  180
+DEFINE esep +190
+
+DIALOG main, label("mi reset - Reset imputed or passive variables") tabtitle("Main")
+BEGIN
+  TEXT tx_vars		_lft	_top	_iwd	.,			///
+	label("Variables:")	
+  VARLIST vl_vars	@	_ss	@	.,			///
+	label("Variables")
+  TEXT tx_exp		@	_ls	@	.,			///
+	label("Expression:")	
+  EXP ex_exp		@	_ss	@	.,			///
+	label("Create...")						///
+	error("Expression")
+
+  CHECKBOX ck_m		_lft	_ls	_iwd	.,			///
+	onclickon(main.ed_m.enable)					///
+	onclickoff(main.ed_m.disable)					///
+	label("Specify the values of m that are to be reset")
+  EDIT ed_m		_indent2 _ss	_vnwd	.,			///
+	numonly								///
+	option(m)							///
+	label("Specify the values of m that are to be reset")
+END
+
+INCLUDE if
+
+PROGRAM command
+BEGIN
+	put "mi reset "
+	varlist main.vl_vars
+	if main.ex_exp {
+		put " = " main.ex_exp
+	}
+	INCLUDE _if_pr
+	beginoptions
+		if (main.ck_m) {
+			require main.ed_m
+			optionarg main.ed_m
+		}
+	endoptions
+END

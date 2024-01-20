@@ -1,0 +1,128 @@
+/*
+  stmh
+
+*!  VERSION 1.1.1  25apr2007
+
+*/
+
+VERSION 8.0
+
+INCLUDE _std_large
+INCLUDE _ht330
+INCLUDE header
+
+HELP hlp1, view("help stmh")
+RESET res1
+
+DIALOG main, tabtitle("Main")	/*
+	*/label("stmh - Calculate rate ratios using Mantel-Haenszel method")
+BEGIN
+  /*--+----1----+----2----+----3----+----4----+----5----+----6----+----7----+*/ 
+  DEFINE  _x _xsetbu
+  DEFINE  _y _top
+  INCLUDE _bu_stset
+
+  TEXT     tx_var          _lft      _topph    _comb4_3 .,		/*
+  		*/label("Variables:")
+  VARLIST  vl_var          @         _ss       _iwd      .,		/*
+  		*/label("Variables")
+  GROUPBOX gb_opt          @         +35        @        _ht22,         /*
+  		*/label("Options")
+  CHECKBOX ck_by           _indent   _ss        _ibwd    .,		/*
+  		*/label("Group by:")					/*
+  		*/clickon(gaction main.vl_by.enable)			/*
+		*/clickoff(gaction main.vl_by.disable)
+  DEFINE holdx @x
+  VARLIST  vl_by           _indent2  _ss        _inwd    .,		/*
+  		*/label("Group by")					/*
+  		*/option("by")
+  CHECKBOX ck_comp         holdx     +35        _ibwd    _ht5h,		/*
+  		*/label("Compare categories of exposure variable by:")  /*
+  		*/clickon(script comp_on)  clickoff(script comp_off)	/*
+		*/groupbox
+
+  DEFINE holdy @y
+  COMBOBOX cb_comp1        _indent2  _ms        _vnwd    .,		/*
+  		*/label("numerator")					/*
+		*/contents(rules) dropdown
+  DEFINE holdx2 @x
+  TEXT     tx_comp1        _vnsep    @          _cwd4_4  .,		/*
+  		*/label("numerator")
+  COMBOBOX cb_comp2        _lft2     @          _vnwd    .,		/*
+  		*/label("denominator")					/*
+		*/contents(rules) dropdown
+  TEXT     tx_comp2        _vnsep    @          _cwd4_4  .,		/*
+  		*/label("denominator")
+  TEXT     tx_rul2         holdx2    _ss        _vlwd    .,		/*
+  */label("Edit rule formats above or construct your own.  Examples:")
+  TEXT     tx_rul4         @         _vss       @        .,		/*
+*/label(`""3"  or  "1/3 5 9"  or  "1/3 max"  or  "min 2 5/7" "')
+  DEFINE _y +45
+  DEFINE _x _lft2
+  DEFINE _cx _spr2b
+  INCLUDE _sp_level
+  GROUPBOX gb_miss         holdx     -10        _cwd2    _ht4,		/*
+  		*/label("Missing values are:") 
+  RADIO    rb_nomiss       _indent   _ss        _inwd    .,		/*
+	*/label("Excluded" )  /*
+  	*/option("NONE") first
+  RADIO    rb_miss         @         _ss        @        .,		/*
+		*/label("Included as extra categories")			/*
+  		*/option(missing) last
+END
+
+INCLUDE byifin
+
+LIST rules
+BEGIN
+  #
+  #/#
+  # #
+  #/# #
+END
+
+SCRIPT comp_on
+BEGIN
+  main.cb_comp1.enable
+  main.tx_comp1.enable
+  main.cb_comp2.enable
+  main.tx_comp2.enable
+  main.tx_rul2.enable
+  main.tx_rul4.enable
+END
+
+SCRIPT comp_off
+BEGIN
+  main.cb_comp1.disable
+  main.tx_comp1.disable
+  main.cb_comp2.disable
+  main.tx_comp2.disable
+  main.tx_rul2.disable
+  main.tx_rul4.disable
+END
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "stmh "
+	varlist main.vl_var
+	INCLUDE _ifin_pr
+	beginoptions
+		if main.ck_by {
+			require main.vl_by
+			optionarg main.vl_by
+		}
+		if main.ck_comp {
+			require main.cb_comp1
+			require main.cb_comp2
+			put "compare("
+			put main.cb_comp1
+			put ", "
+			put main.cb_comp2
+			put ")"
+		}
+		option radio(main rb_miss rb_nomiss)
+		INCLUDE _level_main_pr
+        endoptions
+END
+

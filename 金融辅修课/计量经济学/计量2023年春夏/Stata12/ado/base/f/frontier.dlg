@@ -1,0 +1,392 @@
+/*
+  frontier
+
+*!  VERSION 1.2.6  23aug2010
+
+  keyword:  eclass
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_large
+INCLUDE _ht340
+INCLUDE header
+HELP hlp1, view("help frontier")
+RESET res1
+
+DIALOG main, label("frontier - Stochastic frontier models") tabtitle("Model")
+BEGIN
+  TEXT tx_dv 		_lft	_top	_vnwd	.,			///
+	label("Dependent variable:")
+  VARNAME vn_dv		@ 	_ss	@	.,			///
+	label("Dependent variable")
+
+  TEXT tx_iv		_vlx	_top	160	.,			///
+	label("Independent variables:")
+  VARLIST vl_iv		@	_ss	_vlwd	.,			///
+	fv								///
+	allowcat							///
+	label("Independent variables")
+  CHECKBOX ck_nocons       @         _ms        @        .,		/*
+  		*/label("Suppress constant term")			/*
+  		*/option(noconstant)
+
+  GROUPBOX gb_dist         _lft      _xls       _iwd    _ht6,		/*
+  		*/label("Distribution of the inefficiency term")
+  TEXT     tx_tran         _lft2     _ss        _cwd2    .,		/*
+  		*/label("Use:")
+  DEFINE holdy @y
+  RADIO    rb_trans        _indent2  _ss        _inwd    .,		/*
+		*/label("Transformed log-likelihood") first		/*
+  		*/clickon(program trans_on) option(NONE)
+  RADIO    rb_untran       @         _ss        @        .,		/*
+		*/label("Untransformed log-likelihood")/*
+		*/option(utransformed) last clickon(program trans_off)
+  RADIO    rb_half         _ilft     holdy      _cwd2    .,		/*
+  		*/label("Half-normal distribution")			/*
+  		*/first clickon(program tnorm_off)			/*
+		*/option(distribution(hnormal))
+  RADIO    rb_expo         @         _ss        @        .,		/*
+  		*/label("Exponential distribution")			/*
+  		*/clickon(program tnorm_off)				/*
+		*/option(distribution(exponential))
+  RADIO    rb_tnor         @         _ss        @        .,		/*
+  		*/label("Truncated-normal distribution")		/*
+  		*/last clickon(program tnorm_on)			/*
+		*/option(distribution(tnormal))
+  CHECKBOX ck_cm           _lft      _xls       _iwd    _ht7, 		/*
+		*/label("Fit conditional mean model") groupbox		/*
+  		*/clickon(script cm_on) clickoff(script cm_off)
+  TEXT     tx_cov   _indent   _ms       _ibwd          .,		/*
+		*/ label("Covariates:")
+  VARLIST  vl_cm    @         _ss       _ibwd          .,		/*
+		*/label("Fit conditional mean model")			/*
+		*/allowcat fv
+  CHECKBOX ck_cmnocon  _ilft     _ms       @             .,		/*
+		*/ label("Suppress constant term") option(noconstant)
+END
+
+SCRIPT cm_on
+BEGIN
+	main.tx_cov.enable
+	main.vl_cm.enable
+	main.ck_cmnocon.enable
+END
+
+SCRIPT cm_off
+BEGIN
+	main.tx_cov.disable
+	main.vl_cm.disable
+	main.ck_cmnocon.disable
+END
+
+PROGRAM trans_on
+BEGIN
+	call gaction model2.ck_ufrom.show
+	call gaction model2.cb_ufrom.show
+	call gaction model2.bu_matinput.show
+	call script max_from_disable
+END
+
+PROGRAM trans_off
+BEGIN
+	call gaction model2.ck_ufrom.hide
+	call gaction model2.cb_ufrom.hide
+	call gaction model2.bu_matinput.hide
+	call script max_from_enable
+END
+
+PROGRAM tnorm_on
+BEGIN
+	call gaction main.tx_tran.show
+	call gaction main.rb_untran.show
+	call gaction main.rb_trans.show
+	call gaction main.ck_cm.show
+	call gaction main.tx_cov.show
+	call gaction main.vl_cm.show
+	call gaction main.ck_cmnocon.show
+	call gaction model2.ck_uhet.disable
+	call gaction model2.vl_uhet.disable
+	call gaction model2.ck_uhet2.disable
+	call gaction model2.ck_vhet.disable
+	call gaction model2.vl_vhet.disable
+	call gaction model2.ck_vhet2.disable
+	if main.rb_trans {
+		call gaction model2.ck_ufrom.show
+		call gaction model2.cb_ufrom.show
+		call gaction model2.bu_matinput.show
+		call script max_from_disable
+	}
+	if main.rb_untran{
+		call script max_from_enable
+		call gaction model2.ck_ufrom.hide
+		call gaction model2.cb_ufrom.hide
+		call gaction model2.bu_matinput.hide
+	}
+END
+
+PROGRAM tnorm_off
+BEGIN
+	call gaction model2.ck_uhet.enable
+	if model2.ck_uhet {
+		call gaction model2.vl_uhet.enable
+		call gaction model2.ck_uhet2.enable
+	}
+	call gaction model2.ck_vhet.enable
+	if model2.ck_vhet {
+		call gaction model2.vl_vhet.enable
+		call gaction model2.ck_vhet2.enable
+	}
+	call gaction model2.ck_ufrom.hide
+	call gaction model2.cb_ufrom.hide
+	call gaction model2.bu_matinput.hide
+	call script  max_from_enable
+	call gaction main.tx_tran.hide
+	call gaction main.rb_trans.hide
+	call gaction main.rb_untran.hide
+	call gaction main.ck_cm.hide
+	call gaction main.tx_cov.hide
+	call gaction main.vl_cm.hide
+	call gaction main.ck_cmnocon.hide
+END
+
+SCRIPT model2_PREINIT
+BEGIN
+	create STRING matrixResult
+
+	create STRING __const_tab
+	__const_tab.setvalue "model2"
+END
+
+DIALOG model2, tabtitle("Model 2")
+BEGIN
+  GROUPBOX gb_opts         _lft      _top       _iwd     _ht29,		///
+	label("Options")
+
+  DEFINE _x _ilft
+  DEFINE _y _ss
+  DEFINE _cx _ilw80
+  DEFINE _bux _islw80
+  INCLUDE _constraints
+
+  DEFINE _x _ilft
+  DEFINE _xw _ibwd
+  INCLUDE _ck_collinear
+
+  CHECKBOX ck_uhet         _ilft     _ls        _ibwd     .,		/*
+*/label("Explanatory variables for technical inefficiency variance function (uhet):")/*
+  		*/clickon(script uhet_on) clickoff(script uhet_off)	/*
+		*/option(uhet)
+  VARLIST  vl_uhet         _indent2  _ss        _inwd    .,		/*
+*/label("Technical inefficiency component skedastic function depends on (uhet)")/*
+		*/option(uhet) fv
+  CHECKBOX ck_uhet2        @         _ss        @        .,		/*
+*/label("Suppress the constant term for the technical inefficiency component (uhet)")/*
+  		*/option(noconstant)
+  CHECKBOX ck_vhet         _ilft     _ls        _ibwd     .,		/*
+*/label("Explanatory variables for idiosyncratic error variance function (vhet):")/*
+  		*/clickon(script vhet_on) clickoff(script vhet_off)	/*
+		*/option(vhet) 
+  VARLIST  vl_vhet         _indent2  _ss        _inwd    .,		/*
+*/label("Idiosyncratic error component skedastic function depends on")  /*
+  		*/option(vhet) fv
+  CHECKBOX ck_vhet2        @         _ss        @        .,		/*
+*/label("Suppress the constant term for the idiosyncratic error component")/*
+  		*/option(noconstant)
+  CHECKBOX ck_cost         _ilft     _ls        _cwd1    .,		/*
+		*/label("Fit cost frontier model")			/*
+  		*/option(cost)
+
+  CHECKBOX ck_ufrom        _ilft     _ms        _ilw100    .,		/*
+  	*/label("1xK matrix of untransformed starting values:")		/*
+  		*/clickon(gaction model2.cb_ufrom.enable) 		/*
+		*/clickoff(gaction model2.cb_ufrom.disable) 		/*
+		*/option(ufrom)
+  COMBOBOX cb_ufrom        _indent2  +25        _iibwd    .,		/*
+  	*/label("1xK Matrix of untransformed starting values")		/*
+  	*/contents(matrix) dropdown option(ufrom)
+  BUTTON   bu_matinput   _irj100     -25        100      .,		///
+  	label("Input matrix...") onpush(program show_matrix_input)	///
+	tooltip("Input matrix by hand")
+
+END
+
+INCLUDE _constraints_sc 
+
+PROGRAM show_matrix_input
+BEGIN
+	call create CHILD matrix_input
+	if ! _rc {
+		call matrix_input.setExitString matrixResult
+		call matrix_input.setExitAction "program getMatrixResult"
+		call matrix_input.callthru "isChildContext.settrue"
+	}
+END
+PROGRAM getMatrixResult
+BEGIN
+	call model2.cb_ufrom.repopulate
+	call model2.cb_ufrom.setvalue class matrixResult.value
+END
+
+SCRIPT uhet_on
+BEGIN
+	model2.vl_uhet.enable
+	model2.ck_uhet2.enable
+END
+
+SCRIPT uhet_off
+BEGIN
+	model2.vl_uhet.disable
+	model2.ck_uhet2.disable
+END
+
+SCRIPT vhet_on
+BEGIN
+	model2.vl_vhet.enable
+	model2.ck_vhet2.enable
+END
+
+SCRIPT vhet_off
+BEGIN
+	model2.vl_vhet.disable
+	model2.ck_vhet2.disable
+END
+
+INCLUDE byifin
+INCLUDE weights_fpi
+INCLUDE se
+
+SCRIPT PREINIT
+BEGIN
+	script se_createAsJknifeBstrapML
+	script se_setTitleSE
+END
+
+SCRIPT POSTINIT
+BEGIN
+	script max_setDefaultDifficult
+	script se_setRobust_off
+END
+
+SCRIPT rpt_POSTINIT
+BEGIN
+	create STRING rpt_bu_fmtcoefResults
+	program rpt_bu_fmtcoef_ckResults
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _y _top
+  DEFINE _cx _spr2
+  INCLUDE _sp_level
+
+  DEFINE _x _lft
+  DEFINE _y _ls
+  DEFINE _cx _iwd
+  INCLUDE _nocnsreport
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _noomitted
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _vsquish
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _factor_vars_reporting
+
+  DEFINE _x _lft
+  DEFINE _y _xxxls
+  INCLUDE _bu_coef_table_reporting
+END
+
+INCLUDE fmt_coef_table_reporting_pr
+
+INCLUDE max_ml
+
+PROGRAM uhet_sub
+BEGIN
+	put model2.vl_uhet
+	beginoptions
+		option model2.ck_uhet2
+	endoptions
+END
+
+PROGRAM vhet_sub
+BEGIN
+	put model2.vl_vhet
+	beginoptions
+		option model2.ck_vhet2
+	endoptions
+END
+
+PROGRAM cm_sub
+BEGIN
+	put main.vl_cm
+	beginoptions
+		option main.ck_cmnocon
+	endoptions
+END
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "frontier "
+	varlist main.vn_dv [main.vl_iv]
+	if !main.vl_iv & main.ck_nocons {
+	  stopbox stop `""Suppress constant term" is selected without independent variables."'
+	}
+	INCLUDE _weights_pr
+	INCLUDE _ifin_pr
+	beginoptions
+		option main.ck_nocons
+		if !main.rb_half{
+			option radio(main rb_half rb_expo rb_tnor)
+		}
+		if !main.rb_tnor{
+			if model2.ck_uhet {
+				require model2.vl_uhet
+				put "uhet("
+				put /program uhet_sub
+				put ") "
+			}
+			if model2.ck_vhet {
+				require model2.vl_vhet
+				put "vhet("
+				put /program vhet_sub
+				put ") "
+			}
+		}
+		if main.rb_tnor {
+			if main.ck_cm {
+				require main.vl_cm
+				put "cm("
+				put /program cm_sub
+				put ") "
+			}
+		}
+		option model2.ck_cost
+		optionarg model2.cb_constr
+		option model2.ck_collinear
+		if main.rb_trans{
+			if model2.ck_ufrom{
+				optionarg model2.cb_ufrom
+			}
+		}
+		option main.rb_untran
+		put " " /program se_output
+		optionarg /hidedefault rpt.sp_level
+		INCLUDE _nocnsreport_pr
+		INCLUDE _noomitted_pr
+		INCLUDE _vsquish_pr
+		INCLUDE _factor_vars_reporting_pr
+		put " " rpt_bu_fmtcoefResults
+		put " " /program max_output
+END

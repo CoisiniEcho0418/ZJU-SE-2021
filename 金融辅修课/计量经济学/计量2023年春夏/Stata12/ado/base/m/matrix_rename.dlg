@@ -1,0 +1,35 @@
+/*
+  matrix rename
+
+*!  VERSION 1.1.0  28mar2005
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_small
+INCLUDE header
+
+HELP hlp1, view("help matrix utility")
+RESET res1
+
+DIALOG main, label("matrix rename - Rename matrix") tabtitle("Main")
+BEGIN
+  TEXT     tx_oldname   _lft      _top      _iwd      .,		/*
+		*/ label("Rename matrix:")
+  LISTBOX  lb_oldname   @         _ss       @         _ht7,		/*
+		*/ contents(matrix)					/*
+		*/ label("Rename matrix")
+
+  TEXT     tx_newname   @         _vs7      @         .,		/*
+		*/ label("To new matrix name:")
+  EDIT     ed_newname   @         _ss       _vnwd     .,		/*
+		*/ label("To new matrix name")
+END
+
+PROGRAM command
+BEGIN
+	require main.lb_oldname main.ed_newname
+
+	put "matrix rename " main.lb_oldname " " main.ed_newname
+END

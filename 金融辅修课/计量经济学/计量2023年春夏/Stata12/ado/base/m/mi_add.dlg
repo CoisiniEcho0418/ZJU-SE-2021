@@ -1,0 +1,71 @@
+/*
+    mi_add
+
+*!  VERSION 1.0.1  03jul2009
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_mlarge
+INCLUDE _ht200
+INCLUDE header
+
+HELP hlp1, view("help mi_add")
+RESET res1
+
+DIALOG main, tabtitle("Main")	///
+	label("mi add - Add imputations from another mi dataset")
+BEGIN
+  TEXT tx_var		_lft	_top	_iwd	.,			///
+	label("Key variables: (match variables)")
+  VARLIST vl_varlist	@	_ss	@	.,			///
+	label("Key variables")
+  TEXT tx_filename	@	_ls	@	.,			///
+	label("Filename of dataset on disk:")
+  FILE fi_filename	@	_ss	@	.,			///
+	error("Filename of dataset on disk")				///
+	filter("Stata Dataset (*.dta)|*.dta|All Files (*.*)|*.*")	///
+	defext(dta) label("Browse...")
+
+  CHECKBOX ck_assert	@	+35	@	_ht4,			///
+	groupbox							///
+	onclickon("script main_ck_assert_on")				///
+	onclickoff("script main_ck_assert_off")				///
+	label("Assert")
+  RADIO rb_master	_indent	_ss	_inwd	., first		///
+	option(assert(master))						///
+	label("Every observation in the master dataset is also in the using")
+  RADIO rb_match	@	_ss	@	., last			///
+	option(assert(match))						///
+	label("Every observation in the master to the using and vice-versa")
+END
+
+SCRIPT main_ck_assert_on
+BEGIN
+	main.rb_master.enable
+	main.rb_match.enable
+END
+
+SCRIPT main_ck_assert_off
+BEGIN
+	main.rb_master.disable
+	main.rb_match.disable
+END
+
+PROGRAM command
+BEGIN
+	require main.vl_varlist
+	require main.fi_filename
+	put "mi add " main.vl_varlist
+
+	put " " "using "
+	put `"""'
+	put main.fi_filename
+	put `"""'
+	beginoptions
+		if main.ck_assert {
+			option radio(main rb_master rb_match)
+		}
+	endoptions
+END

@@ -1,0 +1,117 @@
+/*
+  iqreg
+
+*!  VERSION 1.1.2  15may2011
+
+  keyword:  eclass
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_medium
+INCLUDE header
+HELP hlp1, view("help iqreg")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	program parseMessage
+END
+
+PROGRAM parseMessage
+BEGIN
+	if __MESSAGE.contains("__MI__") {
+		call script byifin_set_by_off
+	}
+END
+
+DIALOG main, label("iqreg - Interquantile range regression")		/*
+		*/ tabtitle("Model")
+BEGIN
+
+  INCLUDE  _dviv
+
+  /*--+----1----+----2----+----3----+----4----+----5----+----6----+----7----+*/
+  GROUPBOX gp_quantiles        _lft      _ls       _iwd       _ht2,	/*
+		*/ label("Interquantile range")
+
+  SPINNER  sp_quantiles_lower  _indent   _ss       _spwd      .,	/*
+		*/ label("Interquantile range")				/*
+		*/ min(1)						/*
+		*/ max(100)						/*
+		*/ default(25)						/*
+		*/
+
+  TEXT     tx_lower            _spsep    @         _ckspr2    .,	/*
+		*/ label("Lower quantile")				/*
+		*/
+  
+  SPINNER  sp_quantiles_upper  _lft2     @         _spwd      .,	/*
+		*/ label("Interquantile range")				/*
+		*/ min(1)						/*
+		*/ max(100)						/*
+		*/ default(75)						/*
+		*/
+
+  TEXT     tx_upper            _spsep    @         _ckspr2    .,	/*
+		*/ label("Upper quantile")				/*
+		*/
+ 
+  SPINNER  sp_reps             _lft      _xxls     _spwd      .,	/*
+		*/ label("Bootstrap replications")			/*
+		*/ min(1)						/*
+		*/ max(100000)						/*
+		*/ option("reps")					/*
+		*/ default(20)	
+  TEXT	   tx_reps             _spsep    @         _sprb      .,	/*
+		*/ label("Bootstrap replications")
+  
+END
+
+INCLUDE byifin
+
+SCRIPT rpt_POSTINIT
+BEGIN
+	create STRING rpt_bu_fmtcoefResults
+	program rpt_bu_fmtcoef_ckResults
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr
+  DEFINE _y _top
+  INCLUDE _sp_level
+  
+  CHECKBOX ck_nodots            _lft	 _ls	   _iwd       .,	/*
+		*/ option("nodots")					/*
+		*/ label("Do not display dots for replications")
+
+  DEFINE _x _lft
+  DEFINE _y _ls
+  INCLUDE _bu_coef_table_reporting
+END
+
+INCLUDE fmt_coef_table_reporting_pr
+
+PROGRAM command
+BEGIN
+	allowxi
+	INCLUDE _by_pr
+	put "iqreg "
+	varlist main.vn_dv [main.vl_iv]
+	INCLUDE _ifin_pr
+	beginoptions
+		put "quantiles("
+		put main.sp_quantiles_lower
+		put " "
+		put main.sp_quantiles_upper
+		put ")"
+		optionarg main.sp_reps
+		optionarg /hidedefault rpt.sp_level
+		option rpt.ck_nodots
+		put " " rpt_bu_fmtcoefResults
+	endoptions
+END
+

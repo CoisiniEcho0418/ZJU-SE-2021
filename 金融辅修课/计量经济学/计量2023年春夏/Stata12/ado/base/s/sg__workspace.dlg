@@ -1,0 +1,134 @@
+/*
+  sg__workspace.dlg
+
+*!  VERSION 1.0.0  05jul2011
+
+*/
+
+VERSION 12.0
+MODAL
+
+INCLUDE _std_vsmall
+DEFINE _dlght 80
+INCLUDE header_sem_ed
+
+DEFINE _clwd	15
+DEFINE _wd	160
+DEFINE _sep	+165
+DEFINE _wd2	110
+DEFINE _sep2	+115
+DEFINE _cbwd	100
+DEFINE _cbsep	+105
+
+INCLUDE sg__common_output 		/* routines necessary for output */
+
+SCRIPT PREINIT
+BEGIN
+	script sg__common_output_init 	/* initialize output globals */
+
+	create STRING OBJ
+	program setupOBJECT
+
+	create DOUBLE index
+END
+
+PROGRAM setupOBJECT
+BEGIN
+	if ! __MESSAGE {
+		stopbox stop 	///
+			"An unexpected error has occurred." "Object not found."
+		exit 198
+	}
+	call OBJ.setvalue class __MESSAGE.value
+END
+
+SCRIPT main_PREINIT
+BEGIN
+	create STRING sXsize
+	create STRING sYsize
+
+	program main_get_defaults
+END
+
+SCRIPT main_POSTINIT
+BEGIN
+	program main_initialize_controls
+END
+
+PROGRAM main_get_defaults
+BEGIN
+	call sXsize.setvalue class .__SEMG.dbsettings.xpaper
+	call sXsize.withvalue main.cb_width.setdefault "@"
+
+	call sYsize.setvalue class .__SEMG.dbsettings.ypaper
+	call sYsize.withvalue main.cb_height.setdefault "@"
+END
+
+PROGRAM main_initialize_controls
+BEGIN
+	call main.cb_width.setvalue class sXsize.value
+	call main.cb_height.setvalue class sYsize.value
+END
+
+LIST papersizes
+BEGIN
+	1
+	1.5
+	2
+	2.9
+	3.5
+	4
+	4.1
+	5
+	5.8
+	6
+	7
+	8
+	8.3
+	9
+	10
+	11.7
+	16.5
+END
+
+DIALOG main, label("Adjust canvas size") tabtitle("Main")
+BEGIN
+  TEXT     tx_size	_lft	25	80	.,		///
+	label("Size:") right 
+  COMBOBOX cb_width	+85	@	60	., nomemory	///
+	dropdown contents(papersizes)				///
+	label("Size")
+  TEXT     tx_x		+65	@	17	.,		///
+	label("x") center 
+  COMBOBOX cb_height	+20	@	60	., nomemory	///
+	dropdown contents(papersizes)				///
+	label("Paper size")
+  TEXT     tx_size_m	+65	@	50	.,		///
+	label("( in. )")
+END
+
+PROGRAM main_output
+BEGIN
+	call program main_get_defaults
+
+	if !main.cb_width.isdefault() | !main.cb_height.isdefault() {
+		require main.cb_width
+		require main.cb_height
+	
+		call sg__PARAM2.setvalue "PaperSize"
+		call sg__ARG_00.setvalue class main.cb_width.value
+		call sg__ARG_00.append " "
+		call sg__ARG_00.append class main.cb_height.value
+		call sg__DESCPT.setvalue "adjust canvas size"
+		put /program sg__do_output_sub
+	}
+END
+
+/*****************************************************************************/
+
+PROGRAM command
+BEGIN
+	call sg__PARAM1.setvalue class OBJ.value
+	
+	put /program main_output
+END

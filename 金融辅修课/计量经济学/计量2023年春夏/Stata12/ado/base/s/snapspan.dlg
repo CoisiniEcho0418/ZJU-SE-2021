@@ -1,0 +1,61 @@
+/*
+    snapspan.dlg
+
+*!  VERSION 1.1.0  07feb2007
+
+*/
+
+VERSION 8.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help snapspan")
+RESET res1
+
+DIALOG main, label("snapspan - Convert snapshot data to time-span data") /* 
+		*/ tabtitle("Main")
+BEGIN
+  TEXT     tx_idvar    _lft         _top      _cwd2       .,		/*
+		*/ label("Subject variable:")	
+  VARNAME  vn_idvar       @          _ss      _vnwd       .,		/*
+		*/ label("Subject variable")	
+  TEXT     tx_timeva _lft3_2        _top      _cwd2       .,		/*
+		*/ label("Time variable:")	
+  VARNAME  vn_timevar     @          _ss      _vnwd       .,		/*
+		*/ label("Time variable")	
+  TEXT     tx_varlist  _lft          _ls       _iwd       .,		/*
+		*/ label("Event variables:")
+  VARLIST  vl_varlist  _lft          _ss       _iwd       .,		/*
+		*/ label("Event variables")
+  GROUPBOX gb_opt      _lft          +35       _iwd    _ht8,		/*
+		*/ label("Options")
+  CHECKBOX ck_gen   _indent          _ms      _inwd       .,		/*
+		*/ clickon("gaction main.ed_gen.enable")		/*
+		*/ clickoff("gaction main.ed_gen.disable")		/*
+		*/ label("Generate a new entry-time variable:")
+  DEFINE   _x @x
+  DEFINE   _cx @cx
+  EDIT     ed_gen  _cksep            _ss      _vnwd       .,		/*
+		*/ max(32)						/*
+		*/ option(generate)					/*
+		*/ label("Generate a new entry-time variable")
+  CHECKBOX ck_replace    _x          +35        _cx       .,		/*
+		*/ option("replace") nomem				/*
+		*/ label("Allow changes to existing data")
+END
+
+PROGRAM command
+BEGIN
+	put "snapspan "
+	varlist main.vn_idvar
+	varlist main.vn_timevar
+	varlist main.vl_varlist
+	beginoptions
+		if main.ck_gen {
+			require main.ed_gen
+			optionarg main.ed_gen
+		}
+		option main.ck_replace
+	endoptions
+END

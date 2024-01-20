@@ -1,0 +1,148 @@
+/*
+	psdensity
+
+*!  VERSION 1.0.1  07may2011
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_small
+DEFINE _dlght 330
+INCLUDE header
+HELP hlp1, view("help psdensity")
+RESET res1
+
+PROGRAM POSTINIT_PROGRAM
+BEGIN
+	call create DOUBLE pi
+	call create DOUBLE a
+	call create DOUBLE b
+	call create DOUBLE missing
+	call create DOUBLE ncycles
+	call pi.setvalue c(pi)
+	call missing.setvalue .
+	call ncycles.setvalue e(ncycles)
+	if ncycles.isgt(0) & ncycles.islt(missing) {
+		call main.tx_cycle.enable
+		call main.sp_cycle.enable
+	}
+	else {
+		call main.tx_cycle.disable
+		call main.sp_cycle.disable
+	}
+END
+
+DIALOG main, label("psdensity - Parametric spectral density estimation") ///
+	tabtitle("Main")
+BEGIN
+  TEXT tx_fnewvar		_lft	_top	130	.,		///
+	label("New frequency variable:")
+  DEFINE holdy @y
+  EDIT ed_fnewvar		@	_ss	_vnwd	.,		///
+	label("New frequency variable")
+  TEXT tx_dnewvar		_lft2	holdy	@	.,		///
+	label("New density variable:")
+  EDIT ed_dnewvar		@	_ss	@	.,		///
+	label("New density variable")
+
+  DEFINE _x _lft
+  DEFINE _y _ls
+  DEFINE _cx _vnwd
+  INCLUDE _type
+
+  GROUPBOX gb_opt		_lft	_ls	_iwd	_ht18,		///
+	label("Options:")
+  CHECKBOX ck_pspectrum		_ilft	_ss	_inwd	.,		///
+	option(pspectrum)						///
+	label("Compute the power spectrum")
+  CHECKBOX ck_range		_ilft	_ms	_inwd	_ht4,		///
+	groupbox							///
+	onclickon("script main_range_on")				///
+	onclickoff("script main_range_off")				///
+	label("Compute the power spectrum")
+  TEXT tx_range_start		_iilft	_ss	_inwd	.,		///
+	label("Start range:")
+  DEFINE holdy2 @y
+  EDIT ed_range_start		@	_ss	_spwd	.,		///
+	numonly								///
+	label("Start range")
+  TEXT tx_range_end		_iilft2	holdy2	_ibwd	.,		///
+	label("End range:")
+  EDIT ed_range_end		@	_ss	_spwd	.,		///
+	numonly								///
+	label("End range")
+  TEXT tx_cycle			_ilft	_xls	_ibwd	.,		///
+	label("Compute the spectral densities for the specified cycles:")
+  SPINNER sp_cycle		@	_ss	_spwd	.,		///
+	option(cycle)							///
+	default(1)							///
+	min(1)								///
+	max(3)								///
+	label("Compute the spectral densities for the specified cycles")
+  CHECKBOX ck_smemory		_ilft	_ls	_ibwd	.,		///
+	option(smemory)						///
+	label("Assume the arfima model has short memory")
+END
+
+SCRIPT main_range_on
+BEGIN
+	main.tx_range_start.enable
+	main.ed_range_start.enable
+	main.tx_range_end.enable
+	main.ed_range_end.enable
+END
+
+SCRIPT main_range_off
+BEGIN
+	main.tx_range_start.disable
+	main.ed_range_start.disable
+	main.tx_range_end.disable
+	main.ed_range_end.disable
+END
+
+INCLUDE _type_list_fd
+
+PROGRAM main_range_output
+BEGIN
+	call a.setvalue class main.ed_range_start.value
+	call b.setvalue class main.ed_range_end.value
+
+	if (a.isge(b)) {
+		stopbox stop `"Invalid range.  "Start range" is greater "' ///
+			`"than or equal to "End range"."'
+	}
+
+	if a.islt(0) | a.isgt(pi) {
+		stopbox stop `"Invalid range.  "Start range" should "' ///
+			`"be between 0 and pi."'
+	}
+	if b.islt(0) | b.isgt(pi) {
+		stopbox stop `"Invalid range.  "End range" should "' ///
+			`"be between 0 and pi."'
+	}
+	put main.ed_range_start " "
+	put main.ed_range_end
+END
+
+PROGRAM command
+BEGIN
+	put "psdensity "
+	INCLUDE _type_pr
+	require main.ed_fnewvar
+	require main.ed_dnewvar
+	put main.ed_fnewvar " "
+	put main.ed_dnewvar " "
+	beginoptions
+		option main.ck_pspectrum
+		if main.ck_range {
+			require main.ed_range_start
+			require main.ed_range_end
+			put "range("
+			put /program main_range_output
+			put ") "
+		}
+		optionarg main.sp_cycle
+		option main.ck_smemory
+	endoptions
+END

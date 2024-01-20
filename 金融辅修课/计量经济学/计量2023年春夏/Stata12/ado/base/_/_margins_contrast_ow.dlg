@@ -1,0 +1,215 @@
+ /* _margins_contrast_ow.dlg
+
+ *!  VERSION 1.0.1  19apr2011
+
+ */
+
+VERSION 12.0
+
+INCLUDE _std_wide
+DEFINE _dlght 140
+DEFINE _dlgwd 580
+INCLUDE header
+HELP hlp1, view(help margins, contrast)
+RESET res1
+
+PROGRAM PREINIT_PROGRAM
+BEGIN
+	call create STRING s_output
+	if __MESSAGE.iseq("-over-") {
+		call main.vn_over.show
+		call main.cb_within.hide
+	}
+	if __MESSAGE.iseq("-within-") {
+		call main.vn_over.hide
+		call main.cb_within.show
+	}
+END
+
+PROGRAM POSTINIT_PROGRAM
+BEGIN
+	call program cb_contrast_changed_1
+	call main.ed_contrastlist.setvalue ""
+END
+
+DIALOG main, title("Create a contrast operator") tabtitle("Main")
+BEGIN
+  TEXT tx_variable		10	_top	115	.,		///
+	center								///
+	label("Variable")
+  TEXT tx_contrast		125	@	235	.,		///
+	center								///
+	label("Contrast")
+  TEXT tx_base			370	@	80	.,		///
+	center								///
+	label("Base")
+  HLINK hl_numlist		460	@	120	.,		///
+	center								///
+	onpush(view help contrast##custom)				///
+	label("Custom Contrast")
+
+
+
+DEFINE x1   10
+DEFINE cx1  115
+
+DEFINE x2   135
+DEFINE cx2  235
+
+DEFINE x3   380
+DEFINE cx3  80
+
+DEFINE x4   470
+DEFINE cx4  100
+
+  VARNAME vn_over		x1	_ss	cx1	.,		///
+	label("Variable")
+  COMBOBOX cb_within		@	@	@	.,		///
+	dropdown							///
+	contents(margins_flist)						///
+	label("Variable")
+
+  COMBOBOX cb_con1		x2	@	cx2	.,		///
+	dropdown							///
+	onselchange(program cb_contrast_changed_1)			///
+	contents(con_list)						///
+	values(con_values)
+  COMBOBOX cb_base1		x3	@	cx3	.,		///
+	dropdown							///
+	contents(base_list)						///
+	values(base_values)
+  EDIT ed_num1			x4	@	cx4	.,		///
+	label(`"Custom Contrast"')
+
+  BUTTON bu_add			_lft	_ls	80	.,		///
+	onpush(program contrastOverWithinOutput)			///
+	label("Add to list")
+  TEXT tx_contrastlist		_lft	_ls	_cwd1	.,		///
+	label("Contrast list:")
+  EDIT ed_contrastlist		@	_ss	560	.,		///
+	label("Contrast list")
+END
+
+LIST base_list
+BEGIN
+	Default
+	First
+	Frequent
+	Last
+	None
+	0
+	1
+	2
+END
+
+LIST base_values
+BEGIN
+	""
+	first
+	frequent
+	last
+	none
+	0
+	1
+	2
+END
+
+LIST con_list
+BEGIN
+	"Differences from reference"
+	"Differences from next level"
+	"Differences from previous level"
+	"Differences from grand mean"
+	"Differences from mean of subsequent levels"
+	"Differences from mean of previous levels"
+	"Orthogonal polynomial in level values"
+	"Orthogonal polynomial in level sequence"
+	"Differences from weighted grand mean"
+	"Differences from weighted mean of subsequent levels"
+	"Differences from weighted mean of previous levels"
+	"Weighted orthogonal polynomial in level values"
+	"Weighted orthogonal polynomial in level sequence"
+	"Custom"
+END
+
+LIST con_values
+BEGIN
+	r
+	a
+	ar
+	g
+	h
+	j
+	p
+	q
+	gw
+	hw
+	jw
+	pw
+	qw
+	custom
+END
+
+PROGRAM cb_contrast_changed_1
+BEGIN
+	if main.cb_con1.iseq("r")  {
+		call main.cb_base1.enable
+	}
+	else {
+		call main.cb_base1.disable
+	}
+	if main.cb_con1.iseq("custom")  {
+		call main.ed_num1.enable
+	}
+	else {
+		call main.ed_num1.disable
+	}
+END
+
+PROGRAM contrastOverWithinOutput
+BEGIN
+	call s_output.setvalue ""
+	if main.cb_con1.iseq("custom") {
+		call s_output.append "{"
+		if main.vn_over.isvisible() {
+			require main.vn_over
+			call s_output.append class main.vn_over.value
+		}
+		if main.cb_within.isvisible() {
+			require main.cb_within
+			call s_output.append class main.cb_within.value
+		}
+		require main.ed_num1
+		if (main.ed_num1.isenabled() &				///
+			!main.ed_num1.isnumlist()) {
+stopbox stop `"There is an invalid "Custom Contrast""'
+		}
+		call s_output.append " "
+		call s_output.append class main.ed_num1.value
+		call s_output.append "}"
+	}
+	else {
+		if (main.cb_con1 & main.cb_con1.isenabled()) {
+			call s_output.append class main.cb_con1.value
+		}
+		if main.cb_base1 & main.cb_base1.isenabled() {
+			call s_output.append  "b("
+			call s_output.append class main.cb_base1.value
+			call s_output.append  ")"
+		}
+		call s_output.append  "."
+		if main.vn_over.isvisible() {
+			call s_output.append class main.vn_over.value
+		}
+		if main.cb_within.isvisible() {
+			call s_output.append class main.cb_within.value
+		}
+	}
+	call s_output.withvalue main.ed_contrastlist.smartinsert "@"
+END
+
+PROGRAM command
+BEGIN
+	put main.ed_contrastlist
+END
+

@@ -1,0 +1,74 @@
+/*
+	predict (after _nlogit)
+
+*!  VERSION 1.2.1  27may2010
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_large
+INCLUDE header
+
+HELP hlp1, view("help _nlogit postestimation")
+RESET res1
+
+DIALOG main, label("predict - Prediction after estimation") tabtitle("Main")
+BEGIN
+  INCLUDE  _p_gentype
+
+  GROUPBOX gb_opts           _lft      _xls      _iwd      _ht16h,	/*
+		*/ label("Produce:")
+  RADIO    rb_p              _indent   _ss       _inwd     ., first	/*
+	*/ label("Probability of choosing #-level alternatives")
+  RADIO    rb_xb             @         _ss       @         .,		/*
+		*/ label("Linear prediction for the #-level alternatives")
+  RADIO    rb_condp          @         _ss       @         .,		/*
+*/ label("Pr(each level # alternative | alternative available after previous stages)")
+  RADIO    rb_iv             @         _ss       @         ., last	/*
+		*/ label("Inclusive value for the #-level alternatives")
+
+  GROUPBOX gb_number         @         _ls       @         _ht4h,	/*
+		*/ label("For #:")
+  RADIO    rb_bottom         _indent   _ss       _inwd     ., first	/*
+		*/ clickon("gaction main.sp_number.disable")		/*
+		*/ label("Bottom")
+  RADIO    rb_number         @         _ms       _rbwd     ., last	/*
+		*/ clickon("gaction main.sp_number.enable")		/*
+		*/ label("")
+  SPINNER  sp_number         _rbsep    @         _spwd     .,		/*
+		*/ min(1) max(100) default(1)				/*
+		*/ label("#-level")
+END
+
+INCLUDE _p_gentype_sc
+INCLUDE ifin
+INCLUDE _type_list_fd
+
+PROGRAM command
+BEGIN
+	put "predict "
+	put " " /program _p_gentype_output
+	INCLUDE _ifin_pr
+	beginoptions
+		if main.rb_p {
+			put "p"
+		}
+		if main.rb_xb {
+			put "xb"
+		}
+		if main.rb_condp {
+			put "condp"
+		}
+		if main.rb_iv {
+			put "iv"
+		}
+
+		if main.rb_bottom {
+			put "b"
+		}
+		if main.rb_number {
+			put main.sp_number
+		}
+	endoptions
+END

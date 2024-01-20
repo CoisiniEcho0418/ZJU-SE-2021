@@ -1,0 +1,39 @@
+/*
+  estimates store
+
+*!  VERSION 1.1.2  16apr2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_msmall
+DEFINE  _dlght 140
+INCLUDE header
+HELP hlp1, view("help estimates_store")
+RESET res1
+
+DIALOG main, label("estimates store - Store active estimation results") ///
+	tabtitle("Main")
+BEGIN
+  GROUPBOX gb_store	_lft	_top	_iwd	_ht8,			///
+	label("Store active estimation results in memory")
+  TEXT tx_ename		_ilft	_ss	_inwd	.,			///
+	label("Name:")
+  EDIT ed_ename		@	_ss	_vnwd	.,			///
+	max(32)								///
+	label("Name")
+
+  CHECKBOX ck_nocopy	@	+35	_iwd	.,			///
+	option(nocopy)							///
+	label("Clear current (active) estimation results after storing")
+END
+
+PROGRAM command
+BEGIN
+	require main.ed_ename
+	put "estimates store " main.ed_ename
+	beginoptions
+		option main.ck_nocopy
+	endoptions
+END

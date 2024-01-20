@@ -1,0 +1,17 @@
+/*
+  _bu_svyset.idlg
+
+*!  VERSION 1.1.0  05jan2007
+
+  To be included within a DIALOG.
+
+  Note that macros _x and _y must already be DEFINEd.
+
+*/
+
+  BUTTON   bu_svyset _x        _y        _setbuwd  .,			/*
+		*/ onpush("view dialog svyset")				/*
+		*/ label("Survey settings...")				/*
+		*/
+
+/* END: _bu_svyset.idlg */

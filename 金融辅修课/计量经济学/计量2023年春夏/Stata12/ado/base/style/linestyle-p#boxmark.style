@@ -1,0 +1,6 @@
+*! version 1.0.1  05dec2003
+sequence 6101
+
+set width    scheme p#boxmark
+set color    scheme p#boxmarkline
+set pattern  scheme p#boxmark

@@ -1,0 +1,611 @@
+ /*
+  gbar - Dialog tab for bar and hbar charts
+
+*! VERSION 1.1.0  20apr2005
+
+	// SCRIPTS and PROGRAMS for external use
+		* SCRIPT  gbar_setOrientationHorizontal
+		* SCRIPT  gbar_setDotOn
+		* PROGRAM gbar_output
+
+*/
+
+SCRIPT gbar_PREINIT
+BEGIN
+	create BOOLEAN gbar_isDot
+END
+
+PROGRAM gbar_POSTINIT_PROGRAM
+BEGIN
+	if ! (gbar.ck_stat1 | gbar.ck_stat2 | gbar.ck_stat3 	///
+		| gbar.ck_stat4 | gbar.ck_stat5 | gbar.ck_stat6 ///
+		| gbar.ck_stat7 | gbar.ck_stat8)		///
+	{
+		call gbar.ck_stat1.seton
+	}
+END
+
+SCRIPT  gbar_setOrientationHorizontal
+BEGIN
+	gbar.rb_horizontal.seton
+END
+
+SCRIPT  gbar_setDotOn
+BEGIN
+	gbar.gb_orientation.hide
+	gbar.rb_vertical.hide
+	gbar.rb_horizontal.hide
+	settitle "graph dot - Dot charts (summary statistics)"
+	gbar_isDot.settrue
+END
+
+DIALOG gbar, tabtitle("Main")					///
+	label("graph bar - Bar charts (summary statistics)")
+BEGIN
+  GROUPBOX gb_stat		_lft	_top	_iwd	_ht22,	///
+  	label("Statistics to plot")
+  TEXT     tx_stat		60	_ss	145	.,	///
+  	label("Statistic")
+  TEXT     tx_vars		+150	@	@	.,	///
+  	label("Variables")
+
+  CHECKBOX ck_stat1		_ilft	_ss	35	.,	///
+  	label(" 1:")						///
+  	onclickon(script gbar_stat1_enable)			///
+  	onclickoff(script gbar_stat1_disable)
+  COMBOBOX cb_stat1		+40	@	145	.,	///
+	dropdownlist contents(stats) values(statsv) 	 	///
+	onselchangelist(gbar_stat1_change) 			///
+	label("Statistic")
+  SPINNER  sp_stat1		+100	@	45	.,	///
+	min(1) max(99) default(50)
+  VARLIST  vl_stat1		+50	@	325	.,	///
+	label("Statistic 1 variables")
+
+  CHECKBOX ck_stat2		_ilft	_ms	35	.,	///
+  	label(" 2:")						///
+  	onclickon(script gbar_stat2_enable)			///
+  	onclickoff(script gbar_stat2_disable)
+  COMBOBOX cb_stat2		+40	@	145	.,	///
+	dropdownlist contents(stats) values(statsv) 	 	///
+	onselchangelist(gbar_stat2_change) 			///
+	label("Statistic")
+  SPINNER  sp_stat2		+100	@	45	.,	///
+	min(1) max(99) default(50)
+  VARLIST  vl_stat2		+50 	@	325	.,	///
+	label("Statistic 2 variables")
+
+  CHECKBOX ck_stat3		_ilft	_ms	35	.,	///
+  	label(" 3:")						///
+  	onclickon(script gbar_stat3_enable)			///
+  	onclickoff(script gbar_stat3_disable)
+  COMBOBOX cb_stat3		+40	@	145	.,	///
+	dropdownlist contents(stats) values(statsv) 	 	///
+	onselchangelist(gbar_stat3_change) 			///
+	label("Statistic")
+  SPINNER  sp_stat3		+100	@	45	.,	///
+	min(1) max(99) default(50)
+  VARLIST  vl_stat3		+50 	@	325	.,	///
+	label("Statistic 3 variables")
+
+  CHECKBOX ck_stat4		_ilft	_ms	35	.,	///
+  	label(" 4:")						///
+  	onclickon(script gbar_stat4_enable)			///
+  	onclickoff(script gbar_stat4_disable)
+  COMBOBOX cb_stat4		+40	@	145	.,	///
+	dropdownlist contents(stats) values(statsv) 	 	///
+	onselchangelist(gbar_stat4_change) 			///
+	label("Statistic")
+  SPINNER  sp_stat4		+100	@	45	.,	///
+	min(1) max(99) default(50)
+  VARLIST  vl_stat4		+50 	@	325	.,	///
+	label("Statistic 4 variables")
+
+  CHECKBOX ck_stat5		_ilft	_ms	35	.,	///
+  	label(" 5:")						///
+  	onclickon(script gbar_stat5_enable)			///
+  	onclickoff(script gbar_stat5_disable)
+  COMBOBOX cb_stat5		+40	@	145	.,	///
+	dropdownlist contents(stats) values(statsv) 	 	///
+	onselchangelist(gbar_stat5_change) 			///
+	label("Statistic")
+  SPINNER  sp_stat5		+100	@	45	.,	///
+	min(1) max(99) default(50)
+  VARLIST  vl_stat5		+50 	@	325	.,	///
+	label("Statistic 5 variables")
+
+  CHECKBOX ck_stat6		_ilft	_ms	35	.,	///
+  	label(" 6:")						///
+  	onclickon(script gbar_stat6_enable)			///
+  	onclickoff(script gbar_stat6_disable)
+  COMBOBOX cb_stat6		+40	@	145	.,	///
+	dropdownlist contents(stats) values(statsv) 	 	///
+	onselchangelist(gbar_stat6_change) 			///
+	label("Statistic")
+  SPINNER  sp_stat6		+100	@	45	.,	///
+	min(1) max(99) default(50)
+  VARLIST  vl_stat6		+50 	@	325	.,	///
+	label("Statistic 6 variables")
+
+  CHECKBOX ck_stat7		_ilft	_ms	35	.,	///
+  	label(" 7:")						///
+  	onclickon(script gbar_stat7_enable)			///
+  	onclickoff(script gbar_stat7_disable)
+  COMBOBOX cb_stat7		+40	@	145	.,	///
+	dropdownlist contents(stats) values(statsv) 	 	///
+	onselchangelist(gbar_stat7_change) 			///
+	label("Statistic")
+  SPINNER  sp_stat7		+100	@	45	.,	///
+	min(1) max(99) default(50)
+  VARLIST  vl_stat7		+50 	@	325	.,	///
+	label("GroStatistic 7 variables")
+
+  CHECKBOX ck_stat8		_ilft	_ms	35	.,	///
+  	label(" 8:")						///
+  	onclickon(script gbar_stat8_enable)			///
+  	onclickoff(script gbar_stat8_disable)
+  COMBOBOX cb_stat8		+40	@	145	.,	///
+	dropdownlist contents(stats) values(statsv) 	 	///
+	onselchangelist(gbar_stat8_change) 			///
+	label("Statistic")
+  SPINNER  sp_stat8		+100	@	45	.,	///
+	min(1) max(99) default(50)
+  VARLIST  vl_stat8		+50 	@	325	.,	///
+	label("Statistic 8 variables")
+
+  GROUPBOX gb_orientation	_lft	+45	195	_ht2,	///
+  	label("Orientation")
+  RADIO    rb_vertical		_ilft	_ss	85	.,	///
+  	first label("Vertical")
+  RADIO    rb_horizontal	+90	@	@	.,	///
+  	last label("Horizontal")
+END
+
+LIST stats
+BEGIN
+	mean
+	median
+	percentile
+	standard deviation
+	sum
+	raw sum (ignores weight)
+	count nonmissing
+	maximum
+	minimum
+	interquartile range
+END
+
+LIST statsv
+BEGIN
+	mean
+	median
+	p
+	sd
+	sum
+	rawsum
+	count
+	max
+	min
+	iqr
+END
+
+//***** Begin stat 1 *****//
+LIST gbar_stat1_change
+BEGIN
+	script gbar_stat1_norm
+	script gbar_stat1_norm
+	script gbar_stat1_percent
+	script gbar_stat1_norm
+END
+
+SCRIPT gbar_stat1_norm
+BEGIN
+	gbar.sp_stat1.hide
+	gbar.cb_stat1.setposition . . 145 .
+END
+
+SCRIPT gbar_stat1_percent
+BEGIN
+	gbar.sp_stat1.show
+	gbar.cb_stat1.setposition . . 95 .
+END
+
+SCRIPT gbar_stat1_enable
+BEGIN
+	gbar.cb_stat1.enable
+	gbar.cb_stat1.setfocus
+	gbar.sp_stat1.enable
+	gbar.vl_stat1.enable
+END
+
+SCRIPT gbar_stat1_disable
+BEGIN
+	gbar.cb_stat1.disable
+	gbar.sp_stat1.disable
+	gbar.vl_stat1.disable
+END
+//***** End stat 1 *****//
+
+//***** Begin stat 2 *****//
+LIST gbar_stat2_change
+BEGIN
+	script gbar_stat2_norm
+	script gbar_stat2_norm
+	script gbar_stat2_percent
+	script gbar_stat2_norm
+END
+
+SCRIPT gbar_stat2_norm
+BEGIN
+	gbar.sp_stat2.hide
+	gbar.cb_stat2.setposition . . 145 .
+END
+
+SCRIPT gbar_stat2_percent
+BEGIN
+	gbar.sp_stat2.show
+	gbar.cb_stat2.setposition . . 95 .
+END
+
+SCRIPT gbar_stat2_enable
+BEGIN
+	gbar.cb_stat2.enable
+	gbar.cb_stat2.setfocus
+	gbar.sp_stat2.enable
+	gbar.vl_stat2.enable
+END
+
+SCRIPT gbar_stat2_disable
+BEGIN
+	gbar.cb_stat2.disable
+	gbar.sp_stat2.disable
+	gbar.vl_stat2.disable
+END
+//***** End stat 2 *****//
+
+//***** Begin stat 3 *****//
+LIST gbar_stat3_change
+BEGIN
+	script gbar_stat3_norm
+	script gbar_stat3_norm
+	script gbar_stat3_percent
+	script gbar_stat3_norm
+END
+
+SCRIPT gbar_stat3_norm
+BEGIN
+	gbar.sp_stat3.hide
+	gbar.cb_stat3.setposition . . 145 .
+END
+
+SCRIPT gbar_stat3_percent
+BEGIN
+	gbar.sp_stat3.show
+	gbar.cb_stat3.setposition . . 95 .
+END
+
+SCRIPT gbar_stat3_enable
+BEGIN
+	gbar.cb_stat3.enable
+	gbar.cb_stat3.setfocus
+	gbar.sp_stat3.enable
+	gbar.vl_stat3.enable
+END
+
+SCRIPT gbar_stat3_disable
+BEGIN
+	gbar.cb_stat3.disable
+	gbar.sp_stat3.disable
+	gbar.vl_stat3.disable
+END
+//***** End stat 3 *****//
+
+//***** Begin stat 4 *****//
+LIST gbar_stat4_change
+BEGIN
+	script gbar_stat4_norm
+	script gbar_stat4_norm
+	script gbar_stat4_percent
+	script gbar_stat4_norm
+END
+
+SCRIPT gbar_stat4_norm
+BEGIN
+	gbar.sp_stat4.hide
+	gbar.cb_stat4.setposition . . 145 .
+END
+
+SCRIPT gbar_stat4_percent
+BEGIN
+	gbar.sp_stat4.show
+	gbar.cb_stat4.setposition . . 95 .
+END
+
+SCRIPT gbar_stat4_enable
+BEGIN
+	gbar.cb_stat4.enable
+	gbar.cb_stat4.setfocus
+	gbar.sp_stat4.enable
+	gbar.vl_stat4.enable
+END
+
+SCRIPT gbar_stat4_disable
+BEGIN
+	gbar.cb_stat4.disable
+	gbar.sp_stat4.disable
+	gbar.vl_stat4.disable
+END
+//***** End stat 4 *****//
+
+//***** Begin stat 5 *****//
+LIST gbar_stat5_change
+BEGIN
+	script gbar_stat5_norm
+	script gbar_stat5_norm
+	script gbar_stat5_percent
+	script gbar_stat5_norm
+END
+
+SCRIPT gbar_stat5_norm
+BEGIN
+	gbar.sp_stat5.hide
+	gbar.cb_stat5.setposition . . 145 .
+END
+
+SCRIPT gbar_stat5_percent
+BEGIN
+	gbar.sp_stat5.show
+	gbar.cb_stat5.setposition . . 95 .
+END
+
+SCRIPT gbar_stat5_enable
+BEGIN
+	gbar.cb_stat5.enable
+	gbar.cb_stat5.setfocus
+	gbar.sp_stat5.enable
+	gbar.vl_stat5.enable
+END
+
+SCRIPT gbar_stat5_disable
+BEGIN
+	gbar.cb_stat5.disable
+	gbar.sp_stat5.disable
+	gbar.vl_stat5.disable
+END
+//***** End stat 5 *****//
+
+//***** Begin stat 6 *****//
+LIST gbar_stat6_change
+BEGIN
+	script gbar_stat6_norm
+	script gbar_stat6_norm
+	script gbar_stat6_percent
+	script gbar_stat6_norm
+END
+
+SCRIPT gbar_stat6_norm
+BEGIN
+	gbar.sp_stat6.hide
+	gbar.cb_stat6.setposition . . 145 .
+END
+
+SCRIPT gbar_stat6_percent
+BEGIN
+	gbar.sp_stat6.show
+	gbar.cb_stat6.setposition . . 95 .
+END
+
+SCRIPT gbar_stat6_enable
+BEGIN
+	gbar.cb_stat6.enable
+	gbar.cb_stat6.setfocus
+	gbar.sp_stat6.enable
+	gbar.vl_stat6.enable
+END
+
+SCRIPT gbar_stat6_disable
+BEGIN
+	gbar.cb_stat6.disable
+	gbar.sp_stat6.disable
+	gbar.vl_stat6.disable
+END
+//***** End stat 6 *****//
+
+//***** Begin stat 7 *****//
+LIST gbar_stat7_change
+BEGIN
+	script gbar_stat7_norm
+	script gbar_stat7_norm
+	script gbar_stat7_percent
+	script gbar_stat7_norm
+END
+
+SCRIPT gbar_stat7_norm
+BEGIN
+	gbar.sp_stat7.hide
+	gbar.cb_stat7.setposition . . 145 .
+END
+
+SCRIPT gbar_stat7_percent
+BEGIN
+	gbar.sp_stat7.show
+	gbar.cb_stat7.setposition . . 95 .
+END
+
+SCRIPT gbar_stat7_enable
+BEGIN
+	gbar.cb_stat7.enable
+	gbar.cb_stat7.setfocus
+	gbar.sp_stat7.enable
+	gbar.vl_stat7.enable
+END
+
+SCRIPT gbar_stat7_disable
+BEGIN
+	gbar.cb_stat7.disable
+	gbar.sp_stat7.disable
+	gbar.vl_stat7.disable
+END
+//***** End stat 7 *****//
+
+//***** Begin stat 8 *****//
+LIST gbar_stat8_change
+BEGIN
+	script gbar_stat8_norm
+	script gbar_stat8_norm
+	script gbar_stat8_percent
+	script gbar_stat8_norm
+END
+
+SCRIPT gbar_stat8_norm
+BEGIN
+	gbar.sp_stat8.hide
+	gbar.cb_stat8.setposition . . 145 .
+END
+
+SCRIPT gbar_stat8_percent
+BEGIN
+	gbar.sp_stat8.show
+	gbar.cb_stat8.setposition . . 95 .
+END
+
+SCRIPT gbar_stat8_enable
+BEGIN
+	gbar.cb_stat8.enable
+	gbar.cb_stat8.setfocus
+	gbar.sp_stat8.enable
+	gbar.vl_stat8.enable
+END
+
+SCRIPT gbar_stat8_disable
+BEGIN
+	gbar.cb_stat8.disable
+	gbar.sp_stat8.disable
+	gbar.vl_stat8.disable
+END
+//***** End stat 8 *****//
+
+PROGRAM gbar_stat1_output
+BEGIN
+	if gbar.ck_stat1 {
+		require gbar.vl_stat1
+		put "("
+		put gbar.cb_stat1
+		put gbar.sp_stat1
+		put ")"
+		put " " gbar.vl_stat1
+	}
+END
+
+PROGRAM gbar_stat2_output
+BEGIN
+	if gbar.ck_stat2 {
+		require gbar.vl_stat2
+		put "("
+		put gbar.cb_stat2
+		put gbar.sp_stat2
+		put ")"
+		put " " gbar.vl_stat2
+	}
+END
+
+PROGRAM gbar_stat3_output
+BEGIN
+	if gbar.ck_stat3 {
+		require gbar.vl_stat3
+		put "("
+		put gbar.cb_stat3
+		put gbar.sp_stat3
+		put ")"
+		put " " gbar.vl_stat3
+	}
+END
+
+PROGRAM gbar_stat4_output
+BEGIN
+	if gbar.ck_stat4 {
+		require gbar.vl_stat4
+		put "("
+		put gbar.cb_stat4
+		put gbar.sp_stat4
+		put ")"
+		put " " gbar.vl_stat4
+	}
+END
+
+PROGRAM gbar_stat5_output
+BEGIN
+	if gbar.ck_stat5 {
+		require gbar.vl_stat5
+		put "("
+		put gbar.cb_stat5
+		put gbar.sp_stat5
+		put ")"
+		put " " gbar.vl_stat5
+	}
+END
+
+PROGRAM gbar_stat6_output
+BEGIN
+	if gbar.ck_stat6 {
+		require gbar.vl_stat6
+		put "("
+		put gbar.cb_stat6
+		put gbar.sp_stat6
+		put ")"
+		put " " gbar.vl_stat6
+	}
+END
+
+PROGRAM gbar_stat7_output
+BEGIN
+	if gbar.ck_stat7 {
+		require gbar.vl_stat7
+		put "("
+		put gbar.cb_stat7
+		put gbar.sp_stat7
+		put ")"
+		put " " gbar.vl_stat7
+	}
+END
+
+PROGRAM gbar_stat8_output
+BEGIN
+	if gbar.ck_stat8 {
+		require gbar.vl_stat8
+		put "("
+		put gbar.cb_stat8
+		put gbar.sp_stat8
+		put ")"
+		put " " gbar.vl_stat8
+	}
+END
+
+PROGRAM gbar_output
+BEGIN
+	if gbar.rb_vertical & ! gbar_isDot {
+		put "bar "
+	}
+	if gbar.rb_horizontal & ! gbar_isDot {
+		put "hbar "
+	}
+	if gbar_isDot {
+		put "dot "
+	}
+
+	if ! (gbar.ck_stat1 | gbar.ck_stat2 | gbar.ck_stat3 	///
+		| gbar.ck_stat4 | gbar.ck_stat5 | gbar.ck_stat6 ///
+		| gbar.ck_stat7 | gbar.ck_stat8)		///
+	{
+		stopbox stop `"On the "Main" tab,"'		///
+			`"at least one "Statistic" must be specified"'
+	}
+	put " " /program gbar_stat1_output
+	put " " /program gbar_stat2_output
+	put " " /program gbar_stat3_output
+	put " " /program gbar_stat4_output
+	put " " /program gbar_stat5_output
+	put " " /program gbar_stat6_output
+	put " " /program gbar_stat7_output
+	put " " /program gbar_stat8_output
+END

@@ -1,0 +1,27 @@
+/*
+ varstable
+
+*!  VERSION 2.0.1  07feb2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_wide
+DEFINE _dlght 380
+INCLUDE header
+
+HELP hlp1, view("help varstable")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	settitle "varstable - Check stability condition of VAR or SVAR estimates"
+END
+
+INCLUDE _varstable_common
+
+PROGRAM command
+BEGIN
+	put /program varstable_output
+END

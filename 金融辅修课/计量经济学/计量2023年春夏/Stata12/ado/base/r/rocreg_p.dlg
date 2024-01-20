@@ -1,0 +1,283 @@
+/*
+	predict (after rocreg)
+
+*!  VERSION 1.0.1  21jun2011
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_medium
+DEFINE _dlght 330
+INCLUDE header
+HELP hlp1, view("help rocreg postestimation")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	create STRING main_classvars
+	create STRING isML
+	create LIST CLASSVARS_LIST
+	isML.setvalue e(ml)
+END
+
+PROGRAM POSTINIT_PROGRAM
+BEGIN
+        call script main_populate_combos
+	if isML.iseq("") {
+		call program boot_on
+	}
+	else {
+		call script boot_off
+	}
+END
+
+SCRIPT main_populate_combos
+BEGIN
+        main_classvars.setvalue e(classvars)
+
+        CLASSVARS_LIST.Arrdropall
+
+        main_classvars.tokenize CLASSVARS_LIST
+        main.cb_classvar.repopulate
+END
+
+PROGRAM ON_DOTPROMPT
+BEGIN
+        call script main_populate_combos
+        call main.cb_classvar.repopulate
+END
+
+DIALOG main, label("predict - Prediction after estimation") tabtitle("Main")
+BEGIN
+  INCLUDE  _p_gentype
+
+  GROUPBOX gb_opt 		_lft	_ls	_iwd	_ht17,		///
+	label("Produce:")
+  RADIO rb_auc			_indent _ss	_inwd	., first	///
+	option(auc)							///
+	onclickon("script main_auc_on")					///
+	label("Area under the ROC curve")
+  RADIO rb_roc			@	_ss	@	.,		///
+	option(roc)							///
+	onclickon("script main_roc_on")					///
+	label("ROC for false-positive rates")
+  RADIO rb_invroc		@	_xxls	@	.,		///
+	option(invroc)							///
+	onclickon("script main_invroc_on")				///
+	label("False-positive rates for ROC values")
+  RADIO rb_pauc			@	_xxls	@	., last		///
+	option(pauc)							///
+	onclickon("script main_pauc_on")				///
+label("Partial area under the ROC curve (pAUC) for false-positive rates")
+  VARNAME vn_at_roc		_iilft	-75	_vnwd	.,		///
+	option(at)							///
+	label("Input variable for statistic")
+  TEXT tx_at_roc		_vnsep	@	200	.,		///
+	label("Input variable for statistic")
+  VARNAME vn_at_invroc		_iilft	+50	_vnwd	.,		///
+	option(at)							///
+	label("Input variable for statistic")
+  TEXT tx_at_invroc		_vnsep	@	200	.,		///
+	label("Input variable for statistic")
+  VARNAME vn_at_pauc		_iilft	+50	_vnwd	.,		///
+	option(at)							///
+	label("Input variable for statistic")
+  TEXT tx_at_pauc		_vnsep	@	200	.,		///
+	label("Input variable for statistic")
+
+  TEXT tx_classvar		_lft	+45	_iwd	.,		///
+	label("Classifier variable:")
+  COMBOBOX cb_classvar		@	_ss	_vnwd	.,		///
+	option(classvar)						///
+	dropdown							///
+	contents(CLASSVARS_LIST)					///
+	label("Classifier variable")
+END
+
+INCLUDE _p_gentype_sc
+INCLUDE _type_list_fd
+
+
+SCRIPT main_auc_on
+BEGIN
+	main.vn_at_roc.disable
+	main.tx_at_roc.disable
+	main.vn_at_invroc.disable
+	main.tx_at_invroc.disable
+	main.vn_at_pauc.disable
+	main.tx_at_pauc.disable
+	opt.sp_intpts.disable
+	opt.tx_intpts.disable
+END
+
+SCRIPT main_roc_on
+BEGIN
+	main.vn_at_roc.enable
+	main.tx_at_roc.enable
+	main.vn_at_invroc.disable
+	main.tx_at_invroc.disable
+	main.vn_at_pauc.disable
+	main.tx_at_pauc.disable
+	opt.sp_intpts.disable
+	opt.tx_intpts.disable
+END
+
+SCRIPT main_invroc_on
+BEGIN
+	main.vn_at_roc.disable
+	main.tx_at_roc.disable
+	main.vn_at_invroc.enable
+	main.tx_at_invroc.enable
+	main.vn_at_pauc.disable
+	main.tx_at_pauc.disable
+	opt.sp_intpts.disable
+	opt.tx_intpts.disable
+END
+
+SCRIPT main_pauc_on
+BEGIN
+	main.vn_at_roc.disable
+	main.tx_at_roc.disable
+	main.vn_at_invroc.disable
+	main.tx_at_invroc.disable
+	main.vn_at_pauc.enable
+	main.tx_at_pauc.enable
+	opt.sp_intpts.enable
+	opt.tx_intpts.enable
+END
+
+INCLUDE ifin
+
+DIALOG opt, tabtitle("Options")
+BEGIN
+  SPINNER sp_intpts		_lft	_top	_spwd	.,		///
+	option(intpts)							///
+	default(50)							///
+	min(0)								///
+	max(1000000)							///
+	label("Points in numeric integration of pAUC calculation")
+  TEXT tx_intpts		_spsep	@	300	.,		///
+	label("Points in numeric integration of pAUC calculation")
+
+  TEXT tx_se			_lft	_ls	_iwd	.,		///
+	label("Predict standard errors:")
+  EDIT ed_se			@	_ss	_vnwd	.,		///
+	option(se)							///
+	label("Predict standard errors")
+
+  CHECKBOX ck_ci		_lft	_ls	_iwd	_ht4,		///
+	groupbox							///
+	onclickon("script opt_ci_on")					///
+	onclickoff("script opt_ci_off")					///
+	label("Confidence intervals:")
+  TEXT tx_ci			_ilft	_ss	_inwd	.,		///
+	label("Store as variables with prefix:")
+  EDIT ed_ci			@	_ss	_vnwd	.,		///
+	option(ci)							///
+	label("Store as variables with prefix:")
+
+  DEFINE _x _lft2
+  DEFINE _cx _spr
+  DEFINE _y @
+  INCLUDE _sp_level
+
+  GROUPBOX gb_boot		_lft	+45	_iwd	_ht11,		///
+	label("Bootstrap options")
+  TEXT tx_bfile			_indent	_ss	_inwd	.,		///
+        label("Load dataset containing bootstrap replicates from rocreg")
+  FILE fi_bfile			@	_ss	@	.,		///
+        option("bfile")							///
+        defext(dta)							///
+        filter("Stata Dataset (*.dta)|*.dta|All (*.*)|*.*")		///
+        error("Load dataset containing bootstrap replicates from rocreg") ///
+        label("Open")
+  RADIO rb_btype_n		@	_ls	@	.,first		///
+	option(btype(n))						///
+	label("Normal confidence intervals")
+  RADIO rb_btype_p		@	_ss	@	.,		///
+	option(btype(p))						///
+	label("Percentile confidence intervals")
+  RADIO rb_btype_bc		@	_ss	@	.,last		///
+	option(btype(bc))						///
+	label("Bias-corrected confidence intervals")
+END
+
+PROGRAM boot_on
+BEGIN
+	call opt.gb_boot.enable
+	call opt.tx_bfile.enable
+	call opt.fi_bfile.enable
+	call opt.rb_btype_n.enable
+	call opt.rb_btype_p.enable
+	call opt.rb_btype_bc.enable
+END
+
+SCRIPT boot_off
+BEGIN
+	opt.gb_boot.disable
+	opt.tx_bfile.disable
+	opt.fi_bfile.disable
+	opt.rb_btype_n.disable
+	opt.rb_btype_p.disable
+	opt.rb_btype_bc.disable
+END
+
+SCRIPT opt_ci_on
+BEGIN
+	opt.tx_ci.enable
+	opt.ed_ci.enable
+	opt.tx_level.enable
+	opt.sp_level.enable
+END
+
+SCRIPT opt_ci_off
+BEGIN
+	opt.tx_ci.disable
+	opt.ed_ci.disable
+	opt.tx_level.disable
+	opt.sp_level.disable
+END
+
+PROGRAM command
+BEGIN
+	put "predict "
+	put " " /program _p_gentype_output
+	put " " /program ifin_output
+	require main.cb_classvar
+	beginoptions
+		if main.rb_auc {
+			put " auc"
+		}
+		if main.rb_roc {
+			put " roc"
+			require main.vn_at_roc
+			optionarg main.vn_at_roc
+		}
+		if main.rb_invroc {
+			put " invroc"
+			require main.vn_at_invroc
+			optionarg main.vn_at_invroc
+		}
+		if main.rb_pauc {
+			put " pauc"
+			require main.vn_at_pauc
+			optionarg main.vn_at_pauc
+		}
+		require main.cb_classvar
+		optionarg main.cb_classvar
+
+		optionarg /hidedefault opt.sp_intpts
+		optionarg opt.ed_se
+		if opt.ck_ci {
+			require opt.ed_ci
+			optionarg opt.ed_ci
+			optionarg /hidedefault opt.sp_level
+		}
+		if opt.ed_se | opt.ck_ci {
+			require opt.fi_bfile
+			optionarg opt.fi_bfile
+			option radio (opt rb_btype_p rb_btype_bc)
+		}
+	endoptions
+END

@@ -1,0 +1,11 @@
+j			matrix_functions
+jackknife_option	jackknife_options
+jackknife_post		jackknife_postestimation
+jackknife_postest	jackknife_postestimation
+jackknife_predict	jackknife_postestimation
+jknife			jackknife
+jknife_			jackknife
+jknife__		jackknife
+jknife_post		jackknife_postestimation
+jknife_postest		jackknife_postestimation
+jknife_postestimation	jackknife_postestimation

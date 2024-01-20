@@ -1,0 +1,54 @@
+/*
+	graph rename	
+
+*!  VERSION 1.1.0  31jan2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_small
+DEFINE _dlght 150
+INCLUDE header
+
+DEFINE _clwd	15
+DEFINE _wd	120
+DEFINE _sep	+125
+DEFINE _cbwd	140
+DEFINE _cbsep	+145
+
+HELP hlp1, view("help graph_rename")
+RESET res1
+
+DIALOG main, label("graph rename - Rename graph in memory")
+BEGIN
+  GROUPBOX gb_rename	_lft	_top	_iwd	_ht9,	///
+	label("Rename graph in memory")
+
+  TEXT 	   tx_current	_ilft	_ms	_wd	.,	///
+	label("Current name:") right
+  COMBOBOX cb_current	_sep	@	_cbwd	.,	///
+	dropdownlist					///
+	contents(graphs) nomemory
+
+  TEXT     tx_new	_ilft	_ls	_wd	.,	///
+	label("New name:") right
+  EDIT     ed_new	_sep	@	_cbwd	.,	///
+	label("New name")
+
+  CHECKBOX ck_replace	_ilft	+35	_ibwd	.,	///
+	option(replace) nomemory			///
+	label("Replace graph if it already exists in memory")  		
+END
+
+
+PROGRAM command
+BEGIN
+	require main.ed_new
+	put "graph rename "
+	put /hidden main.cb_current
+	put " " main.ed_new
+	beginoptions
+		option main.ck_replace
+	endoptions
+END

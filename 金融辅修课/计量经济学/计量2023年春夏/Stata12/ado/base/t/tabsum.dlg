@@ -1,0 +1,91 @@
+/*
+	tabsum	
+
+*!  VERSION 1.0.1  19apr2007
+
+*/
+
+VERSION 8.0
+
+INCLUDE _std_large
+INCLUDE header
+
+HELP hlp1, view("help tabsum")
+RESET res1
+
+DIALOG main, label("tabsum - One- and two-way table of summary statistics") /*
+		*/ tabtitle("Main")
+BEGIN
+  TEXT     tx_var1            _lft     _top    _cwd1        .,		/*
+		*/ label("Variable 1:")
+  VARNAME  vn_var1               @      _ss        @        .,		/*
+		*/ label("Variable 1")
+
+  TEXT     tx_var2           _lft2     _top    _cwd1        .,		/*
+		*/ label("Variable 2: (optional)")
+  VARNAME  vn_var2               @      _ss        @        .,		/*
+		*/ label("Variable 2")
+  TEXT     tx_summarize       _lft      _ms    _cwd1        .,		/*
+		*/ label("Summarize variable:")
+  VARNAME  vn_summarize          @      _ss        @        .,		/*
+		*/ option("summarize")					/*
+		*/ label("Summarize variable")
+
+  GROUPBOX gb_output          _lft     _xls     _iwd   _ht11h,		/*
+		*/ label("Output")
+  TEXT     tx_tabulate     _indent      _ss    _cwd2        .,  	/*
+		*/ label("Summary table")	
+  DEFINE   holdy @y
+  CHECKBOX ck_nomeans      _indent      _ss    _inwd        .,		/*
+		*/ option(nomeans)					/*
+		*/ label("Suppress means")
+  CHECKBOX ck_nostandard         @      _ms        @        .,		/*
+		*/ option(nostandard)					/*
+		*/ label("Suppress standard deviations")
+  CHECKBOX ck_nofreq             @      _ms        @        .,		/*
+		*/ option(nofreq)					/*
+		*/ label("Suppress frequencies")
+  CHECKBOX ck_noobs              @      _ms        @        .,		/*
+		*/ option(noobs)					/*
+		*/ label("Suppress number of obs.")
+
+  CHECKBOX ck_missing         _lft     _xls     _iwd        .,		/*
+		*/ option(missing)					/*
+		*/ label("Treat missing values as categories")
+
+  GROUPBOX gb_other          _lft2    holdy    _cwd2    _ht8h,		/*
+		*/ label("Other")
+  CHECKBOX ck_nolabel      _indent      _ms    _inwd        .,		/*
+		*/ option(nolabel)					/*
+		*/ label("Show numeric codes, not labels")
+  CHECKBOX ck_wrap               @      _ms        @        .,		/*
+		*/ option(wrap)						/*
+		*/ label("Do not break wide tables")
+END
+
+
+INCLUDE byifin
+INCLUDE weights_fa
+
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "tabulate "
+	varlist main.vn_var1
+	varlist [main.vn_var2]
+	INCLUDE _weights_pr
+	INCLUDE _ifin_pr
+	beginoptions
+		require main.vn_summarize
+		optionarg main.vn_summarize
+		option main.ck_nomeans
+		option main.ck_nostandard
+		option main.ck_nofreq
+		option main.ck_noobs
+		option main.ck_wrap
+		option main.ck_nolabel
+		option main.ck_missing
+	endoptions
+END
+

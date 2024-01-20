@@ -1,0 +1,6 @@
+*! version 1.0.0  22dec2002
+sequence 3800
+
+set width    scheme plotregion 
+set color    scheme plotregion_line
+set pattern  scheme plotregion 

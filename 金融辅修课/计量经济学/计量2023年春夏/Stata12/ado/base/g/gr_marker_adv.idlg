@@ -1,0 +1,36 @@
+/*
+    gr_marker_adv.idlg
+    // Common advanced marker tab components.
+    
+    // ** IMPORTANT
+    // ** This file is to be used with "INCLUDE gr_marker_adv_pr" and 
+    //		should only be used in dialog tabs named -adv- 
+    
+*!  VERSION 1.0.0  03jan2007
+
+*/
+
+  /* PUBLIC */
+  GROUPBOX gb_style	_lft	_top	_iwd	_ht8,		///
+	label("Advanced marker properties")
+  /* */
+
+  TEXT     tx_fclr	_ilft	_ss	_wd	.,		///
+	label("Fill color:") right
+  COMBOBOX cb_fclr	_sep	@	_cbwd	.,		///
+	dropdownlist contents(colors) option(mfcolor)		///
+	onselchangelist(main_cl_fclr_sel)
+  COLOR    cl_fclr	_cbsep	@	_clwd	., option(mfcolor)	
+
+  TEXT     tx_lclr	_ilft	_mls	_wd	.,		///
+	label("Outline color:") right
+  COMBOBOX cb_lclr	_sep	@	_cbwd	.,		///
+	dropdownlist contents(colors) option(mlcolor)		///
+	onselchangelist(main_cl_lclr_sel)
+  COLOR    cl_lclr	_cbsep	@	_clwd	., option(mlcolor)
+
+  TEXT     tx_lwidth	_ilft	_mls	_wd	.,		///
+	label("Outline width:") right
+  COMBOBOX cb_lwidth	_sep	@	_cbwd	.,		///
+	dropdown option(mlwidth)				///
+	contents(linewidths)

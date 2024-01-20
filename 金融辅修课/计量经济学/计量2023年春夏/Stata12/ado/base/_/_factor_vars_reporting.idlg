@@ -1,0 +1,30 @@
+/*
+  _factor_vars_reporting.idlg
+
+*!  VERSION 1.0.1  05may2009
+
+  To be included within a DIALOG.
+
+ ** NOTES:
+  	Macros _x, _cx, and _y must already be defined.
+  	Must also include _factor_vars_reporting_pr.idlg.  
+
+*/
+  GROUPBOX gb_fv	_x	_y	_cx	_ht12,			///
+	label("Factor variables")
+  CHECKBOX ck_noempty	_indent	_ss	_inwd	.,			///
+	label("Suppress covariates with empty cells")			///
+	option(noemptycells)
+
+  GROUPBOX gb_base_lev	@	_ms	@	_ht6,			///
+	label("Base level variables")
+  RADIO rb_nobasel	_indent	_ss	_inwd 	., first		///
+	label("Suppress all base level variables")
+  RADIO rb_basel	@	_ss	@	., 			///
+	option(baselevels)						///
+	label("Show base levels only in main effects or first interaction")
+  RADIO rb_allbasel	@	_ss	@	., last			///
+	option(allbaselevels)						///
+	label("Show all base level variables")
+
+// END: _factor_vars_reporting.idlg

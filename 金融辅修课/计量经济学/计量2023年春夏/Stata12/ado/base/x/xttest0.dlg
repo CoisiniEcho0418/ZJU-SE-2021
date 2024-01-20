@@ -1,0 +1,34 @@
+/*
+	xttest0
+
+	VERSION 1.0.0  21dec2002
+*/
+
+VERSION 8.0
+
+INCLUDE _std_small
+INCLUDE _ht150
+INCLUDE header
+
+HELP hlp1, view("help xttest0")
+RESET res1
+
+DIALOG main, label("xttest0 - Lagrange multiplier test for random effects") /*
+		*/ tabtitle("Main")
+BEGIN
+  TEXT     tx_message1  _lft      _top      _iwd      .,		/*
+		*/ label("xttest0 computes the Breusch and Pagan")
+  TEXT     tx_message2  @         _vss      @         .,		/*
+		*/ label("Lagrange multiplier test for random effects")
+  TEXT     tx_message3  @         _vss      @         .,		/*
+		*/ label("after xtreg.")
+  TEXT     tx_message4  @         _ls       @         .,		/*
+		*/ label("Press OK to compute xttest0")
+END
+
+
+PROGRAM command
+BEGIN
+	put "xttest0"
+END
+

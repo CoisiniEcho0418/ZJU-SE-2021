@@ -1,0 +1,6 @@
+*! version 1.0.0  22dec2002
+sequence 3600
+
+set width    scheme dot_line 
+set color    scheme dot_line 
+set pattern  scheme dot 

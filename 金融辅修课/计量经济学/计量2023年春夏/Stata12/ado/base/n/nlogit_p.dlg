@@ -1,0 +1,107 @@
+/*
+	predict (after nlogit)
+
+*!  VERSION 1.0.2  09may2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_medium  // ** set POSTINIT to match
+DEFINE _dlght 270
+INCLUDE header
+
+HELP hlp1, view("help nlogit postestimation")
+RESET res1
+
+SCRIPT POSTINIT
+BEGIN
+	script _p_gentype_setMedium
+END
+
+DIALOG main, label("predict - Prediction after estimation") tabtitle("Main")
+BEGIN
+  INCLUDE  _p_gentype
+
+  GROUPBOX gb_opts		_lft	_ls	_iwd	_ht10,		///
+		label("Produce:")
+  RADIO    rb_pr		_indent	_ss	_inwd	., first	///
+		option(pr)						///
+		onclickon(program check_stat_type)			///
+		label("Probability alternative is chosen")
+  RADIO    rb_xb		@	_ss	@	.,		///
+		option(xb)						///
+		onclickon(program check_stat_type)			///
+		label("Linear prediction")
+  RADIO    rb_condp		@	_ss	@	.,		///
+		option(condp)						///
+		onclickon(program check_stat_type)			///
+		label("Conditional probabilities")
+  RADIO    rb_iv		@	_ss	@	.,		///
+		option(iv)						///
+		onclickon(program check_stat_type)			///
+		label("Inclusive values")
+  RADIO    rb_score		@	_ss	@	., last		///
+		option(score)						///
+		onclickon(program check_stat_type)			///
+		label("Parameter-level scores")
+
+  CHECKBOX ck_hlevel		_lft	+45	_ckwd	.,		///
+	onclickon(program check_stat_type)				///
+	onclickoff(program check_stat_type)
+  SPINNER  sp_hlevel		_cksep	@	_spwd	.,		///
+	default(1) min(1) max(e(levels)) option(hlevel)				
+  TEXT     tx_hlevel		_spsep	@	200	.,		///
+	label("Hierarchy level")	
+
+  CHECKBOX ck_altwise	_lft	_ls	_cwd1	.,			///
+	option(altwise) label("Use alternative-wise deletion")
+END
+
+PROGRAM check_stat_type
+BEGIN
+	if main.rb_pr | main.rb_xb | main.rb_condp {
+		call main.ck_hlevel.enable
+		if main.ck_hlevel {
+			call main.sp_hlevel.enable
+		}
+		else {
+			call main.sp_hlevel.disable
+		}
+		call main.tx_hlevel.enable
+		call script _p_gentype_multiple
+	}
+	if main.rb_iv {
+		call main.ck_hlevel.enable
+		if main.ck_hlevel {
+			call main.sp_hlevel.enable
+		}
+		else {
+			call main.sp_hlevel.disable
+		}
+		call main.tx_hlevel.enable
+		call script _p_gentype_multiple
+	}
+	if main.rb_score {
+		call main.ck_hlevel.disable
+		call main.sp_hlevel.disable
+		call main.tx_hlevel.disable
+		call script _p_gentype_multiple
+	}
+END
+
+INCLUDE _p_gentype_sc
+INCLUDE ifin
+INCLUDE _type_list_fd
+
+PROGRAM command
+BEGIN
+	put "predict "
+	put " " /program _p_gentype_output
+	put " " /program ifin_output
+	beginoptions
+		option radio(main rb_pr rb_xb rb_condp rb_iv rb_score)
+		optionarg main.sp_hlevel
+		option main.ck_altwise
+	endoptions
+END

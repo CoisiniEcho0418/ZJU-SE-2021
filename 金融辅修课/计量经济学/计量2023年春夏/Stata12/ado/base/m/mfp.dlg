@@ -1,0 +1,612 @@
+/*
+    mfp.dlg
+
+*!  VERSION 1.3.7  15may2011
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_large
+INCLUDE _ht360
+INCLUDE header
+
+HELP hlp1, view("help mfp")
+RESET res1
+
+DIALOG main, label("mfp - Multivariable fractional polynomial models")	/*
+		*/ tabtitle("Model")
+BEGIN
+  TEXT     tx_dv     _lft      _top      _vnwd     .,	///
+	label("Dependent variable:")
+  VARNAME  vn_dv     @         _ss       @         .,	///
+	label("Dependent variable")
+
+  TEXT     tx_iv     _vlx      _top      160       .,	///
+	label("Independent variables:")
+  VARLIST  vl_iv     @         _ss       _vlwd     .,	///
+	label("Independent variables") allowcat
+  
+  VARNAME  vn_dv2    _lft	_ms	_vnwd	   .,	///
+	label("Dependent variable 2")
+
+  GROUPBOX gb_reg    _lft      +30       _iwd      _ht19, 		/*
+		*/ label("Available regression commands")		/*
+		*/
+  TEXT     tx_reg    _ilft     _ss       _ibwd     .,			/*
+  	*/label("Commands are not necessarily compatible with all weights.")/*
+  		*/
+  RADIO    rb_clogit _ilft     _ms       _cwd4_2   .,			/*
+		*/ label("clogit *")					/*
+		*/ clickon(script clogit_on)				/*
+		*/ first						/*
+		*/ option("clogit")					/*
+		*/
+DEFINE RBTOP @y
+
+  RADIO    rb_glm    @         _ss       @         .,			/*
+		*/ label("glm")						/*
+		*/ clickon(script glm_on)				/*
+		*/ option("glm")					/*
+		*/
+  RADIO    rb_intreg @         _ss       @         .,			/*
+		*/ label("intreg")					/*
+		*/ clickon(script intreg_on)				/*
+		*/ option("intreg")					/*
+		*/
+  RADIO    rb_logist @         _ss       @         .,			/*
+		*/ label("logistic")					/*
+		*/ clickon(script logistic_on)				/*
+		*/ option("logistic")					/*
+		*/
+  RADIO    rb_logit  @         _ss       @         .,			/*
+		*/ label("logit")					/*
+		*/ clickon(script logit_on)				/*
+		*/ option("logit")					/*
+		*/
+
+  RADIO    rb_mlogit @         _ss       @         .,			/*
+		*/ label("mlogit")					/*
+		*/ clickon(script mlogit_on)				/*
+		*/ option("mlogit")					/*
+		*/
+  RADIO    rb_nbreg   @         _ss       @        .,			/*
+		*/ label("nbreg")					/*
+		*/ clickon(script nbreg_on)				/*
+		*/ option("nbreg")					/*
+		*/
+  RADIO    rb_ologit  @         _ss       @        .,			/*
+		*/ label("ologit")					/*
+		*/ clickon(script ologit_on)				/*
+		*/ option("ologit")					/*
+		*/
+  RADIO    rb_oprobit  _ilft4_2   RBTOP    @        .,			/*
+		*/ label("oprobit")					/*
+		*/ clickon(script oprobit_on)				/*
+		*/ option("oprobit")					/*
+		*/
+  RADIO    rb_pois    @         _ss       @        .,			/*
+		*/ label("poisson")					/*
+		*/ clickon(script poisson_on)				/*
+		*/ option("poisson")					/*
+		*/
+  RADIO    rb_probit  @         _ss       @        .,			/*
+		*/ label("probit")					/*
+		*/ clickon(script probit_on)				/*
+		*/ option("probit")					/*
+		*/
+  RADIO    rb_qreg    @         _ss       @        .,			/*
+		*/ label("qreg")					/*
+		*/ clickon(script qreg_on)				/*
+		*/ option("qreg")					/*
+		*/
+  RADIO    rb_reg     @         _ss       @        .,			/*
+		*/ label("regress")					/*
+		*/ clickon(script regress_on)				/*
+		*/ option("regress")					/*
+		*/
+  RADIO    rb_stcox   @         _ss       @        .,			/*
+		*/ label("stcox")					/*
+		*/ clickon(script stcox_on)				/*
+		*/ option("stcox")					/*
+		*/
+  RADIO    rb_stcrreg @         _ss       @        .,			/*
+		*/ label("stcrreg **")					/*
+		*/ clickon(script stcrreg_on)				/*
+		*/ option("stcrreg")					/*
+		*/
+  RADIO    rb_xtgee   @         _ss       @        .,			/*
+		*/ label("xtgee")					/*
+		*/ clickon(script xtgee_on)				/*
+		*/ option("xtgee")					/*
+		*/
+
+  GROUPBOX gb_streg  _ilft4_3  RBTOP     _cwd3     _ht6,		/*
+		*/ label("streg")
+  RADIO    rb_ereg   +10       _ss       _cwd4_5   .,			/*
+		*/ label("ereg")					/*
+		*/ clickon(script streg_ereg_on)			/*
+		*/ option("streg")					/*
+		*/
+DEFINE RBTOP2 @y
+  RADIO    rb_gamma  @        _ss        @         .,			/*
+		*/ label("gamma")					/*
+		*/ clickon(script streg_gamma_on)			/*
+		*/ option("streg")					/*
+		*/
+  RADIO    rb_gomp   @        _ss        @         .,			/*
+		*/ label("gompertz")					/*
+		*/ clickon(script streg_gompertz_on)			/*
+		*/ option("streg")					/*
+		*/
+  RADIO    rb_llogis _iilft4_4 RBTOP2    @         .,			/*
+		*/ label("llogistic")					/*
+		*/ clickon(script streg_llogistic_on)			/*
+		*/ option("streg")					/*
+		*/
+  RADIO    rb_lnorm  @        _ss        @         .,			/*
+		*/ label("lnormal")					/*
+		*/ clickon(script streg_lnormal_on)			/*
+		*/ option("streg")					/*
+		*/
+  RADIO    rb_weib   @        _ss        @         .,			/*
+		*/ label("weibull")					/*
+		*/ clickon(script streg_weibull_on)			/*
+		*/ option("streg")					/*
+		*/ last
+		
+  TEXT     tx_note   _lft       +120     _iwd      .,			/*
+  */ label(`"* Note: the group() option must be specified."')
+  TEXT     tx_note2  @          _ss       @         .,			/*
+  */ label(`"Use "Other options accepted by chosen regression command" on "Adv. model" tab."')
+END
+
+DIALOG opt, label("") tabtitle("Model 2")
+BEGIN
+  CHECKBOX ck_seq    _lft      _top      _iwd      .,			/*
+	*/ label("Use the Royston and Altman model-selection algorithm")/*
+		*/ option("sequential")					/*
+		*/
+
+  SPINNER  sp_cycles _lft      _ls       _spwd     .,			/*
+		*/ min(1)						/*
+		*/ max(10000)						/*
+		*/ default(5)						/*
+		*/ option("cycles")					/*
+		*/
+  TEXT     tx_cycles _spsep    @         _spr      .,			/*
+		*/ label("Maximum number of iteration cycles")		/*
+		*/
+
+  SPINNER  sp_dfdef  _lft      _ls       _spwd     .,			/*
+		*/ min(1)						/*
+		*/ max(1000000)						/*
+		*/ default(4)						/*
+		*/ option("dfdefault")					/*
+		*/
+  TEXT     tx_dfdef  _spsep    @         _spr      .,			/*
+		*/ label("Default maximum degrees of freedom")		/*
+		*/
+
+  TEXT     tx_center _lft      _ls       _iwd      .,			/*
+*/ label("Centering of each predictor: [see help for center()]")	/*
+		*/
+  EDIT     ed_center @         _ss       @         .,			/*
+		*/ label("Centering for each predictor")		/*
+		*/ option("center")					/*
+		*/
+
+  TEXT     tx_alpha  _lft      _ls       _iwd      .,			/*
+*/ label("P-values for testing between FP models: [see help for alpha()]")/*
+		*/
+  EDIT     ed_alpha  @         _ss       @         .,			/*
+		*/ label("P-values for testing between FP models")	/*
+		*/ option("alpha")					/*
+		*/
+
+  TEXT     tx_df     _lft      _ls       _iwd      .,			/*
+*/ label("Degrees of freedom for each predictor: [see help for df()]")	/*
+		*/
+  EDIT     ed_df     @         _ss       @         .,			/*
+		*/ label("Degrees of freedom for each predictor")	/*
+		*/ option("df")						/*
+		*/
+
+  TEXT     tx_powers _lft      _ls       _iwd      .,			/*
+	*/ label("List of fractional polynomial powers to use:")	/*
+		*/
+  EDIT     ed_powers @         _ss       @         .,			/*
+		*/ label("List of fractional polynomial powers to use")	/*
+		*/ option("powers")					/*
+		*/
+
+END
+
+DIALOG adv, label("") tabtitle("Adv. model")
+BEGIN
+  GROUPBOX gb_xorder _lft      _top      _iwd      _ht2,		/*
+	*/ label("Order of entry into the model-selection algorithm")	/*
+		*/
+  RADIO    rb_xoplus _indent   _ss       _cwd3_2   .,			/*
+		*/ label("Most significant first")			/*
+		*/ first						/*
+		*/ option(NONE)						/*
+		*/
+  RADIO    rb_xomin  _lft3_2   @         @         .,			/*
+		*/ label("Least significant first")			/*
+		*/ option("xorder(-)")					/*
+		*/
+  RADIO    rb_xon    _lft3_3   @         @         .,			/*
+		*/ label("Original order")				/*
+		*/ last							/*
+		*/ option("xorder(n)")					/*
+		*/
+
+  TEXT     tx_select _lft      _xls      _iwd      .,			/*
+*/ label("Nominal p-values for selection on each predictor: [see help for select()]")	/*
+		*/
+  EDIT     ed_select @         _ss       @         .,			/*
+	*/ label("Nominal p-values for selection on each predictor")	/*
+		*/ option("select")					/*
+		*/
+
+  TEXT     tx_xpow   _lft      _ls       _iwd      .,			/*
+*/ label("Fractional polynomial powers for each predictor: [see help for xpowers()]") /*
+		*/
+  EDIT     ed_xpow   @         _ss       @         .,			/*
+	*/ label("Fractional polynomial powers for each predictor")	/*
+		*/ option("xpowers")					/*
+		*/
+
+  TEXT     tx_zero   _lft      _ls       _iwd      .,			/*
+*/ label("Treat nonpositive values of these predictors as zero when FP transformed:") /*
+		*/
+  VARLIST  vl_zero   @         _ss       @         .,			/*
+*/ label("Treat nonpositive values of these predictors as zero when FP transformed") /*
+		*/ option("zero")					/*
+		*/
+
+  TEXT     tx_cat0   _lft      _ls       _iwd      .,			/*
+*/ label("Add indicator variable for these predictors: [see help for catzero()]") /*
+		*/
+  VARLIST  vl_cat0   @         _ss       @         .,			/*
+		*/ option("catzero")					/*
+*/ label("Add indicator variable for these predictors") /*
+		*/
+
+  TEXT     tx_regopt _lft      _ls       _iwd      .,			/*
+	*/ label("Other options accepted by chosen regression command:")/*
+		*/
+  EDIT     ed_regopt @         _ss       @         .,			/*
+	*/ label("Other options accepted by chosen regression command")/*
+		*/
+  CHECKBOX ck_all    _lft      _ls       _iwd      .,			/*
+*/ label("Include out-of-sample observations in generated variables")	/*
+		*/ option("all")					/*
+		*/
+END
+
+SCRIPT clogit_on
+BEGIN
+	main.tx_dv.setlabel "Dependent variable:"
+	main.tx_note.setlabel `"* Note: the group() option must be specified."'
+	main.vn_dv.enable
+	main.vn_dv2.hide
+	main.tx_note.show
+	main.tx_note2.show
+	script weights_setLayout_fpi
+	script weights_enable
+END
+
+SCRIPT glm_on
+BEGIN
+	main.tx_dv.setlabel "Dependent variable:"
+	main.vn_dv.enable
+	main.vn_dv2.hide
+	main.tx_note.hide
+	main.tx_note2.hide
+	script weights_setLayout_fpai
+	script weights_enable
+END
+
+SCRIPT intreg_on
+BEGIN
+	main.tx_dv.setlabel "Dependent variables:"
+	main.vn_dv.enable
+	main.vn_dv2.show
+	main.tx_note.hide
+	main.tx_note2.hide
+	script weights_setLayout_fpai
+	script weights_enable
+END
+
+SCRIPT logistic_on
+BEGIN
+	main.tx_dv.setlabel "Dependent variable:"
+	main.vn_dv.enable
+	main.vn_dv2.hide
+	main.tx_note.hide
+	main.tx_note2.hide
+	script weights_setLayout_fpi
+	script weights_enable
+END
+
+SCRIPT logit_on
+BEGIN
+	main.tx_dv.setlabel "Dependent variable:"
+	main.vn_dv.enable
+	main.vn_dv2.hide
+	main.tx_note.hide
+	main.tx_note2.hide
+	script weights_setLayout_fpi
+	script weights_enable
+END
+
+SCRIPT mlogit_on
+BEGIN
+	main.tx_dv.setlabel "Dependent variable:"
+	main.vn_dv.enable
+	main.vn_dv2.hide
+	main.tx_note.hide
+	main.tx_note2.hide
+	script weights_setLayout_fpi
+	script weights_enable
+END
+
+SCRIPT nbreg_on
+BEGIN
+	main.tx_dv.setlabel "Dependent variable:"
+	main.vn_dv.enable
+	main.vn_dv2.hide
+	main.tx_note.hide
+	main.tx_note2.hide
+	script weights_setLayout_fpi
+	script weights_enable
+END
+
+SCRIPT ologit_on
+BEGIN
+	main.tx_dv.setlabel "Dependent variable:"
+	main.vn_dv.enable
+	main.vn_dv2.hide
+	main.tx_note.hide
+	main.tx_note2.hide
+	script weights_setLayout_fpi
+	script weights_enable
+END
+
+SCRIPT oprobit_on
+BEGIN
+	main.tx_dv.setlabel "Dependent variable:"
+	main.vn_dv.enable
+	main.vn_dv2.hide
+	main.tx_note.hide
+	main.tx_note2.hide
+	script weights_setLayout_fpi
+	script weights_enable
+END
+
+SCRIPT poisson_on
+BEGIN
+	main.tx_dv.setlabel "Dependent variable:"
+	main.vn_dv.enable
+	main.vn_dv2.hide
+	main.tx_note.hide
+	main.tx_note2.hide
+	script weights_setLayout_fpi
+	script weights_enable
+END
+
+SCRIPT probit_on
+BEGIN
+	main.tx_dv.setlabel "Dependent variable:"
+	main.vn_dv.enable
+	main.vn_dv2.hide
+	main.tx_note.hide
+	main.tx_note2.hide
+	script weights_setLayout_fpai
+	script weights_enable
+END
+
+SCRIPT qreg_on
+BEGIN
+	main.tx_dv.setlabel "Dependent variable:"
+	main.vn_dv.enable
+	main.vn_dv2.hide
+	main.tx_note.hide
+	main.tx_note2.hide
+	script weights_setLayout_fa
+	script weights_enable
+END
+
+SCRIPT regress_on
+BEGIN
+	main.tx_dv.setlabel "Dependent variable:"
+	main.vn_dv.enable
+	main.vn_dv2.hide
+	main.tx_note.hide
+	main.tx_note2.hide
+	script weights_setLayout_fpai
+	script weights_enable
+END
+
+SCRIPT stcox_on
+BEGIN
+	main.tx_dv.setlabel "Dependent variable:"
+	main.vn_dv.disable
+	main.vn_dv2.hide
+	main.tx_note.hide
+	main.tx_note2.hide
+	script weights_disable
+END
+
+SCRIPT stcrreg_on
+BEGIN
+	main.tx_dv.setlabel "Dependent variable:"
+	main.tx_note.setlabel `"** Note: the compete() option must be specified."'
+	main.vn_dv.disable
+	main.vn_dv2.hide
+	main.tx_note.show
+	main.tx_note2.show
+	script weights_disable
+END
+
+SCRIPT streg_ereg_on
+BEGIN
+	main.tx_dv.setlabel "Dependent variable:"
+	main.vn_dv.disable
+	main.vn_dv2.hide
+	main.tx_note.hide
+	main.tx_note2.hide
+	script weights_disable
+END
+
+SCRIPT streg_gamma_on
+BEGIN
+	main.tx_dv.setlabel "Dependent variable:"
+	main.vn_dv.disable
+	main.vn_dv2.hide
+	main.tx_note.hide
+	main.tx_note2.hide
+	script weights_disable
+END
+
+SCRIPT streg_gompertz_on
+BEGIN
+	main.tx_dv.setlabel "Dependent variable:"
+	main.vn_dv.disable
+	main.vn_dv2.hide
+	main.tx_note.hide
+	main.tx_note2.hide
+	script weights_disable
+END
+
+SCRIPT streg_llogistic_on
+BEGIN
+	main.tx_dv.setlabel "Dependent variable:"
+	main.vn_dv.disable
+	main.vn_dv2.hide
+	main.tx_note.hide
+	main.tx_note2.hide
+	script weights_disable
+END
+
+SCRIPT streg_lnormal_on
+BEGIN
+	main.tx_dv.setlabel "Dependent variable:"
+	main.vn_dv.disable
+	main.vn_dv2.hide
+	main.tx_note.hide
+	main.tx_note2.hide
+	script weights_disable
+END
+
+SCRIPT streg_weibull_on
+BEGIN
+	main.tx_dv.setlabel "Dependent variable:"
+	main.vn_dv.disable
+	main.vn_dv2.hide
+	main.tx_note.hide
+	main.tx_note2.hide
+	script weights_disable
+END
+
+SCRIPT xtgee_on
+BEGIN
+	main.tx_dv.setlabel "Dependent variable:"
+	main.vn_dv.enable
+	main.vn_dv2.hide
+	main.tx_note.hide
+	main.tx_note2.hide
+	script weights_setLayout_fpi
+	script weights_enable
+END
+
+INCLUDE ifin
+INCLUDE weights
+
+SCRIPT rpt_POSTINIT
+BEGIN
+	create STRING rpt_bu_fmtcoefResults
+	program rpt_bu_fmtcoef_ckResults
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr2b
+  DEFINE _y _top
+  INCLUDE _sp_level
+
+  DEFINE _x _lft
+  DEFINE _y _ls
+  INCLUDE _bu_coef_table_reporting
+END
+
+INCLUDE fmt_coef_table_reporting_pr
+
+PROGRAM command_prefix
+BEGIN
+	put "mfp "
+	beginoptions
+		option opt.ck_seq
+		optionarg /hidedefault opt.sp_cycles
+		optionarg /hidedefault opt.sp_dfdef
+		optionarg opt.ed_center
+		optionarg opt.ed_alpha
+		optionarg opt.ed_df		
+		optionarg opt.ed_powers
+		
+		option radio(adv rb_xoplus rb_xomin rb_xon)
+		optionarg adv.ed_select
+		optionarg adv.ed_xpow
+		optionarg adv.vl_zero
+		optionarg adv.vl_cat0
+		option adv.ck_all
+
+		optionarg /hidedefault rpt.sp_level
+		put " " rpt_bu_fmtcoefResults
+	endoptions
+END
+
+PROGRAM command
+BEGIN
+	allowxi
+	put /program command_prefix " : "
+
+	option radio(main rb_clogit rb_ereg rb_gamma rb_glm 		///
+		rb_gomp rb_intreg rb_llogis rb_lnorm rb_logist 		///
+		rb_logit rb_mlogit rb_nbreg rb_ologit		 	///
+		rb_oprobit rb_pois rb_probit rb_qreg rb_reg rb_stcox 	///
+		rb_stcrreg rb_weib rb_xtgee)
+	if main.vn_dv.isenabled() & main.vn_dv.isvisible() {
+		varlist main.vn_dv
+	}
+	if main.vn_dv2.isenabled() & main.vn_dv2.isvisible() {
+		varlist main.vn_dv2
+	}
+	varlist main.vl_iv
+	INCLUDE _weights_pr
+	INCLUDE _ifin_pr
+	beginoptions
+		if main.rb_ereg {
+			put "distribution(exponential)"
+		}
+		if main.rb_gamma {
+			put "distribution(gamma)"
+		}
+		if main.rb_gomp {
+			put "distribution(gompertz)"
+		}
+		if main.rb_llogis {
+			put "distribution(loglogistic)"
+		}
+		if main.rb_lnorm {
+			put "distribution(lognormal)"
+		}
+		if main.rb_weib {
+			put "distribution(weibull)"
+		}
+		put adv.ed_regopt	
+	endoptions
+END

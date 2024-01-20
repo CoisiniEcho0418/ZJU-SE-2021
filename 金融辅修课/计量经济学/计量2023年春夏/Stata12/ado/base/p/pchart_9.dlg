@@ -1,0 +1,72 @@
+/*
+	pchart_9.dlg
+
+*! VERSION 1.1.1  09aug2006  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+
+INCLUDE header
+
+HELP hlp1, view("help pchart")
+RESET res1
+
+DIALOG main, label("pchart - Draws a p (fraction defective) chart")	///
+	tabtitle("Main")
+BEGIN
+  TEXT     tx_reject      _lft       _top       _iwd	   .,		///
+	label("Variable containing number of rejected units:")
+  VARNAME  vn_reject      @          _ss        _vnwd      .,		///
+	label("Rejected units variable")
+
+  TEXT     tx_unit        @	     _ls        _iwd       .,		///
+	label("Variable containing unit identifier:")
+  VARNAME  vn_unit        @          _ss        _vnwd      .,		///
+	label("Unit identifier variable")
+
+  TEXT     tx_ssize       @          _ls        _iwd       .,		///
+	label("Variable with number inspected in each unit:")
+  VARNAME  vn_ssize       @          _ss        _vnwd      .,		///
+	label("Number inspected variable")
+
+  CHECKBOX ck_stabilized  @          _ls        _iwd       .,		///
+	label("Stabilize p chart when sizes are unequal")		///
+	option(stabilized)
+END
+
+INCLUDE p1_opts
+INCLUDE p2_opts
+INCLUDE addplot
+INCLUDE gr_twoway
+
+SCRIPT PREINIT
+BEGIN
+	script p1_opts_createAsNoRange
+	script p1_opts_setDefaultConnected
+	script p2_opts_createAsRange
+	script p2_opts_setDefaultRline
+END
+
+SCRIPT POSTINIT
+BEGIN
+	p2_opts.settabtitle "Control limits"
+END
+
+PROGRAM command
+BEGIN
+	put "pchart "
+	varlist main.vn_reject
+	varlist main.vn_unit
+	varlist main.vn_ssize
+	beginoptions
+                option main.ck_stabilized
+		put " " /program p1_opts_output
+		put " " /program p2_opts_cl_output
+		put " " /program addplot_output
+		put " " /program gr_twoway_output
+	endoptions
+END
+/* end */

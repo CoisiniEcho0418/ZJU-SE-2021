@@ -1,0 +1,43 @@
+/*
+  matrix symeigen
+
+*!  VERSION 1.2.0  09apr2007
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_small
+INCLUDE _ht250
+INCLUDE header
+
+HELP hlp1, view("help matrix_symeigen")
+RESET res1
+
+DIALOG main, /*
+  */ label("matrix symeigen - Eigenvalues and eigenvectors") /*
+		*/ tabtitle("Main")
+BEGIN
+  TEXT     tx_mat            _lft      _top      _iwd      .,		/*
+		*/ label("Compute eigenvalues and vectors of:")
+  LISTBOX  lb_mat            @         _ss       @         _ht7,	/*
+		*/ contents(square)					/*
+		*/ label("Compute eigenvalues and vectors of")
+
+  TEXT     tx_eigvec         @         _vs7      _iwd      .,		/*
+		*/ label("Place eigenvectors in matrix:")
+  EDIT     ed_eigvec         @         _ss       _vnwd     .,		/*
+		*/ label("Place eigenvectors in matrix")
+
+  TEXT     tx_eigval         @         _ls       _iwd      .,		/*
+		*/ label("Place eigenvalues in vector:")
+  EDIT     ed_eigval         @         _ss       _vnwd     .,		/*
+		*/ label("Place eigenvalues in vector")
+END
+
+PROGRAM command
+BEGIN
+	require main.lb_mat main.ed_eigvec main.ed_eigval
+	put "matrix symeigen "
+	put main.ed_eigvec " " main.ed_eigval " " "= " main.lb_mat
+END

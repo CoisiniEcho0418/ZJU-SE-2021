@@ -1,0 +1,195 @@
+/*
+  logit
+
+*!  VERSION 1.3.0  23aug2010
+
+  keyword:  eclass
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_xlarge // long title w/survey
+DEFINE _dlght 360
+INCLUDE header
+
+HELP hlp1, view("help logit")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	program parseMessage
+	script se_createAsSvyInternalML
+	program svy_check_title
+END
+
+PROGRAM parseMessage
+BEGIN
+	if __MESSAGE.contains("__MI__") {
+		call script se_setMI_on
+		call settitle "logit - Logit regression"
+	}
+END
+
+SCRIPT POSTINIT
+BEGIN
+	program check_bytab
+	program se_setFinalInitState
+END
+
+PROGRAM check_bytab
+BEGIN
+	if ! __MESSAGE.contains("__MI__") {
+		call script sub_set_by_on
+	}
+END
+
+SCRIPT svy_is_on
+BEGIN
+	script max_setDefaultNoLog
+END
+SCRIPT svy_is_off
+BEGIN
+	script max_setDefaultLog
+END
+PROGRAM svy_check_title
+BEGIN
+	if __MESSAGE.contains("-svy-") {
+		call settitle "svy: logit - Logistic regression, reporting coefficients, for survey data"
+	}
+END
+
+DIALOG main, tabtitle("Model")						///
+	/// **** has svy title ****					///
+	title("logit - Logistic regression, reporting coefficients")
+BEGIN
+  TEXT tx_dv 		_lft	_top	_vnwd	.,			///
+	label("Dependent variable:")
+  VARNAME vn_dv		@ 	_ss	@	.,			///
+	ts								///
+	label("Dependent variable")
+
+  TEXT tx_iv		_vlx	_top	160	.,			///
+	label("Independent variables:")
+  VARLIST vl_iv		@	_ss	_vlwd	.,			///
+	fv ts								///
+	allowcat							///
+	label("Independent variables")
+
+  CHECKBOX ck_nocons @         _ms       @         .,			/*
+  		*/ label("Suppress constant term")			/*
+  		*/ option("noconstant")					/*
+		*/
+
+  GROUPBOX gb_output _lft      _ls       _iwd      _ht15,		/*
+		*/ label("Options")					/*
+		*/
+
+  TEXT     tx_offset _ilft     _ms       _cwd2     .,			/*
+		*/ label("Offset variable:")				/*
+		*/
+  VARNAME  vn_offset @         _ss       _vnwd     .,			/*
+		*/ label("Offset variable")				/*
+		*/ option("offset")					/*
+		*/
+
+  CHECKBOX ck_asis   @         _ls       _ibwd     .,			/*
+		*/ label("Retain perfect predictor variables")		/*
+		*/ option("asis")					/*
+		*/
+  DEFINE _x _ilft
+  DEFINE _y _ms
+  DEFINE _cx _ilw80
+  DEFINE _bux _islw80
+  INCLUDE _constraints
+
+  DEFINE _x _ilft
+  DEFINE _xw _cwd1
+  INCLUDE _ck_collinear
+END
+
+INCLUDE sub_by_ifin_over_subpop
+INCLUDE weights_fpi
+INCLUDE se
+
+SCRIPT rpt_POSTINIT
+BEGIN
+	create STRING rpt_bu_fmtcoefResults
+	program rpt_bu_fmtcoef_ckResults
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr
+  DEFINE _y _top
+  INCLUDE _sp_level
+
+  RADIO    rb_default _lft     _ls       _cwd1     .,			/*
+  		*/ label("Report coefficients (default)") first
+  RADIO    rb_or      @        _ss       @         .,			/*
+  		*/ label("Report odds ratios")				/*
+  		*/ option(or) last
+
+  DEFINE _x _lft
+  DEFINE _y _ls
+  DEFINE _cx _iwd
+  INCLUDE _nocnsreport
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _noomitted
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _vsquish
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _factor_vars_reporting
+
+  DEFINE _x _lft
+  DEFINE _y _xxxls
+  INCLUDE _bu_coef_table_reporting
+END
+
+INCLUDE fmt_coef_table_reporting_pr
+
+PROGRAM rpt_output
+BEGIN
+	optionarg /hidedefault rpt.sp_level
+	option rpt.rb_or
+	INCLUDE _nocnsreport_pr
+	INCLUDE _noomitted_pr
+	INCLUDE _vsquish_pr
+	INCLUDE _factor_vars_reporting_pr
+	put " " rpt_bu_fmtcoefResults
+END
+
+INCLUDE max_ml
+
+PROGRAM command
+BEGIN
+	put /program by_output " "
+	put /program se_prefix_output " "
+	put "logit "
+	varlist main.vn_dv [main.vl_iv]
+	if !main.vl_iv & main.ck_nocons {
+	  stopbox stop `""Suppress constant term" is selected without independent variables."'
+	}
+	put " " /program ifin_output
+	put " " /program weights_output
+	beginoptions
+		option main.ck_nocons
+		optionarg main.vn_offset
+		option main.ck_asis
+		INCLUDE _constraints_main_pr
+		option main.ck_collinear
+		put " " /program se_output
+		put " " /program rpt_output
+		put " " /program max_output
+	endoptions
+END

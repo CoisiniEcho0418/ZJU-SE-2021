@@ -1,0 +1,68 @@
+/*
+  ttest
+
+*! VERSION 1.1.2  28jan2008
+
+  Two sample t-test.
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help ttest")
+RESET res1
+
+DIALOG main, label("ttest - Two-sample mean-comparison test") tabtitle("Main")
+BEGIN
+  TEXT     tx_var1   _lft      _top      _cwd1     .,			/*
+		*/ label("First variable:")				/*
+		*/
+  VARNAME  vn_var1   @         _ss       _vnwd     .,			/*
+		*/ label("First variable")				/*
+		*/
+
+  TEXT     tx_var2   _lft2     _top      _cwd1     .,			/*
+		*/ label("Second variable:")				/*
+		*/
+  VARNAME  vn_var2   @         _ss       _vnwd     .,			/*
+		*/ label("Second variable")				/*
+		*/
+
+  CHECKBOX ck_uneq   _lft      _ls       _iwd      .,			/*
+		*/ label("Unequal variances")				/*
+		*/ onclickon(main.ck_welch.enable)			/*
+		*/ onclickoff(main.ck_welch.disable)			/*
+		*/ option(unequal)					/*
+		*/
+  CHECKBOX ck_welch  @	       _ms       @         .,			/*
+		*/ label("Welch's approximation")			/*
+		*/ option(welch)					/*
+		*/
+
+  DEFINE _x _lft
+  DEFINE _cx _spr
+  DEFINE _y _xls
+  INCLUDE _sp_level
+
+END
+
+INCLUDE byifin
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "ttest "
+	varlist main.vn_var1
+	put "== "
+	varlist main.vn_var2
+	INCLUDE _ifin_pr
+	beginoptions
+		put "unpaired "
+		option main.ck_uneq
+		option main.ck_welch
+		INCLUDE _level_main_pr
+	endoptions
+END

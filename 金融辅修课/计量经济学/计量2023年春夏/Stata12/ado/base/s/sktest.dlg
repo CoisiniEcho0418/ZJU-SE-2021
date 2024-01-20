@@ -1,0 +1,40 @@
+/*
+	sktest
+
+*!  VERSION 1.1.0  07feb2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_msmall
+INCLUDE header
+
+HELP hlp1, view("help sktest")
+RESET res1
+
+DIALOG main, label("sktest - Skewness and kurtosis test for normality") /*
+		*/ tabtitle("Main")
+BEGIN
+  TEXT     tx_var        _lft     _top     _iwd        .,		/*
+		*/ label("Variables:")
+  VARLIST  vl_var           @      _ss        @        .,		/*
+		*/ label("Variables")
+  CHECKBOX ck_noadjust      @      _ls     _iwd        ., 		/*
+		*/ option("noadjust")					/*
+  		*/ label("Suppress Royston adjustment")
+END
+
+INCLUDE ifin
+INCLUDE weights_fa   
+
+PROGRAM command
+BEGIN
+	put "sktest "
+	varlist main.vl_var	
+	INCLUDE _weights_pr
+	INCLUDE _ifin_pr
+	beginoptions
+			option main.ck_noadjust
+	endoptions
+END

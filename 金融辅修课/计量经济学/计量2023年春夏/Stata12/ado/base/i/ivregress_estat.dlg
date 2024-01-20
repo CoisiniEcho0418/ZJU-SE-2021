@@ -1,0 +1,312 @@
+/*
+	ivregress_estat
+
+*!  VERSION 1.0.5  01jun2009
+
+	***
+	USE EXTREME CARE WHEN CHANGING CONTROL NAMES. The names used
+	in this file have multiple external dependencies.
+*/
+
+VERSION 11.0
+
+INCLUDE _std_large
+DEFINE _dlght 400	//dialog length for bootstrap options
+INCLUDE header
+
+HELP hlp1, view("help ivregress postestimation")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	create STRING estimator
+	estimator.setstring e(estimator)
+
+	create STRING vcetype
+	vcetype.setstring e(vcetype)
+
+	create BOOLEAN has_FactorVars
+	has_FactorVars.settrue
+	program sum_bu_facvars_ckResults
+	program vce_bu_facvars_ckResults
+END
+
+DIALOG main, label("estat - Postestimation tools for ivregress") tabtitle("Main")
+BEGIN
+  TEXT     tx_subcmd		_lft	_top	_iwd	.,		///
+  	label("Reports and statistics: (subcommand)")
+  LISTBOX  lb_subcmd		@	_ss	@	70,		///
+  	contents(main_subcommand_contents)				///
+  	values(main_subcommand_values)					///
+  	onselchangelist(main_subcommand_scripts)
+
+  DEFINE holdy 110
+
+  // firststage options
+  CHECKBOX ck_all		_lft	holdy	_iwd	.,		///
+	option(all)							///
+	label("Report all first-stage goodness-of-fit statistics")
+  CHECKBOX ck_forcenonrobust	@	_ms	@	.,		///
+	option(forcenonrobust)						///
+	label("Report minimum eigenvalue statistic even though a robust VCE was used")
+
+  // overid options
+  SPINNER sp_lags		_lft	holdy	_spwd	.,		///
+	option(lags)							///
+	min(1)								///
+	max(10000)							///
+	default(1)							///
+	label("Number of lags for prewhitening")
+  TEXT tx_lags			_spsep	@	220	.,		///
+	label("Number of lags for prewhitening")
+  CHECKBOX ck_forceweights	_lft	_ls	_iwd	.,		///
+	option(forceweights)						///
+	label("Report tests even though weights were used in estimation")
+  CHECKBOX ck_forcenonroid	@	_ms	@	.,		///
+	option(forcenonrobust)						///
+	label("Report Sargan and Basmann statistics even though a robust VCE was used")
+
+  // endog options
+  SPINNER sp_lags_endog		_lft	holdy	_spwd	.,		///
+	option(lags)							///
+	min(1)								///
+	max(10000)							///
+	default(1)							///
+	label("Number of lags for prewhitening")
+  TEXT tx_lags_endog		_spsep	@	220	.,		///
+	label("Number of lags for prewhitening")
+  CHECKBOX ck_forceweight_endog _lft	_ls	_iwd	.,		///
+	option(forceweights)						///
+	label("Report tests even though weights were used in estimation")
+  CHECKBOX ck_forcenonroid_endog @	_ms	@	.,		///
+	option(forcenonrobust)						///
+	label("Report Durbin and Wu-Hausman statistics even though a robust VCE was used")
+  TEXT     tx_endog_vl		@	_ms	_vlwd	.,		///
+	label("Variables to test (leave blank for all)")
+  COMBOBOX vl_endog		@	_ss	@	.,		///
+	label("Variables to test (leave blank for all)")		///
+	dropdown append contents(e(instd))
+  TEXT     tx_liml		_lft	holdy	_iwd	.,		///
+	label("Tests of endogeneity are not available.")
+
+  // Summarize options
+  INCLUDE estat_sum
+  INCLUDE estat_vce
+  INCLUDE _estat_bootstrap
+END
+
+INCLUDE estat_sum_pr
+INCLUDE _estat_bootstrap_pr
+INCLUDE estat_vce_pr
+
+SCRIPT main_group_on
+BEGIN
+	main.sp_group.enable
+	main.tx_group.enable
+END
+SCRIPT main_group_off
+BEGIN
+	main.sp_group.disable
+	main.tx_group.disable
+END
+
+LIST main_subcommand_contents
+BEGIN
+	"Perform tests of endogeneity (endogenous)"
+	"Report "first-stage" regression statistics (firststage)"
+	"Perform tests of overidentifying restrictions (overid)"
+	"Summarize estimation sample (summarize)"
+	"Covariance matrix estimates (vce)"
+END
+
+LIST main_subcommand_values
+BEGIN
+	endog
+	firststage
+	overid
+	summarize
+	vce
+END
+
+LIST main_subcommand_scripts
+BEGIN
+	script sel_endog
+	script sel_firststage
+	script sel_overid	
+	script sel_summarize
+	script sel_vce
+END
+
+SCRIPT sel_firststage
+BEGIN
+	script main_hide_all
+	script main_firststage_on
+END
+
+SCRIPT sel_overid
+BEGIN
+	script main_hide_all
+	program main_overid_on
+END
+
+SCRIPT sel_endog
+BEGIN
+	script main_hide_all
+	program main_endog_on
+END
+
+SCRIPT sel_summarize
+BEGIN
+	script main_hide_all
+	program main_summ_on
+END
+
+SCRIPT sel_vce
+BEGIN
+	script main_hide_all
+	program vce_on
+END
+
+SCRIPT main_firststage_on
+BEGIN
+	main.ck_all.show
+	main.ck_forcenonrobust.setposition . 135 . .
+	main.ck_forcenonrobust.show
+END
+
+SCRIPT main_firststage_off
+BEGIN
+	main.ck_all.hide
+	main.ck_forcenonrobust.hide
+END
+
+PROGRAM main_overid_on
+BEGIN
+	call main.sp_lags.show
+	call main.tx_lags.show
+	if (estimator.iseq("2sls") & vcetype.iseq("HAC")) {
+		call main.sp_lags.enable
+		call main.tx_lags.enable
+	}
+	else {
+		call main.sp_lags.disable
+		call main.tx_lags.disable
+	}
+	call main.ck_forceweights.show
+	call main.ck_forcenonroid.setposition . 165 . .
+	call main.ck_forcenonroid.show
+END
+
+SCRIPT main_overid_off
+BEGIN
+	main.sp_lags.hide
+	main.tx_lags.hide
+	main.ck_forceweights.hide
+	main.ck_forcenonroid.hide
+END
+
+PROGRAM main_endog_on
+BEGIN
+	if (estimator.iseq("2sls") ) {
+		call main.sp_lags_endog.show
+		call main.tx_lags_endog.show
+		if (estimator.iseq("2sls") & vcetype.iseq("HAC")) {
+			call main.sp_lags_endog.enable
+			call main.tx_lags_endog.enable
+		}
+		else {
+			call main.sp_lags_endog.disable
+			call main.tx_lags_endog.disable
+		}
+		call main.ck_forceweight_endog.show
+		call main.ck_forcenonroid_endog.setposition . 165 . .
+		call main.ck_forcenonroid_endog.show
+		call main.tx_endog_vl.show
+		call main.vl_endog.show
+		call main.tx_liml.hide
+	}
+	if (estimator.iseq("gmm") ) {
+		call main.sp_lags_endog.hide
+		call main.tx_lags_endog.hide
+		call main.ck_forceweight_endog.setposition . 110 . .
+		call main.ck_forceweight_endog.show
+		call main.ck_forcenonroid_endog.hide
+		call main.tx_endog_vl.setposition . 135 . .
+		call main.tx_endog_vl.show 
+		call main.vl_endog.setposition . 155 . .
+		call main.vl_endog.show
+		call main.tx_liml.hide
+	}
+	if (estimator.iseq("liml") ) {
+		call main.sp_lags_endog.hide
+		call main.tx_lags_endog.hide
+		call main.ck_forceweight_endog.hide
+		call main.ck_forcenonroid_endog.hide
+		call main.tx_endog_vl.hide
+		call main.vl_endog.hide
+		call main.tx_liml.show
+	}
+END
+
+SCRIPT main_endog_off
+BEGIN
+	main.sp_lags_endog.hide
+	main.tx_lags_endog.hide
+	main.ck_forceweight_endog.hide
+	main.ck_forcenonroid_endog.hide
+	main.tx_endog_vl.hide
+	main.vl_endog.hide
+	main.tx_liml.hide
+END
+
+SCRIPT main_hide_all  // MUST BE IMPLEMENTED FOR BOOTSTRAP
+BEGIN
+	script main_firststage_off
+	script main_overid_off
+	script main_endog_off
+	script main_summ_off
+	program vce_off
+	script main_bootstrap_hide
+END
+
+PROGRAM vl_output
+BEGIN
+	put main.vl_spec
+END
+
+PROGRAM vl_eq_output
+BEGIN
+	put main.vl_eq
+END
+
+
+PROGRAM command
+BEGIN
+	put "estat "
+	if (estimator.iseq("liml") & main.lb_subcmd.iseq("endog") ) {
+		stopbox stop "Tests of endogeneity are not available."
+	}
+	put main.lb_subcmd
+	put " " /program summarize_output
+	if main.vl_endog {
+		put " " main.vl_endog
+	}
+	beginoptions
+		// firststage and overid options
+		option main.ck_all
+		option main.ck_forcenonrobust
+		option main.ck_forcenonroid
+		optionarg /hidedefault main.sp_lags
+		option main.ck_forceweights
+		
+		// endog options
+		optionarg /hidedefault main.sp_lags_endog
+		option main.ck_forceweight_endog
+		option main.ck_forcenonroid_endog
+
+		// Summarize options
+		put " " /program summarize_opts_output
+		put " " /program vce_output
+		put " " /program bootstrap_output
+	endoptions
+END

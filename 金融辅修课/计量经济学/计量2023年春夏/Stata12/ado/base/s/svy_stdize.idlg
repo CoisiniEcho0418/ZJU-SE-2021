@@ -1,0 +1,27 @@
+/*
+	_svy_stdize.idlg
+
+*! VERSION 1.0.0  21feb2005
+
+*/
+
+  CHECKBOX ck_stdize _lft      _xls      _iwd      _ht6h,		///
+  		groupbox						///
+		clickon(script svy_stdize_on)				///
+		clickoff(script svy_stdize_off)				///
+  		label("Direct standardization")
+  TEXT     tx_stdize _ilft     _ss       150       .,			///
+  		label("Standard strata variable:")
+  TEXT     tx_stdwgt +165      @         @         .,			///
+  		label("Standard weight variable:")
+  VARNAME  vn_stdize _ilft     _ss       @         .,			///
+  		label("Standard strata variable")			///
+		option(stdize)
+  VARNAME  vn_stdwgt +165      @         @         .,			///
+  		label("Standard weight variable")			///
+		option(stdweight)
+  CHECKBOX ck_nostdr _ilft     _ms       _ibwd     .,			///
+  		label("Do not rescale the standard weight variable")	///
+		option(nostdrescale)
+
+// END: _svy_stdize.idlg

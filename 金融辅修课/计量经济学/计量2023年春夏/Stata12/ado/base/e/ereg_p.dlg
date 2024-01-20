@@ -1,0 +1,11 @@
+/*
+	predict (after ereg with no het.)
+
+	VERSION 1.0.0  21dec2002
+*/
+
+VERSION 8.0
+
+INCLUDE _nohet1		/* this does all the work */
+HELP hlp1, view("help ereg")
+RESET res1

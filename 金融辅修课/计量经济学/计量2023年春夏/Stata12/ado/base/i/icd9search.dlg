@@ -1,0 +1,62 @@
+/*
+	icd9[p] search
+	
+	VERSION 1.0.0  21dec2002
+
+	which icd9  - *! version 1.0.4  31jul2001
+	which icd9p - *! version 1.0.3  11sep2000
+*/
+
+VERSION 8.0
+
+INCLUDE _std_medium
+INCLUDE _ht150
+INCLUDE header
+HELP hlp1, view("help icd9")
+RESET res1
+
+DIALOG main, label("icd9[p] search - Search for codes from descriptions") tabtitle("Main")
+BEGIN
+  /*--+----1----+----2----+----3----+----4----+----5----+----6----+----7----+*/
+  TEXT     tx_vn     _lft      _top      _iwd      .,		/*
+		*/ label("Description(s):")
+
+  EDIT     ed_desc   @         _ss       @         .,		/*
+		*/ label("Description(s)")
+
+  RADIO    rb_diag   _lft      _ls       _cwd1     .,		/*
+		*/ first					/*
+		*/ label("Diagnostic codes")
+
+  RADIO    rb_proc   _lft2     @         @         .,		/*
+		*/ last						/*
+		*/ label("Procedure codes")
+
+  GROUPBOX gb_opt    _lft      _ls       _iwd      _ht2,	/*
+		*/ label("Return codes when matching:")
+
+  RADIO    rb_and    _indent   _ss       _cwd2     .,		/*
+		*/ first					/*
+		*/ label("All descriptions")
+
+  RADIO    rb_or     _lft2     @         @         .,		/*
+		*/ option(or)					/*
+		*/ last						/*
+		*/ label("Any description")
+END
+
+PROGRAM command
+BEGIN   
+	if main.rb_diag {
+		put "icd9 search "
+	}
+	if main.rb_proc {
+		put "icd9p search "
+	}
+	require main.ed_desc
+	put main.ed_desc
+	beginoptions
+		option main.rb_or
+	endoptions
+END
+

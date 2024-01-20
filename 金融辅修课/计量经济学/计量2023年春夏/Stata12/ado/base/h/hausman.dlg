@@ -1,0 +1,181 @@
+/*
+    hausman.dlg
+
+*!  VERSION 1.1.1  30aug2005
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_large
+INCLUDE _ht350
+INCLUDE header
+HELP hlp1, view("help hausman")
+RESET res1
+
+DIALOG main, label("hausman - Hausman specification test") /*
+		*/ tabtitle("Main")
+BEGIN
+  TEXT     tx_ncon         _lft      _top       _cwd1     .,		/*
+  		*/label("Consistent estimation:")
+  COMBOBOX cb_ncon         @         _ss        @         .,		/*
+  		*/label("Consistent estimation")			/*
+  		*/contents(estimates)					/*
+		*/dropdown
+
+  TEXT     tx_neff         _lft2     _top       _cwd1     .,		/*
+  		*/label("Efficient est.:  (blank for most recent)")	/*
+  		*/
+  COMBOBOX cb_neff         @         _ss        @         .,		/*
+  		*/label("Efficient est.")				/*
+ 		*/contents(estimates) dropdown
+
+  GROUPBOX gb_opt          _lft      _ls        _iwd      _ht25,	/*
+  		*/label("Options")
+  GROUPBOX gb_const        _indent   _ss        _cwd2     _ht4,		/*
+  		*/label("Intercepts")
+  DEFINE holdy @y
+  DEFINE   holdxi @x
+
+  RADIO    rb_noconst      _indent   _ss        _cwd4     .,		/*
+  		*/label("Exclude from comparison")			/*
+  		*/option(NONE) first
+  RADIO    rb_const        @         _ss        _cwd4     .,		/*
+  		*/label("Include in comparison")			/*
+  		*/option(constant) last
+
+  CHECKBOX ck_force        holdxi    +45        @         .,		/*
+  		*/label("Force performance of test even")		/*
+  		*/option(force)
+  TEXT     tx_force        _indent2  _vss       _inwd     .,		/*
+  		*/label("though assumptions are not met")
+
+  CHECKBOX ck_df           holdxi    +35        _ckwd     .,		/*
+  		*/onclickon(main.sp_df.enable) onclickoff(main.sp_df.disable)
+  SPINNER  sp_df           _cksep    @          _spwd     .,		/*
+  		*/label("Degrees of freedom")				/*
+  		*/option(df) min(1) default(1) max(c(N))
+  TEXT     tx_df           _spsep    @          _spr2b    .,		/*
+  		*/label("Degrees of freedom")
+
+  GROUPBOX gb_alleqs       _lft2     holdy      _cwd2     _ht14,	/*
+  		*/label("Equations to use to perform test")
+  RADIO    rb_1steq        _indent   _ss        _cwd4     .,		/*
+  		*/label("Use first equation only") 			/*
+  		*/clickon(script eq_off)				/*
+  		*/option(NONE) first
+  RADIO    rb_alleqs       @         _ss        @         .,		/*
+  		*/label("Use all equations") 				/*
+		*/clickon(script eq_off)				/*
+		*/option(alleqs)
+  RADIO    rb_skipeq       @         _ss        @         .,		/*
+  		*/label("Skip these equations:")			/*
+  		*/option(NONE)						/*
+  		*/clickon(script skipeq_on)
+  DEFINE holdx @x
+  EDIT     ed_skipeq       _indent2  _ss        _inwd     .,		/*
+  		*/label("Skip these equations")				/*
+  		*/option(skipeqs)
+  RADIO    rb_eqs          holdx     _ms        _cwd4     .,		/*
+  		*/label("Associate these equations:") 			/*
+  		*/clickon(script eqs_on) last				/*
+		*/option(NONE)
+  EDIT     ed_eqs          _indent2  _ss        _inwd     .,		/*
+  		*/label("Associate these equations")			/*
+  		*/option(equations)
+  TEXT     tx_eqs          @         _ss        @         .,		/*
+  		*/label("Example: 1:1 2:3 3:4")
+
+  CHECKBOX ck_sigma        holdxi    +35        _ibwd      _ht4,	/*
+  		*/ groupbox						/*
+  		*/ onclickon(script main_sigma_on)			/*
+  		*/ onclickoff(script main_sigma_off)			/*
+  		*/label("Base (co)variance matrices on common estimate of disturbance variance")
+  RADIO	   rb_sigmamore	   _indent   _ss	_inwd	  .,		/*
+  		*/ first						/*
+  		*/ option(sigmamore)					/*
+  		*/ label("Disturbance variance from efficient estimator")
+  RADIO	   rb_sigmaless	   @	     _ss	@	  .,		/*
+  		*/ last							/*
+  		*/ option(sigmaless)					/*
+  		*/ label("Disturbance variance from consistent estimator")
+END
+
+DIALOG adv, label("hausman - Hausman specification test") tabtitle("Advanced")
+BEGIN
+  TEXT     tx_tcon         _lft      _top       _cwd2     .,		/*
+  		*/ label("Consistent estimator column header:")
+  TEXT     tx_teff         _lft2     @          _cwd2     .,		/*
+  		*/ label("Efficient estimator column header:")
+  EDIT     ed_tcon         _lft      _ss        _cwd2     .,		/*
+  		*/ label("Consistent estimator column header")		/*
+		*/ option(tconsistent)
+  EDIT     ed_teff         _lft2     @          _cwd2     .,		/*
+  		*/ label("Efficient estimator column header")		/*
+		*/ option(tefficient)
+END
+
+SCRIPT main_sigma_on
+BEGIN
+	main.rb_sigmamore.enable
+	main.rb_sigmaless.enable
+END
+
+SCRIPT main_sigma_off
+BEGIN
+	main.rb_sigmamore.disable
+	main.rb_sigmaless.disable
+END
+
+SCRIPT skipeq_on
+BEGIN
+  main.ed_eqs.disable
+  main.ed_skipeq.enable
+END
+
+SCRIPT eqs_on
+BEGIN
+  main.ed_eqs.enable
+  main.ed_skipeq.disable
+END
+
+SCRIPT eq_off
+BEGIN
+  main.ed_eqs.disable
+  main.ed_skipeq.disable
+END
+
+PROGRAM command
+BEGIN
+	put "hausman "
+	require main.cb_ncon
+	put main.cb_ncon " "
+	if !main.cb_neff {
+		put ". "
+	}
+	if main.cb_neff {
+		put main.cb_neff
+	}
+	beginoptions
+		option radio(main rb_noconst rb_const)
+		option radio(main rb_1steq rb_alleqs rb_skipeq rb_eqs)
+		if main.rb_skipeq {
+			require main.ed_skipeq
+			optionarg main.ed_skipeq
+		}
+		if main.rb_eqs {
+			require main.ed_eqs
+			optionarg main.ed_eqs
+		}
+		option main.ck_force
+		optionarg main.sp_df
+		option main.rb_sigmamore
+		option main.rb_sigmaless
+		if adv.ed_tcon {
+			optionarg /quoted adv.ed_tcon
+		}
+		if adv.ed_teff {
+			optionarg /quoted adv.ed_teff
+		}
+	endoptions
+END

@@ -1,0 +1,172 @@
+/*
+  graph matrix
+
+*!  VERSION 2.0.0  30oct2006
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_mlarge
+DEFINE _dlght 250
+INCLUDE header
+
+HELP hlp1, view("help graph_matrix")
+RESET res1
+
+SCRIPT POSTINIT
+BEGIN
+	script gr_by_setAxesOptionsOff  // modify the by options.
+END
+
+SCRIPT main_PREINIT
+BEGIN
+	create STRING markerResults
+	create STRING markerWeights
+	create STRING diagonalOptsResults
+END
+
+SCRIPT main_POSTINIT
+BEGIN
+	program checkMarkerResults
+	program checkWeights
+	program checkDiagonalOptsResults
+END
+
+DIALOG main, label("graph matrix - Matrix graphs")		///
+	tabtitle("Main")
+BEGIN
+
+  TEXT     tx_var	_lft	_top	_iwd	.,		///
+	label("Variables:")
+  VARLIST  vl_var	@	_ss	@	.,		///
+	label("Variables")
+ 
+  CHECKBOX ck_half	_lft	+35	_cwd1	.,		///
+	label("Lower triangular half only") option(half)
+
+  TEXT     tx_scale 	_lft2	@	60	.,		///
+	label("Scale text:") right
+  EDIT     ed_scale	+65	@	_en7wd	.,		///
+	label("Scale text") default(1) option(scale)
+
+  TEXT     tx_dlabel	_lft	_ls	_lw100	.,		///
+	label("Diagonal labels: (optional)")
+  EDIT     ed_dlabel	@	_ss	@	.,		///
+	label("Diagonal labels") option(diagonal)
+  BUTTON   bu_dlabel	_slw100	@	15	.,		///
+	label("?") 						///
+	tooltip("Help - Diagonal labels")			///
+	onpush(view help gdiagonal##|_new)
+  BUTTON   bu_diagonal	+20	@	80	.,		///
+	label("Properties  ")					/// 
+	onpush(script show_diagonal_dialog)			///
+	tooltip("Diagonal label properties")
+
+  BUTTON   bu_marker	_lft	+35	120	.,		///
+	label("Marker properties  ")				///
+	onpush(script show_marker_dialog)			///
+	tooltip("Marker symbol and label properties")
+  BUTTON   bu_weight	+145	@	120	.,		///
+	label("Marker weights  ")				///
+	onpush(script show_weight_dialog)			///
+	tooltip("Weight markers based on a variable") 
+END
+
+SCRIPT show_marker_dialog
+BEGIN
+        create CHILD gr_marker_options AS marker, allowsubmit
+        marker.setExitString markerResults
+        marker.settitle "Marker properties"
+        marker.setExitAction "program checkMarkerResults"
+        marker.setSubmitAction "program markerSubmit"
+END
+PROGRAM checkMarkerResults
+BEGIN
+	if markerResults.iseq("") {
+		call main.bu_marker.setlabel "Marker properties  "
+	}
+	else {
+		call main.bu_marker.setlabel "Marker properties *"
+	}
+END
+PROGRAM markerSubmit
+BEGIN
+	call program checkMarkerResults
+	call Submit
+END
+
+SCRIPT show_weight_dialog
+BEGIN
+	create CHILD weights AS weightDialog
+	weightDialog.setExitString markerWeights
+	weightDialog.settitle "Marker weights"
+	weightDialog.setExitAction "program checkWeights"
+	weightDialog.setSubmitAction "program weightSubmit"
+	weightDialog.callthru "script weights_setLayout_fpa"
+END
+PROGRAM checkWeights
+BEGIN
+	if markerWeights.iseq("") {
+		call main.bu_weight.setlabel "Marker weights  "
+	}
+	else {
+		call main.bu_weight.setlabel "Marker weights *"
+	}
+END
+PROGRAM weightSubmit
+BEGIN
+	call program checkWeights
+	call Submit
+END
+
+SCRIPT show_diagonal_dialog
+BEGIN
+	create CHILD gr_diagonal_label_options AS diagonalOpts, allowsubmit
+	diagonalOpts.setExitString diagonalOptsResults
+	diagonalOpts.settitle "Diagonal label properties"
+	diagonalOpts.setExitAction "program checkDiagonalOptsResults"
+	diagonalOpts.setSubmitAction "program diagonalOptsSubmit"
+END
+PROGRAM checkDiagonalOptsResults
+BEGIN
+	if diagonalOptsResults.iseq("") {
+		call main.bu_diagonal.setlabel "Properties  "
+	}
+	if diagonalOptsResults.isneq("") {
+		call main.bu_diagonal.setlabel "Properties *"
+	}
+END
+PROGRAM diagonalOptsSubmit
+BEGIN
+	call program checkDiagonalOptsResults
+	call Submit
+END
+
+INCLUDE ifin
+INCLUDE gr_titles
+INCLUDE gr_overall
+INCLUDE gr_by
+
+
+PROGRAM command
+BEGIN
+	put "graph matrix "
+	varlist main.vl_var
+	put " " /program ifin_output
+	put " " markerWeights " "
+        beginoptions
+		option main.ck_half
+		optionarg /hidedefault main.ed_scale
+		if main.ed_dlabel | diagonalOptsResults {
+			put " diagonal(" 
+			put main.ed_dlabel
+				put diagonalOptsResults
+			put ") "
+		}
+		put " " markerResults " "
+		put " " /program gr_titles_output
+		put " " /program gr_overall_output
+		put " " /program gr_by_output
+	endoptions
+END

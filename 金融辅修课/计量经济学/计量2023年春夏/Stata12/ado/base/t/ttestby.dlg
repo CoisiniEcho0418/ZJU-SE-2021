@@ -1,0 +1,70 @@
+/*
+  ttestby
+
+*!  VERSION 1.0.6  05may2007
+
+  t-test by groups.
+
+*/
+
+VERSION 8.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help ttest")
+RESET res1
+
+DIALOG main, label("ttest - Two-group mean-comparison test") tabtitle("Main")
+BEGIN
+  /*--+----1----+----2----+----3----+----4----+----5----+----6----+----7----+*/
+  TEXT     tx_var    _lft      _top      _cwd1     .,			/*
+		*/ label("Variable name:")				/*
+		*/
+  VARNAME  vn_var    @         _ss       _vnwd     .,			/*
+		*/ label("Variable name")				/*
+		*/
+
+  TEXT     tx_byopt  _lft2     _top      _cwd1     .,			/*
+		*/ label("Group variable name:")			/*
+		*/
+  VARNAME  vn_byopt  @         _ss       _vnwd     .,			/*
+		*/ label("Group variable name")				/*
+		*/ option("by")						/*
+		*/
+
+  DEFINE _x _lft
+  DEFINE _cx _spr
+  DEFINE _y _xls
+  INCLUDE _sp_level
+
+  CHECKBOX ck_uneq   _lft      +35       _iwd      .,			/*
+		*/ label("Unequal variances")				/*
+		*/ clickon("gaction main.ck_welch.enable")		/*
+		*/ clickoff("gaction main.ck_welch.disable")		/*
+		*/ option("unequal")					/*
+		*/
+  CHECKBOX ck_welch     @      _ms         @      .,			/*
+		*/ label("Welch's approximation")			/*
+		*/ option("welch")					/*
+		*/
+
+END
+
+INCLUDE byifin
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "ttest "
+	varlist main.vn_var
+	INCLUDE _ifin_pr
+	beginoptions
+		require main.vn_byopt
+		optionarg main.vn_byopt
+		option main.ck_uneq
+		option main.ck_welch
+		INCLUDE _level_main_pr
+	endoptions
+END
+

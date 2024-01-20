@@ -1,0 +1,30 @@
+/*
+	fillin
+
+	VERSION 1.0.0  21dec2002
+*/
+
+VERSION 8.0
+
+INCLUDE _std_small
+INCLUDE header
+HELP hlp1, view("help fillin")
+RESET res1
+
+DIALOG main, label("fillin - Rectangularize dataset") tabtitle("Main")
+BEGIN
+
+  TEXT     tx_var	_lft	_top	_iwd	.,	/*
+		*/ label("Variables:")
+  
+  VARLIST  vl_var	@	_ss	@	.,	/*
+		*/ label("Variables")
+		
+END
+
+PROGRAM command
+BEGIN
+	put "fillin "
+	varlist main.vl_var
+END
+

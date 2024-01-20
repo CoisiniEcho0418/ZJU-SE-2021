@@ -1,0 +1,14 @@
+*! version 1.0.1  19dec2004
+sequence 3060
+
+set symbol     scheme refmarker
+set size       scheme refmarker
+set fillcolor  scheme refmarker
+set linestyle  scheme refmarker
+set angle      scheme
+
+set backsymbol  scheme none
+set backsize    scheme
+set backcolor   scheme
+set backline    scheme
+set backangle   scheme

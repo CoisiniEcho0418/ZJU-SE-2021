@@ -1,0 +1,143 @@
+/*
+  mi impute intreg
+
+*!  VERSION 1.0.2  30may2011
+
+  keyword:  mi impute
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_large
+DEFINE _dlght 520
+INCLUDE header
+
+HELP hlp1, view("help mi impute intreg")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	create STRING bu_groupOptResults
+END
+
+SCRIPT POSTINIT
+BEGIN
+	create DOUBLE _mi_M
+	create STRING _mi_M_STR
+	program check_M
+END
+
+PROGRAM check_M
+BEGIN
+	call _mi_M_STR.setvalue char _dta[_mi_M]
+	call _mi_M.setvalue class _mi_M_STR.value
+
+	if _mi_M.islt(1) {
+		call main.ck_add.seton
+	}
+END
+
+DIALOG main, tabtitle("Main")	///
+	label("mi impute intreg - Impute using interval regression")
+BEGIN
+  TEXT     tx_newname 	_lft	_topph	170	.,			///
+	label("New/existing imputed variable:")
+  EDIT ed_newname	@	_ss	_vnwd   .,			///
+        nomemory							///
+        label("New/existing imputed variable")
+
+  TEXT     tx_iv	+180	_topph	300	.,			///
+	label("Independent variables:")
+  VARLIST  vl_iv	@	_ss	300	.,			///
+	fv								///
+	label("Independent variables")
+
+  CHECKBOX ck_nocons	@	_ms	@	.,			///
+	label("Suppress constant term")					///
+	option(noconstant)
+  
+  GROUPBOX gb_censor		_lft	_ls	_iwd	_ht4h,		///
+	label("Both censoring limits must be specified")
+  TEXT tx_ll			_indent	_ss	_cwd2	.,		///
+	label("Lower interval-censoring limit:")
+  DEFINE y @y
+  VARNAME vn_ll			@	_ss	_vnwd	.,		///
+	option("ll")							///
+	label("Lower interval-censoring limit")
+  TEXT tx_ul			+220	y	_cwd2	.,		///
+	label("Upper interval-censoring limit:")
+  VARNAME vn_ul			@	_ss	_vnwd	.,		///
+	option("ul")							///
+	label("Upper interval-censoring limit")
+
+  DEFINE _x _lft
+  DEFINE _cx _iwd
+  DEFINE _y _xxls
+  INCLUDE _mi_impute_opts
+
+  TEXT tx_offset	_lft	_ls	_cwd1	.,			///
+	label("Offset variable: (optional)")
+  VARNAME vn_offset	@	_ss	_vnwd	.,			///
+	option(offset)							///
+	label("Offset variable")
+
+  DEFINE _x _lft
+  DEFINE _cx _iwd
+  DEFINE _y _ls
+  INCLUDE _mi_impute_uni_cond_boot
+END
+
+INCLUDE _mi_impute_opts_sc
+
+INCLUDE if
+INCLUDE weights
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _iwd
+  DEFINE _y _top
+  INCLUDE _mi_impute_rpt
+END
+
+INCLUDE max_ml
+
+DIALOG adv, tabtitle("Advanced")
+BEGIN
+  CHECKBOX ck_force	_lft	_top	_iwd	.,			///
+	option(force)							///
+	label("Proceed with imputation even when missing imputed values are encountered")
+END
+
+PROGRAM command
+BEGIN
+	put "mi impute intreg "
+	require main.ed_newname
+	if ! main.ed_newname.isvalidname() {
+		stopbox stop `"The variable name you specified is invalid."'
+	}
+	put main.ed_newname
+
+	if main.vl_iv {
+		put " " main.vl_iv
+	}
+	put " " /program if_output
+	put " " /program weights_output
+	beginoptions
+		option main.ck_nocons
+		INCLUDE _mi_impute_opts_main_pr
+		if ! (main.vn_ll & main.vn_ul) {
+			stopbox stop `"Both "Lower" and "Upper" interval-censoring limits must be specified"'
+
+		}
+		optionarg main.vn_ll
+		optionarg main.vn_ul
+
+		optionarg main.vn_offset
+		INCLUDE _mi_impute_uni_cond_boot_pr
+		INCLUDE _mi_impute_rpt_pr
+		option adv.ck_force
+		put " " /program max_output
+	endoptions
+END

@@ -1,0 +1,43 @@
+/*
+	mi_rename
+
+*!  VERSION 1.0.1  27may2009
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_vsmall
+DEFINE _dlght 100
+INCLUDE header
+
+HELP hlp1, view("help mi_rename")
+RESET res1
+
+DIALOG main, label("mi rename - Rename variable") tabtitle("Main")
+BEGIN
+
+  TEXT tx_oldvar	_lft	_top	_cwd1	.,		///
+	label("Existing variable name:")
+  DEFINE holdy @y
+  VARNAME vn_oldvar	@	_ss	_vnwd	., 		///
+	label("Existing variable name")
+
+  TEXT tx_newvar	_lft2	holdy	_cwd1	.,		///
+	label("New variable name:")
+  EDIT ed_newvar	@	_ss	_vnwd	., 		///
+	label("New variable name")
+END
+
+PROGRAM command
+BEGIN
+	if ! main.ed_newvar.isvalidname() {
+		stopbox stop `"The new variable name you specified is invalid."'
+	}
+	if main.ed_newvar.isvarname() {
+		stopbox stop `"The new variable name you specified already exists."'
+	}
+	put "mi rename "
+	varlist main.vn_oldvar
+	varlist main.ed_newvar
+END

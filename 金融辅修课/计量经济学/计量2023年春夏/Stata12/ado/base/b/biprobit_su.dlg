@@ -1,0 +1,240 @@
+/*
+  biprobit (eq) (eq)
+
+*!  VERSION 1.2.5  23aug2010
+
+  keyword:  eclass
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_wide  // title is long
+DEFINE _dlght 380
+INCLUDE header
+HELP hlp1, view("help biprobit")
+RESET res1
+
+
+SCRIPT PREINIT
+BEGIN
+	script se_createAsSvyJknifeBstrapML
+	program svy_check_title
+END
+
+SCRIPT POSTINIT
+BEGIN
+	script sub_set_by_on
+	program se_setFinalInitState
+END
+
+SCRIPT svy_is_on
+BEGIN
+	rpt.gb_tests.disable
+	rpt.ck_noskip.disable
+	script max_setDefaultNoLog
+END
+SCRIPT svy_is_off
+BEGIN
+	rpt.gb_tests.enable
+	rpt.ck_noskip.enable
+	script max_setDefaultLog
+END
+PROGRAM svy_check_title
+BEGIN
+	if __MESSAGE.contains("-svy-") {
+		call settitle "svy: biprobit - Seemingly unrelated bivariate probit regression for survey data"
+	}
+END
+
+DIALOG main, tabtitle("Model")						///
+	/// **** has svy title ****					///
+	title("biprobit - Seemingly unrelated bivariate probit regression")
+BEGIN
+  TEXT     tx_dv1    _lft      _top      _iwd      .,			/*
+		*/ label("First equation DV:")				/*
+		*/
+  VARNAME  vn_dv1    @         _ss       _vnwd     .,			/*
+		*/ label("First equation DV")				/*
+		*/ ts
+
+  TEXT     tx_iv1    _vlx      _top      _vlwd     .,			/*
+		*/ label("First equation independent variables:")	/*
+		*/
+  VARLIST  vl_iv1    @         _ss       @         .,			/*
+		*/ label("First equation independent variables")	/*
+		*/ allowcat						/*
+		*/ ts fv
+  CHECKBOX ck_nocon1 @         _ms       @         .,			/*
+		*/ label("Suppress constant in equation 1")		/*
+		*/ option("noconstant")					/*
+		*/
+
+  TEXT     tx_dv2    _lft      _ls       _iwd      .,			/*
+		*/ label("Second equation DV:")				/*
+		*/
+  DEFINE y @y
+  VARNAME  vn_dv2    @         _ss       _vnwd     .,			/*
+		*/ label("Second equation DV")				/*
+		*/ ts
+
+  TEXT     tx_iv2    _vlx      y         _vlwd     .,			/*
+		*/ label("Second equation independent variables:")	/*
+		*/
+  VARLIST  vl_iv2    @         _ss       @         .,			/*
+		*/ label("Second equation independent variables")	/*
+		*/ allowcat						/*
+		*/ ts fv
+  CHECKBOX ck_nocon2 @         _ms       @         .,			/*
+		*/ label("Suppress constant in equation 2")		/*
+		*/ option("noconstant")					/*
+		*/
+
+  GROUPBOX gb_output _lft      _ls       _iwd      _ht15,		/*
+		*/ label("Options")					/*
+		*/
+  CHECKBOX ck_part   _ilft     _ms        _inwd     .,			/*
+		*/ label("Fit partial observability model")		/*
+		*/ option("partial")					/*
+		*/
+  TEXT     tx_off1   _ilft     _ms       _cwd2     .,			/*
+		*/ label("Eq. 1 offset variable:")			/*
+		*/
+DEFINE y @y
+  VARNAME  vn_off1   @         _ss       _vnwd     .,			/*
+		*/ label("Eq. 1 offset variable")			/*
+		*/ option("offset")					/*
+		*/
+  TEXT     tx_off2   _vlx      y         _cwd2     .,			/*
+		*/ label("Eq. 2 offset variable:")			/*
+		*/
+  VARNAME  vn_off2   @         _ss       _vnwd     .,			/*
+		*/ label("Eq. 2 offset variable")			/*
+		*/ option("offset")					/*
+		*/
+
+  DEFINE _x _ilft
+  DEFINE _y _ls
+  DEFINE _cx _ilw80
+  DEFINE _bux _islw80
+  INCLUDE _constraints
+
+  DEFINE _x _ilft
+  DEFINE _xw _ibwd
+  INCLUDE _ck_collinear
+END
+
+INCLUDE _constraints_sc 
+INCLUDE sub_by_ifin_over_subpop
+INCLUDE weights_fpi
+INCLUDE se
+
+SCRIPT rpt_POSTINIT
+BEGIN
+	create STRING rpt_bu_fmtcoefResults
+	program rpt_bu_fmtcoef_ckResults
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr
+  DEFINE _y _top
+  INCLUDE _sp_level
+
+  GROUPBOX gb_tests  _lft      _xls     _iwd      _ht2,			/*
+  		*/ label("Additional test statistics")
+  CHECKBOX ck_noskip _ilft     _ss      _cwd1     .,			/*
+		*/ label("Perform likelihood-ratio test")		/*
+		*/ option(noskip)
+
+  DEFINE _x _lft
+  DEFINE _y _xls
+  DEFINE _cx _iwd
+  INCLUDE _nocnsreport
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _noomitted
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _vsquish
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _factor_vars_reporting
+
+  DEFINE _x _lft
+  DEFINE _y _xxxls
+  INCLUDE _bu_coef_table_reporting
+END
+
+INCLUDE fmt_coef_table_reporting_pr
+
+INCLUDE max_ml
+
+PROGRAM subcommand_1
+BEGIN
+	put main.vn_dv1 " " " = " main.vl_iv1
+	if main.vn_off1 | main.ck_nocon1{
+		beginoptions
+			optionarg main.vn_off1
+			option main.ck_nocon1
+		endoptions
+	}
+END
+
+PROGRAM subcommand_2
+BEGIN
+	put main.vn_dv2 " " " = " main.vl_iv2
+	if main.vn_off2 | main.ck_nocon2 {
+		beginoptions
+			optionarg main.vn_off2
+			option main.ck_nocon2
+		endoptions
+	}
+END
+
+PROGRAM command
+BEGIN
+	put /program by_output
+	put /program se_prefix_output " "
+	require main.vn_dv1 main.vn_dv2
+	if !main.vl_iv1 & main.ck_nocon1 {
+	  stopbox stop `""Suppress constant term" is selected without first equation independent variables."'
+	}
+	if !main.vl_iv2 & main.ck_nocon2 {
+	  stopbox stop `""Suppress constant term" is selected without second equation independent variables."'
+	}
+	put "biprobit ("
+	put /program subcommand_1
+	if !main.vl_iv1 {
+		put " "
+	}
+	put ") ("
+	put /program subcommand_2
+	if !main.vl_iv2 {
+		put " "
+	}
+	put ")"
+	put " " /program ifin_output
+	put " " /program weights_output
+	beginoptions
+		INCLUDE _constraints_main_pr
+		option main.ck_collinear
+		option main.ck_part
+		put " " /program se_output
+		optionarg /hidedefault rpt.sp_level
+		option rpt.ck_noskip
+		INCLUDE _nocnsreport_pr
+		INCLUDE _noomitted_pr
+		INCLUDE _vsquish_pr
+		INCLUDE _factor_vars_reporting_pr
+		put " " rpt_bu_fmtcoefResults
+		put " " /program max_output
+	endoptions
+END

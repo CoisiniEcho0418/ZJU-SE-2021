@@ -1,0 +1,36 @@
+/*
+  easy graph scatter - Scatter plot
+
+*!  VERSION 1.0.1  03aug2006  (deprecated)
+
+*/
+VERSION 8.0
+
+INCLUDE egraph_header
+INCLUDE header
+HELP hlp1, view("help scatter")
+RESET res1
+
+DIALOG main, label("scatter - Scatter plot") tabtitle("Main")
+BEGIN
+  INCLUDE esimple_ctrl  
+END
+
+INCLUDE esimple_sc
+INCLUDE ifin
+INCLUDE etitle
+INCLUDE eaxes
+INCLUDE eopts
+
+PROGRAM command
+BEGIN
+	put "scatter "
+	put /program esimple_output
+	INCLUDE _ifin_pr
+	beginoptions
+		put " "  /program etitle_output
+		put " "  /program eaxes_output
+		put " "  /program eopts_output
+		put " "  /program esimple_sort
+	endoptions
+END

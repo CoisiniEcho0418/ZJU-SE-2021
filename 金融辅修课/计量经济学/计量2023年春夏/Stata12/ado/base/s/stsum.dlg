@@ -1,0 +1,45 @@
+/*
+	stsum
+
+*!  VERSION 1.1.1  13mar2005
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help stsum")
+RESET res1
+
+DIALOG main, label("stsum - Summarize survival-time data") tabtitle("Main")
+BEGIN
+  DEFINE  _x _xsetbu
+  DEFINE  _y _top
+  INCLUDE _bu_stset
+
+  CHECKBOX ck_byopt      _lft      _ls      _iwd        .,		/*
+		*/ label("Separate summaries for each group")		/*
+		*/ clickon("gaction main.vl_byopt.enable")		/*
+		*/ clickoff("gaction main.vl_byopt.disable")
+  VARLIST  vl_byopt      _indent2  _ss       _inwd      .,		/*
+		*/ option("by")						/*
+		*/ label("by() variable")
+  CHECKBOX ck_noshow      _lft    _ls        _iwd      .,		/*
+		*/ option("noshow")					/*
+		*/ label("Do not show st setting information")
+END
+
+INCLUDE byifin
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "stsum "
+	INCLUDE _ifin_pr
+	beginoptions
+		optionarg main.vl_byopt
+		option main.ck_noshow
+	endoptions
+END

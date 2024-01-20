@@ -1,0 +1,79 @@
+/*
+	correlate
+
+*!  VERSION 1.2.1  15jun2009
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_medium
+INCLUDE header
+HELP hlp1, view("help correlate")
+RESET res1
+
+DIALOG	 main,	label("correlate - Display correlation matrix or covariance matrix") /*
+		*/	tabtitle("Main")
+BEGIN
+  TEXT	   tx_var		_lft	_top	_iwd	 .,		/*
+		*/	label("Variables:  (leave empty for all)")
+
+  VARLIST  vl_var		@	_ss	@	 .,		/*
+		*/	label("Variables")				/*
+		*/	allowts
+
+  TEXT	   tx_exp		@	_ms	_cwd1	 .,		/*
+		*/	label("Examples:")
+
+  TEXT	   tx_xy		_indent	_vss	_cwd4_2	 .,		/*
+		*/	label("yr*")
+
+  DEFINE holdx	@x
+
+  TEXT	   tx_all		_lft4_2	@	_comb4_2 .,		/*
+		*/	label(`"all variables starting with "yr""')
+
+  TEXT	   tx_abc		holdx	_vss	_cwd4_2	 .,		/*
+		*/	label("xyz-abc")
+
+  TEXT	   tx_xab		_lft4_2 @	_comb4_2 .,		/*
+		*/	label("all variables between xyz and abc")
+END
+
+INCLUDE byifin
+INCLUDE weights_fa
+
+DIALOG opt,	label("correlate - Correlations/Covariances of variables")/*
+		*/	tabtitle("Options")
+BEGIN
+  CHECKBOX ck_means		_lft	_top	_iwd	 .,		/*
+	*/ label("Display means, std. dev., min, and max with matrix")	/*
+		*/ 	option(means)
+
+  CHECKBOX ck_noformat		@	_ms	@	 .,		/*
+	*/ label("Ignore display format associated with variables")     /*
+		*/ 		option(noformat)
+
+  CHECKBOX ck_covariance	@	_ms	@	 .,		/*
+		*/	label("Display covariances")			/*
+		*/ 	option(covariance)
+
+  CHECKBOX ck_wrap		@	_ms	@	 .,		/*
+		*/	label("Allow wide matrices to wrap")		/*
+		*/	option(wrap)
+END
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "correlate "
+	varlist [main.vl_var]
+	INCLUDE _weights_pr
+	INCLUDE _ifin_pr
+	beginoptions
+		option opt.ck_means
+		option opt.ck_noformat
+		option opt.ck_covariance
+		option opt.ck_wrap
+	endoptions
+END

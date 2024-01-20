@@ -1,0 +1,1373 @@
+/*
+  test after manova
+
+*! VERSION 2.0.3  05may2011
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_wide
+INCLUDE _ht350
+INCLUDE header
+
+HELP hlp1, view("help manova postestimation")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	/* Coefficient list syntax */
+	create STRING main_cotmp
+	create STRING main_cotmp2
+	create STRING main_co_childdlg
+	create STRING main_co_child_result
+	create STRING main_co_cmd_output
+
+	create ARRAY main_co_list
+
+	create SVECTOR mainCOCommandDisplayList
+	create SVECTOR mainCOCommandList
+	create SVECTOR mainCOCommandValues
+	create SVECTOR mainCOStatusList
+	create SVECTOR mainCOChildDialogList
+
+	create DOUBLE main_co_count
+	create DOUBLE main_co_position
+	create DOUBLE main_co_arraysize
+
+	main.bu_co_edit.disable
+	main.bu_co_disable.disable
+	main.bu_co_enable.disable
+
+        /* Expression syntax */
+	create STRING main_extmp
+	create STRING main_extmp2
+	create STRING main_ex_childdlg
+	create STRING main_ex_child_result
+	create STRING main_ex_cmd_output
+
+	create ARRAY main_ex_list
+
+	create SVECTOR mainEXCommandDisplayList
+	create SVECTOR mainEXCommandList
+	create SVECTOR mainEXCommandValues
+	create SVECTOR mainEXStatusList
+	create SVECTOR mainEXChildDialogList
+
+	create DOUBLE main_ex_count
+	create DOUBLE main_ex_position
+	create DOUBLE main_ex_arraysize
+
+	main.bu_ex_edit.disable
+	main.bu_ex_disable.disable
+	main.bu_ex_enable.disable
+ 
+        /* Equation specific coefficient list syntax */
+	create STRING main_eqntmp
+	create STRING main_eqntmp2
+	create STRING main_eqn_childdlg
+	create STRING main_eqn_child_result
+	create STRING main_eqn_cmd_output
+
+	create ARRAY main_eqn_list
+
+	create SVECTOR mainEQNCommandDisplayList
+	create SVECTOR mainEQNCommandList
+	create SVECTOR mainEQNCommandValues
+	create SVECTOR mainEQNStatusList
+	create SVECTOR mainEQNChildDialogList
+
+	create DOUBLE main_eqn_count
+	create DOUBLE main_eqn_position
+	create DOUBLE main_eqn_arraysize
+
+	main.bu_eqn_edit.disable
+	main.bu_eqn_disable.disable
+	main.bu_eqn_enable.disable
+        
+        /* Equation equality syntax */
+	create STRING main_eqetmp
+	create STRING main_eqetmp2
+	create STRING main_eqe_childdlg
+	create STRING main_eqe_child_result
+	create STRING main_eqe_cmd_output
+
+	create ARRAY main_eqe_list
+
+	create SVECTOR mainEQECommandDisplayList
+	create SVECTOR mainEQECommandList
+	create SVECTOR mainEQECommandValues
+	create SVECTOR mainEQEStatusList
+	create SVECTOR mainEQEChildDialogList
+
+	create DOUBLE main_eqe_count
+	create DOUBLE main_eqe_position
+	create DOUBLE main_eqe_arraysize
+
+	main.bu_eqe_edit.disable
+	main.bu_eqe_disable.disable
+	main.bu_eqe_enable.disable
+
+	create STRING matrixResult
+END
+
+SCRIPT POSTINIT
+BEGIN
+	mainCOCommandDisplayList.copyToArray main_co_list
+	main.lb_coBuild.repopulate
+
+	mainEXCommandDisplayList.copyToArray main_ex_list
+	main.lb_exBuild.repopulate
+
+	mainEQECommandDisplayList.copyToArray main_eqe_list
+	main.lb_eqeBuild.repopulate
+
+	mainEQNCommandDisplayList.copyToArray main_eqn_list
+	main.lb_eqnBuild.repopulate
+END
+
+DIALOG main, label("test - Wald test after manova")			///
+	tabtitle("Main")
+BEGIN
+  GROUPBOX gb_type	_lft	_top	_iwd	_ht11h,			///
+	label("Test type")
+  RADIO rb_coef		_ilft	_ss	_inwd	., first		///
+	onclickon(script main_coef_on)					///
+	label("Coefficients are 0")
+  RADIO rb_eqncoef	@	_ss	@	.,			///
+	onclickon(script main_eqncoef_on)				///
+	label("Coefficients in specific equation are 0")
+  RADIO rb_eqeqncoef	@	_ss	@	.,			///
+	onclickon(script main_eqeqncoef_on)				///
+	label("Coefficients are equal between equations")
+  RADIO rb_expeq	@	_ss	@	.,			///
+	onclickon(script main_expeq_on)					///
+	label("Linear expressions are equal")
+  RADIO rb_mat		@	_ss	@	., 			///
+	onclickon(script main_mat_on)					///
+	label("Expressions involving coef. of underlying regression model (matrix)")
+  RADIO rb_showorder	@	_ss	@	., last			///
+	onclickon(script main_showorder_on)				///
+	label("Show order of columns in the design matrix")
+
+  BUTTON bu_matxamp	_rj210	165	100	.,			///
+	push("script main_mat_examp")					///
+	label("Examples")
+  BUTTON bu_matinput	_rj100	165	100	.,			///
+	onpush(program show_matrix_input)				///
+	tooltip("Input matrix by hand")					///
+	label("Input matrix...")
+
+  TEXT tx_mat		_lft	170	150	.,			///
+	label("Matrix to test:")
+  COMBOBOX cb_mat	_lft	_ss	_iwd	.,			///
+	contents(matrix)						///
+	dropdown							///
+	error("Matrix to test")
+
+  TEXT tx_coBuild	_lft	170	_iwd	.,			///
+	label("Specification: (test these coefficients)")
+  LISTBOX lb_coBuild	@	_ss	200	110,			///
+	contents(main_co_list) 						///
+	ondblclick(program main_co_edit)				///
+	onselchange(program main_co_sel_changed)			///
+	nomemory
+  BUTTON bu_co_new	+210	@	80	.,			///
+	onpush(program main_co_create)					///
+	tooltip("Create specification")					///
+	label("Create...")
+  BUTTON bu_co_edit	@	_ms	@	.,			///
+	onpush(program main_co_edit)					///
+	tooltip("Edit specification")					///
+	label("Edit")
+  BUTTON bu_co_disable	@	_ms	@	.,			///
+	onpush(program main_co_disable)					///
+	tooltip("Click to disable a specification")			///
+	label("Disable")
+  BUTTON bu_co_enable	@	_ms	@	.,			///
+	onpush(program main_co_enable)					///
+	tooltip("Click to enable a previously disabled specification")	///
+	label("Enable")
+  TEXTBOX tb_co_note	_lft	+40	_iwd	_tb2,			///
+	label(`"Press "Create" to define a specification"')
+  BUTTON bu_expeq_examp _rj100	-120	100	.,			///
+	push("script main_expeq_examp") 				///
+	label("Examples")
+  
+  TEXT tx_exBuild	_lft	170	_iwd	.,			///
+	label("Specification: (linear expressions)")
+  LISTBOX lb_exBuild	@	_ss	200	110,			///
+	contents(main_ex_list) 						///
+	ondblclick(program main_ex_edit)				///
+	onselchange(program main_ex_sel_changed)			///
+	nomemory
+  BUTTON bu_ex_new	+210	@	80	.,			///
+	onpush(program main_ex_create)					///
+	tooltip("Create specification")					///
+	label("Create...")
+  BUTTON bu_ex_edit	@	_ms	@	.,			///
+	onpush(program main_ex_edit)					///
+	tooltip("Edit specification")					///
+	label("Edit")
+  BUTTON bu_ex_disable	@	_ms	@	.,			///
+	onpush(program main_ex_disable)					///
+	tooltip("Click to disable a specification")			///
+	label("Disable")
+  BUTTON bu_ex_enable	@	_ms	@	.,			///
+	onpush(program main_ex_enable)					///
+	tooltip("Click to enable a previously disabled specification")	///
+	label("Enable")
+  TEXTBOX tb_ex_note	_lft	+40	_iwd	_tb2,			///
+	label(`"Press "Create" to define a specification"')
+  
+  TEXT tx_eqnBuild	_lft	170	_iwd	.,			///
+	label("Specification: (coefficients in equation are 0)")
+  LISTBOX lb_eqnBuild	@	_ss	200	110,			///
+	contents(main_eqn_list) 					///
+	ondblclick(program main_eqn_edit)				///
+	onselchange(program main_eqn_sel_changed)			///
+	nomemory
+  BUTTON bu_eqn_new	+210	@	80	.,			///
+	onpush(program main_eqn_create)					///
+	tooltip("Create specification")					///
+	label("Create...")
+  BUTTON bu_eqn_edit	@	_ms	@	.,			///
+	onpush(program main_eqn_edit)					///
+	tooltip("Edit specification")					///
+	label("Edit")
+  BUTTON bu_eqn_disable	@	_ms	@	.,			///
+	onpush(program main_eqn_disable)				///
+	tooltip("Click to disable a specification")			///
+	label("Disable")
+  BUTTON bu_eqn_enable	@	_ms	@	.,			///
+	onpush(program main_eqn_enable)					///
+	tooltip("Click to enable a previously disabled specification")	///
+	label("Enable")
+  TEXTBOX tb_eqn_note	_lft	+40	_iwd	_tb2,			///
+	label(`"Press "Create" to define a specification"')
+  
+  TEXT tx_eqeBuild	_lft	170	_iwd	.,			///
+	label("Specification: (coefficients equal between equations)")
+  LISTBOX lb_eqeBuild	@	_ss	200	110,			///
+	contents(main_eqe_list) 					///
+	ondblclick(program main_eqe_edit)				///
+	onselchange(program main_eqe_sel_changed)			///
+	nomemory
+  BUTTON bu_eqe_new	+210	@	80	.,			///
+	onpush(program main_eqe_create)					///
+	tooltip("Create specification")					///
+	label("Create...")
+  BUTTON bu_eqe_edit	@	_ms	@	.,			///
+	onpush(program main_eqe_edit)					///
+	tooltip("Edit specification")					///
+	label("Edit")
+  BUTTON bu_eqe_disable	@	_ms	@	.,			///
+	onpush(program main_eqe_disable)				///
+	tooltip("Click to disable a specification")			///
+	label("Disable")
+  BUTTON bu_eqe_enable	@	_ms	@	.,			///
+	onpush(program main_eqe_enable)					///
+	tooltip("Click to enable a previously disabled specification")	///
+	label("Enable")
+  TEXTBOX tb_eqe_note	_lft	+40	_iwd	_tb2,			///
+	label(`"Press "Create" to define a specification"')
+END
+
+PROGRAM show_matrix_input
+BEGIN
+	call create CHILD matrix_input
+	if ! _rc {
+		call matrix_input.setExitString matrixResult
+		call matrix_input.setExitAction "program getMatrixResult"
+		call matrix_input.callthru "isChildContext.settrue"
+	}
+END
+PROGRAM getMatrixResult
+BEGIN
+	call main.cb_mat.repopulate
+	call main.cb_mat.setvalue class matrixResult.value
+END
+
+PROGRAM main_co_create
+BEGIN
+	call main_co_count.setvalue class mainCOChildDialogList.size
+	call main_co_count.increment
+	call main_co_count.withvalue main_co_childdlg.setvalue		///
+		"main_co@"
+	call program main_show_co_child
+END
+
+PROGRAM main_co_edit
+BEGIN
+	call mainCOCommandDisplayList.findstr class main.lb_coBuild.value
+	call main_co_position.setvalue class mainCOCommandDisplayList.position
+	call main_co_position.withvalue main_co_childdlg.setvalue	///
+		class mainCOChildDialogList.values[@]
+
+	call program main_show_co_child_edit
+END
+
+PROGRAM main_show_co_child
+BEGIN
+	call main_co_childdlg.withvalue create CHILD test_new_coef_expeq AS @
+	call main_co_childdlg.withvalue @.setExitString "main_co_child_result"
+	call main_co_childdlg.withvalue @.setExitAction			///
+		"program main_co_child_done"
+
+	call main_co_count.withvalue main_cotmp.setvalue "Specification @"
+	call main_co_childdlg.withvalue main_cotmp2.setvalue "@.settitle"
+	call main_cotmp2.append `" ""'
+	call main_cotmp2.append class main_cotmp.value
+	call main_cotmp2.append `"""'
+	call main_cotmp2.withvalue @
+END
+
+PROGRAM main_show_co_child_edit
+BEGIN
+	call main_co_childdlg.withvalue create CHILD test_new_coef_expeq AS @
+	call main_co_childdlg.withvalue @.setExitString "main_co_child_result"
+	call main_co_childdlg.withvalue @.setExitAction			///
+		"program main_co_child_done"
+
+	call main_co_position.withvalue main_cotmp.setvalue		///
+		class mainCOCommandDisplayList.values[@]
+	call main_co_childdlg.withvalue main_cotmp2.setvalue "@.settitle"
+	call main_cotmp2.append `" ""'
+	call main_cotmp2.append class main_cotmp.value
+	call main_cotmp2.append `"""'
+	call main_cotmp2.withvalue @
+END
+
+PROGRAM main_co_child_done
+BEGIN
+	call mainCOChildDialogList.findstr class main_co_childdlg.value
+	call main_co_position.setvalue class mainCOChildDialogList.position
+	if main_co_position {
+		call main_co_position.withvalue main_cotmp.setvalue	///
+			class mainCOStatusList.values[@]
+		if main_cotmp.iseq("active") {
+			call main_co_position.withvalue			///
+				mainCOCommandDisplayList.store class	///
+				main_co_position.value "Specification @"
+			call mainCOCommandValues.store class		///
+				main_co_position.value class		///
+				main_co_child_result.value
+			call main_co_position.withvalue			///
+				main_cotmp2.setvalue "Specification @"
+		}
+		else {
+			call main_co_position.withvalue			///
+				main_cotmp2.setvalue "Specification @"
+
+			call main_cotmp2.withvalue			///
+				mainCOCommandDisplayList.store		///
+				class main_co_position.value "@ (disabled)"
+		}
+
+		call mainCOCommandList.store class			///
+			main_co_position.value class main_co_child_result.value
+
+		call mainCOCommandDisplayList.copyToArray main_co_list
+		call main.lb_coBuild.repopulate
+		call main.lb_coBuild.setvalue class main_cotmp2.value
+	}
+	else {
+		call main_co_arraysize.setvalue class mainCOChildDialogList.size
+		call main_co_arraysize.increment
+
+		/* Store child dialog name */
+		call mainCOChildDialogList.store class			///
+			main_co_arraysize.value class			///
+			main_co_childdlg.value
+
+		/* Store listbox display spec string */
+		call main_co_arraysize.withvalue			///
+			mainCOCommandDisplayList.store class		///
+			main_co_arraysize.value "Specification @"
+
+		/* Store child dialog result string */
+		call mainCOCommandList.store class			///
+			main_co_arraysize.value class main_co_child_result.value
+
+		/* Store child dialog result string for final command
+		   For disable/enable */
+		call mainCOCommandValues.store class			///
+			main_co_arraysize.value class main_co_child_result.value
+
+		/* Store disable/enable status */
+		call mainCOStatusList.store				///
+			class main_co_arraysize.value "active"
+
+		call mainCOCommandDisplayList.copyToArray main_co_list
+		call main.lb_coBuild.repopulate
+		call main_co_arraysize.withvalue			///
+			main.lb_coBuild.setvalue "Specification @"
+
+		call main.bu_co_edit.enable
+	}
+END
+
+PROGRAM main_co_sel_changed
+BEGIN
+	call mainCOCommandDisplayList.findstr class main.lb_coBuild.value
+	call main_co_position.setvalue class mainCOCommandDisplayList.position
+	call main_co_position.withvalue main_cotmp.setvalue		///
+		class mainCOStatusList.values[@]
+	if main_co_position {
+		call main_co_position.withvalue				///
+			main.tb_co_note.setlabel			///
+			class mainCOCommandList.values[@]
+	}
+
+	if main_cotmp.iseq("disable") {
+		call main.bu_co_enable.enable
+		call main.bu_co_disable.disable
+	}
+	if main_cotmp.iseq("active") {
+		call main.bu_co_enable.disable
+		call main.bu_co_disable.enable
+	}
+END
+
+PROGRAM main_co_disable
+BEGIN
+	call mainCOCommandDisplayList.findstr class main.lb_coBuild.value
+	call main_co_position.setvalue class mainCOCommandDisplayList.position
+
+	call main_cotmp.setvalue class main.lb_coBuild.value
+	call mainCOStatusList.store class main_co_position.value "disable"
+	call mainCOCommandValues.store class main_co_position.value ""
+	call main_cotmp.withvalue mainCOCommandDisplayList.store	///
+		class main_co_position.value "@ (disabled)"
+
+	call mainCOCommandDisplayList.copyToArray main_co_list
+	call main_cotmp.withvalue main_cotmp2.setvalue "@ (disabled)"
+	call main.lb_coBuild.repopulate
+	call main.lb_coBuild.setvalue class main_cotmp2.value
+END
+
+PROGRAM main_co_enable
+BEGIN
+	call mainCOCommandDisplayList.findstr class main.lb_coBuild.value
+	call main_co_position.setvalue class mainCOCommandDisplayList.position
+
+	call mainCOStatusList.store class main_co_position.value "active"
+	call main_co_position.withvalue mainCOCommandValues.store class	///
+		main_co_position.value class mainCOCommandList.values[@]
+
+	call main_co_position.withvalue mainCOCommandDisplayList.store	///
+		class main_co_position.value "Specification @"
+
+	call mainCOCommandDisplayList.copyToArray main_co_list
+	call main_co_position.withvalue main_cotmp2.setvalue class	///
+		mainCOCommandDisplayList.values[@]
+	call main.lb_coBuild.repopulate
+	call main.lb_coBuild.setvalue class main_cotmp2.value
+END
+
+PROGRAM main_lb_coBuild_output
+BEGIN
+	call mainCOCommandValues.copyToString main_co_cmd_output
+	call main_co_arraysize.setvalue class mainCOStatusList.size
+	if main_co_cmd_output.iseq("") & main_co_arraysize.iseq(0) & 	///
+		main.lb_coBuild.isvisible() {
+		stopbox stop "Specification not defined. "		///
+"Please enter a specification before proceeding."
+	}
+	if main_co_cmd_output.iseq("") & main_co_arraysize.isgt(0) &	///
+		main.lb_coBuild.isvisible() {
+		stopbox stop "All specifications are disabled. "	///
+"Either define a new specification or enable an existing specification before proceeding."
+	}
+
+	if main_co_cmd_output & main.lb_coBuild.isvisible() {
+		put main_co_cmd_output
+	}
+END
+
+PROGRAM main_ex_create
+BEGIN
+	call main_ex_count.setvalue class mainEXChildDialogList.size
+	call main_ex_count.increment
+	call main_ex_count.withvalue main_ex_childdlg.setvalue		///
+		"main_ex@"
+	call program main_show_ex_child
+END
+
+PROGRAM main_ex_edit
+BEGIN
+	call mainEXCommandDisplayList.findstr class main.lb_exBuild.value
+	call main_ex_position.setvalue class mainEXCommandDisplayList.position
+	call main_ex_position.withvalue main_ex_childdlg.setvalue	///
+		class mainEXChildDialogList.values[@]
+
+	call program main_show_ex_child_edit
+END
+
+PROGRAM main_show_ex_child
+BEGIN
+	call main_ex_childdlg.withvalue create CHILD test_new_coef_expeq AS @
+	call main_ex_childdlg.withvalue @.setExitString "main_ex_child_result"
+	call main_ex_childdlg.withvalue @.setExitAction			///
+		"program main_ex_child_done"
+
+	call main_ex_count.withvalue main_extmp.setvalue "Specification @"
+	call main_ex_childdlg.withvalue main_extmp2.setvalue "@.settitle"
+	call main_extmp2.append `" ""'
+	call main_extmp2.append class main_extmp.value
+	call main_extmp2.append `"""'
+	call main_extmp2.withvalue @
+END
+
+PROGRAM main_show_ex_child_edit
+BEGIN
+	call main_ex_childdlg.withvalue create CHILD test_new_coef_expeq AS @
+	call main_ex_childdlg.withvalue @.setExitString "main_ex_child_result"
+	call main_ex_childdlg.withvalue @.setExitAction			///
+		"program main_ex_child_done"
+
+	call main_ex_position.withvalue main_extmp.setvalue		///
+		class mainEXCommandDisplayList.values[@]
+	call main_ex_childdlg.withvalue main_extmp2.setvalue "@.settitle"
+	call main_extmp2.append `" ""'
+	call main_extmp2.append class main_extmp.value
+	call main_extmp2.append `"""'
+	call main_extmp2.withvalue @
+END
+
+PROGRAM main_ex_child_done
+BEGIN
+	call mainEXChildDialogList.findstr class main_ex_childdlg.value
+	call main_ex_position.setvalue class mainEXChildDialogList.position
+	if main_ex_position {
+		call main_ex_position.withvalue main_extmp.setvalue	///
+			class mainEXStatusList.values[@]
+		if main_extmp.iseq("active") {
+			call main_ex_position.withvalue			///
+				mainEXCommandDisplayList.store class	///
+				main_ex_position.value "Specification @"
+			call mainEXCommandValues.store class		///
+				main_ex_position.value class		///
+				main_ex_child_result.value
+			call main_ex_position.withvalue			///
+				main_extmp2.setvalue "Specification @"
+		}
+		else {
+			call main_ex_position.withvalue			///
+				main_extmp2.setvalue "Specification @"
+
+			call main_extmp2.withvalue			///
+				mainEXCommandDisplayList.store		///
+				class main_ex_position.value "@ (disabled)"
+		}
+
+		call mainEXCommandList.store class			///
+			main_ex_position.value class main_ex_child_result.value
+
+		call mainEXCommandDisplayList.copyToArray main_ex_list
+		call main.lb_exBuild.repopulate
+		call main.lb_exBuild.setvalue class main_extmp2.value
+	}
+	else {
+		call main_ex_arraysize.setvalue class mainEXChildDialogList.size
+		call main_ex_arraysize.increment
+
+		/* Store child dialog name */
+		call mainEXChildDialogList.store class			///
+			main_ex_arraysize.value class			///
+			main_ex_childdlg.value
+
+		/* Store listbox display spec string */
+		call main_ex_arraysize.withvalue			///
+			mainEXCommandDisplayList.store class		///
+			main_ex_arraysize.value "Specification @"
+
+		/* Store child dialog result string */
+		call mainEXCommandList.store class			///
+			main_ex_arraysize.value class main_ex_child_result.value
+
+		/* Store child dialog result string for final command
+		   For disable/enable */
+		call mainEXCommandValues.store class			///
+			main_ex_arraysize.value class main_ex_child_result.value
+
+		/* Store disable/enable status */
+		call mainEXStatusList.store				///
+			class main_ex_arraysize.value "active"
+
+		call mainEXCommandDisplayList.copyToArray main_ex_list
+		call main.lb_exBuild.repopulate
+		call main_ex_arraysize.withvalue			///
+			main.lb_exBuild.setvalue "Specification @"
+
+		call main.bu_ex_edit.enable
+	}
+END
+
+PROGRAM main_ex_sel_changed
+BEGIN
+	call mainEXCommandDisplayList.findstr class main.lb_exBuild.value
+	call main_ex_position.setvalue class mainEXCommandDisplayList.position
+	call main_ex_position.withvalue main_extmp.setvalue		///
+		class mainEXStatusList.values[@]
+	if main_ex_position {
+		call main_ex_position.withvalue				///
+			main.tb_ex_note.setlabel			///
+			class mainEXCommandList.values[@]
+	}
+
+	if main_extmp.iseq("disable") {
+		call main.bu_ex_enable.enable
+		call main.bu_ex_disable.disable
+	}
+	if main_extmp.iseq("active") {
+		call main.bu_ex_enable.disable
+		call main.bu_ex_disable.enable
+	}
+END
+
+PROGRAM main_ex_disable
+BEGIN
+	call mainEXCommandDisplayList.findstr class main.lb_exBuild.value
+	call main_ex_position.setvalue class mainEXCommandDisplayList.position
+
+	call main_extmp.setvalue class main.lb_exBuild.value
+	call mainEXStatusList.store class main_ex_position.value "disable"
+	call mainEXCommandValues.store class main_ex_position.value ""
+	call main_extmp.withvalue mainEXCommandDisplayList.store	///
+		class main_ex_position.value "@ (disabled)"
+
+	call mainEXCommandDisplayList.copyToArray main_ex_list
+	call main_extmp.withvalue main_extmp2.setvalue "@ (disabled)"
+	call main.lb_exBuild.repopulate
+	call main.lb_exBuild.setvalue class main_extmp2.value
+END
+
+PROGRAM main_ex_enable
+BEGIN
+	call mainEXCommandDisplayList.findstr class main.lb_exBuild.value
+	call main_ex_position.setvalue class mainEXCommandDisplayList.position
+
+	call mainEXStatusList.store class main_ex_position.value "active"
+	call main_ex_position.withvalue mainEXCommandValues.store class	///
+		main_ex_position.value class mainEXCommandList.values[@]
+
+	call main_ex_position.withvalue mainEXCommandDisplayList.store	///
+		class main_ex_position.value "Specification @"
+
+	call mainEXCommandDisplayList.copyToArray main_ex_list
+	call main_ex_position.withvalue main_extmp2.setvalue class	///
+		mainEXCommandDisplayList.values[@]
+	call main.lb_exBuild.repopulate
+	call main.lb_exBuild.setvalue class main_extmp2.value
+END
+
+PROGRAM main_lb_exBuild_output
+BEGIN
+	call mainEXCommandValues.copyToString main_ex_cmd_output
+	call main_ex_arraysize.setvalue class mainEXStatusList.size
+	if main_ex_cmd_output.iseq("") & main_ex_arraysize.iseq(0) & 	///
+		main.lb_exBuild.isvisible() {
+		stopbox stop "Specification not defined. "		///
+"Please enter a specification before proceeding."
+	}
+	if main_ex_cmd_output.iseq("") & main_ex_arraysize.isgt(0) &	///
+		main.lb_exBuild.isvisible() {
+		stopbox stop "All specifications are disabled. "	///
+"Either define a new specification or enable an existing specification before proceeding."
+	}
+
+	if main_ex_cmd_output & main.lb_exBuild.isvisible() {
+		put main_ex_cmd_output
+	}
+END
+
+PROGRAM main_eqn_create
+BEGIN
+	call main_eqn_count.setvalue class mainEQNChildDialogList.size
+	call main_eqn_count.increment
+	call main_eqn_count.withvalue main_eqn_childdlg.setvalue	///
+		"main_eqn@"
+	call program main_show_eqn_child
+END
+
+PROGRAM main_eqn_edit
+BEGIN
+	call mainEQNCommandDisplayList.findstr class main.lb_eqnBuild.value
+	call main_eqn_position.setvalue class mainEQNCommandDisplayList.position
+	call main_eqn_position.withvalue main_eqn_childdlg.setvalue	///
+		class mainEQNChildDialogList.values[@]
+
+	call program main_show_eqn_child_edit
+END
+
+PROGRAM main_show_eqn_child
+BEGIN
+	call main_eqn_childdlg.withvalue create CHILD test_new_eqn AS @
+	call main_eqn_childdlg.withvalue @.setExitString "main_eqn_child_result"
+	call main_eqn_childdlg.withvalue @.setExitAction		///
+		"program main_eqn_child_done"
+
+	call main_eqn_count.withvalue main_eqntmp.setvalue "Specification @"
+	call main_eqn_childdlg.withvalue main_eqntmp2.setvalue "@.settitle"
+	call main_eqntmp2.append `" ""'
+	call main_eqntmp2.append class main_eqntmp.value
+	call main_eqntmp2.append `"""'
+	call main_eqntmp2.withvalue @
+END
+
+PROGRAM main_show_eqn_child_edit
+BEGIN
+	call main_eqn_childdlg.withvalue create CHILD test_new_eqn AS @
+	call main_eqn_childdlg.withvalue @.setExitString "main_eqn_child_result"
+	call main_eqn_childdlg.withvalue @.setExitAction		///
+		"program main_eqn_child_done"
+
+	call main_eqn_position.withvalue main_eqntmp.setvalue		///
+		class mainEQNCommandDisplayList.values[@]
+	call main_eqn_childdlg.withvalue main_eqntmp2.setvalue "@.settitle"
+	call main_eqntmp2.append `" ""'
+	call main_eqntmp2.append class main_eqntmp.value
+	call main_eqntmp2.append `"""'
+	call main_eqntmp2.withvalue @
+END
+
+PROGRAM main_eqn_child_done
+BEGIN
+	call mainEQNChildDialogList.findstr class main_eqn_childdlg.value
+	call main_eqn_position.setvalue class mainEQNChildDialogList.position
+	if main_eqn_position {
+		call main_eqn_position.withvalue main_eqntmp.setvalue	///
+			class mainEQNStatusList.values[@]
+		if main_eqntmp.iseq("active") {
+			call main_eqn_position.withvalue		///
+				mainEQNCommandDisplayList.store class	///
+				main_eqn_position.value "Specification @"
+			call mainEQNCommandValues.store class		///
+				main_eqn_position.value class		///
+				main_eqn_child_result.value
+			call main_eqn_position.withvalue		///
+				main_eqntmp2.setvalue "Specification @"
+		}
+		else {
+			call main_eqn_position.withvalue		///
+				main_eqntmp2.setvalue "Specification @"
+
+			call main_eqntmp2.withvalue			///
+				mainEQNCommandDisplayList.store		///
+				class main_eqn_position.value "@ (disabled)"
+		}
+
+		call mainEQNCommandList.store class			///
+			main_eqn_position.value class 			///
+			main_eqn_child_result.value
+
+		call mainEQNCommandDisplayList.copyToArray main_eqn_list
+		call main.lb_eqnBuild.repopulate
+		call main.lb_eqnBuild.setvalue class main_eqntmp2.value
+	}
+	else {
+		call main_eqn_arraysize.setvalue class 			///
+			mainEQNChildDialogList.size
+		call main_eqn_arraysize.increment
+
+		/* Store child dialog name */
+		call mainEQNChildDialogList.store class			///
+			main_eqn_arraysize.value class			///
+			main_eqn_childdlg.value
+
+		/* Store listbox display spec string */
+		call main_eqn_arraysize.withvalue			///
+			mainEQNCommandDisplayList.store class		///
+			main_eqn_arraysize.value "Specification @"
+
+		/* Store child dialog result string */
+		call mainEQNCommandList.store class			///
+		main_eqn_arraysize.value class main_eqn_child_result.value
+
+		/* Store child dialog result string for final command
+		   For disable/enable */
+		call mainEQNCommandValues.store class			///
+		main_eqn_arraysize.value class main_eqn_child_result.value
+
+		/* Store disable/enable status */
+		call mainEQNStatusList.store				///
+			class main_eqn_arraysize.value "active"
+
+		call mainEQNCommandDisplayList.copyToArray main_eqn_list
+		call main.lb_eqnBuild.repopulate
+		call main_eqn_arraysize.withvalue			///
+			main.lb_eqnBuild.setvalue "Specification @"
+
+		call main.bu_eqn_edit.enable
+	}
+END
+
+PROGRAM main_eqn_sel_changed
+BEGIN
+	call mainEQNCommandDisplayList.findstr class main.lb_eqnBuild.value
+	call main_eqn_position.setvalue class mainEQNCommandDisplayList.position
+	call main_eqn_position.withvalue main_eqntmp.setvalue		///
+		class mainEQNStatusList.values[@]
+	if main_eqn_position {
+		call main_eqn_position.withvalue			///
+			main.tb_eqn_note.setlabel			///
+			class mainEQNCommandList.values[@]
+	}
+
+	if main_eqntmp.iseq("disable") {
+		call main.bu_eqn_enable.enable
+		call main.bu_eqn_disable.disable
+	}
+	if main_eqntmp.iseq("active") {
+		call main.bu_eqn_enable.disable
+		call main.bu_eqn_disable.enable
+	}
+END
+
+PROGRAM main_eqn_disable
+BEGIN
+	call mainEQNCommandDisplayList.findstr class main.lb_eqnBuild.value
+	call main_eqn_position.setvalue class mainEQNCommandDisplayList.position
+
+	call main_eqntmp.setvalue class main.lb_eqnBuild.value
+	call mainEQNStatusList.store class main_eqn_position.value "disable"
+	call mainEQNCommandValues.store class main_eqn_position.value ""
+	call main_eqntmp.withvalue mainEQNCommandDisplayList.store	///
+		class main_eqn_position.value "@ (disabled)"
+
+	call mainEQNCommandDisplayList.copyToArray main_eqn_list
+	call main_eqntmp.withvalue main_eqntmp2.setvalue "@ (disabled)"
+	call main.lb_eqnBuild.repopulate
+	call main.lb_eqnBuild.setvalue class main_eqntmp2.value
+END
+
+PROGRAM main_eqn_enable
+BEGIN
+	call mainEQNCommandDisplayList.findstr class main.lb_eqnBuild.value
+	call main_eqn_position.setvalue class mainEQNCommandDisplayList.position
+
+	call mainEQNStatusList.store class main_eqn_position.value "active"
+	call main_eqn_position.withvalue mainEQNCommandValues.store class ///
+		main_eqn_position.value class mainEQNCommandList.values[@]
+
+	call main_eqn_position.withvalue mainEQNCommandDisplayList.store ///
+		class main_eqn_position.value "Specification @"
+
+	call mainEQNCommandDisplayList.copyToArray main_eqn_list
+	call main_eqn_position.withvalue main_eqntmp2.setvalue class	///
+		mainEQNCommandDisplayList.values[@]
+	call main.lb_eqnBuild.repopulate
+	call main.lb_eqnBuild.setvalue class main_eqntmp2.value
+END
+
+PROGRAM main_lb_eqnBuild_output
+BEGIN
+	call mainEQNCommandValues.copyToString main_eqn_cmd_output
+	call main_eqn_arraysize.setvalue class mainEQNStatusList.size
+	if main_eqn_cmd_output.iseq("") & main_eqn_arraysize.iseq(0) & 	///
+		main.lb_eqnBuild.isvisible() {
+		stopbox stop "Specification not defined. "		///
+"Please enter a specification before proceeding."
+	}
+	if main_eqn_cmd_output.iseq("") & main_eqn_arraysize.isgt(0) &	///
+		main.lb_eqnBuild.isvisible() {
+		stopbox stop "All specifications are disabled. "	///
+"Either define a new specification or enable an existing specification before proceeding."
+	}
+
+	if main_eqn_cmd_output & main.lb_eqnBuild.isvisible() {
+		put main_eqn_cmd_output
+	}
+END
+
+PROGRAM main_eqe_create
+BEGIN
+	call main_eqe_count.setvalue class mainEQEChildDialogList.size
+	call main_eqe_count.increment
+	call main_eqe_count.withvalue main_eqe_childdlg.setvalue	///
+		"main_eqe@"
+	call program main_show_eqe_child
+END
+
+PROGRAM main_eqe_edit
+BEGIN
+	call mainEQECommandDisplayList.findstr class main.lb_eqeBuild.value
+	call main_eqe_position.setvalue class mainEQECommandDisplayList.position
+	call main_eqe_position.withvalue main_eqe_childdlg.setvalue	///
+		class mainEQEChildDialogList.values[@]
+
+	call program main_show_eqe_child_edit
+END
+
+PROGRAM main_show_eqe_child
+BEGIN
+	call main_eqe_childdlg.withvalue create CHILD test_new_eqe AS @
+	call main_eqe_childdlg.withvalue @.setExitString "main_eqe_child_result"
+	call main_eqe_childdlg.withvalue @.setExitAction		///
+		"program main_eqe_child_done"
+
+	call main_eqe_count.withvalue main_eqetmp.setvalue "Specification @"
+	call main_eqe_childdlg.withvalue main_eqetmp2.setvalue "@.settitle"
+	call main_eqetmp2.append `" ""'
+	call main_eqetmp2.append class main_eqetmp.value
+	call main_eqetmp2.append `"""'
+	call main_eqetmp2.withvalue @
+END
+
+PROGRAM main_show_eqe_child_edit
+BEGIN
+	call main_eqe_childdlg.withvalue create CHILD test_new_eqe AS @
+	call main_eqe_childdlg.withvalue @.setExitString "main_eqe_child_result"
+	call main_eqe_childdlg.withvalue @.setExitAction		///
+		"program main_eqe_child_done"
+
+	call main_eqe_position.withvalue main_eqetmp.setvalue		///
+		class mainEQECommandDisplayList.values[@]
+	call main_eqe_childdlg.withvalue main_eqetmp2.setvalue "@.settitle"
+	call main_eqetmp2.append `" ""'
+	call main_eqetmp2.append class main_eqetmp.value
+	call main_eqetmp2.append `"""'
+	call main_eqetmp2.withvalue @
+END
+
+PROGRAM main_eqe_child_done
+BEGIN
+	call mainEQEChildDialogList.findstr class main_eqe_childdlg.value
+	call main_eqe_position.setvalue class mainEQEChildDialogList.position
+	if main_eqe_position {
+		call main_eqe_position.withvalue main_eqetmp.setvalue	///
+			class mainEQEStatusList.values[@]
+		if main_eqetmp.iseq("active") {
+			call main_eqe_position.withvalue		///
+				mainEQECommandDisplayList.store class	///
+				main_eqe_position.value "Specification @"
+			call mainEQECommandValues.store class		///
+				main_eqe_position.value class		///
+				main_eqe_child_result.value
+			call main_eqe_position.withvalue		///
+				main_eqetmp2.setvalue "Specification @"
+		}
+		else {
+			call main_eqe_position.withvalue		///
+				main_eqetmp2.setvalue "Specification @"
+
+			call main_eqetmp2.withvalue			///
+				mainEQECommandDisplayList.store		///
+				class main_eqe_position.value "@ (disabled)"
+		}
+
+		call mainEQECommandList.store class			///
+			main_eqe_position.value class 			///
+			main_eqe_child_result.value
+
+		call mainEQECommandDisplayList.copyToArray main_eqe_list
+		call main.lb_eqeBuild.repopulate
+		call main.lb_eqeBuild.setvalue class main_eqetmp2.value
+	}
+	else {
+		call main_eqe_arraysize.setvalue class 			///
+			mainEQEChildDialogList.size
+		call main_eqe_arraysize.increment
+
+		/* Store child dialog name */
+		call mainEQEChildDialogList.store class			///
+			main_eqe_arraysize.value class			///
+			main_eqe_childdlg.value
+
+		/* Store listbox display spec string */
+		call main_eqe_arraysize.withvalue			///
+			mainEQECommandDisplayList.store class		///
+			main_eqe_arraysize.value "Specification @"
+
+		/* Store child dialog result string */
+		call mainEQECommandList.store class			///
+		main_eqe_arraysize.value class main_eqe_child_result.value
+
+		/* Store child dialog result string for final command
+		   For disable/enable */
+		call mainEQECommandValues.store class			///
+		main_eqe_arraysize.value class main_eqe_child_result.value
+
+		/* Store disable/enable status */
+		call mainEQEStatusList.store				///
+			class main_eqe_arraysize.value "active"
+
+		call mainEQECommandDisplayList.copyToArray main_eqe_list
+		call main.lb_eqeBuild.repopulate
+		call main_eqe_arraysize.withvalue			///
+			main.lb_eqeBuild.setvalue "Specification @"
+
+		call main.bu_eqe_edit.enable
+	}
+END
+
+PROGRAM main_eqe_sel_changed
+BEGIN
+	call mainEQECommandDisplayList.findstr class main.lb_eqeBuild.value
+	call main_eqe_position.setvalue class mainEQECommandDisplayList.position
+	call main_eqe_position.withvalue main_eqetmp.setvalue		///
+		class mainEQEStatusList.values[@]
+	if main_eqe_position {
+		call main_eqe_position.withvalue			///
+			main.tb_eqe_note.setlabel			///
+			class mainEQECommandList.values[@]
+	}
+
+	if main_eqetmp.iseq("disable") {
+		call main.bu_eqe_enable.enable
+		call main.bu_eqe_disable.disable
+	}
+	if main_eqetmp.iseq("active") {
+		call main.bu_eqe_enable.disable
+		call main.bu_eqe_disable.enable
+	}
+END
+
+PROGRAM main_eqe_disable
+BEGIN
+	call mainEQECommandDisplayList.findstr class main.lb_eqeBuild.value
+	call main_eqe_position.setvalue class mainEQECommandDisplayList.position
+
+	call main_eqetmp.setvalue class main.lb_eqeBuild.value
+	call mainEQEStatusList.store class main_eqe_position.value "disable"
+	call mainEQECommandValues.store class main_eqe_position.value ""
+	call main_eqetmp.withvalue mainEQECommandDisplayList.store	///
+		class main_eqe_position.value "@ (disabled)"
+
+	call mainEQECommandDisplayList.copyToArray main_eqe_list
+	call main_eqetmp.withvalue main_eqetmp2.setvalue "@ (disabled)"
+	call main.lb_eqeBuild.repopulate
+	call main.lb_eqeBuild.setvalue class main_eqetmp2.value
+END
+
+PROGRAM main_eqe_enable
+BEGIN
+	call mainEQECommandDisplayList.findstr class main.lb_eqeBuild.value
+	call main_eqe_position.setvalue class mainEQECommandDisplayList.position
+
+	call mainEQEStatusList.store class main_eqe_position.value "active"
+	call main_eqe_position.withvalue mainEQECommandValues.store class ///
+		main_eqe_position.value class mainEQECommandList.values[@]
+
+	call main_eqe_position.withvalue mainEQECommandDisplayList.store ///
+		class main_eqe_position.value "Specification @"
+
+	call mainEQECommandDisplayList.copyToArray main_eqe_list
+	call main_eqe_position.withvalue main_eqetmp2.setvalue class	///
+		mainEQECommandDisplayList.values[@]
+	call main.lb_eqeBuild.repopulate
+	call main.lb_eqeBuild.setvalue class main_eqetmp2.value
+END
+
+PROGRAM main_lb_eqeBuild_output
+BEGIN
+	call mainEQECommandValues.copyToString main_eqe_cmd_output
+	call main_eqe_arraysize.setvalue class mainEQEStatusList.size
+	if main_eqe_cmd_output.iseq("") & main_eqe_arraysize.iseq(0) & 	///
+		main.lb_eqeBuild.isvisible() {
+		stopbox stop "Specification not defined. "		///
+"Please enter a specification before proceeding."
+	}
+	if main_eqe_cmd_output.iseq("") & main_eqe_arraysize.isgt(0) &	///
+		main.lb_eqeBuild.isvisible() {
+		stopbox stop "All specifications are disabled. "	///
+"Either define a new specification or enable an existing specification before proceeding."
+	}
+
+	if main_eqe_cmd_output & main.lb_eqeBuild.isvisible() {
+		put main_eqe_cmd_output
+	}
+END
+
+SCRIPT main_hide_all
+BEGIN
+	main.bu_matxamp.hide
+	main.bu_matinput.hide
+	main.tx_mat.hide
+	main.cb_mat.hide
+
+	main.tx_coBuild.hide
+	main.lb_coBuild.hide
+	main.bu_co_new.hide
+	main.bu_co_edit.hide
+	main.bu_co_disable.hide
+	main.bu_co_enable.hide
+	main.tb_co_note.hide
+
+	main.tx_exBuild.hide
+	main.lb_exBuild.hide
+	main.bu_ex_new.hide
+	main.bu_ex_edit.hide
+	main.bu_ex_disable.hide
+	main.bu_ex_enable.hide
+	main.tb_ex_note.hide
+	main.bu_expeq_examp.hide
+
+	main.tx_eqnBuild.hide
+	main.lb_eqnBuild.hide
+	main.bu_eqn_new.hide
+	main.bu_eqn_edit.hide
+	main.bu_eqn_disable.hide
+	main.bu_eqn_enable.hide
+	main.tb_eqn_note.hide
+
+	main.tx_eqeBuild.hide
+	main.lb_eqeBuild.hide
+	main.bu_eqe_new.hide
+	main.bu_eqe_edit.hide
+	main.bu_eqe_disable.hide
+	main.bu_eqe_enable.hide
+	main.tb_eqe_note.hide
+END
+
+SCRIPT main_coef_on
+BEGIN
+	script main_hide_all
+	program opt_show_all
+
+	main.tx_coBuild.show
+	main.lb_coBuild.show
+	main.bu_co_new.show
+	main.bu_co_edit.show
+	main.bu_co_disable.show
+	main.bu_co_enable.show
+	main.tb_co_note.show
+END
+
+PROGRAM main_eqncoef_on
+BEGIN
+	script main_hide_all
+	program opt_show_all
+
+	main.tx_eqnBuild.show
+	main.lb_eqnBuild.show
+	main.bu_eqn_new.show
+	main.bu_eqn_edit.show
+	main.bu_eqn_disable.show
+	main.bu_eqn_enable.show
+	main.tb_eqn_note.show
+END
+
+
+PROGRAM main_eqeqncoef_on
+BEGIN
+	script main_hide_all
+	program opt_show_all
+
+	main.tx_eqeBuild.show
+	main.lb_eqeBuild.show
+	main.bu_eqe_new.show
+	main.bu_eqe_edit.show
+	main.bu_eqe_disable.show
+	main.bu_eqe_enable.show
+	main.tb_eqe_note.show
+END
+
+SCRIPT main_expeq_on
+BEGIN
+	script main_hide_all
+	program opt_show_all
+	main.tx_exBuild.show
+	main.lb_exBuild.show
+	main.bu_ex_new.show
+	main.bu_ex_edit.show
+	main.bu_ex_disable.show
+	main.bu_ex_enable.show
+	main.tb_ex_note.show
+	main.bu_expeq_examp.show
+END
+
+SCRIPT main_mat_on
+BEGIN
+	script main_hide_all
+	script opt_hide_all
+	main.bu_matxamp.show
+	main.bu_matinput.show
+	main.tx_mat.show
+	main.cb_mat.show
+	program opt_mtest_show
+END
+
+SCRIPT main_showorder_on
+BEGIN
+	script main_hide_all
+	script opt_hide_all
+END
+
+
+SCRIPT main_mat_examp
+BEGIN
+	view help mat_anova_example##|_new
+END
+
+SCRIPT main_expeq_examp
+BEGIN
+	view help test_example##|_new
+END
+
+DIALOG opt, tabtitle("Options")
+BEGIN
+  CHECKBOX ck_mtest	_lft	_top	_cwd3_1	_ht10,			///
+	groupbox							///
+	onclickon(script opt_mtest_on)					///
+	onclickoff(script opt_mtest_off)				///
+	label("Do multiple testing")
+  TEXT tx_mtest2	_ilft	_ss	_cwd3_4	.,			///
+	label("Adjust p-values by:")
+  RADIO rb_noad		@	_ss	@	., first		///
+	option(mtest(noadjust))						///
+	label("No adjustment")
+  RADIO rb_bonf		@	_ss	@	.,			///
+	option(mtest(bonferroni))					///
+	label("Bonferroni")
+  RADIO rb_holm		@	_ss	@	.,			///
+	option(mtest(holm))						///
+	label("Holm")
+  RADIO rb_sidak	@	_ss	@	., last			///
+	option(mtest(sidak))						///
+	label("Sidak")
+  CHECKBOX ck_coef	_lft3_2	_top	_comb3_1 .,			///
+	option(coef)							///
+	label("Display estimated constrained coefficients")
+  CHECKBOX ck_accum	@	_ms	@	.,			///
+	option(accumulate)						///
+	label("Test hypothesis jointly with previously tested hypotheses")
+  CHECKBOX ck_notest	@	_ms	@	.,			///
+	option(notest)							///
+	label("Suppress the output")
+  CHECKBOX ck_common	@	_ms	@	.,			///
+	option(common)							///
+	label("Test only variables common to all the equations")
+  CHECKBOX ck_const	@	_ms	@	.,			///
+	option(constant)						///
+	label("Include the constant in coefficients to be tested")
+  CHECKBOX ck_min	_lft	_xls	_iwd	.,			///
+	option(minimum)							///
+	label("Perform test with the constant, then drop terms until the test becomes")
+  TEXT tx_min		_cksep	_vss	_inwd	.,			///
+	label("nonsingular, then test without the constant on the remaining terms")
+END
+
+SCRIPT opt_mtest_on
+BEGIN
+	opt.tx_mtest2.enable
+	opt.rb_noad.enable
+	opt.rb_bonf.enable
+	opt.rb_holm.enable
+	opt.rb_sidak.enable
+	opt.ck_accum.disable
+	opt.ck_notest.disable
+END
+
+SCRIPT opt_mtest_off
+BEGIN
+	opt.tx_mtest2.disable
+	opt.rb_noad.disable
+	opt.rb_bonf.disable
+	opt.rb_holm.disable
+	opt.rb_sidak.disable
+	opt.ck_accum.enable
+	opt.ck_notest.enable
+END
+
+SCRIPT opt_hide_all
+BEGIN
+	opt.ck_mtest.hide
+	opt.tx_mtest2.hide
+	opt.rb_noad.hide
+	opt.rb_bonf.hide
+	opt.rb_holm.hide
+	opt.rb_sidak.hide
+	opt.ck_accum.hide
+	opt.ck_coef.hide
+	opt.ck_notest.hide
+	opt.ck_common.hide
+	opt.ck_const.hide
+	opt.ck_min.hide
+	opt.tx_min.hide
+END
+
+PROGRAM opt_show_all
+BEGIN
+	call opt.ck_mtest.show
+	call opt.tx_mtest2.show
+	call opt.rb_noad.show
+	call opt.rb_bonf.show
+	call opt.rb_holm.show
+	call opt.rb_sidak.show
+	call opt.ck_accum.show
+	call opt.ck_coef.show
+	call opt.ck_notest.show
+	call opt.ck_common.show
+	call opt.ck_const.show
+	call opt.ck_min.show
+	call opt.tx_min.show
+
+	if opt.ck_mtest {
+		call script opt_mtest_on
+	}
+	else {
+		call script opt_mtest_off
+	}
+END
+
+PROGRAM opt_mtest_show
+BEGIN
+	call opt.ck_mtest.show
+	call opt.tx_mtest2.show
+	call opt.rb_noad.show
+	call opt.rb_bonf.show
+	call opt.rb_holm.show
+	call opt.rb_sidak.show
+
+	if opt.ck_mtest {
+		call script opt_mtest_on
+	}
+	else {
+		call script opt_mtest_off
+	}
+END
+
+PROGRAM opt_output
+BEGIN
+	if opt.ck_mtest {
+		option radio(opt rb_noad rb_bonf rb_holm rb_sidak)
+	}
+	option opt.ck_coef
+	option opt.ck_accum
+	option opt.ck_notest
+	option opt.ck_common
+	option opt.ck_const
+	option opt.ck_min
+END
+
+PROGRAM command
+BEGIN
+	put "test "
+	if main.rb_coef {
+		put " " /program main_lb_coBuild_output
+	}
+	
+	if main.rb_expeq {
+		put " " /program main_lb_exBuild_output
+	}
+	if main.rb_eqncoef {
+		put " " /program main_lb_eqnBuild_output
+	}
+	if main.rb_eqeqncoef {
+		put " " /program main_lb_eqeBuild_output
+	}
+
+	beginoptions
+		if main.rb_mat {
+			require main.cb_mat
+			put "test(" main.cb_mat ") "
+		}
+		if main.rb_showorder {
+			put "showorder "
+		}
+		put " "  /program opt_output
+	endoptions
+END
+

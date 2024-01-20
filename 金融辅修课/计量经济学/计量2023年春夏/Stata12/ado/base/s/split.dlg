@@ -1,0 +1,154 @@
+/*
+  split
+
+*! VERSION 1.1.2  15aug2006
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+INCLUDE _ht280
+INCLUDE header
+
+HELP hlp1, view("help split")
+RESET res1
+
+DIALOG main, label("split - Split string variables into parts") 	///
+	tabtitle("Main")
+BEGIN
+  TEXT     tx_var          _lft      _top      _iwd      .,		///
+	label("String variable:")
+  VARNAME  vn_var          @         _ss       _vnwd     .,		///
+	label("String variable")
+
+  GROUPBOX gb_opt          @         +35       _iwd      _ht17,		///
+	label("Options")
+  TEXT     tx_gener        _indent   _ss       _cwd2     .,		///
+	label("Stub for new variable names:")
+  EDIT     ed_gener        @         _ss       _vnwd     .,		///
+	label("Stub for new variable names") 				///
+	option(generate) max(31)
+
+  CHECKBOX ck_parse        _ilft     _ls       _ibwd     .,		///
+	label("Parse on these strings:")				///
+	onclickon(script parse_on)					///
+	onclickoff(script parse_off)
+  EDIT     ed_parse        _indent2  _ss       _vnwd     .,		///
+	label("Parse on these strings") option(parse)
+
+  CHECKBOX ck_limit        _ilft     _ls       _ibwd     .,		///
+	label("Specify maximum number of new variables to create")	///				/*
+	onclickon(script main_limit_on)					///
+	onclickoff(script main_limit_off)
+  SPINNER  sp_limit        _cksep    _ss       _spwd     .,		///
+	option(limit) min(1) max(100000) default(1)
+  TEXT     tx_limit        _spsep    @         _cksprb   .,		///
+	label("Variables")
+
+  CHECKBOX ck_notrim       _ilft     _ls       _ibwd     .,		///
+	option(notrim)							///
+	label("Do not trim leading or trailing spaces of original string")
+ END
+
+ SCRIPT main_limit_on
+ BEGIN
+	main.sp_limit.enable
+	main.tx_limit.enable
+ END
+
+ SCRIPT main_limit_off
+ BEGIN
+	main.sp_limit.disable
+	main.tx_limit.disable
+ END
+
+ INCLUDE ifin
+
+ DIALOG destring, tabtitle("Destring")
+ BEGIN
+  BUTTON   bu_hlp          _xsetbu   _top     _setbuwd   .,		///
+	label("Help destring")						///
+	onpush(view help destring##|_new)
+
+  CHECKBOX ck_destring     _lft	     _ms      _iwd      _ht12h,		///
+	label("Convert new string variables to numeric where possible")	///
+	option(destring)						///
+	onclickon(script destring_on)					///
+	onclickoff(script destring_off)					///
+	groupbox
+  CHECKBOX ck_ignore 	   _indent   _ms       _ibwd	 .,		///
+	label("Remove these characters:")				///
+	onclickon(destring.ed_ignore.enable)
+  DEFINE _x @x
+  EDIT     ed_ignore       _indent2  _ss       _vnwd     .,		///
+	label("Nonnumeric characters to be removed")			///
+	option(ignore)
+  CHECKBOX ck_force        _x        _ls       _ibwd     .,		///
+	label("Convert nonnumeric strings to missing values")		///
+	option(force)
+  CHECKBOX ck_float        @         _ms       @         .,		///
+	label("Generate numeric variables as type float")		///
+	option(float)
+  CHECKBOX ck_percent      @         _ms       @         .,		///
+	option(percent)							///
+	label("Convert percent variables to fractional form")
+END
+
+SCRIPT parse_on
+BEGIN
+	main.ed_parse.enable
+	main.ck_notrim.enable
+END
+
+SCRIPT parse_off
+BEGIN
+	main.ed_parse.disable
+	main.ck_notrim.disable
+END
+
+SCRIPT destring_on
+BEGIN
+	destring.ck_ignore.enable
+	destring.ed_ignore.enable
+	destring.ck_force.enable
+	destring.ck_float.enable
+	destring.ck_percent.enable
+END
+
+SCRIPT destring_off
+BEGIN
+	destring.ck_ignore.disable
+	destring.ed_ignore.disable
+	destring.ck_force.disable
+	destring.ck_float.disable
+	destring.ck_percent.disable
+END
+
+PROGRAM command
+BEGIN
+	put "split "
+	varlist main.vn_var
+	INCLUDE _ifin_pr
+	beginoptions
+		optionarg  main.ed_gener
+		if main.ck_parse {
+			require main.ed_parse
+			optionarg main.ed_parse
+		}
+		if main.ck_limit {
+			optionarg main.sp_limit
+		}
+		option main.ck_notrim
+		option destring.ck_destring
+		if destring.ck_destring {
+			if destring.ck_ignore {
+				require destring.ed_ignore
+				optionarg destring.ed_ignore
+			}
+			option destring.ck_force
+			option destring.ck_float
+			option destring.ck_percent
+		}
+	endoptions
+END

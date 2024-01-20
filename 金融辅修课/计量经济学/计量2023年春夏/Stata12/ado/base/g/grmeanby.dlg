@@ -1,0 +1,67 @@
+/*
+ grmeanby
+
+*!  VERSION 2.1.0  02may2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_mlarge
+DEFINE _dlght 250
+INCLUDE header
+
+HELP hlp1, view("help grmeanby")
+RESET res1
+
+SCRIPT main_POSTINIT
+BEGIN
+        script gr_plots_setDefaultConnected
+END
+
+DIALOG main, tabtitle("Main")					/// 
+	label("grmeanby - Graph means/medians by categorical variables") 
+BEGIN
+   TEXT     tx_summarize	_lft	_top	_iwd	.,	///
+	label("Variable whose mean/median is to be graphed:")
+   VARNAME  vn_summarize	@	_ss	_vnwd	.,	///
+	label("Variable whose mean/median is to be graphed")	///
+	option(summarize)
+
+  TEXT	    tx_var		_lft	_ls	_vlwd	.,	///
+	label("Categorical variables:")
+  VARLIST  vl_var		@	_ss	@	.,	///
+	label("Categorical variables")
+
+  CHECKBOX ck_median		@	_ls	_iwd	.,	///
+   	label("Graph medians instead of means")  		///
+   	option(median)
+END
+
+INCLUDE ifin
+INCLUDE weights_fa
+INCLUDE gr_plots
+INCLUDE gr_yaxis
+INCLUDE gr_xaxis
+INCLUDE gr_titles
+INCLUDE gr_legend
+INCLUDE gr_overall
+
+PROGRAM command
+BEGIN
+	put "grmeanby "
+	require main.vn_summarize
+	varlist main.vl_var
+	put " " /program ifin_output
+	put " " /program weights_output
+	beginoptions
+                optionarg main.vn_summarize
+                option main.ck_median
+		put " " /program gr_plots_output
+		put " " /program gr_yaxis_output
+		put " " /program gr_xaxis_output
+		put " " /program gr_titles_output
+		put " " /program gr_legend_output
+		put " " /program gr_overall_output
+	 endoptions
+END

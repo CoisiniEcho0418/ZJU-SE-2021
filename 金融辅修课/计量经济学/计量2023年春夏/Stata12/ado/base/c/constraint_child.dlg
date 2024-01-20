@@ -1,0 +1,15 @@
+/*
+	manage constraints -- child dialog
+
+*!  VERSION 1.0.0  10aug2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_medium
+DEFINE _dlght 260
+POSITION . . _dlgwd _dlght
+OK can1, label("OK")
+
+INCLUDE constraint_include

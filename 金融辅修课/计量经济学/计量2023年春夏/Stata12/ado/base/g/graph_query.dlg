@@ -1,0 +1,47 @@
+/*
+	graph query
+
+	VERSION 1.0.0  21dec2002
+*/
+
+VERSION 8.0
+
+INCLUDE _std_small
+INCLUDE header
+HELP hlp1, view("help graph_query")
+RESET res1
+
+DIALOG main,label("graph query - List available schemes and styles") 	/*
+		*/	tabtitle("Main")
+BEGIN
+  /*--+----1----+----2----+----3----+----4----+----5----+----6----+----7----+*/
+  RADIO    rb_scheme         _lft      _top      _iwd      ., first	/*
+		*/ label("List available schemes")			/*
+		*/ option(schemes)					/*
+		*/ clickon(main.ed_stylename.disable)
+
+  RADIO    rb_style          _lft      _ls     _iwd      .,		/*
+		*/ label("List available styles")			/*
+		*/ clickon(main.ed_stylename.disable)
+
+  RADIO    rb_stylename      _lft      _ls     _iwd      ., last	/*
+		*/ label("List styles available within specific stylename")/*
+		*/ clickon(main.ed_stylename.enable)
+  EDIT     ed_stylename      _indent2  _ss       _ibwd     .,		/*
+		*/ label("List styles available within specific stylename")
+END
+
+
+PROGRAM command
+BEGIN
+	put "graph query "
+	if main.rb_stylename {
+		require main.ed_stylename
+		put main.ed_stylename
+	}
+	beginoptions
+		if main.rb_scheme {
+			option main.rb_scheme
+		}
+	endoptions
+END

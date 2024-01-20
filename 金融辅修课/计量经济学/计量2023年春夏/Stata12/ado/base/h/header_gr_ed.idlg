@@ -1,0 +1,14 @@
+/* 
+  header_gr_ed.idlg -- header for all source dialogs
+
+*! VERSION 1.0.0  07jun2006
+
+*/
+
+POSITION . . _dlgwd _dlght
+
+OK ok1, label("OK") target(stata hidden)
+CANCEL can1, label("Cancel")
+SUBMIT sub1, label("Apply") target(stata hidden)
+
+/* END:  header_gr_ed.idlg */

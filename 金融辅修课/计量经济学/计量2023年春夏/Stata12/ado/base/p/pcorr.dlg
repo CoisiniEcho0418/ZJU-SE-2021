@@ -1,0 +1,40 @@
+/*
+	pcorr	
+
+	VERSION 1.0.1  12jan2009
+*/
+
+VERSION 8.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help pcorr")
+RESET res1
+
+DIALOG main, label("pcorr - Partial and semipartial correlation coefficients") 	/*
+		*/ tabtitle("Main")
+BEGIN
+  TEXT     tx_var        _lft     _top     _iwd        .,		/*
+		*/ label("Display partial and semipartial correlation coefficient of variable:")
+  VARNAME  vn_var           @      _ss    _vnwd        .,		/*
+		*/ label("Variable")
+  TEXT     tx_vlist         @      _ms     _iwd        .,		/*
+		*/ label("Against variables:")
+  VARLIST  vl_vlist         @      _ss        @        .,		/*
+		*/ label("Variable list")
+END
+
+INCLUDE byifin
+INCLUDE weights_fa   
+
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "pcorr "
+	varlist main.vn_var
+	varlist main.vl_vlist
+	INCLUDE _weights_pr
+	INCLUDE _ifin_pr
+END

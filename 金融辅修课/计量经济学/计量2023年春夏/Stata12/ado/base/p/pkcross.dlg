@@ -1,0 +1,120 @@
+/*
+  pkcross
+
+*! VERSION 1.1.1  16feb2007
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_large
+INCLUDE _ht320
+INCLUDE header
+
+HELP hlp1, view("help pkcross")
+RESET res1
+
+DIALOG main, label("pkcross - Analyze crossover experiments")		///
+		tabtitle("Model")
+BEGIN
+  TEXT     tx_varo         _lft      _top      _iwd      .,		///
+	label("Outcome variable:")
+  VARNAME  vn_varo         _lft      _ss       _vnwd     .,		///
+	label("Outcome variable")
+
+  GROUPBOX gb_opt          _lft      _ls       _iwd      _ht22,		///
+	label("Options")
+  TEXT     tx_seq          _indent   _ss       _cwd2     .,		///
+	label("Sequence variable:")
+  DEFINE _x @x
+  DEFINE _y @y
+  VARNAME  vn_seq          @         _ss       _vnwd     .,		///
+	option(sequence) label("Sequence variable")			///
+	default("sequence")
+  DEFINE _x2 @x
+  TEXT     tx_treat        _lft2     _y        _cwd2     .,		///
+	label("Treatment variable:")
+  VARNAME  vn_treat        @         _ss       _vnwd     .,		///
+	option(treatment) label("Treatment variable") default("treat")
+  DEFINE _x22 @x
+  TEXT     tx_per          _x        _ls       _cwd2     .,		///
+	label("Period variable:")
+  TEXT     tx_id           _lft2     @         @         .,		///
+	label("ID variable:")
+  VARNAME  vn_per          _x2       _ss       _vnwd     .,		///
+	option(period) label("Period variable")	default("period")
+  VARNAME  vn_id           _x22      @         @         .,		///
+	option(id) label("ID variable") default("id")
+  TEXT     tx_car          _x        _ls       _cwd2     .,		///
+	label("Carryover variable:")
+  RADIO    rb_car1         @         _ss       _rbwd     .,		///
+	onclickon(main.vn_car.enable) first
+  VARNAME  vn_car          _rbsep    @         _vnwd     .,		///
+	label("Carryover variable") option(carryover) default("carry")
+  RADIO    rb_car2         _lft2     @         _cwd2     .,		///
+	label("None") option("carryover(none)")				///
+	onclickon(main.vn_car.disable) last
+  CHECKBOX ck_mod          _x        _ls       _ibwd     .,		///
+	onclickon(main.ed_mod.enable)					///
+	onclickoff(main.ed_mod.disable)					///
+	label(`"Specify the model to fit:  (default is "sequence period treat carry")"')
+  EDIT     ed_mod          _indent2  _ss       _inwd     .,		///
+	label("Specify the model to fit") option(model)
+  CHECKBOX ck_sequen       _x        _ls       _ibwd     .,		///
+	option(sequential)						///
+	label("Estimate sequential instead of partial sums of squares")
+END
+
+INCLUDE ifin
+
+DIALOG para, tabtitle("Parameterization")
+BEGIN
+  TEXT     tx_param        _lft      _top      _iwd     .,		///
+	label("Parameterization type for 2x2 crossover experiment:")
+  RADIO    rb_par3         _lft      _ms       _iwd     .,		///
+	option("NONE") first						///
+	label("Estimate mean, period effects, treatment effects, and sequence effects.")
+DEFINE _x @x
+  TEXT     tx_par3         _indent2  _vss      _inwd     .,		///
+	label("Assumes no carryover effects exist.")
+  RADIO    rb_par1         _x        _ms       _iwd      .,		///
+	option("param(1)")						///
+	label("Estimate mean, period effects, treatment effects, and carryover effects.")
+  TEXT     tx_par1         _indent2  _vss      _inwd     .,		///
+	label("Assumes no sequence effects exist.")
+  RADIO    rb_par2         _x        _ms       _iwd      .,		///
+	option("param(2)")						///
+	label("Estimate mean, period effects, treatment effects, and period-by-treatment")
+  TEXT     tx_par2         _indent2  _vss      _inwd     .,		///
+	label("interaction.  Assumes no sequence effects and no carryover effects exist.")
+  RADIO    rb_par4         _x        _ms       _iwd      .,		///
+	option("param(4)") last						///
+	label("Estimate mean, sequence effects, treatment effects, and sequence-by-treatment")
+  TEXT     tx_par4         _indent2  _vss      _inwd     .,		///
+	label("interaction.  Assumes no period or crossover effects exist.")
+END
+
+PROGRAM command
+BEGIN
+	put "pkcross "
+	varlist main.vn_varo
+	INCLUDE _ifin_pr
+	beginoptions
+	        option radio(para rb_par1 rb_par2 rb_par3 rb_par4)
+		optionarg /hidedefault main.vn_seq
+		optionarg /hidedefault main.vn_treat
+		if main.rb_car1 {
+			optionarg /hidedefault main.vn_car
+		}
+		if main.rb_car2 {
+			option main.rb_car2
+		}
+		optionarg /hidedefault main.vn_per
+		optionarg /hidedefault main.vn_id
+		if main.ck_mod {
+			require main.ed_mod
+			optionarg main.ed_mod
+		}
+		option main.ck_sequen
+	endoptions
+END

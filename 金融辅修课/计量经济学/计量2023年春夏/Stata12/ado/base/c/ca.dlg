@@ -1,0 +1,364 @@
+/*
+	ca
+
+*!  VERSION 1.2.6  14oct2010
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_large
+DEFINE _dlght 340
+INCLUDE header
+HELP hlp1, view("help ca")
+RESET res1
+
+
+DIALOG main, tabtitle("Model") label("ca - Simple correspondence analysis")
+BEGIN
+  GROUPBOX gb_rowspec           _lft    _top    _iwd    _ht12,		///
+	label("Row specification")
+  RADIO    rb_rowvar		_ilft	_ss	_ibwd	.,		///
+	label("Row category variable") first onclickon(script rowvar_on)
+  VARNAME  vn_rowvar		+20	_ss	_vnwd	.,		///
+	label("Row category variable")
+
+  RADIO    rb_rowspec	        _ilft	+35	_ibwd	.,		///
+	label("Crossed categorical variables")				///
+	last onclickon(script rowspec_on)
+  TEXT     tx_nrowvar		+20	_ss	_vnwd	.,		///
+	label("New variable name:")
+DEFINE y @y
+  EDIT     vn_nrowspec		@	_ss	@	.,		///
+	label("New variable name")
+
+  TEXT     tx_nrowspec		_lft3_2	y	_comb3_2 .,		///
+	label("Crossing variables:")
+  VARLIST  vl_nrowspec          @	_ss	@	.,		///
+	label("Crossing variables")
+
+  GROUPBOX gb_colspec           _lft	+50	_iwd	_ht12,		///
+	label("Column specification")
+  RADIO    rb_colvar            _ilft	_ss	_ibwd	.,		///
+	label("Single column category variable") first 			///
+	onclickon(script colvar_on)
+  VARNAME  vn_colvar            +20	_ss	_vnwd	.,		///
+	label("Single column category variable")
+
+  RADIO    rb_colspec           _ilft	+35	_iwd	.,		///
+	label("Crossed categorical variables") 				///
+	last onclickon(script colspec_on)
+
+  TEXT     tx_ncolvar		+20	_ss	_vnwd	.,		///
+	label("New variable name:")
+DEFINE y @y
+  EDIT     vn_ncolspec		@	_ss	@	.,		///
+	label("New variable name")
+
+  TEXT     tx_ncolspec		_lft3_2	y	_comb3_2 .,		///
+	label("Crossing variables:")
+  VARLIST  vl_ncolspec		@	_ss	@	.,		///
+	label("Crossing variables")
+END
+
+SCRIPT model2_PREINIT
+BEGIN
+	create STRING matrixResult
+END
+
+DIALOG model2, tabtitle("Model 2")
+BEGIN
+  BUTTON   bu_matinput   	_rj100	_top    100	.,		///
+	label("Input matrix...") onpush(program show_matrix_input)	///
+	tooltip("Input matrix by hand")
+
+  SPINNER  sp_dim		_lft	_vss	_spwd	.,		///
+	default(2) min(1) max(100) option(dimensions)
+  TEXT     tx_dim		_spsep	@	200	.,		///
+	label("Number of dimensions")
+
+  GROUPBOX gb_normalize		_lft	+35	_iwd	_ht8,		///
+	label("Normalization method")
+  RADIO	rb_default		_ilft	_ss	_cwd1	.,		///
+	first label("Symmetric coordinates (default)") 			///
+	option(NONE)
+  DEFINE holdy @y
+  RADIO	rb_standard		@	_ss	@	., 		///
+	label("Standard coordinates")					///
+	option(normalize(standard))
+  RADIO	rb_row			@	_ss	@	., 		///
+	label("Row principal coordinates")				///
+	option(normalize(row))
+  RADIO	rb_column		@	_ss	@	., 		///
+	label("Column principal coordinates")				///
+	option(normalize(column))
+
+  RADIO	rb_principal		_lft2	holdy	_cwd2	., 		///
+	label("Principal coordinates")					///
+	option(normalize(principal))
+  RADIO	rb_power		@	_ss	+5 	.,		///
+	last label("Power 0<=#<=1 for row coordinates")			///
+  	onclickon(script ck_power_on)					///
+  	onclickoff(script ck_power_off)					///
+	option(NONE)
+  EDIT     ed_power	_indent2  _ss	_en7wd	.,			///
+	option(normalize)						///
+	label("Power #")
+  TEXT     tx_power	_spsep	@	_ckwd	.,			///
+	label("#")
+
+  TEXT     tx_rowsupp		_lft	+65	_cwd2	.,		///
+	label("Matrix of supplementary rows:")
+  DEFINE holdy @y
+  COMBOBOX cb_rowsupp		@       _ss     _vnwd	.,		///
+	label("Matrix of supplementary rows")				///
+	dropdown option(rowsupp)					///
+	contents(matrix)
+  TEXT     tx_colsupp		_lft2	holdy	_cwd2	.,		///
+	label("Matrix of supplementary columns:")
+  COMBOBOX cb_colsupp		@       _ss     _vnwd	.,		///
+	label("Matrix of supplementary columns")			///
+	dropdown option(colsupp)					///
+	contents(matrix)
+
+  TEXT     tx_rowname		_lft	_ls	_cwd2	.,		///
+	label("Label for rows:")
+  DEFINE holdy @y
+  EDIT     ed_rowname		@       _ss     _vnwd	.,		///
+	label("Label for rows")						///
+	option(rowname) default(rowvar)
+
+  TEXT     tx_colname		_lft2	holdy	_cwd2	.,		///
+	label("Label for columns:")
+  EDIT     ed_colname		@       _ss     _vnwd	.,		///
+	label("Label for columns")					///
+	option(colname) default(colvar)
+
+  CHECKBOX ck_missing		_lft	_ls	_iwd	.,		///
+	label("Treat missing values as ordinary values")		///
+	option(missing)
+
+END
+
+PROGRAM show_matrix_input
+BEGIN
+	call create CHILD matrix_input
+	if ! _rc {
+		call matrix_input.setExitString matrixResult
+		call matrix_input.setExitAction "program getMatrixResult"
+		call matrix_input.callthru "isChildContext.settrue"
+	}
+END
+PROGRAM getMatrixResult
+BEGIN
+	call create ARRAY matrix_tempvals
+	call matrix_tempvals.Arrdropall
+	
+	call model2.cb_colsupp.withvalue matrix_tempvals.Arrpush "@"
+	call model2.cb_rowsupp.withvalue matrix_tempvals.Arrpush "@"
+
+	call model2.cb_colsupp.repopulate
+	call model2.cb_rowsupp.repopulate
+
+	call model2.cb_colsupp.setvalue class matrix_tempvals[1]
+	call model2.cb_rowsupp.setvalue class matrix_tempvals[2]
+END
+
+INCLUDE byifin
+
+INCLUDE weights_fai
+INCLUDE ca_codes
+
+DIALOG report, tabtitle("Reporting")
+BEGIN
+  CHECKBOX ck_ddim		_lft	_top	_iwd	.,		///
+  	onclickon(script ck_ddim_on)					///
+  	onclickoff(script ck_ddim_off)					///
+	label("Specify the number of singular values to be displayed")
+
+  SPINNER  sp_ddim		+20	_ss	_spwd	.,		///
+	label("Singular values")					///
+	min(1)								///
+	max(1000)							///
+	default(2)							///
+	option(ddimensions)
+  TEXT     tx_ddim		_spsep	@	_cksprb	.,		///
+	label("Singular values")
+
+  CHECKBOX ck_norowpoints	_lft	_ls	_iwd	.,		///
+	label("Suppress table with row category statistics")		///
+	option(norowpoints)
+  CHECKBOX ck_nocolpoints	@	_ms	@	.,		///
+	label("Suppress table with column category statistics")		///
+	option(nocolpoints)
+  CHECKBOX ck_compact		@	_ms	@	.,		///
+	label("Display tables in a compact format")			///
+	option(compact)
+
+  GROUPBOX gb_plotopt		_lft	_ls	_iwd	_ht7,		///
+	label("Plot options")
+  CHECKBOX ck_plot		_ilft	_ss	_ibwd	.,		///
+	label("Plot the row and column coordinates")			///
+	onclickon(program ck_maxlength_on)				///
+	onclickoff(program ck_maxlength_off)				///
+	option(plot)
+  CHECKBOX ck_maxlength		@	_ms	_ckwd	.,		///
+	label("")							///
+	onclickon(report.sp_maxlength.enable)				///
+	onclickoff(report.sp_maxlength.disable)
+  SPINNER  sp_maxlength		_cksep	@	_spwd	.,		///
+	label("Number of characters")					///
+	min(1)								///
+	max(32)								///
+	default(12)							///
+	option(maxlength)
+  TEXT     tx_maxlength		_spsep	@	_cksprb	.,		///
+	label("Number of plotted row/column label characters")
+  TEXT     tx_note		_ilft	_ms	_irj40	.,		///
+	label("Note: additional postestimation plot options available with -cabiplot-.")
+  BUTTON   bu_cabiplot		_irj20	@	20	.,		///
+	label("..") onpush(view dialog cabiplot)			///
+	tooltip("Show dialog box for -cabiplot-")
+END
+
+SCRIPT rowvar_on
+BEGIN
+	main.vn_rowvar.enable
+	main.tx_nrowvar.disable
+	main.tx_nrowspec.disable
+	main.vn_nrowspec.disable
+	main.vl_nrowspec.disable
+	program check_if_crossing
+END
+
+SCRIPT rowspec_on
+BEGIN
+	main.vn_rowvar.disable
+	main.tx_nrowvar.enable
+	main.tx_nrowspec.enable
+	main.vn_nrowspec.enable
+	main.vl_nrowspec.enable
+	program check_if_crossing
+END
+
+SCRIPT colvar_on
+BEGIN
+	main.vn_colvar.enable
+	main.tx_ncolvar.disable
+	main.tx_ncolspec.disable
+	main.vn_ncolspec.disable
+	main.vl_ncolspec.disable
+	program check_if_crossing
+END
+
+SCRIPT colspec_on
+BEGIN
+	main.vn_colvar.disable
+	main.tx_ncolvar.enable
+	main.tx_ncolspec.enable
+	main.vn_ncolspec.enable
+	main.vl_ncolspec.enable
+	program check_if_crossing
+END
+
+PROGRAM check_if_crossing
+BEGIN
+	if main.rb_rowspec | main.rb_colspec {
+		call script ca_codes_enable
+	}
+	else {
+		call script ca_codes_disable
+	}
+END
+
+SCRIPT ck_ddim_on
+BEGIN
+	report.sp_ddim.enable
+	report.tx_ddim.enable
+END
+
+SCRIPT ck_ddim_off
+BEGIN
+	report.sp_ddim.disable
+	report.tx_ddim.disable
+END
+
+SCRIPT ck_power_on
+BEGIN
+	model2.ed_power.enable
+	model2.tx_power.enable
+END
+
+SCRIPT ck_power_off
+BEGIN
+	model2.ed_power.disable
+	model2.tx_power.disable
+END
+
+PROGRAM ck_maxlength_on
+BEGIN
+	call report.ck_maxlength.enable
+	call report.tx_maxlength.enable
+	if report.ck_maxlength {
+		call report.sp_maxlength.enable
+	}
+END
+
+PROGRAM ck_maxlength_off
+BEGIN
+	call report.ck_maxlength.disable
+	call report.tx_maxlength.disable
+	if report.ck_maxlength {
+		call report.sp_maxlength.disable
+	}
+END
+
+PROGRAM command
+BEGIN
+	put /program by_output " "
+	put "ca "
+	if main.rb_rowvar {
+		require main.vn_rowvar
+		put main.vn_rowvar
+	}
+	if main.rb_rowspec {
+		require main.vn_nrowspec main.vl_nrowspec
+		put "(" main.vn_nrowspec ": " main.vl_nrowspec ") "
+	}
+	if main.rb_colvar {
+		require main.vn_colvar
+		put " " main.vn_colvar
+	}
+	if main.rb_colspec {
+		require main.vn_ncolspec main.vl_ncolspec
+		put " (" main.vn_ncolspec ": " main.vl_ncolspec ") "
+	}
+	put " " /program ifin_output
+	put " " /program weights_output
+	beginoptions
+		optionarg /hidedefault model2.sp_dim
+		option radio(model2 rb_default rb_standard rb_row rb_column rb_principal rb_power)
+		if model2.rb_power {
+			require model2.ed_power
+			optionarg model2.ed_power
+		}
+		optionarg model2.cb_rowsupp
+		optionarg model2.cb_colsupp
+		optionarg /hidedefault model2.ed_rowname
+		optionarg /hidedefault model2.ed_colname
+		option model2.ck_missing
+		
+		put " " /program ca_codes_output
+
+		if report.ck_ddim {
+			optionarg report.sp_ddim
+		}
+		option report.ck_norowpoints
+		option report.ck_nocolpoints
+		option report.ck_compact
+		option report.ck_plot
+		if report.ck_maxlength {
+			optionarg /hidedefault report.sp_maxlength
+		}
+        endoptions
+END

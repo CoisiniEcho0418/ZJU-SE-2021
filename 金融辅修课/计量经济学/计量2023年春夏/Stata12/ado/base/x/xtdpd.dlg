@@ -1,0 +1,277 @@
+/*
+ *   xtdpd
+ *
+ *!  VERSION 1.0.6  14oct2010
+ *
+ *     keyword:  eclass
+ *
+ *     */
+
+VERSION 12.0
+
+INCLUDE _std_mlarge
+DEFINE _dlght 390
+INCLUDE header
+
+HELP hlp1, view("help xtdpd")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	script se_createAsXTABOND
+	create STRING dgmmivResult
+	create STRING lgmmivResult
+	create STRING ivResult
+	create STRING divResult
+	create STRING livResult
+END
+
+SCRIPT POSTINIT
+BEGIN
+	program check_dgmmiv_result
+	program check_lgmmiv_result
+	program check_iv_result
+	program check_div_result
+	program check_liv_result
+END
+
+DIALOG main, tabtitle("Model")	///
+	label("xtdpd  -  Linear dynamic panel-data estimation")
+BEGIN
+  BUTTON bu_xtset       _xsetbu _top    _setbuwd        .,              ///
+        onpush(script show_xtset)                                       ///
+        label("Panel settings...")
+
+  TEXT     tx_dv     _lft      _topph    _vnwd     .,			/*
+		*/ label("Dependent variable:")				/*
+		*/
+  VARNAME  vn_dv     @         _ss       @         .,			/*
+		*/ label("Dependent variable")				/*
+		*/ ts
+
+  TEXT     tx_iv     _vlx      _topph    _cwd2     .,			/*
+		*/ label("Independent variables:")			/*
+		*/
+  VARLIST  vl_iv     @         _ss       _vlwd     .,			/*
+		*/ label("Independent variables")			/*
+		*/ allowcat						/*
+		*/ ts
+
+  GROUPBOX gb_gmm		_lft	_ls	_iwd	_ht5h,		///
+	label("GMM-type instruments")
+
+  BUTTON   bu_dgmmiv		_ilft	_ms	200 	.,		///
+	onpush(script show_dgmmiv_dialog)
+  TEXT     tx_dgmmiv		+210	@	80	.,		///
+	label("(Required)")
+
+  BUTTON   bu_lgmmiv		_ilft	_mls	200	.,		///
+	onpush(script show_lgmmiv_dialog)
+
+  GROUPBOX gb_standard		_lft	_xls	_iwd	_ht8h,		///
+	label("Standard instruments")
+	
+  BUTTON   bu_iv		_ilft	_ms	200	.,		///
+	onpush(script show_iv_dialog)
+
+  BUTTON   bu_div		@	_mls	@	.,		///
+	onpush(script show_div_dialog)
+
+  BUTTON   bu_liv		@	_mls	@	.,		///
+	onpush(script show_liv_dialog)
+
+  CHECKBOX ck_nocons		_lft	+45	_iwd	.,		///
+	label("Suppress constant term")					///
+	option(noconstant)
+  CHECKBOX ck_twostep		@	_ms	@	.,		///
+	label("Compute the two-step estimator")				///
+	option(twostep)
+  CHECKBOX ck_hascons		@	_ms	@	.,		///
+	option(hascons)							///
+	label("Check for collinearity only among levels of independent variables")	
+  CHECKBOX ck_fodeviation	@	_ms	@	.,		///
+	label("Use forward-orthogonal deviations")			///
+	option(fodeviation)
+END
+
+SCRIPT show_dgmmiv_dialog
+BEGIN
+	create CHILD xtdpd_dgmmiv_option , allowsubmit
+	xtdpd_dgmmiv_option.setExitString dgmmivResult
+	xtdpd_dgmmiv_option.setOkAction "program check_dgmmiv_result"
+	xtdpd_dgmmiv_option.setSubmitAction "script submit_dgmmiv"
+END
+PROGRAM check_dgmmiv_result
+BEGIN
+	if dgmmivResult {
+		call main.bu_dgmmiv.setlabel 	///
+			"Difference equation *"
+	}
+	else {
+		call main.bu_dgmmiv.setlabel	///
+			"Difference equation  "
+	}
+END
+SCRIPT submit_dgmmiv
+BEGIN
+	program check_dgmmiv_result
+	Submit
+END
+
+
+SCRIPT show_lgmmiv_dialog
+BEGIN
+	create CHILD xtdpd_lgmmiv_option , allowsubmit
+	xtdpd_lgmmiv_option.setExitString lgmmivResult
+	xtdpd_lgmmiv_option.setOkAction "program check_lgmmiv_result"
+	xtdpd_lgmmiv_option.setSubmitAction "script submit_lgmmiv"
+END
+PROGRAM check_lgmmiv_result
+BEGIN
+	if lgmmivResult {
+		call main.bu_lgmmiv.setlabel 	///
+			"Level equation *"
+	}
+	else {
+		call main.bu_lgmmiv.setlabel	///
+			"Level equation  "
+	}
+END
+SCRIPT submit_lgmmiv
+BEGIN
+	program check_lgmmiv_result
+	Submit
+END
+
+
+SCRIPT show_iv_dialog
+BEGIN
+	create CHILD xtdpd_iv_option , allowsubmit
+	xtdpd_iv_option.setExitString ivResult
+	xtdpd_iv_option.setOkAction "program check_iv_result"
+	xtdpd_iv_option.setSubmitAction "script submit_iv"
+END
+PROGRAM check_iv_result
+BEGIN
+	if ivResult {
+		call main.bu_iv.setlabel 	///
+			"Difference and level equations *"
+	}
+	else {
+		call main.bu_iv.setlabel	///
+			"Difference and level equations  "
+	}
+END
+SCRIPT submit_iv
+BEGIN
+	program check_iv_result
+	Submit
+END
+
+
+SCRIPT show_div_dialog
+BEGIN
+	create CHILD xtdpd_div_option , allowsubmit
+	xtdpd_div_option.setExitString divResult
+	xtdpd_div_option.setOkAction "program check_div_result"
+	xtdpd_div_option.setSubmitAction "script submit_div"
+END
+PROGRAM check_div_result
+BEGIN
+	if divResult {
+		call main.bu_div.setlabel 	///
+			"Difference equation *"
+	}
+	else {
+		call main.bu_div.setlabel	///
+			"Difference equation  "
+	}
+END
+SCRIPT submit_div
+BEGIN
+	program check_div_result
+	Submit
+END
+
+
+SCRIPT show_liv_dialog
+BEGIN
+	create CHILD xtdpd_liv_option , allowsubmit
+	xtdpd_liv_option.setExitString livResult
+	xtdpd_liv_option.setOkAction "program check_liv_result"
+	xtdpd_liv_option.setSubmitAction "script submit_liv"
+END
+PROGRAM check_liv_result
+BEGIN
+	if livResult {
+		call main.bu_liv.setlabel 	///
+			"Level equation *"
+	}
+	else {
+		call main.bu_liv.setlabel	///
+			"Level equation  "
+	}
+END
+SCRIPT submit_liv
+BEGIN
+	program check_liv_result
+	Submit
+END
+
+INCLUDE byifin
+INCLUDE se
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr2
+  DEFINE _y _top
+  INCLUDE _sp_level
+
+  GROUPBOX gb_tests		_lft	_ls	_iwd	_ht3,	///
+	label("Additional test statistics")
+
+  SPINNER sp_artest		_ilft	_ms	_spwd	.,	///
+	label("Max order for AR tests")				///
+	min(1)							///
+	max(c(N))						///
+	default(2)						///
+	option("artests")
+  TEXT tx_artest		_spsep	@	_sprb	.,	///
+	label("Max order for AR tests")
+
+  DEFINE _x _lft
+  DEFINE _y _xxls
+  DEFINE _cx _iwd
+  INCLUDE _vsquish
+END
+
+PROGRAM command
+BEGIN
+	allowxi
+	put /program by_output " " 
+	put "xtdpd "
+	varlist main.vn_dv [main.vl_iv]
+
+	put " " /program ifin_output
+
+	beginoptions
+		option main.ck_nocons
+		option main.ck_twostep
+		option main.ck_hascons
+		option main.ck_fodeviation
+		if ! dgmmivResult {
+			stopbox stop 	///
+				"GMM-type instruments for the difference equation are required."
+		}
+		put " " dgmmivResult " "
+		put " " lgmmivResult " "
+		put " " ivResult " "
+		put " " divResult " "
+		put " " livResult " "		
+		put " " /program se_output
+		optionarg /hidedefault rpt.sp_level
+		optionarg rpt.sp_artest
+		INCLUDE _vsquish_pr
+	endoptions
+END

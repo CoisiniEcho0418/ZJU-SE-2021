@@ -1,0 +1,180 @@
+/*
+    drop
+
+*!  VERSION 2.1.0  07nov2008
+
+** This dialog box may be called internally by the Data Editor
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_medium
+INCLUDE header
+HELP hlp1, view("help drop")
+RESET res1
+
+DEFINE fromwd 34
+DEFINE fromsep +39
+DEFINE towd 15
+DEFINE tosep +20
+
+DIALOG main, label("drop - Drop or keep observations")			///
+	tabtitle("Main")
+BEGIN
+  GROUPBOX gb_type		_lft	_top	_iwd	_ht4,		///
+  	label("Drop or keep observations")
+  RADIO    rb_drop		_indent	_ss	_inwd	.,		///
+  	label("Drop observations") first				///
+  	onclickon(script main_drop_on)
+  RADIO    rb_keep		@	_ss	@	.,		///
+  	label("Keep observations") last					///
+  	onclickon(script main_keep_on)
+
+  GROUPBOX gb_ifin	_lft	_xls	_iwd	_ht9h,			///
+	label("Observations to keep")
+
+  TEXT     tx_if	_ilft	_ss	_inwd	.,			///
+	label("If: (expression)")
+  EXP      ex_if	@	_ss	@	.,			///
+	label("Create...")
+
+  CHECKBOX ck_in	@	+35	@	.,			///
+	label("Keep a range of observations")				///
+	onclickon(program main_in_on)					///
+	onclickoff(script main_in_off)
+  TEXT     tx_from	@	_ss	fromwd	.,			///
+  	label("From:") right
+  SPINNER  sp_from	fromsep	@	_spwd	.,			///
+	min(1) max(c(N)) default(1)
+  TEXT     tx_to	_spsep	@	towd	.,			///
+	label("to:") right
+  SPINNER  sp_to	tosep	@	_spwd	.,			///
+  	min(1) max(c(N)) default(c(N))
+END
+
+SCRIPT main_keep_on
+BEGIN
+	main.gb_ifin.setlabel "Observations to keep"
+	main.ck_in.setlabel "Keep a range of observations"
+END
+
+SCRIPT main_drop_on
+BEGIN
+	main.gb_ifin.setlabel "Observations to drop"
+	main.ck_in.setlabel "Drop a range of observations"
+END
+
+PROGRAM main_in_on
+BEGIN
+	if by.ck_by.isenabled() & by.ck_by {
+		call main.ck_in.setoff
+		if main.rb_keep {
+			call program showmessage_1a
+		}
+		if main.rb_drop {
+			call program showmessage_1b
+		}
+	}
+	if ! by.ck_by  | ( by.ck_by & ! by.ck_by.isenabled() ) {
+		call main.sp_from.enable
+		call main.tx_from.enable
+		call main.tx_to.enable
+		call main.sp_to.enable
+	}
+END
+
+SCRIPT main_in_off
+BEGIN
+	main.tx_from.disable
+	main.sp_from.disable
+	main.tx_to.disable
+	main.sp_to.disable
+END
+
+DIALOG by, tabtitle("by")
+BEGIN
+  CHECKBOX ck_by	_lft	_top	_iwd	_ht4,		///
+  	groupbox						///
+	label("Repeat command by groups")			///
+	onclickon(program by_on)				///
+	onclickoff(script by_off)
+  TEXT     tx_by	_indent _ss	_inwd	.,		///
+	label("Variables that define groups:")
+  VARLIST  vl_by	@	_ss	@	.,		///
+	label("Variables that define groups")
+END
+
+PROGRAM by_on
+BEGIN
+	if main.ck_in.isenabled() & main.ck_in {
+		call gaction by.ck_by.setoff
+		if main.rb_keep {
+			call program showmessage_2a
+		}
+		if main.rb_drop {
+			call program showmessage_2b
+		}
+	}
+	if ! main.ck_in {
+		call by.vl_by.enable
+		call by.tx_by.enable
+	}
+END
+
+SCRIPT by_off
+BEGIN
+	by.tx_by.disable
+	by.vl_by.disable
+END
+
+PROGRAM showmessage_1a
+BEGIN
+	stopbox note `""Keep a range of observations","'		///
+		`"may not be specified with "Repeat command by groups" on the by tab."' ///
+	" " "(i.e. the -by- prefix cannot be combined with the -in- qualifier)"
+END
+PROGRAM showmessage_1b
+BEGIN
+	stopbox note `""Drop a range of observations","'		///
+		`"may not be specified with "Repeat command by groups" on the by tab."' ///
+	" " "(i.e. the -by- prefix cannot be combined with the -in- qualifier)"
+END
+
+PROGRAM showmessage_2a
+BEGIN
+	stopbox note `""Repeat command by groups","'	///
+		`"may not be specified with "Keep a range of observations" on the Main tab."' ///
+	" " "(i.e. the -by- prefix cannot be combined with the -in- qualifier)"
+END
+PROGRAM showmessage_2b
+BEGIN
+	stopbox note `""Repeat command by groups","'	///
+		`"may not be specified with "Drop a range of observations" on the Main tab."' ///
+	" " "(i.e. the -by- prefix cannot be combined with the -in- qualifier)"
+END
+
+PROGRAM command
+BEGIN
+	if by.ck_by {
+		require by.vl_by
+		bysort by.vl_by
+	}
+
+	if main.rb_keep {
+		put "keep "
+	}
+	if main.rb_drop {
+		put "drop "
+	}
+
+	if ! main.ex_if & ! main.ck_in {
+		stopbox stop `"On the Main tab,"'	///
+			`"either an "expression" or a "range of observations" must be specified"'
+	}
+	ifexp main.ex_if
+	if main.ck_in {
+		put "in "
+		put main.sp_from "/" main.sp_to
+	}
+END

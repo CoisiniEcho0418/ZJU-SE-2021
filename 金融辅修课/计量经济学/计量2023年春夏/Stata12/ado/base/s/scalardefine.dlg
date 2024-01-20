@@ -1,0 +1,43 @@
+/*
+	scalar define
+	
+	VERSION 1.0.0  21dec2002
+*/
+
+VERSION 8.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help scalar")
+RESET res1
+
+DIALOG main,label("scalar define - Define/redefine a scalar")/*
+		*/ tabtitle("Main")
+BEGIN
+
+  TEXT     tx_var      _lft         _top    _cwd3_1       .,            /*
+                */ label("Generate scalar:")
+  EDIT     ed_scalar   @            _ms     _vnwd         .,            /*
+                */ max(32)                                              /*
+                */ label("Generate scalar")
+  TEXT     tx_equals   _eqxpos      @       _eqwd         .,            /*
+                */ center                                               /*
+                */ label("=")
+  TEXT     tx_exp      _lft3_2      _top    _comb3_1      .,            /*
+                */ label("Expression:")
+  EXP      ex_exp      _lft3_2      _ms     _vlwd         .,            /*
+                */ label("Create...")                                   /*
+                */ error("Expression")
+END
+
+PROGRAM command
+BEGIN
+  require main.ed_scalar
+  require main.ex_exp
+  put "scalar define "
+  put main.ed_scalar
+  put " "
+  put " = "
+  put main.ex_exp
+END 

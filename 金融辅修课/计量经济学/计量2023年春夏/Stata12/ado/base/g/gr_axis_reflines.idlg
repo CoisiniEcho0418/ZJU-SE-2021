@@ -1,0 +1,153 @@
+/*
+    gr_axis_reflines.idlg
+
+*!  VERSION 1.0.0  02jan2007
+
+    NOTE: (IMPORTANT)
+    	axisType MUST be set by the caller. This will either be "x" | "y" | "t"
+	--axisType.setstring--
+
+	// SCRIPTS and PROGRAMS for external use
+		* SCRIPT axis_setSecondAxis    
+	
+*/
+
+
+INCLUDE _std_small
+DEFINE _dlght 200
+INCLUDE header_gr_child
+
+DEFINE _clwd	15
+DEFINE _wd	130
+DEFINE _sep	+135
+DEFINE _wd2	120
+DEFINE _sep2	+125
+DEFINE _cbwd	120
+DEFINE _cbsep	+125
+
+
+SCRIPT axis_setSecondAxis
+BEGIN
+	isAxis2.settrue
+END
+
+SCRIPT POSTINIT
+BEGIN
+	axisType.withvalue 	///
+		lines.ck_lines.setlabel "Add lines to graph at specified @ axis values:"
+END
+
+SCRIPT lines_PREINIT
+BEGIN
+	create PBOOLEAN isAxis2
+END
+
+HELP hlp1, view("help added_line_options")
+RESET res1
+
+DIALOG lines, tabtitle("Additional lines") title("Add reference lines")
+BEGIN
+  CHECKBOX ck_lines	_lft	_top	_iwd	.,		///
+	label("Add lines to graph at specified axis values:")	///
+	onclickon(script lines_on) onclickoff(script lines_off)
+  EDIT	   ed_values	@	_ss	@	.,		///
+  	label("Axis values")
+
+  TEXT     tx_width	_ilft	_xls	_wd	.,		///
+	label("Width:") right
+  COMBOBOX cb_width	_sep	@	_cbwd	.,		///
+  	dropdown contents(linewidths) option(lwidth)
+
+  TEXT     tx_pattern	_ilft	_mls	_wd	.,		///
+	label("Pattern:") right
+  COMBOBOX cb_pattern	_sep	@	_cbwd	.,		///
+  	dropdownlist contents(linepatterns) option(lpattern)
+  	
+  TEXT     tx_clr	_ilft	_mls	_wd	.,		///
+	label("Color:") right
+  COMBOBOX cb_clr	_sep	@	_cbwd	.,		///
+  	dropdownlist contents(colors) option(lcolor)		///
+  	onselchangelist(lines_cl_clr_sel)
+  COLOR    cl_clr	_cbsep	@	_clwd	., option(lcolor)
+  
+  TEXT     tx_extend	_ilft	_mls	_wd	.,		///
+	label("Extend into plot margin:") right
+  COMBOBOX cb_extend	_sep	@	_cbwd	.,		///
+  	dropdownlist contents(yesno) values(lines_cb_extend)
+END
+
+SCRIPT lines_on
+BEGIN
+	lines.ed_values.enable
+	lines.tx_width.enable
+	lines.cb_width.enable
+	lines.tx_pattern.enable
+	lines.cb_pattern.enable
+	lines.tx_clr.enable
+	lines.cb_clr.enable
+	lines.cl_clr.enable
+	lines.tx_extend.enable
+	lines.cb_extend.enable
+END
+
+SCRIPT lines_off
+BEGIN
+	lines.ed_values.disable
+	lines.tx_width.disable
+	lines.cb_width.disable
+	lines.tx_pattern.disable
+	lines.cb_pattern.disable
+	lines.tx_clr.disable
+	lines.cb_clr.disable
+	lines.cl_clr.disable
+	lines.tx_extend.disable
+	lines.cb_extend.disable
+END
+
+LIST lines_cl_clr_sel
+BEGIN
+	lines.cl_clr.hide
+	lines.cl_clr.show
+	lines.cl_clr.hide
+END
+
+LIST lines_cb_extend
+BEGIN
+	""
+	"extend"
+	"noextend"
+END
+
+PROGRAM lines_output
+BEGIN
+	
+	put lines.ed_values
+	beginoptions
+		optionarg /hidedefault lines.cb_width
+		optionarg /hidedefault lines.cb_pattern
+		if lines.cl_clr.isvisible() {
+			optionarg /quoted lines.cl_clr
+		}
+		if ! lines.cl_clr.isvisible() {
+			optionarg /hidedefault lines.cb_clr
+		}
+		put " " lines.cb_extend
+		if isAxis2 {
+			put " axis(2)"
+		}
+	endoptions
+END
+
+PROGRAM command
+BEGIN
+	if lines.ck_lines {
+		require lines.ed_values
+		if lines.ed_values | lines.cb_width | lines.cb_pattern 	///
+			| lines.cb_clr | lines.cb_extend		///
+		{
+			put " " axisType "line("
+			put /program lines_output
+			put ") "
+		}
+	}
+END

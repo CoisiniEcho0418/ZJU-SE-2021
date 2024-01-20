@@ -1,0 +1,5 @@
+*! version 1.0.0  22dec2002
+sequence 2300
+label "Medium thin"
+
+set val .25

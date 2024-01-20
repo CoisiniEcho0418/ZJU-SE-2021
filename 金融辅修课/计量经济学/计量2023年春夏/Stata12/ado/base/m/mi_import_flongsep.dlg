@@ -1,0 +1,74 @@
+/*
+  mi_import_flongsep
+
+*! VERSION 1.0.2  02jul2009
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_mlarge
+DEFINE _dlght 325
+INCLUDE header
+
+HELP hlp1, view("help mi_import_flongsep")
+RESET res1
+
+DIALOG main, label("mi import flongsep - Import flongsep-like data into mi") ///
+	tabtitle("Main")
+BEGIN
+  TEXT tx_file		_lft	_top	_vnwd	.,			///
+	label("New name:")
+  EDIT ed_file		@	_ss	@	.,			///
+	label("New name")
+
+  TEXT tx_using		_lft	_ls	_iwd	.,			///
+	label("Using datasets on disk:")
+  FILE fi_using		@	_ss	@	.,			///
+	filter("Stata Dataset (*.dta)|*.dta|All (*.*)|*.*")		///
+	defext(dta)							///
+	option(using)							///
+	multiselect							///
+	error("Filename of dataset on disk")				///
+	label("Browse...")
+
+  TEXT tx_id		_lft	_ls	_iwd	.,			///
+	label("Variables to match observations on:")
+  VARLIST vl_id		@	_ss	@	.,			///
+	option(id)							///
+	label("Variables to match observations on")
+
+  GROUPBOX gb_options	_lft	_ls	_iwd	_ht12,			///
+	label("Options")
+  TEXT tx_imp		_indent	_ss	_inwd	.,			///
+	label("Imputed variables to be registered:")
+  VARLIST vl_imp	@	_ss	@	.,			///
+	option(imputed)							///
+	label("Imputed variables to be registered")
+  TEXT tx_pas		@	_ls	@	.,			///
+	label("Passive variables to be registered:")
+  VARLIST vl_pas	@	_ss	@	.,			///
+	option(passive)							///
+	label("Passive variables to be registered")
+
+  CHECKBOX ck_clear	@	_ls	@	.,			///
+	option(clear)							///
+	label("Replace data in memory")
+END
+
+PROGRAM command
+BEGIN
+	require main.ed_file
+	require main.fi_using
+	require main.vl_id
+	put "mi import flongsep "
+	put main.ed_file
+
+	beginoptions
+		optionarg main.fi_using
+		optionarg main.vl_id
+		optionarg main.vl_imp
+		optionarg main.vl_pas
+		option main.ck_clear
+	endoptions
+END

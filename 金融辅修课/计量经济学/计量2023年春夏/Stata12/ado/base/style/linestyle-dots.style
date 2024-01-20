@@ -1,0 +1,6 @@
+*! version 1.0.0  22dec2002
+sequence 3530
+
+set width    scheme dots 
+set color    scheme dots
+set pattern  scheme dots

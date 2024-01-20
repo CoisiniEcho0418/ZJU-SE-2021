@@ -1,0 +1,116 @@
+/*
+    joinby.dlg
+
+*!  VERSION 1.1.0  18nov2004
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_large
+INCLUDE _ht310
+INCLUDE header
+
+HELP hlp1, view("help joinby")
+RESET res1
+
+DIALOG main, tabtitle("Main")	///
+	label("joinby - Form all pairwise combinations within groups")
+BEGIN
+  GROUPBOX gb_using       _lft     _top     _iwd        _ht4h,		///
+	label("Join dataset on disk to current dataset")
+  TEXT     tx_using       _ilft    _ss      _inwd       .,		///
+	label("Filename of dataset on disk:")
+  FILE     fi_using       @        _ss      @           .,		///
+	label("Browse...")                                		///
+	filter("Stata Dataset (*.dta)|*.dta|All Files (*.*)|*.*") 	///
+	defext(dta)							///
+	error("Filename of dataset on disk")
+
+  TEXT     tx_joinvar     _lft     _xxls    _iwd        .,		///
+	label("Join observations by groups formed from specified variables: (optional)")
+  VARLIST  vl_joinvar     @        _ss      @           .,		///
+	label("Group formed by variables")
+
+  TEXT     tx_note1       @        _ms      @           .,		///
+	label("Note: ")
+  TEXT     tx_note2       @        _vss     @           .,		///
+	label("When variables are not specified, variables common to both datasets are assumed.")
+END
+
+DIALOG opt,tabtitle("Options")
+BEGIN
+  GROUPBOX gb_update      _lft     _top     _iwd        _ht6,		///
+	label("Matching observations")
+  RADIO    rb_updefault   _indent  _ss      _ibwd       .,		///
+	first  option(NONE) label("Retain observations from data in memory")
+  RADIO    rb_update      @        _ss      @           .,		///
+	option(update) nomemory 					///
+	label("Replace missing data in memory with values from file")
+  RADIO    rb_replace     @        _ss      @           .,		///
+	last nomemory option(update replace)				///
+	label("Replace all data in memory with values from file")
+
+  GROUPBOX gb_name        _lft     _xls     _iwd        _ht8,		///
+	label("Unmatched observations")
+  DEFINE holdy @y
+  RADIO    rb_unmatchdef  _indent  _ss      _cwd1       .,		///
+	label("Ignore all") first option(none)				///
+	onclickon(script mark_off)
+  RADIO    rb_both        @        _ss      @           .,		///
+	label("Include from both datasets")				///
+	option(both)							///
+	onclickon(script mark_on)
+  RADIO    rb_master      @        _ss      @           .,		///
+	label("Include from data in memory") option(master)		///
+	onclickon(script mark_on)
+  RADIO    rb_using       @        _ss      @           .,		///
+	label("Include from data in file") option(using) 		///
+	last onclickon(script mark_on)
+
+  TEXT     tx_merge       _lft     _xls     _iwd        .,		///
+	label("Specify name of new variable to mark result of joinby:")
+  EDIT     ed_merge       _lft     _ss      _vnwd       .,		///
+	max(32) option("_merge") default("_merge")			///
+	label("Specify name of new variable to mark result of joinby")
+  CHECKBOX ck_nolabel     _lft     _ls      _iwd        .,		///
+	option(nolabel)							///
+	label("Do not copy value label definitions from data in file")
+END
+
+SCRIPT mark_off
+BEGIN
+	opt.ed_merge.disable
+END
+
+SCRIPT mark_on
+BEGIN
+	opt.ed_merge.enable
+END
+
+PROGRAM unmatched_output
+BEGIN
+	option radio (opt rb_unmatchdef rb_both rb_master rb_using)
+END
+
+PROGRAM command
+BEGIN
+	require main.fi_using
+	put "joinby "
+	put main.vl_joinvar " "
+	put "using "
+	put `"""'
+	put main.fi_using
+	put `"""'
+	beginoptions
+		option radio(opt rb_updefault rb_update rb_replace)
+		put "unmatched("
+		put /program unmatched_output
+		put ") "
+
+		if !opt.rb_unmatchdef {
+			optionarg opt.ed_merge
+		}
+		option opt.ck_nolabel
+	endoptions
+END

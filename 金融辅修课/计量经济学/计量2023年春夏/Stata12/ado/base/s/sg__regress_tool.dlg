@@ -1,0 +1,363 @@
+/*
+  sg__regress_tool.dlg
+
+*!  VERSION 1.0.0  12jul2011
+
+*/
+
+VERSION 12.0
+MODAL
+
+INCLUDE _std_msmall
+DEFINE _dlght 280
+POSITION . . _dlgwd _dlght
+
+OK ok1, label("OK") target(stata hidden)
+CANCEL can1, label("Cancel")
+
+DEFINE _clwd	15
+DEFINE _wd	160
+DEFINE _sep	+165
+DEFINE _wd2	110
+DEFINE _sep2	+115
+DEFINE _cbwd	100
+DEFINE _cbsep	+105
+
+INCLUDE sg__common_output 		/* routines necessary for output */
+
+SCRIPT PREINIT
+BEGIN
+	script sg__common_output_init 	/* initialize output globals */
+
+	create STRING OBJ
+	program setupOBJECT
+
+	create DOUBLE index
+END
+
+PROGRAM setupOBJECT
+BEGIN
+	if ! __MESSAGE {
+		stopbox stop 	///
+			"An unexpected error has occurred." "Object not found."
+		exit 198
+	}
+	call OBJ.setvalue class __MESSAGE.value
+END
+
+SCRIPT main_PREINIT
+BEGIN
+	create STRING sCons
+	create STRING sDirection
+	create STRING sK
+	create STRING sVarlist
+	create STRING sDepname
+
+	program main_get_defaults
+END
+
+SCRIPT main_POSTINIT
+BEGIN
+	program main_initialize_controls
+END
+
+PROGRAM main_get_defaults
+BEGIN
+	call sCons.setvalue class .__SEMG.dbsettings.cons
+	if (sCons) {
+		if (sCons.iseq("1")) {
+			call main.ck_cons.setdefault 0
+		}
+		else {
+			call main.ck_cons.setdefault 1
+		}
+	}
+	call sDirection.setvalue class .__SEMG.dbsettings.direction
+	call sDirection.withvalue main.cb_dir.setdefault "@"
+
+	call sK.setvalue class .__SEMG.dbsettings.k
+	call sK.withvalue main.sp_k.setdefault @
+	
+	call sVarlist.setvalue class .__SEMG.dbsettings.varlist
+	call sVarlist.withvalue main.vl_indepvar.setdefault "@"
+
+	call sDepname.setvalue class .__SEMG.dbsettings.depname
+	call sDepname.withvalue main.vn_depvar.setdefault "@"
+END
+
+PROGRAM main_initialize_controls
+BEGIN
+	if (sCons) {
+		if (sCons.iseq("1")) {
+			call main.ck_cons.setoff
+		}
+		else {
+			call main.ck_cons.seton
+		}
+	}
+	call main.cb_dir.setvalue class sDirection.value
+	call main.sp_k.setvalue class sK.value
+	call main.vl_indepvar.setvalue class sVarlist.value
+	call main.vn_depvar.setvalue class sDepname.value
+END
+
+PROGRAM check_mode
+BEGIN
+	if main.rb_vars {
+		call main.tx_indepvar.show
+		call main.vl_indepvar.show
+		call main.tx_k.hide
+		call main.sp_k.hide
+	}
+	if main.rb_k {
+		call main.tx_k.show
+		call main.sp_k.show
+		call main.tx_indepvar.hide
+		call main.vl_indepvar.hide
+	}
+END
+
+DIALOG main, label("Regression component") tabtitle("Main")
+BEGIN
+  TEXT     tx_depvar	_lft	_top	_iwd	.,		///
+	label("Dependent variable name:") 
+  VARNAME  vn_depvar	@	_ss	_vnwd	., nomemory
+
+  GROUPBOX gb_indepvar	_lft	_ls	_iwd	_ht17h,		///
+	label("Independent variables")
+
+  RADIO    rb_vars	_ilft	_ss	_ibwd	., first	///
+	label("Select variables")				///
+	onclickon(program check_mode)
+  RADIO    rb_k		@	_ss	@	., last		///
+	label("Specify number of variables")			///
+	onclickon(program check_mode)
+
+  TEXT     tx_indepvar	_ilft	_ms	_ibwd	.,		///
+	label("Independent variables:")
+DEFINE y @y
+  VARLIST  vl_indepvar	@	_ss	@	.,		///
+	label("Independent variables") nomemory
+
+  TEXT     tx_k		_ilft	y	_ibwd	.,		///
+	label("Number of variables:") 
+  SPINNER  sp_k		@	_ss	_spwd	.,		///
+	nomemory min(1) max(40)
+
+  CHECKBOX ck_cons	_ilft	_ls	_ibwd	.,		///
+	label("Do not estimate constants") 
+
+  TEXT     tx_dir	@	_ls	@	.,		///
+	label("Independent variables' direction:") 
+  COMBOBOX cb_dir	@	_ss	100	.,		///
+	dropdownlist contents(__SEM_STYLES_LABEL.direction)	///
+	values(__SEM_STYLES.direction)
+END
+
+PROGRAM main_output
+BEGIN
+	call program main_get_defaults
+
+	if main.vn_depvar & !main.vn_depvar.isdefault() {
+		if ! main.vn_depvar.isvalidname() {
+			stopbox stop `"On the "Main" tab,"'	///
+			`"the "Dependent variable name" you have selected is not valid."'
+		}
+		call sg__PARAM2.setvalue "SetStyle"
+		call sg__ARG_00.setvalue "regtool.depname" 
+		call sg__ARG_01.setvalue class main.vn_depvar.value
+		put /program sg__do_output_sub
+	}
+	
+	if main.rb_vars {
+		require main.vl_indepvar
+		call sg__PARAM2.setvalue "SetStyle"
+		call sg__ARG_00.setvalue "regtool.varlist" 
+		call sg__ARG_01.setvalue class main.vl_indepvar.value
+		put /program sg__do_output_sub
+	}
+	if main.rb_k {
+		call sg__PARAM2.setvalue "SetStyle"
+		call sg__ARG_00.setvalue "regtool.k" 
+		call sg__ARG_01.setvalue class main.sp_k.value
+		put /program sg__do_output_sub
+	}
+	
+	if ! main.ck_cons.isdefault() {
+		call sg__PARAM2.setvalue "SetStyle"
+		call sg__ARG_00.setvalue "regtool.cons"
+		if main.ck_cons {
+			call sg__ARG_01.setvalue "2"
+		}
+		else {
+			call sg__ARG_01.setvalue "1"
+		}
+		put /program sg__do_output_sub
+	}	
+
+	if ! main.cb_dir.isdefault() {
+		call sg__PARAM2.setvalue "SetStyle"
+		call sg__ARG_00.setvalue "regtool.direction"
+		call sg__ARG_01.setvalue class main.cb_dir.value
+		put /program sg__do_output_sub
+	}
+END
+
+/*****************************************************************************/
+
+SCRIPT opts_PREINIT
+BEGIN
+	create STRING pathdist
+	create STRING exoggap
+
+	program opts_get_defaults
+END
+
+SCRIPT opts_POSTINIT
+BEGIN
+	program opts_initialize_controls
+END
+
+PROGRAM opts_get_defaults
+BEGIN
+	call pathdist.setvalue class .__SEMG.dbsettings.pathdist
+	call pathdist.withvalue opts.cb_dist1.setdefault "@"
+
+	call exoggap.setvalue class .__SEMG.dbsettings.exoggap
+	call exoggap.withvalue opts.cb_dist2.setdefault "@"
+END
+
+PROGRAM opts_initialize_controls
+BEGIN
+	call opts.cb_dist1.setvalue class pathdist.value
+	call opts.cb_dist2.setvalue class exoggap.value
+END
+
+DIALOG opts, tabtitle("Distances")
+BEGIN
+  GROUPBOX gb_distance	_lft	_top	_iwd	_ht5h,		///
+	label("Distances")
+  TEXT     tx_dist1	_ilft	_ss	200	.,		///
+	label("Dependent to independent variables:") right
+  COMBOBOX cb_dist1	+205	@	60	.,		///
+	dropdown contents(__SEM_STYLES_LABEL.size)		///
+	values(__SEM_STYLES.size)
+  TEXT     tx_dist1_m	+65	@	50	.,		///
+	label("( in. )")
+
+  TEXT     tx_dist2	_ilft	_mls	200	.,		///
+	label("Between independent variables:") right
+  COMBOBOX cb_dist2	+205	@	50	.,		///
+	dropdown contents(__SEM_STYLES_LABEL.size)		///
+	values(__SEM_STYLES.size)
+  TEXT     tx_dist2_m	+65	@	60	.,		///
+	label("( in. )")
+END
+
+PROGRAM opts_output
+BEGIN
+	call program opts_get_defaults
+
+	if ! opts.cb_dist1.isdefault() {
+		call sg__PARAM2.setvalue "SetStyle"
+		call sg__ARG_00.setvalue "regtool.pathdist"
+		call sg__ARG_01.setvalue class opts.cb_dist1.value
+		put /program sg__do_output_sub
+	}
+	if ! opts.cb_dist2.isdefault() {
+		call sg__PARAM2.setvalue "SetStyle"
+		call sg__ARG_00.setvalue "regtool.exoggap"
+		call sg__ARG_01.setvalue class opts.cb_dist2.value
+		put /program sg__do_output_sub
+	}
+END
+
+/*****************************************************************************/
+
+SCRIPT conn_PREINIT
+BEGIN
+	create STRING sConnAttachMethod
+
+	program conn_get_defaults
+END
+
+SCRIPT conn_POSTINIT
+BEGIN
+	program conn_initialize_controls
+END
+
+PROGRAM conn_get_defaults
+BEGIN
+	call sConnAttachMethod.setvalue class .__SEMG.dbsettings.attachmeth
+	if (sConnAttachMethod.iseq("1")) {
+		call conn.rb_intersect.setdefault 1
+		call conn.rb_midpoint.setdefault 0
+	}
+	else {
+		call conn.rb_intersect.setdefault 0
+		call conn.rb_midpoint.setdefault 1
+	}
+END
+
+PROGRAM conn_initialize_controls
+BEGIN
+	if (sConnAttachMethod.iseq("1")) {
+		call conn.rb_intersect.seton
+	}
+	else {
+		call conn.rb_midpoint.seton
+	}
+END
+
+DIALOG conn, tabtitle("Connections")
+BEGIN
+  GROUPBOX gb_attach		_lft	_top	_iwd	_ht4h,		///
+	label("Attachments to independent variables")
+
+  RADIO    rb_intersect		_ilft	_ss	_ibwd	.,		///
+	first label("Attach at intersection of line and box center")
+
+  RADIO    rb_midpoint		@	_ss	@	.,		///
+	last label("Attach at midpoint of box edge")
+END
+
+PROGRAM conn_output
+BEGIN
+	call program opts_get_defaults
+
+	if ! conn.rb_intersect.isdefault() {
+		call sg__PARAM2.setvalue "SetStyle"
+		call sg__ARG_00.setvalue "regtool.attachmeth"
+		call sg__ARG_01.setvalue "1"
+		put /program sg__do_output_sub
+	}
+	else { /* else if */
+		if ! conn.rb_midpoint.isdefault() {
+			call sg__PARAM2.setvalue "SetStyle"
+			call sg__ARG_00.setvalue "regtool.attachmeth"
+			call sg__ARG_01.setvalue "2"
+			put /program sg__do_output_sub
+		}
+	}
+END
+
+/*****************************************************************************/
+
+PROGRAM command
+BEGIN
+	call sg__PARAM1.setvalue class OBJ.value
+	
+	/* Signal to mata that this dialog interaction is done
+	 * and to start processing this signal. From the dialog
+	 * point of view this is BeginSet. */
+	call sg__PARAM2.setvalue "AddRegressDlgDone" 
+	put /program sg__do_output_sub
+	
+	put /program main_output
+	put /program opts_output
+	put /program conn_output
+
+	call sg__PARAM2.setvalue "EndSet"
+	call sg__DESCPT.setvalue "add regression component"
+	put /program sg__do_output_sub
+END

@@ -1,0 +1,42 @@
+/*
+	graph drop
+
+*!  VERSION 1.2.0  01feb2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_small
+DEFINE _dlght 150
+INCLUDE header
+HELP hlp1, view("help graph_drop")
+RESET res1
+
+DIALOG main, label("graph drop - Drop graphs from memory")
+BEGIN
+  TEXT     tx_mem	_lft	_top	_iwd	., 		///
+	label("Drop selected graphs from memory:")
+  LISTBOX  cb_memgr	@	_ss	@	_ht5,		///
+	label("Drop selected graphs from memory")		///
+	contents(graphs) multiselect
+
+  CHECKBOX ck_all	_lft	_vs5	_iwd	., 		///
+	label("Drop all graphs from memory")			///
+	onclickon(main.cb_memgr.disable)			///
+	onclickoff(main.cb_memgr.enable)
+END
+
+PROGRAM command
+BEGIN
+	put "graph drop "
+	if main.ck_all {
+		put "_all"
+	}
+	else {
+		if ! main.cb_memgr {
+			stopbox stop "At least one graph must be selected."
+		}
+		put main.cb_memgr
+	}
+END

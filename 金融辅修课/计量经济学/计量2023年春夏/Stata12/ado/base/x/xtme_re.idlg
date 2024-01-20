@@ -1,0 +1,246 @@
+/*
+  xtme_re.idlg  random effects sectin of xtmixed and xtme*
+
+*!  VERSION 1.0.3  29may2009
+
+*/
+
+  GROUPBOX gb_model		_lft	y	_iwd	270,		///
+	label("Random-effects equations")
+
+  //Headings
+  TEXT     tx_eq		_ilft	_ss	c1wd	.,		///
+  	label("Level")
+DEFINE toprow @y
+  TEXT     tx_eq_2		@	_vss	@	.,		///
+  	label("equation")
+
+  TEXT     tx_level		c2	toprow	c2wd	.,		///
+  	label("Level")
+  TEXT     tx_level_2		@	_vss	@	.,		///
+  	label("variable")
+
+  TEXT     tx_factor		c3h	toprow	c3hwd	.,		///
+  	label("Factor")
+  TEXT     tx_factor_2		@	_vss	@	.,		///
+  	label("equation")
+
+  TEXT     tx_factor_iv		c4	toprow	c4wd	.,		///
+  	label("Factor variable/")
+  TEXT     tx_factor_iv_2	@	_vss	@	.,		///
+  	label("Independent variables")
+
+  TEXT     tx_cov_structure	c5	toprow	c5wd	.,		///
+  	label("Covariance")
+  TEXT     tx_cov_structure_2	@	_vss	@	.,		///
+  	label("structure")
+
+  TEXT     tx_noconstant	c6h	toprow	c6hwd	.,		///
+  	label("Suppress")
+  TEXT     tx_noconstant_2	@	_vss	@	.,		///
+  	label("constant")
+  	
+  TEXT     tx_nocollinear	c7h	toprow	c7hwd	.,		///
+  	label("Retain")
+  TEXT     tx_nocollinear_2	@	_vss	@	.,		///
+  	label("collinear")
+
+//Equation_1
+  CHECKBOX ck_equation_1	c1	_ms	c1wd	.,		///
+  	label("EQ 1")							///
+  	onclickon(program main_equation_1_on)				///
+  	onclickoff(script main_equation_1_off)
+  VARNAME  vn_level_1		c2	@	c2wd	.,		///
+  	label("Level variable for equation 1")
+  CHECKBOX ck_factor_eq_1	c3	@	c3wd	.,		///
+  	onclickon(script main_factor_eq_1_show)				///
+  	onclickoff(program main_factor_eq_1_hide)
+  VARNAME  vn_factor_eq_1	c4	@	c4fwd	.,		///
+  	label("Factor variable for equation 1")
+  VARLIST  vl_independent_1	c4	@	c4wd	.,		///
+  	label("Independent variables for equation 1") ts
+  COMBOBOX cb_cov_structure_1	c5	@	c5wd	.,		///
+  	dropdownlist contents(main_covariance_list) 			///
+  	option(covariance)
+  COMBOBOX cb_fcov_structure_1	c5	@	c5wd	.,		///
+  	dropdownlist contents(main_covariance_2_list) 			///
+  	option(covariance)
+  CHECKBOX ck_noconstant_1	c6	@	c6wd	., 		///
+  	option(noconstant)
+  CHECKBOX ck_collinear_1	c7	@	c7wd	., 		///
+  	option(collinear)
+ 
+ //Equation_2
+   CHECKBOX ck_equation_2	c1	_ms	c1wd	.,		///
+   	label("EQ 2")							///
+   	onclickon(program main_equation_2_on)				///
+   	onclickoff(script main_equation_2_off)
+   VARNAME  vn_level_2		c2	@	c2wd	.,		///
+   	label("Level variable for equation 2")
+   CHECKBOX ck_factor_eq_2	c3	@	c3wd	.,		///
+   	onclickon(script main_factor_eq_2_show)				///
+   	onclickoff(program main_factor_eq_2_hide)
+   VARNAME  vn_factor_eq_2	c4	@	c4fwd	.,		///
+   	label("Factor variable for equation 2")
+   VARLIST  vl_independent_2	c4	@	c4wd	.,		///
+   	label("Independent variables for equation 2") ts
+   COMBOBOX cb_cov_structure_2	c5	@	c5wd	.,		///
+   	dropdownlist contents(main_covariance_list) 			///
+   	option(covariance)
+   COMBOBOX cb_fcov_structure_2	c5	@	c5wd	.,		///
+   	dropdownlist contents(main_covariance_2_list)			///
+   	option(covariance)
+  CHECKBOX ck_noconstant_2	c6	@	c6wd	.,		///
+  	option(noconstant)
+  CHECKBOX ck_collinear_2	c7	@	c7wd	., 		///
+  	option(collinear)
+
+//Equation_3
+  CHECKBOX ck_equation_3	c1	_ms	c1wd	.,		///
+  	label("EQ 3")							///
+  	onclickon(program main_equation_3_on)				///
+  	onclickoff(script main_equation_3_off)
+  VARNAME  vn_level_3		c2	@	c2wd	.,		///
+  	label("Level variable for equation 3")
+  CHECKBOX ck_factor_eq_3	c3	@	c3wd	.,		///
+  	onclickon(script main_factor_eq_3_show)				///
+  	onclickoff(program main_factor_eq_3_hide)
+  VARNAME  vn_factor_eq_3	c4	@	c4fwd	.,		///
+  	label("Factor variable for equation 3")
+  VARLIST  vl_independent_3	c4	@	c4wd	.,		///
+  	label("Independent variables for equation 3") ts 
+  COMBOBOX cb_cov_structure_3	c5	@	c5wd	.,		///
+  	dropdownlist contents(main_covariance_list) 			///
+  	option(covariance)
+  COMBOBOX cb_fcov_structure_3	c5	@	c5wd	.,		///
+  	dropdownlist contents(main_covariance_2_list) 			///
+  	option(covariance)
+  CHECKBOX ck_noconstant_3	c6	@	c6wd	., 		///
+  	option(noconstant)
+  CHECKBOX ck_collinear_3	c7	@	c7wd	., 		///
+  	option(collinear)
+
+//Equation_4
+  CHECKBOX ck_equation_4	c1	_ms	c1wd	.,		///
+  	label("EQ 4")							///
+  	onclickon(program main_equation_4_on)				///
+  	onclickoff(script main_equation_4_off)
+  VARNAME  vn_level_4		c2	@	c2wd	.,		///
+  	label("Level variable for equation 4")
+  CHECKBOX ck_factor_eq_4	c3	@	c3wd	.,		///
+  	onclickon(script main_factor_eq_4_show)				///
+  	onclickoff(program main_factor_eq_4_hide)
+  VARNAME  vn_factor_eq_4	c4	@	c4fwd	.,		///
+  	label("Factor variable for equation 4")
+  VARLIST  vl_independent_4	c4	@	c4wd	.,		///
+  	label("Independent variables for equation 4") ts 
+  COMBOBOX cb_cov_structure_4	c5	@	c5wd	.,		///
+  	dropdownlist contents(main_covariance_list) 			///
+  	option(covariance)
+  COMBOBOX cb_fcov_structure_4	c5	@	c5wd	.,		///
+  	dropdownlist contents(main_covariance_2_list) 			///
+  	option(covariance)
+  CHECKBOX ck_noconstant_4	c6	@	c6wd	.,		///
+  	option(noconstant)
+  CHECKBOX ck_collinear_4	c7	@	c7wd	., 		///
+  	option(collinear)
+
+//Equation_5
+  CHECKBOX ck_equation_5	c1	_ms	c1wd	.,		///
+  	label("EQ 5")							///
+  	onclickon(program main_equation_5_on)				///
+  	onclickoff(script main_equation_5_off)
+  VARNAME  vn_level_5		c2	@	c2wd	.,		///
+  	label("Level variable for equation 5")
+  CHECKBOX ck_factor_eq_5	c3	@	c3wd	.,		///
+  	onclickon(script main_factor_eq_5_show)				///
+  	onclickoff(program main_factor_eq_5_hide)
+  VARNAME  vn_factor_eq_5	c4	@	c4fwd	.,		///
+  	label("Factor variable for equation 5")
+  VARLIST  vl_independent_5	c4	@	c4wd	.,		///
+  	label("Independent variables for equation 5") ts 
+  COMBOBOX cb_cov_structure_5	c5	@	c5wd	.,		///
+  	dropdownlist contents(main_covariance_list)			///
+  	option(covariance)
+  COMBOBOX cb_fcov_structure_5	c5	@	c5wd	.,		///
+  	dropdownlist contents(main_covariance_2_list)			///
+  	option(covariance)
+  CHECKBOX ck_noconstant_5	c6	@	c6wd	.,		///
+  	option(noconstant)
+  CHECKBOX ck_collinear_5	c7	@	c7wd	., 		///
+  	option(collinear)
+
+//Equation_6
+  CHECKBOX ck_equation_6	c1	_ms	c1wd	.,		///
+  	label("EQ 6")							///
+  	onclickon(program main_equation_6_on)				///
+  	onclickoff(script main_equation_6_off)
+  VARNAME  vn_level_6		c2	@	c2wd	.,		///
+  	label("Level variable for equation 6")
+  CHECKBOX ck_factor_eq_6	c3	@	c3wd	.,		///
+  	onclickon(script main_factor_eq_6_show)				///
+  	onclickoff(program main_factor_eq_6_hide)
+  VARNAME  vn_factor_eq_6	c4	@	c4fwd	.,		///
+  	label("Factor variable for equation 6")
+  VARLIST  vl_independent_6	c4	@	c4wd	.,		///
+  	label("Independent variables for equation 6") ts 
+  COMBOBOX cb_cov_structure_6	c5	@	c5wd	.,		///
+  	dropdownlist contents(main_covariance_list)			///
+  	option(covariance)
+  COMBOBOX cb_fcov_structure_6	c5	@	c5wd	.,		///
+  	dropdownlist contents(main_covariance_2_list)			///
+  	option(covariance)
+  CHECKBOX ck_noconstant_6	c6	@	c6wd	.,		///
+  	option(noconstant)
+  CHECKBOX ck_collinear_6	c7	@	c7wd	., 		///
+  	option(collinear)
+
+//Equation_7
+  CHECKBOX ck_equation_7	c1	_ms	c1wd	.,		///
+  	label("EQ 7")							///
+  	onclickon(program main_equation_7_on)				///
+  	onclickoff(script main_equation_7_off)
+  VARNAME  vn_level_7		c2	@	c2wd	.,		///
+  	label("Level variable for equation 7")
+  CHECKBOX ck_factor_eq_7	c3	@	c3wd	.,		///
+  	onclickon(script main_factor_eq_7_show)				///
+  	onclickoff(program main_factor_eq_7_hide)
+  VARNAME  vn_factor_eq_7	c4	@	c4fwd	.,		///
+  	label("Factor variable for equation 7")
+  VARLIST  vl_independent_7	c4	@	c4wd	.,		///
+  	label("Independent variables for equation 7") ts 
+  COMBOBOX cb_cov_structure_7	c5	@	c5wd	.,		///
+  	dropdownlist contents(main_covariance_list)			///
+  	option(covariance)
+  COMBOBOX cb_fcov_structure_7	c5	@	c5wd	.,		///
+  	dropdownlist contents(main_covariance_2_list)			///
+  	option(covariance)
+  CHECKBOX ck_noconstant_7	c6	@	c6wd	.,		///
+  	option(noconstant)
+  CHECKBOX ck_collinear_7	c7	@	c7wd	., 		///
+  	option(collinear)
+
+//Equation_8
+  CHECKBOX ck_equation_8	c1	_ms	c1wd	.,		///
+  	label("EQ 8")							///
+  	onclickon(program main_equation_8_on)				///
+  	onclickoff(script main_equation_8_off)
+  VARNAME  vn_level_8		c2	@	c2wd	.,		///
+  	label("Level variable for equation 8")
+  CHECKBOX ck_factor_eq_8	c3	@	c3wd	.,		///
+  	onclickon(script main_factor_eq_8_show)				///
+  	onclickoff(program main_factor_eq_8_hide)
+  VARNAME  vn_factor_eq_8	c4	@	c4fwd	.,		///
+  	label("Factor variable for equation 8")
+  VARLIST  vl_independent_8	c4	@	c4wd	.,		///
+  	label("Independent variables for equation 8") ts 
+  COMBOBOX cb_cov_structure_8	c5	@	c5wd	.,		///
+  	dropdownlist contents(main_covariance_list)			///
+  	option(covariance)
+  COMBOBOX cb_fcov_structure_8	c5	@	c5wd	.,		///
+  	dropdownlist contents(main_covariance_2_list)			///
+  	option(covariance)
+  CHECKBOX ck_noconstant_8	c6	@	c6wd	.,		///
+  	option(noconstant)
+  CHECKBOX ck_collinear_8	c7	@	c7wd	., 		///
+  	option(collinear)

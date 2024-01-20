@@ -1,0 +1,70 @@
+/*
+  sspace_new_sefeq.dlg
+
+*!  VERSION 1.0.1  15apr2009
+
+  keyword:  eclass
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_large
+DEFINE _dlght 270
+INCLUDE header
+
+RESET res1
+
+DIALOG main, tabtitle("Main")
+BEGIN
+  TEXT tx_statevar	_lft	_top	_iwd	.,			///
+	label("Unobserved state name:")
+  EDIT ed_statevar	@	_ss	_vnwd	.,			///
+	label("Unobserved state name")
+
+  TEXT tx_lstatevars	_lft	_ls	_iwd	.,			///
+	label("Lagged state names: (optional)")
+  EDIT ed_lstatevars	@	_ss	@	.,			///
+	label("Lagged state names")
+
+  TEXT tx_indepvars	_lft	_ls	_iwd	.,			///
+	label("Independent variables: (optional)")
+  VARLIST vl_indepvars	@	_ss	@	.,			///
+	ts fv								///
+	label("Independent variables")
+  
+  TEXT tx_state_err	_lft	_ls	_iwd	.,			///
+	label("State-equation errors: (optional)")
+  EDIT ed_state_err	@	_ss	@	.,			///
+	label("State-equation errors")
+  TEXT tx_note		@	_ss	@	.,			///
+	label("Note: Each state error has the form e.statename, where statename is the name of a state")
+
+  CHECKBOX ck_nocons	_lft	_ls	_cwd1	.,			///
+	option(noconstant)						///
+	label("Suppress the constant term")
+END
+
+PROGRAM main_output
+BEGIN
+	put main.ed_statevar
+	if main.ed_lstatevars {
+		put " " main.ed_lstatevars
+	}
+	if main.vl_indepvars {
+		put " " main.vl_indepvars
+	}
+	if main.ed_state_err {
+		put " " main.ed_state_err
+	}
+	beginoptions
+		put " state"
+		option main.ck_nocons
+	endoptions
+END
+
+PROGRAM command
+BEGIN
+	require main.ed_statevar
+	put "(" /program main_output ")"
+END

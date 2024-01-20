@@ -1,0 +1,67 @@
+/*
+	pchi
+
+*!  VERSION 1.1.3  03aug2006  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+
+HELP hlp1, view("help pchi")
+RESET res1
+
+DIALOG main,label("pchi - Chi-squared probability plot")		/*
+		*/	tabtitle("Main")
+BEGIN
+  TEXT     tx_var       _lft       _top       _iwd	 .,		/*
+		*/	label("Variable:")
+
+  VARNAME  vn_var       @          _ss        _vnwd      .,             /*
+                */      label("Variable")
+
+  GROUPBOX gb_opts      @          +35        _cwd1      _ht6,          /*
+                */      label("Options")
+
+  CHECKBOX ck_grid      _ilft      _ms        _cwd3      .,             /*
+		*/      option(grid)                                    /*
+                */      label("Show grid at the quartiles")
+
+  SPINNER  sp_df        @          _ls        _spwd      .,             /*
+		*/      option(df)                                      /*
+                */      label("Degrees of freedom")                     /*
+                */      min(1) max(10000)				/*
+                */      default(1)
+  TEXT     tx_df        _spsep     @          _spr2b     .,             /*
+                */      label("Degrees of freedom")
+END
+
+INCLUDE ifin
+INCLUDE p1_opts
+INCLUDE line_opts
+INCLUDE addplot
+INCLUDE gr_twoway
+
+SCRIPT PREINIT
+BEGIN
+	script p1_opts_createAsNoRange
+	script p1_opts_setDefaultScatter
+END
+
+PROGRAM command
+BEGIN
+	put "pchi "
+	varlist main.vn_var
+	INCLUDE _ifin_pr
+        beginoptions
+		option main.ck_grid
+		optionarg /hidedefault main.sp_df
+
+		put " " /program p1_opts_recast_output
+		put " " /program line_opts_rlopts_output
+		put " " /program addplot_output
+		put " " /program gr_twoway_output
+	endoptions
+END

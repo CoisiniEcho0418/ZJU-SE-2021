@@ -1,0 +1,124 @@
+/*
+	predict (after ivprobit)
+
+*!  VERSION 1.0.4  27may2010
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_large  // ** set POSTINIT to match
+INCLUDE header
+
+HELP hlp1, view("help ivprobit postestimation")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	main.ed_twostep.hide
+END
+
+PROGRAM POSTINIT_PROGRAM
+BEGIN
+	call script _p_gentype_setLarge
+	if main.ed_twostep.iseq("twostep") {
+		// hide options that are not allowed
+		call main.rb_p.hide
+		call main.rb_score.hide
+		call main.gb_opt.hide
+		call main.rb_p_default.hide
+		call main.rb_rules.hide
+		call main.rb_asif.hide
+		call main.gb_opts.setposition . . . 70
+	}
+	if ! main.ed_twostep.iseq("twostep") {
+		// hide options that are not allowed
+		call main.rb_p.show
+		call main.rb_score.show
+		call main.gb_opt.show
+		call main.rb_p_default.show
+		call main.rb_rules.show
+		call main.rb_asif.show
+		call main.gb_opts.setposition . . . 110
+	}
+END
+
+DIALOG main, label("predict - Prediction after estimation") tabtitle("Main")
+BEGIN
+  EDIT     ed_twostep 0 0 0 0, default(e(method)) nomemory
+  INCLUDE  _p_gentype
+
+  GROUPBOX gb_opts           _lft      _ls       _iwd      _ht8,	///
+		label("Produce:")
+
+  RADIO    rb_xb             _indent   _ss       _inwd     ., first	///
+		option(xb)						///
+		onclickon(script main_opt_p_off)			///
+		label("Linear prediction")
+  RADIO    rb_stdp           @         _ss       @         ., 		///
+		option(stdp)						///
+		onclickon(script main_opt_p_off)			///
+		label("Standard error of the linear prediction")
+  RADIO    rb_p              @         _ss       @         .,		///
+		onclickon(script main_opt_p_on)				///
+		label("Probability of a positive outcome")
+  RADIO    rb_score          @         _ss       @         ., last	///
+		option(scores)						///
+		onclickon(script main_scores_on)			///
+		label("Equation-level scores")
+
+  GROUPBOX gb_opt            _lft      +45       _iwd      _ht6,	///
+		label("Options")
+  RADIO    rb_p_default      _ilft     _ss       _inwd     ., first	///
+		option(p)						///
+		label(`"Produce missing for observations excluded by the "rules""')
+  RADIO    rb_rules          @         _ss       @         .,		///
+		option(rules)						///
+		label(`"Use any model identifying "rules" when making predictions"')
+  RADIO    rb_asif           @         _ss       @         ., last	///
+		option(asif)						///
+		label(`"Ignore the "rules" and exclusion criteria in making predictions"')
+END
+
+SCRIPT main_opt_p_off
+BEGIN
+	main.gb_opt.disable
+	main.rb_p_default.disable
+	main.rb_rules.disable
+	main.rb_asif.disable
+	script _p_gentype_single
+END
+
+SCRIPT main_scores_on
+BEGIN
+	script main_opt_p_off
+	script _p_gentype_multiple
+END
+
+SCRIPT main_opt_p_on
+BEGIN
+	main.gb_opt.enable
+	main.rb_p_default.enable
+	main.rb_rules.enable
+	main.rb_asif.enable
+	script _p_gentype_single
+END
+
+INCLUDE _p_gentype_sc
+INCLUDE ifin
+INCLUDE _type_list_fd
+
+PROGRAM command
+BEGIN
+	put "predict "
+	put " " /program _p_gentype_output
+	INCLUDE _ifin_pr
+	beginoptions
+		option main.rb_xb
+		option main.rb_stdp
+		option main.rb_score
+		option main.rb_p_default
+		option main.rb_rules
+		option main.rb_asif
+	endoptions
+END

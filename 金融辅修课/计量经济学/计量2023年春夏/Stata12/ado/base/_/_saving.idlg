@@ -1,0 +1,52 @@
+/*
+  _saving.idlg
+
+*!  VERSION 1.1.0  06nov2004
+
+	***** NOTE
+	  Programs and scripts can be found in _saving_sc.idlg
+	  and _saving_main_sc.idlg
+	*****
+
+  To be included within a DIALOG.
+
+  Note that macros _y must already be DEFINEd.
+
+*/
+
+  CHECKBOX ck_sav    _lft      _y        _iwd      _ht10,		/*
+		*/ label("Save results to file")			/*
+		*/ clickon("program sav_on")				/*
+		*/ clickoff("script sav_off")				/*
+		*/ groupbox						/*
+		*/
+  TEXT     tx_sav    _indent   _ss       _inwd	   .,			/*
+  		*/ label("Filename:")
+  FILE     fi_sav    @         _ss       @         .,			/*
+		*/ label("Browse...")					/*
+		*/ option("saving")					/*
+		*/ filter("Stata Dataset (*.dta)|*.dta|All (*.*)|*.*")	/*
+		*/ defext(dta)						/*
+		*/ save							/*
+		*/ error("Filename to save")
+  CHECKBOX ck_double @         _ls       _cwd2     .,			/*
+		*/ label("Save statistics in double precision")		/*
+		*/ option("double")					/*
+		*/
+  CHECKBOX ck_every  _ilft     _ms       _ckwd     .,			/*
+		*/ label("")						/*
+		*/ clickon("script every_on")				/*
+		*/ clickoff("script every_off")				/*
+		*/
+  SPINNER  sp_every  _cksep    @         _spwd     .,			/*
+		*/ label("save every #")				/*
+		*/ min(1)						/*
+		*/ max(10000)						/*
+		*/ default("1")						/*
+		*/ option("every")					/*
+		*/
+  TEXT     tx_every  _spsep    @         _cksprb   .,			/*
+		*/ label("Save results to file every #th replication")	/*
+		*/
+
+/* END: _saving.idlg */

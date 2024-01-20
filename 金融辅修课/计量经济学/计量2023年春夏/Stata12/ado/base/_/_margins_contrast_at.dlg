@@ -1,0 +1,185 @@
+ /* _margins_contrast_at.dlg
+
+ *!  VERSION 1.0.1  17jun2011
+
+ */
+
+VERSION 12.0
+
+INCLUDE _std_small
+DEFINE _dlght 120
+DEFINE _dlgwd 525
+INCLUDE header
+HELP hlp1, view(help margins, contrast)
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	create STRING s_output
+END
+
+PROGRAM POSTINIT_PROGRAM
+BEGIN
+	call program cb_contrast_changed_1
+END
+
+DIALOG main, title("Create a contrast operator or custom contrast") tabtitle("Main")
+BEGIN
+  TEXT tx_contrast		10	_top	235	.,		///
+	center								///
+	label("Contrast")
+  TEXT tx_base			255	@	80	.,		///
+	center								///
+	label("Base")
+  TEXT tx_numlist		345	@	80	.,		///
+	center								///
+	label("Numlist")
+
+DEFINE x1   10
+DEFINE cx1  235
+
+DEFINE x2   255
+DEFINE cx2  80
+
+DEFINE x3   345
+DEFINE cx3  80
+
+DEFINE x4   435
+DEFINE cx4  80
+
+  COMBOBOX cb_con1		x1	_ss	cx1	.,		///
+	dropdown							///
+	onselchange(program cb_contrast_changed_1)			///
+	contents(con_list)						///
+	values(con_values)
+  COMBOBOX cb_base1		x2	@	cx2	.,		///
+	dropdown							///
+	contents(base_list)						///
+	values(base_values)
+  EDIT ed_num1			x3	@	cx3	.,		///
+	label(`"Numlist for Variable 1"')
+  BUTTON bu_add			x4	@	cx4	.,		///
+	onpush(program contrastAtOutput)				///
+	label("Add to list")
+  TEXT tx_customlist		_lft	_ls	_cwd1	.,		///
+	label("Custom list:")
+  EDIT ed_customlist		@	_ss	505	.,		///
+	label("custom list")
+END
+
+LIST base_list
+BEGIN
+	Default
+	First
+	Frequent
+	Last
+	None
+	0
+	1
+	2
+END
+
+LIST base_values
+BEGIN
+	""
+	first
+	frequent
+	last
+	none
+	0
+	1
+	2
+END
+
+LIST con_list
+BEGIN
+	"Differences from reference"
+	"Differences from next level"
+	"Differences from previous level"
+	"Differences from grand mean"
+	"Differences from mean of subsequent levels"
+	"Differences from mean of previous levels"
+	"Orthogonal polynomial in level values"
+	"Orthogonal polynomial in level sequence"
+	"Differences from weighted grand mean"
+	"Differences from weighted mean of subsequent levels"
+	"Differences from weighted mean of previous levels"
+	"Weighted orthogonal polynomial in level values"
+	"Weighted orthogonal polynomial in level sequence"
+	"Custom"
+END
+
+LIST con_values
+BEGIN
+	r
+	a
+	ar
+	g
+	h
+	j
+	p
+	q
+	gw
+	hw
+	jw
+	pw
+	qw
+	custom
+END
+
+PROGRAM cb_contrast_changed_1
+BEGIN
+	if (main.cb_con1.iseq("r"))  {
+		call main.cb_base1.enable
+		call main.ed_num1.disable
+		call main.bu_add.hide
+		call main.tx_customlist.hide
+		call main.ed_customlist.hide
+	}
+	if (main.cb_con1.iseq("custom"))  {
+		call main.cb_base1.disable
+		call main.ed_num1.enable
+		call main.bu_add.show
+		call main.tx_customlist.show
+		call main.ed_customlist.show
+	}
+	if (!main.cb_con1.iseq("r") & !main.cb_con1.iseq("custom"))  {
+		call main.cb_base1.disable
+		call main.ed_num1.disable
+		call main.bu_add.hide
+		call main.tx_customlist.hide
+		call main.ed_customlist.hide
+	}
+END
+
+PROGRAM contrastAtOutput
+BEGIN
+	if (main.ed_num1.isenabled() & !main.ed_num1.isnumlist()) {
+		stopbox stop `"Invalid "Numlist"."'
+	}
+
+	call s_output.setvalue ""
+	call s_output.append "{_at "
+	call s_output.append class main.ed_num1.value
+	call s_output.append  "}"
+	call s_output.withvalue main.ed_customlist.smartinsert "@"
+END
+
+PROGRAM command
+BEGIN
+	if (main.cb_con1.iseq("custom"))  {
+		put main.ed_customlist
+	}
+	else {
+		if (main.cb_con1 & main.cb_con1.isenabled()) {
+			put main.cb_con1
+		}
+		if main.cb_base1 & main.cb_base1.isenabled() {
+			put "b("
+			put main.cb_base1
+			put ")"
+		}
+		put "._at"
+	}
+END
+

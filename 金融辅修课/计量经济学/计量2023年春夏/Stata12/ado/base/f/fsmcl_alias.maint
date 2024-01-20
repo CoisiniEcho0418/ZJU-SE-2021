@@ -1,0 +1,228 @@
+frbegin                  {manlink U 1 Read this---it will help}
+frstart                  {manlink U 1.1 Getting Started with Stata}
+frfman                   {manlink U 1.2 The User's Guide and the Reference manuals}
+frtutorials              {manlink U 1.2.2 Example datasets}
+frwhatsnew               {manlink U 1.3 What's new}
+frhilites                {manlink U 1.3.1 What's new (highlights)}
+frwhatsmore              {manlink U 1.3.14 What's more}
+frbrief                  {manlink U 2 A brief description of Stata}
+frres                    {manlink U 3 Resources for learning and using Stata}
+frinternet               {manlink U 3.2 Stata on the Internet (www.stata.com and other resources)}
+frwww                    {manlink U 3.2.1 The Stata website (www.stata.com)}
+frblog                   {manlink U 3.2.2 The Stata Blog---Not Elsewhere Classified}
+frfb                     {manlink U 3.2.3 Stata on Twitter and Facebook}
+frwwwother               {manlink U 3.2.4 Other Internet resources on Stata}
+frstatapress             {manlink U 3.3 Stata Press}
+frstatalist              {manlink U 3.4 The Stata listserver}
+frstb                    {manlink U 3.5 The Stata Journal}
+frweb                    {manlink U 3.6 Updating and adding features from the web}
+frnetcourse              {manlink U 3.7.2 NetCourses}
+frpublictrain            {manlink U 3.7.3 Public training courses}
+fronsitetrain            {manlink U 3.7.4 On-site training courses}
+frbooks                  {manlink U 3.8 Books and other support materials}
+frtechsupport            {manlink U 3.9 Technical support}
+frhelp                   {manlink U 4 Stata's help and search facilities}
+frmlookup                {manlink U 4.6 More on search}
+frlookup                 {bf:{mansection U 4.9searchAllthedetails:[U] 4.9 search: All the details}}
+frflavors                {manlink U 5 Flavors of Stata}
+frmemory                 {manlink U 6 Managing memory}
+frmemcmd                 {manlink U 6.5 The memory command}
+frmore                   {manlink U 7 --more-- conditions}
+frrc                     {manlink U 8 Error messages and return codes}
+frbreak                  {manlink U 9 The Break key}
+frkeyboard               {manlink U 10 Keyboard use}
+frfkeys                  {manlink U 10.2 F-keys}
+fredit                   {manlink U 10.5 Editing previous lines in Stata}
+frtabexp                 {manlink U 10.6 Tab expansion of variable names}
+frsyntax                 {manlink U 11 Language syntax}
+frsynvl                  {manlink U 11.1.1 varlist}
+frbyv                    {bf:{mansection U 11.1.2byvarlist:[U] 11.1.2 by varlist:}}
+frif                     {manlink U 11.1.3 if exp}
+frinrange                {manlink U 11.1.4 in range}
+frequalexp               {manlink U 11.1.5 =exp}
+frsyntaxwt               {manlink U 11.1.6 weight}
+frsyntaxop               {manlink U 11.1.7 options}
+frnumlist                {manlink U 11.1.8 numlist}
+frdatelist               {manlink U 11.1.9 datelist}
+frprefix                 {manlink U 11.1.10 Prefix commands}
+frabbrev                 {manlink U 11.2 Abbreviation rules}
+frvarabbrev              {manlink U 11.2.3 Variable-name abbreviation}
+frnames                  {manlink U 11.3 Naming conventions}
+frvarlists               {manlink U 11.4 varlists}
+frvarold                 {manlink U 11.4.1 Lists of existing variables}
+frvarnew                 {manlink U 11.4.2 Lists of new variables}
+frfvvarlists             {manlink U 11.4.3 Factor variables}
+frfvvarlistsop           {manlink U 11.4.3.1 Factor-variable operators}
+frfvvarlistsbl           {manlink U 11.4.3.2 Base levels}
+frfvvarlistsfvset        {manlink U 11.4.3.3 Setting base levels permanently}
+frfvvarlistslev          {manlink U 11.4.3.4 Selecting levels}
+frfvvarlistsparen        {manlink U 11.4.3.5 Applying operators to a group of variables}
+frfvvarliststs           {manlink U 11.4.3.6 Using factor variables with time-series operators}
+frtsvarlists             {manlink U 11.4.4 Time-series varlists}
+frby                     {bf:{mansection U 11.5byvarlistconstruct:[U] 11.5 by varlist: construct}}
+frfilenames              {manlink U 11.6 Filenaming conventions}
+frdatatypes              {manlink U 12 Data}
+frnum                    {manlink U 12.2 Numbers}
+frmiss                   {manlink U 12.2.1 Missing values}
+frnumtypes               {manlink U 12.2.2 Numeric storage types}
+frstr                    {manlink U 12.4 Strings}
+frstrtypes               {manlink U 12.4.4 String storage types}
+frformats                {bf:{mansection U 12.5FormatsControllinghowdataaredisplayed:[U] 12.5 Formats: Controlling how data are displayed}}
+frformatnum              {manlink U 12.5.1 Numeric formats}
+frforeuro                {manlink U 12.5.2 European numeric formats}
+frformatdatetime         {manlink U 12.5.3 Date and time formats}
+frlabels                 {manlink U 12.6 Dataset, variable, and value labels}
+frdatalab                {manlink U 12.6.1 Dataset labels}
+frvarlab                 {manlink U 12.6.2 Variable labels}
+frvallab                 {manlink U 12.6.3 Value labels}
+frvallang                {manlink U 12.6.4 Labels in other languages}
+frnotes                  {manlink U 12.7 Notes attached to data}
+frchars                  {manlink U 12.8 Characteristics}
+frexp                    {manlink U 13 Functions and expressions}
+froperators              {manlink U 13.2 Operators}
+frrel                    {manlink U 13.2.3 Relational operators}
+froplog                  {manlink U 13.2.4 Logical operators}
+frfunctions              {manlink U 13.3 Functions}
+frusvars                 {manlink U 13.4 System variables (_variables)}
+frcoefficients           {manlink U 13.5 Accessing coefficients and standard errors}
+frmulteq                 {manlink U 13.5.2 Multiple-equation models}
+fraccres                 {manlink U 13.6 Accessing results from Stata commands}
+frsubscripts             {manlink U 13.7 Explicit subscripting}
+frlag                    {manlink U 13.7.1 Generating lags and leads}
+frfvind                  {manlink U 13.8 Indicator values for levels of factor variables}
+frtsops                  {manlink U 13.9 Time-series operators}
+frtslag                  {manlink U 13.9.1 Generating lags, leads, and differences}
+frexpvallab              {manlink U 13.10 Label values}
+frprecision              {manlink U 13.11 Precision and problems therein}
+frprecisionshort         {bf:{mansection U 13.11Precisionandproblemstherein:[U] 13.11 Precision}}
+frmatexp                 {manlink U 14 Matrix expressions}
+frmatrow                 {manlink U 14.2 Row and column names}
+frrowcolnames            {manlink U 14.2.4 Obtaining row and column names}
+fraccessmats             {manlink U 14.5 Accessing matrices created by Stata commands}
+frmatfunc                {manlink U 14.8 Matrix functions}
+frlogs                   {manlink U 15 Saving and printing output---log files}
+frlogcomments            {manlink U 15.2 Placing comments in logs}
+frdofiles                {manlink U 16 Do-files}
+frdoversion              {manlink U 16.1.1 Version}
+frdocomments             {manlink U 16.1.2 Comments and blank lines in do-files}
+frdolonglines            {manlink U 16.1.3 Long lines in do-files}
+frdoerr                  {manlink U 16.1.4 Error handling in do-files}
+frdomore                 {manlink U 16.1.6 Preventing --more-- conditions}
+frrun                    {manlink U 16.4.2 Suppressing output}
+frado                    {manlink U 17 Ado-files}
+fradowhat                {manlink U 17.2 What is an ado-file?}
+fradowhich               {manlink U 17.3 How can I tell if a command is built in or an ado-file?}
+fradolook                {manlink U 17.5 Where does Stata look for ado-files?}
+frpersonal               {manlink U 17.5.2 Where is my personal ado-directory?}
+frotherinstall           {manlink U 17.6 How do I install an addition?}
+frmyown                  {manlink U 17.7 How do I add my own ado-files?}
+froffinstall             {manlink U 17.8 How do I install official updates?}
+fruserinstall            {manlink U 17.9 How do I install updates to user-written additions?}
+frprograms               {manlink U 18 Programming Stata}
+frrelation               {manlink U 18.2 Relationship between a program and a do-file}
+frmacros                 {manlink U 18.3 Macros}
+frlocal                  {manlink U 18.3.1 Local macros}
+frglobal                 {manlink U 18.3.2 Global macros}
+frmacrosexp              {manlink U 18.3.4 Macros and expressions}
+frdoubleq                {manlink U 18.3.5 Double quotes}
+frexmacfuncs             {manlink U 18.3.6 Extended macro functions}
+frmacadv                 {manlink U 18.3.7 Macro increment and decrement functions}
+fradvlmac                {manlink U 18.3.9 Advanced local macro manipulation}
+frwinmacnm               {manlink U 18.3.11 Constructing Windows filenames by using macros}
+frrefchar                {manlink U 18.3.13 Referring to characteristics}
+frarguments              {manlink U 18.4 Program arguments}
+frparse                  {manlink U 18.4.4 Parsing standard Stata syntax}
+frparsens                {manlink U 18.4.6 Parsing nonstandard syntax}
+frscamat                 {manlink U 18.5 Scalars and matrices}
+frtempdes                {manlink U 18.6 Temporarily destroying the data in memory}
+frtemp                   {manlink U 18.7 Temporary objects}
+frtempvar                {manlink U 18.7.1 Temporary variables}
+frtempsca                {manlink U 18.7.2 Temporary scalars and matrices}
+frtempfile               {manlink U 18.7.3 Temporary files}
+frresult                 {manlink U 18.8 Accessing results calculated by other programs}
+frresest                 {manlink U 18.9 Accessing results calculated by estimation commands}
+frsr                     {manlink U 18.10 Saving results}
+frdefest                 {manlink U 18.10.2 Saving results in e()}
+fradoprog                {manlink U 18.11 Ado-files}
+frversion                {manlink U 18.11.1 Version}
+fradocomllines           {manlink U 18.11.2 Comments and long lines in ado-files}
+fradodebug               {manlink U 18.11.3 Debugging ado-files}
+fradosamp                {manlink U 18.11.5 Development of a sample ado-command}
+fradohelp                {manlink U 18.11.6 Writing online help}
+frprogcomp               {manlink U 18.12 A compendium of useful commands for programmers}
+frimmediate              {manlink U 19 Immediate commands}
+frestimate               {manlink U 20 Estimation and postestimation commands}
+frreplayingresults       {manlink U 20.3 Replaying prior results}
+frsamp                   {manlink U 20.6 Specifying the estimation subsample}
+frlevel                  {manlink U 20.7 Specifying the width of confidence intervals}
+frcoeftable              {manlink U 20.8 Formatting the coefficient table}
+frvarcov                 {bf:{mansection U 20.9Obtainingthevariance--covariancematrix:[U] 20.8 Obtaining the variance-covariance matrix}}
+frpv                     {manlink U 20.10 Obtaining predicted values}
+frpvin                   {manlink U 20.10.2 Making in-sample predictions}
+frpvout                  {manlink U 20.10.3 Making out-of-sample predictions}
+fraccesscoef             {manlink U 20.11 Accessing estimated coefficients}
+frht                     {manlink U 20.12 Performing hypothesis tests on the coefficients}
+frtestany                {manlink U 20.12.2 Using test}
+frlrtest                 {manlink U 20.12.3 Likelihood-ratio tests}
+frnonlinear              {manlink U 20.12.4 Nonlinear Wald tests}
+frlincom                 {manlink U 20.13 Obtaining linear combinations of coefficients}
+frnlcom                  {manlink U 20.14 Obtaining nonlinear combinations of coefficients}
+frmargins                {manlink U 20.15 Obtaining marginal means, adjusted predictions, and predictive margins}
+fremm                    {manlink U 20.15.1 Obtaining estimated marginal means}
+fradjpred                {manlink U 20.15.2 Obtaining adjusted predictions}
+frpredmarg               {manlink U 20.15.3 Obtaining predictive margins}
+frmfx                    {manlink U 20.16 Obtaining conditional and average marginal effects}
+frcondmfx                {manlink U 20.16.1 Obtaining conditional marginal effects}
+fravgmfx                 {manlink U 20.16.2 Obtaining average marginal effects}
+frpairws                 {manlink U 20.17 Obtaining pairwise comparisons}
+frcontrasts              {manlink U 20.18 Obtaining contrasts, tests of interactions, and main effects}
+frrobust                 {manlink U 20.20 Obtaining robust variance estimates}
+frscore                  {manlink U 20.21 Obtaining scores}
+frwest                   {manlink U 20.22 Weighted estimation}
+frwestf                  {manlink U 20.22.1 Frequency weights}
+frwesta                  {manlink U 20.22.2 Analytic weights}
+frwestp                  {manlink U 20.22.3 Sampling weights}
+frwesti                  {manlink U 20.22.4 Importance weights}
+frpostest                {manlink U 20.23 A list of postestimation commands}
+frdatain                 {manlink U 21 Inputting and importing data}
+freight                  {manlink U 21.2 Determining which input method to use}
+frmemout                 {manlink U 21.3 If you run out of memory}
+frtransfer               {manlink U 21.4 Transfer programs}
+frodbc                   {manlink U 21.5 ODBC sources}
+frcombine                {manlink U 22 Combining datasets}
+frstrings                {manlink U 23 Working with strings}
+frencode                 {manlink U 23.2 Categorical string variables}
+frdatetime               {manlink U 24 Working with dates and times}
+frdatetimeinput          {manlink U 24.2 Inputting dates and times}
+frdatetimedisplay        {manlink U 24.3 Displaying dates and times}
+frdatetimeliterals       {manlink U 24.4 Typing dates and times (datetime literals)}
+frdatetimecomponents     {manlink U 24.5 Extracting components of dates and times}
+frdatetimeconversion     {manlink U 24.6 Converting between date and time values}
+frcatvars                {manlink U 25 Working with categorical data and factor variables}
+frconttocat              {manlink U 25.1.2 Converting continuous variables to categorical variables}
+frcatfvi                 {manlink U 25.2.1 Including factor variables}
+frcatfvbase              {manlink U 25.2.2 Specifying base levels}
+frcatfvset               {manlink U 25.2.3 Setting base levels permanently}
+frcatfvtest              {manlink U 25.2.4 Testing significance of a main effect}
+frcatdum                 {manlink U 25.2.5 Specifying indicator (dummy) variables as factor variables}
+frcatfvx                 {manlink U 25.2.6 Including interactions}
+frcatfvxtest             {manlink U 25.2.7 Testing significance of interactions}
+frcatfvfact              {manlink U 25.2.8 Including factorial specifications}
+frcatfvpoly              {manlink U 25.2.9 Including squared terms and polynomials}
+frcatfvxc                {manlink U 25.2.10 Including interactions with continuous variables}
+frcatfvparen             {manlink U 25.2.11 Parentheses binding}
+frcatfvlevel             {manlink U 25.2.12 Including indicators for single levels}
+frcatfvsel               {manlink U 25.2.13 Including subgroups of levels}
+frcatfvts                {manlink U 25.2.14 Combining factor variables and time-series operators}
+frcatfvempty             {manlink U 25.2.15 Treatment of empty cells}
+frestadv                 {manlink U 26 Overview of Stata estimation commands}
+freestanova              {manlink U 26.4 ANOVA, ANCOVA, MANOVA, and MANCOVA}
+frglm                    {manlink U 26.5 Generalized linear models}
+frexact                  {manlink U 26.11 Exact estimators}
+frestts                  {manlink U 26.16 Models with time-series data}
+frlrpd                   {manlink U 26.17.1 Linear regression with panel data}
+frglmpd                  {manlink U 26.17.3 Generalized linear models with panel data}
+frallknow                {manlink U 27 Commands everyone should know}
+frcomby                  {manlink U 27.2 The by construct}
+frupdate                 {manlink U 28 Using the Internet to keep up to date}
+frdownload               {manlink U 28.5 Making your own download site}

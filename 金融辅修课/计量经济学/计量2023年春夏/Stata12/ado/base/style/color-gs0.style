@@ -1,0 +1,4 @@
+*! version 1.0.0  22dec2002
+sequence 4216
+label "Gray 0"
+set rgb "0 0 0"

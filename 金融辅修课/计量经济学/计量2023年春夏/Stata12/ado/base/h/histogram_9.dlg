@@ -1,0 +1,43 @@
+/*
+  histogram
+
+*!  VERSION 1.1.1  10aug2006 (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+
+HELP hlp1, view("help histogram")
+RESET res1
+
+INCLUDE ghistogram
+INCLUDE ifin
+INCLUDE weights_f
+INCLUDE gdensity
+INCLUDE addplot
+INCLUDE gr_twoway
+INCLUDE gby
+
+SCRIPT POSTINIT
+BEGIN
+	script ghistogram_createAsHistogram
+	script gdensity_allow_kDensity
+END
+
+PROGRAM command
+BEGIN
+	put "histogram "
+	put /program ghistogram_main_output
+	INCLUDE _ifin_pr
+	INCLUDE _weights_pr
+	beginoptions
+		put " " /program ghistogram_options_output
+		put " " /program gdensity_output
+		put " " /program addplot_output
+		put " " /program gr_twoway_output
+		put " " /program gby_output
+	endoptions
+END

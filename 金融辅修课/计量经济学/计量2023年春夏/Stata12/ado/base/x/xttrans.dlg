@@ -1,0 +1,53 @@
+/*
+	xttrans
+	
+*!  VERSION 1.1.0  08feb2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_small
+DEFINE _dlght 200
+INCLUDE header
+
+HELP hlp1, view("help xttrans")
+RESET res1
+
+
+SCRIPT show_xtset
+BEGIN
+	create STRING note
+	note.setvalue `"A time variable is required for this command."'
+	note.withvalue create CHILD xtset, message(`""-timeRequired-" `"@"'"')
+END
+
+DIALOG main, tabtitle("Main")	///
+	label("xttrans - Report transition probabilities")	
+BEGIN
+  BUTTON   bu_xtset	_xsetbu	_top	_setbuwd .,	///
+	onpush(script show_xtset)			///
+	label("Panel settings...")
+
+   TEXT	    tx_var	_lft	_topph	_cwd0	.,	///
+	label("Variable:")
+   VARNAME  vn_var	@	_ss	_vnwd	.,	///
+	label("Variable")				
+
+   CHECKBOX ck_freq	_lft	_ls	_iwd	.,	///
+ 	option(freq)					///
+	label("Print frequencies and transition probabilities")	
+END
+
+INCLUDE byif
+
+PROGRAM command
+BEGIN
+	put /program by_output " "
+	put "xttrans "
+	varlist main.vn_var
+	put " " /program if_output
+	beginoptions
+		option main.ck_freq
+	endoptions
+END

@@ -1,0 +1,1011 @@
+*! version 1.4.14  19jul2011
+*! Stata 12 Statistics menu
+
+"Statistics" stStatistics {
+	"Summaries, tables, and tests" tag1 {
+		"Summary and descriptive statistics" tag1 {
+			"Summary statistics"		"DB summarize"
+			"Means"		"DB mean"
+			"Proportions"	"DB proportion"
+			"Ratios"	"DB ratio"
+			"Totals"	"DB total"
+			--------
+			"Pairwise comparisons of means"	"DB pwmean"
+			--------
+			"Confidence intervals"		"DB ci"
+			"Normal CI calculator"		"DB cii_normal"
+			"Binomial CI calculator"	"DB cii_binomial"
+			"Poisson CI calculator"		"DB cii_poisson"
+			--------
+			"Correlations and covariances"	"DB correlate"
+			"Pairwise correlations"		"DB pwcorr"
+			"Partial correlations"		"DB pcorr"
+			"Tetrachoric correlations"	"DB tetrachoric"
+			--------
+			"Arith./geometric/harmonic means"	"DB ameans"
+			"Graph means/medians by groups"		"DB grmeanby"
+			--------
+			"Centiles with CIs"			"DB centile"
+			"Create variable of percentiles"	"DB pctile"
+			"Create variable of quantiles"		"DB xtile"
+		}
+		"Tables" tag1 {
+			"Table of summary statistics (table)"	"DB table"
+			"Table of summary statistics (tabstat)"	"DB tabstat"
+			"One/two-way table of summary statistics"	"DB tabsum"
+			"One-way tables"			"DB tabulate1"
+			"Multiple one-way tables"		"DB tab1"
+			"Two-way tables with measures of association"	"DB tabulate2"
+			"All possible two-way tabulations"	"DB tab2"
+			"Table calculator"			"DB tabi"
+			"Tabulate missing values"		"DB misstable"
+		}
+		"Classical tests of hypotheses" tag1 {
+			"One-sample mean-comparison test"	"DB ttest1"
+			"Mean-comparison test, paired data"	"DB ttestpair"
+			"Two-sample mean-comparison test"	"DB ttest2"
+			"Two-group mean-comparison test"		"DB ttestby"
+			"One-sample mean-comparison calculator"	"DB ttesti1"
+			"Two-sample mean-comparison calculator"	"DB ttesti2"
+			--------
+			"Binomial probability test"		"DB bitest"
+			"Binomial probability test calculator"	"DB bitesti"
+			--------
+			"One-sample proportion test"		"DB prtest1"
+			"Two-sample proportion test"		"DB prtest2"
+			"Two-group proportion test"	"DB prtestby"
+			"One-sample proportion calculator"	"DB prtesti1"
+			"Two-sample proportion calculator"	"DB prtesti2"
+			--------
+			"One-sample variance-comparison test"	"DB sdtest1"
+			"Two-sample variance-comparison test"	"DB sdtest2"
+			"Two-group variance-comparison test"	"DB sdtestby"
+			"One-sample variance-comparison calculator"	"DB sdtesti1"
+			"Two-sample variance-comparison calculator"	"DB sdtesti2"
+			"Robust equal-variance test"		"DB robvar"
+			--------
+			"Sample size and power determination"	"DB sampsi"
+		}
+		"Nonparametric tests of hypotheses" tag1 {
+			"One-sample Kolmogorov-Smirnov test"	"DB ksmirnov1"
+			"Two-sample Kolmogorov-Smirnov test"	"DB ksmirnov2"
+			"Kruskal-Wallis rank test"		"DB kwallis"
+			--------
+			"Wilcoxon matched-pairs signed-rank test"	"DB signrank"
+			"Test equality of matched pairs"	"DB signtest"
+			"Wilcoxon rank-sum test"		"DB ranksum"
+			--------
+			"K-sample equality-of-medians test"	"DB median"
+			"Test for random order"	"DB runtest"
+			"Trend test across ordered groups"	"DB nptrend"
+			--------
+			"Spearman's rank correlation"		"DB spearman"
+			"Kendall's rank correlation"		"DB ktau"
+		}
+		"Distributional plots and tests" tag1 {
+			"Symmetry plot"				"DB symplot"
+			"Quantiles plot"			"DB quantile"
+			"Normal quantile plot"			"DB qnorm"
+			"Normal probability plot, standardized"	"DB pnorm"
+			"Chi-squared quantile plot"		"DB qchi"
+			"Chi-squared probability plot"		"DB pchi"
+			"Quantile-quantile plot"		"DB qqplot"
+			--------
+			"Stem-and-leaf display"			"DB stem"
+			"Letter-value display"			"DB lv"
+			--------
+			"Generate cumulative distribution"	"DB cumul"
+			--------
+			"Skewness and kurtosis normality test"	"DB sktest"
+			"Shapiro-Wilk normality test"		"DB swilk"
+			"Shapiro-Francia normality test"	"DB sfrancia"
+			--------
+			"Ladder of powers"			"DB ladder"
+			"Ladder-of-powers histograms"		"DB gladder"
+			"Ladder-of-powers quantile-normal plots"	"DB qladder"
+		}
+		"Multivariate test of means, covariances, and normality"	"DB mvtest"
+	}
+	--------
+	"Linear models and related" tag1 {
+		"Linear regression"				"DB regress"
+		"Regression diagnostics" tag1 {
+			"Specification tests, etc."		"DB regress_estat"
+			--------
+			"Added-variable plot"			"DB avplot"
+			"Component-plus-residual plot"		"DB cprplot"
+			"Augmented component-plus-residual plot" "DB acprplot"
+			"Leverage-versus-squared-residual plot"	"DB lvr2plot"
+			"Residual-versus-fitted plot"		"DB rvfplot"
+			"Residual-versus-predictor plot"	"DB rvpplot"
+			--------
+			"DFBETAs"				"DB dfbeta"
+		}
+		--------
+		"ANOVA/MANOVA" tag1 {
+			"Analysis of variance and covariance"	"DB anova"
+			"Test linear hypotheses after anova"	"DB testanova"
+			"Specification tests after anova"	"DB anova_estat"
+			--------
+			"One-way ANOVA" "DB oneway"
+			"Large one-way ANOVA" "DB loneway"
+			--------
+			"MANOVA"				"DB manova"
+			"Multivariate tests after MANOVA"	"DB manovatest"
+			"Wald test after MANOVA"		"DB testmanova"
+		}
+		--------
+		"Constrained linear regression"			"DB cnsreg"
+		"Nonlinear least squares		"	"DB nl"
+		--------
+		"Censored regression" tag1 {
+			"Tobit regression"			"DB tobit"
+			"Interval regression"			"DB intreg"
+		}
+		"Truncated regression"				"DB truncreg"
+		--------
+		"Box-Cox regression"				"DB boxcox"
+		"Fractional polynomials" tag1 {
+			"Fractional polynomial regression"	"DB fracpoly"
+			"Multivariable fractional polynomial models"	"DB mfp"
+			"Fractional polynomial regression plot"	"DB fracplot"
+			"Fractional polynomial prediction"	"DB fracpred"
+			"Create fractional polynomial powers"	"DB fracgen"
+		}
+		"Quantile regression" tag1 {
+			"Quantile regression"			"DB qreg"
+			"Interquantile regression"		"DB iqreg"
+			"Simultaneous-quantile regression"	"DB sqreg"
+			"Bootstrapped quantile regression"	"DB bsqreg"
+		}
+		"Errors-in-variables regression"		"DB eivreg"
+		"Frontier models"				"DB frontier"
+		"Panel data" tag1 {
+			"Linear regression (FE, RE, PA, BE)"		"DB xtreg"
+			"Lagrange multiplier test for random effects"	"DB xttest0"
+			--------
+			"Linear regression with AR(1) disturbance (FE, RE)"	"DB xtregar"
+			--------
+			"Multilevel mixed-effects models" {
+			    "Mixed-effects linear regression"	"DB xtmixed"
+			    "Mixed-effects logistic regression"	"DB xtmelogit"
+			    "Mixed-effects Poisson regression"	"DB xtmepoisson"
+			}
+			"Random-coefficients regression by GLS"	"DB xtrc"
+			"Dynamic panel data (DPD)" tag1 {
+				"Arellano-Bond estimation"	"DB xtabond"
+				"Arellano-Bover/Blundell-Bond estimation" "DB xtdpdsys"
+				"Linear DPD estimation"	"DB xtdpd"
+			}
+			"Censored outcomes" tag1 {
+				"Interval regression (RE)"	"DB xtintreg"
+				"Tobit regression (RE)"		"DB xttobit"
+			}
+			"Contemporaneous correlation" tag1 {
+				"GLS regression with correlated disturbances"		"DB xtgls"
+				"Regression with panel-corrected standard errors (PCSE)"	"DB xtpcse"
+			}
+			--------
+			"Frontier models"			"DB xtfrontier"
+		}
+		--------
+		"Multiple-equation models" tag1 {
+			"Multivariate regression"		"DB mvreg"
+			"Seemingly unrelated regression"	"DB sureg"
+			"Three-stage least squares"		"DB reg3"
+			"Nonlinear seemingly unrelated regression" "DB nlsur"
+		}
+		"Other" tag1 {
+			"Variance-weighted least squares"	"DB vwls"
+			"Robust regression"			"DB rreg"
+			"Linear regression absorbing one cat. variable"	"DB areg"
+		}
+	}
+	"Binary outcomes" tag1 {
+		"Logistic regression"				"DB logit"
+		"Logistic regression (reporting odds ratios)"	"DB logistic"
+		"Exact logistic regression"			"DB exlogistic"
+		"Mixed-effects logistic regression"		"DB xtmelogit"
+		"Panel logistic regression"			"DB xtlogit"
+		--------
+		"Probit regression"				"DB probit"
+		"Probit regression with endogenous covariates"	"DB ivprobit"
+		"Probit regression with selection"		"DB heckprob"
+		"Bivariate probit regression"			"DB biprobit_notsu"
+		"Seemingly unrelated bivariate probit regression"	"DB biprobit_su"
+		"Panel probit regression"			"DB xtprobit"
+		--------
+		"Complementary log-log regression"		"DB cloglog"
+		"Panel complementary log-log regression"	"DB xtcloglog"
+		--------
+		"GLM for the binomial family"			"DB binreg"
+		--------
+		"Heteroskedastic probit regression"		"DB hetprob"
+		"Skewed logit regression"			"DB scobit"
+		--------
+		"Grouped data" tag1 {
+			"Logit regression for grouped data"	"DB blogit"
+			"Probit regression for grouped data"	"DB bprobit"
+			"Weighted least-squares logit regression"	"DB glogit"
+			"Weighted least-squares probit regression"	"DB gprobit"
+		}
+		"Postestimation" tag1 {
+			"Goodness-of-fit after logistic/logit/probit" "DB logit_estat"
+			"Classification statistics after logistic/logit/probit/ivprobit" "DB logit_estat"
+			"ROC curve after logistic/logit/probit/ivprobit" "DB lroc"
+			"Sensitivity/specificity plot"	"DB lsens"
+		}
+	}
+	"Ordinal outcomes" tag1 {
+		"Ordered logistic regression"			"DB ologit"
+		"Ordered probit regression"			"DB oprobit"
+		--------
+		"Rank-ordered logistic regression"		"DB rologit"
+		"Rank-ordered probit regression"		"DB asroprobit"
+	}
+	"Categorical outcomes" tag1 {
+		"Multinomial logistic regression"		"DB mlogit"
+		"Independent multinomial probit"		"DB mprobit"
+		--------
+		"Conditional logistic regression"		"DB clogit"
+		"Alternative-specific conditional logit"	"DB asclogit"
+		"Alternative-specific multinomial probit"	"DB asmprobit"
+		--------
+		"Stereotype logistic regression"		"DB slogit"
+		--------
+		"Nested logit regression"			"DB nlogit"
+		"Setup for nested logit regression"		"DB nlogitgen"
+		"Display nested logit tree structure"		"DB nlogittree"
+	}
+	"Count outcomes" tag1 {
+		"Poisson regression"				"DB poisson"
+		"Goodness-of-fit test after Poisson"		"DB poisson_estat"
+		"Exact Poisson regression"			"DB expoisson"
+		"Mixed-effects Poisson regression"		"DB xtmepoisson"
+		"Panel Poisson regression"			"DB xtpoisson"
+		"Zero-inflated Poisson regression"		"DB zip"
+		"Truncated Poisson regression"			"DB tpoisson"
+		--------
+		"Negative binomial regression"			"DB nbreg"
+		"Generalized negative binomial regression"	"DB gnbreg"
+		"Panel negative binomial regression"		"DB xtnbreg"
+		"Zero-inflated negative binomial regression"	"DB zinb"
+		"Truncated negative binomial regression"	"DB tnbreg"
+	}
+	--------
+	"Exact statistics" {
+		"Exact logistic regression"			"DB exlogistic"
+		"Exact Poisson regression"			"DB expoisson"
+		--------
+		"Centiles with CIs"				"DB centile, __MESSAGE(-cii-) __NAME(centile_cii)"
+		--------
+		"Two-sample Kolmogorov-Smirnov test"		"DB ksmirnov2, __MESSAGE(-exact-) __NAME(ksmirnov2_exact)"
+		"K-sample equality-of-medians test"		"DB median, __MESSAGE(-exact-) __NAME(median_exact)"
+		"Binomial probability test"			"DB bitest"
+		"Binomial probability test calculator"		"DB bitesti"
+		"Symmetry and marginal homogeneity test"	"DB symmetry, __MESSAGE(-exact-) __NAME(symmetry_exact)"
+		"Symmetry and marginal homogeneity test calculator" "DB symmi, __MESSAGE(-exact-) __NAME(symmi_exact)"
+		--------
+		"Two-way tables with measures of association"	"DB tabulate2, __MESSAGE(-exact-) __NAME(tabulate2_exact)"
+		"All possible two-way tabulations"	"DB tab2, __MESSAGE(-exact-) __NAME(tab2_exact)"
+		"Table calculator"			"DB tabi, __MESSAGE(-exact-) __NAME(tabi_exact)"
+		--------
+		"Large one-way ANOVA"				"DB loneway, __MESSAGE(-exact-) __NAME(loneway_exact)"
+		--------
+		"Tetrachoric correlations"			"DB tetrachoric, __MESSAGE(-exact-) __NAME(tetrachoric_exact)"
+		"Indirect standardization"			"DB istdize"
+		--------
+		"Tables for epidemiologists" tag1 {
+			"Incidence-rate ratio"				"DB ir"
+			"Incidence-rate ratio calculator"		"DB iri"
+			"Cohort study risk-ratio etc."			"DB cs, __MESSAGE(-exact-) __NAME(cs_exact)"
+			"Cohort study risk-ratio etc. calculator"	"DB csi, __MESSAGE(-exact-) __NAME(csi_exact)"
+			--------
+			"Case-control odds ratio"			"DB cc, __MESSAGE(-exact-) __NAME(cc_exact)"
+			"Case-control odds-ratio calculator"		"DB cci, __MESSAGE(-exact-) __NAME(cci_exact)"
+			--------
+			"Matched case-control studies"			"DB mcc"
+			"Matched case-control calculator"		"DB mcci"
+		}
+	}
+	"Endogenous covariates" tag1 {
+		"Single-equation instrumental-variables regression"	"DB ivregress"
+		"Three-stage least squares"			"DB reg3"
+		"Generalized method of moments estimation"	"DB gmm"
+		--------
+		"Probit model with endogenous covariates"	"DB ivprobit"
+		"Tobit model with endogenous covariates"	"DB ivtobit"
+		--------
+		"Panel data" tag1 {
+			"Instrumental-variables regression (FE, RE, BE, FD)"	"DB xtivreg"
+			"Hausman-Taylor regression (RE)"	"DB xthtaylor"
+		}
+	}
+	"Sample-selection models" tag1 {
+		"Heckman selection model (ML)"			"DB heckman_ml"
+		"Heckman selection model (two-step)"		"DB heckman_2step"
+		--------
+		"Probit model with selection"			"DB heckprob"
+		--------
+		"Treatment-effects model (ML)"			"DB treatreg_ml"
+		"Treatment-effects model (two-step)"		"DB treatreg_2step"
+	}
+	"Multilevel mixed-effects models" {
+		"Mixed-effects linear regression"		"DB xtmixed"
+		"Mixed-effects logistic regression"		"DB xtmelogit"
+		"Mixed-effects Poisson regression"		"DB xtmepoisson"
+	}
+	"Generalized linear models" tag1 {
+		"Generalized linear models (GLM)"		"DB glm"
+		"GLM for the binomial family"			"DB binreg"
+		--------
+		"Generalized estimating equations (GEE)"	"DB xtgee"
+		"Display estimated within-group correlations"	"DB xtgee_estat"
+	}
+	"Nonparametric analysis" tag1 {
+		"Kernel density estimation"			"DB kdensity"
+		"Lowess smoothing"				"DB lowess"
+		"Local polynomial smoothing"			"DB lpoly"
+		"Robust nonlinear smoother"			"DB smooth"
+		--------
+		"Quantile regression"				"DB qreg"
+		"Interquantile regression"			"DB iqreg"
+		"Simultaneous-quantile regression"		"DB sqreg"
+		"Bootstrapped quantile regression"		"DB bsqreg"
+		--------
+		"Tests of hypotheses" tag1 {
+			"One-sample Kolmogorov-Smirnov test"	"DB ksmirnov1"
+			"Two-sample Kolmogorov-Smirnov test"	"DB ksmirnov2"
+			"Kruskal-Wallis rank test"		"DB kwallis"
+			--------
+			"Wilcoxon matched-pairs signed-rank test"	"DB signrank"
+			"Test equality of matched pairs"	"DB signtest"
+			"Wilcoxon rank-sum test"		"DB ranksum"
+			--------
+			"K-sample equality-of-medians test"	"DB median"
+			"Test for random order"			"DB runtest"
+			"Trend test across ordered groups"	"DB nptrend"
+			--------
+			"Spearman's rank correlation"		"DB spearman"
+			"Kendall's rank correlation"		"DB ktau"
+		}
+		--------
+		"ROC analysis" tag1 {
+			"Nonparametric ROC analysis without covariates"		"DB roctab"
+			"Test equality of two or more ROC areas"		"DB roccomp"
+			"Test equality of ROC area against gold standard"	"DB rocgold"
+		}
+	}
+	--------
+	"Time series" tag1 {
+		"Setup and utilities" tag1 {
+			"Declare dataset to be time-series data"	"DB tsset"
+			--------
+			"Report time-series aspects of dataset"	"DB tsreport"
+			--------
+			"Fill in gaps in time variable"		"DB tsfill"
+			"Add observations to time-series dataset"	"DB tsappend"
+		}
+		--------
+		"ARIMA and ARMAX models"			"DB arima"
+		"ARCH/GARCH" tag1 {
+			"ARCH and GARCH models"			"DB garch"
+			"Nelson's EGARCH model"			"DB egarch"
+			"Threshold ARCH model"			"DB tarch"
+			"GJR form of threshold ARCH model"	"DB gjrtarch"
+			"Simple asymmetric ARCH model"		"DB saarch"
+			"Power ARCH model"			"DB parch"
+			"Nonlinear ARCH model"			"DB narch"
+			"Nonlinear ARCH model with one shift" "DB narchk"
+			"Asymmetric power ARCH model"		"DB aparch"
+			"Nonlinear power ARCH model"		"DB nparch"
+		}
+		"ARFIMA models"					"DB arfima"
+		"Unobserved-component models"			"DB ucm"
+		"Prais-Winsten regression"			"DB prais"
+		"Regression with Newey-West std. errors"	"DB newey"
+		--------
+		"Postestimation" tag1 {
+			"Parametric spectral density"		"DB psdensity"
+		}
+		--------
+		"Rolling-window and recursive estimation"	"DB rolling"
+		--------
+		"Smoothers/univariate forecasters" tag1 {
+			"Single-exponential smoothing"		"DB tssmooth_exponential"
+			"Double-exponential smoothing"		"DB tssmooth_dexponential"
+			"Holt-Winters nonseasonal smoothing"	"DB tssmooth_hwinters"
+			"Holt-Winters seasonal smoothing"	"DB tssmooth_shwinters"
+			"Nonlinear filter"			"DB tssmooth_nl"
+			"Moving-average filter"			"DB tssmooth_ma"
+		}
+		--------
+		"Filters for cyclical components" tag1 {
+			"Baxter-King"			"DB tsfilter, __MESSAGE(-bk-) __NAME(tsfilter_bk)"
+			"Butterworth"			"DB tsfilter, __MESSAGE(-bw-) __NAME(tsfilter_bw)"
+			"Christiano-Fitzgerald"		"DB tsfilter, __MESSAGE(-cf-) __NAME(tsfilter_cf)"
+			"Hodrick-Prescott"		"DB tsfilter, __MESSAGE(-hp-) __NAME(tsfilter_hp)"
+
+		}
+		--------
+		"Tests" tag1 {
+			"Augmented Dickey-Fuller unit-root test"	"DB dfuller"
+			"DF-GLS test for a unit root"	"DB dfgls"
+			"Phillips-Perron unit-root test"	"DB pperron"
+			"Bartlett's periodogram-based white-noise test"	"DB wntestb"
+			"Portmanteau white-noise test"		"DB wntestq"
+			--------
+			"Time-series specification tests after regress"	"DB regress_estat"
+		}
+		"Graphs" tag1 {
+			"Line plots"					"DB tsline"
+			"Autocorrelations && partial autocorrelations"	"DB corrgram"
+			"Correlogram (ac)"				"DB ac"
+			"Partial correlogram (pac)"			"DB pac"
+			"Periodogram"					"DB pergram"
+			"Cumulative spectral distribution"		"DB cumsp"
+			"Cross-correlogram for bivariate time series"	"DB xcorr"
+		}
+	}
+	"Multivariate time series" tag1 {
+		"Setup and utilities" tag1 {
+			"Declare dataset to be time-series data"	"DB tsset"
+			--------
+			"Report time-series aspects of dataset"		"DB tsreport"
+			--------
+			"Fill in gaps in time variable"			"DB tsfill"
+			"Add observations to time-series dataset"	"DB tsappend"
+		}
+		--------
+		"Vector autoregression (VAR)"				"DB var"
+		"Basic VAR"						"DB varbasic"
+		"Structural vector autoregression (SVAR)"		"DB svar"
+		"Vector error-correction model (VECM)"			"DB vec"
+		"Cointegrating rank of a VECM"				"DB vecrank"
+		"Dynamic-factor models"					"DB dfactor"
+		"Multivariate GARCH"					"DB mgarch"
+		--------
+		"VAR diagnostics and tests" tag1 {	
+			"Lag-order selection statistics (preestimation)"  "DB varsoc"
+			"Lag-order selection statistics (postestimation)" "DB varsoc_post"
+			"Granger causality tests"			"DB vargranger"
+			"LM test for residual autocorrelation"	"DB varlmar"
+			"Test for normally distributed disturbances"	"DB varnorm"
+			"Check stability condition of VAR estimates"	"DB varstable"
+			"Wald lag-exclusion statistics"			"DB varwle"
+		}
+		"VEC diagnostics and tests" tag1 {
+			"Lag-order selection statistics (preestimation)"  "DB varsoc"
+			"Lag-order selection statistics (postestimation)" "DB varsoc_post"
+			"LM test for residual autocorrelation"	"DB veclmar"
+			"Test for normally distributed disturbances"	"DB vecnorm"
+			"Check stability condition of VEC estimates"	"DB vecstable"
+		}
+		"Dynamic forecasts" tag1 {
+			"Compute forecasts (required for graph)"	"DB fcast_compute"
+			"Graph forecasts"				"DB fcast_graph"
+		}	
+		
+		--------
+		"IRF and FEVD analysis" tag1 {
+			"Obtain IRFs, dynamic-multiplier functions, and FEVDs"	"DB irf_create"
+			--------
+			"Graphs by impulse or response"			"DB irf_graph"
+			"Overlaid graph"				"DB irf_ograph"
+			"Combined graphs"				"DB irf_cgraph"
+			"Tables by impulse or response"			"DB irf_table"
+			"Combined tables"				"DB irf_ctable"
+		}
+		"Manage IRF results and files" tag1 {
+				"Set active IRF file"		"DB irf_set"
+				"Describe IRF file"		"DB irf_describe"
+				--------
+				"Add IRF results"		"DB irf_add"
+				"Rename IRF results"		"DB irf_rename"
+				"Drop IRF results"		"DB irf_drop"
+		}
+	}
+	"State-space models"				"DB sspace"
+	--------
+	"Longitudinal/panel data" tag1 {
+		"Setup and utilities" tag1 {
+			"Declare dataset to be panel data"	"DB xtset"
+			--------
+			"Describe pattern of xt data"		"DB xtdescribe"
+			"Summarize xt data"			"DB xtsum"
+			"Tabulate xt data"			"DB xttab"
+			"Report transition probabilities"	"DB xttrans"
+			--------
+			"Faster specification searches with xt data"	 "DB xtdata"
+			"Check sensitivity of quadrature approximation" "DB quadchk"
+		}
+		--------
+		"Linear models" tag1 {
+			"Linear regression (FE, RE, PA, BE)"		"DB xtreg"
+			"Lagrange multiplier test for random effects"	"DB xttest0"
+			--------
+			"Linear regression with AR(1) disturbance (FE, RE)"	"DB xtregar"
+		}
+		--------
+		"Multilevel mixed-effects models" {
+			"Mixed-effects linear regression"	"DB xtmixed"
+			"Mixed-effects logistic regression"	"DB xtmelogit"
+			"Mixed-effects Poisson regression"	"DB xtmepoisson"
+		}
+		"Random-coefficients regression by GLS"	"DB xtrc"
+		--------
+		"Dynamic panel data (DPD)" tag1 {
+			"Arellano-Bond estimation"	"DB xtabond"
+			"Arellano-Bover/Blundell-Bond estimation" "DB xtdpdsys"
+			"Linear DPD estimation"	"DB xtdpd"
+		}
+		--------
+		"Endogenous covariates" tag1 {
+			"Instrumental-variables regression (FE, RE, BE, FD)"	"DB xtivreg"
+			"Hausman-Taylor regression (RE)"	"DB xthtaylor"
+		}
+		"Contemporaneous correlation" tag1 {
+			"GLS regression with correlated disturbances"		"DB xtgls"
+			"Regression with panel-corrected standard errors (PCSE)"	"DB xtpcse"
+		}
+		"Frontier models"			"DB xtfrontier"
+		--------
+		"Binary outcomes" tag1 {
+			"Logistic regression (FE, RE, PA)"	"DB xtlogit"
+			"Probit regression (RE, PA)"		"DB xtprobit"
+			"Complementary log-log regression (RE, PA)" "DB xtcloglog"
+			"Mixed-effects logistic regression"	"DB xtmelogit"
+		}
+		"Count outcomes" tag1 {
+			"Poisson regression (FE, RE, PA)"	"DB xtpoisson"
+			"Negative binomial regression (FE, RE, PA)" "DB xtnbreg"
+			"Mixed-effects Poisson regression"	"DB xtmepoisson"
+		}
+		"Censored outcomes" tag1 {
+			"Interval regression (RE)"	"DB xtintreg"
+			"Tobit regression (RE)"		"DB xttobit"
+		}
+		"Generalized estimating equations (GEE)" tag1 {
+			"Generalized estimating equations (GEE)"	"DB xtgee"
+			"Display estimated within-group correlations"	"DB xtgee_estat"
+		}
+		--------
+		"Unit-root tests"			"DB xtunitroot"
+		--------
+		"Line plots"				"DB xtline"
+	}
+	--------
+	"Survival analysis" tag1 {
+		"Setup and utilities" tag1 {
+			"Declare data to be survival-time data"	"DB stset"
+			--------
+			"Convert snapshot data to time-span data"	"DB snapspan"
+			"Report variables that vary over time"	"DB stvary"
+			"Fill forward with values of covariates"	"DB stfill"
+			"Split time-span records"		"DB stsplit"
+			"Join time-span records"		"DB stjoin"
+			--------
+			"Form baseline dataset"			"DB stbase"
+			"Generate variable reflecting entire histories"	"DB stgen"
+			--------
+			"Convert survival-time data to case-control data"	"DB sttocc"
+			"Declare data to be count-time data"	"DB ctset"
+			"Convert count-time data to survival-time data"	"DB cttost"
+		}
+		"Regression models" tag1 {
+			"Cox proportional hazards model"	"DB stcox"
+			"Test proportional-hazards assumption"	"DB stcox_estat"
+			"Graphically assess proportional-hazards assumption" "DB stphplot"
+			"Kaplan-Meier versus predicted survival" "DB stcoxkm"
+			--------
+			"Competing-risks regression"		"DB stcrreg"
+			--------
+			"Parametric survival models"		"DB streg"
+			--------
+			"Plot survivor, hazard, cumulative hazard, or cumulative incidence function"	"DB stcurve"
+		}
+		"Summary statistics, tests, and tables" tag1 {
+			"Summarize survival-time data"		"DB stsum"
+			"Describe survival-time data"		"DB stdescribe"
+			--------
+			"Report incidence-rate comparison"	"DB stir"
+			"Tabulate Mantel-Haenszel rate ratios"	"DB stmh"
+			"Tabulate Mantel-Cox rate ratios"	"DB stmc"
+			--------
+			"Person-time, incidence rates, and SMR"	"DB stptime"
+			"Tabulate failure rates and rate ratios"	"DB strate"
+			--------
+			"Create survivor, hazard, and other variables"	"DB sts_generate"
+			"List survivor and cumulative hazard functions"	"DB sts_list"
+			"Test equality of survivor functions"	"DB sts_test"
+			--------
+			"Life tables for survival data"		"DB ltable"
+			"CIs for means and percentiles of survival time" "DB stci"
+		}
+		"Graphs" tag1 {
+			"Kaplan-Meier survivor function" "DB sts_graph, __MESSAGE(-survivor-) __NAME(sts_graph_survivor)"
+			"Kaplan-Meier failure function"	 "DB sts_graph, __MESSAGE(-failure-) __NAME(sts_graph_failure)"
+			"Nelson-Aalen cumulative hazard function" "DB sts_graph, __MESSAGE(-cumhaz-) __NAME(sts_graph_cumhaz)"
+			"Smoothed hazard estimate"	"DB sts_graph, __MESSAGE(-hazard-) __NAME(sts_graph_hazard)"
+			--------
+			"Survivor and cumulative hazard functions" "DB sts_graph"
+		}
+		"Power and sample size" tag1 {
+			"Cox proportional hazards model"  "DB stpower_cox"
+			"Log-rank test"			  "DB stpower_logrank"
+			"Exponential test"		"DB stpower_exponential"
+		}
+	}
+	"Epidemiology and related" tag1 {
+		"ROC analysis" tag1 {
+			"ROC regression models"					"DB rocreg"
+			"Parametric ROC analysis without covariates" 		"DB rocfit"
+			"Nonparametric ROC analysis without covariates"		"DB roctab"
+			"Test equality of two or more ROC areas"		"DB roccomp"
+			"Test equality of ROC area against gold standard"	"DB rocgold"
+			--------
+			"ROC curves after rocfit"				"DB rocplot"
+			"ROC curves after rocreg"				"DB rocregplot"
+		}
+		"Tables for epidemiologists" tag1 {
+			"Incidence-rate ratio"			"DB ir"
+			"Incidence-rate ratio calculator"	"DB iri"
+			"Cohort study risk-ratio etc."		"DB cs"
+			"Cohort study risk-ratio etc. calculator"	"DB csi"
+			--------
+			"Case-control odds ratio"		"DB cc"
+			"Case-control odds-ratio calculator"	"DB cci"
+			"Tabulate odds of failure by category"	"DB tabodds"
+			"Ratio of odds of failure for two categories"	"DB mhodds"
+			--------
+			"Matched case-control studies"		"DB mcc"
+			"Matched case-control calculator"	"DB mcci"
+		}
+		"Other" tag1 {
+			"Symmetry and marginal homogeneity test"	"DB symmetry"
+			"Symmetry and marginal homogeneity test calculator"	"DB symmi"
+			--------
+			"Direct standardization"		"DB dstdize"
+			"Indirect standardization"		"DB istdize"
+			--------
+			"Interrater agreement, two unique raters"	"DB kap_uniq"
+			"Define weights for the above (kap)"	"DB kapwgt"
+			"Interrater agreement, nonunique raters"	"DB kap_nonuniq"
+			"Interrater agreement, nonunique raters with frequencies"	"DB kappa"
+			--------
+			"Brier score decomposition"		"DB brier"
+			--------
+			"Pharmacokinetic measures"		"DB pkexamine"
+			"Summarize pharmacokinetic data"		"DB pksumm"
+			"Reshape pharmacokinetic latin-square data"	"DB pkshape"
+			"Analyze crossover experiments"		"DB pkcross"
+			"Bioequivalence tests"			"DB pkequiv"
+			"Generate pharmacokinetic measurement dataset"	"DB pkcollapse"
+		}
+	}
+	--------
+	"SEM (structural equation modeling)" tag1 {
+		"Model building and estimation"			"sembuilder"
+		--------
+		"Testing and CIs" tag1 {
+			"Modification indices"				"DB sem_estat, __MESSAGE(-mindices-)   __NAME(sem_estat_mindices)"
+			"Score tests of linear constraints"		"DB sem_estat, __MESSAGE(-scoretests-) __NAME(sem_estat_scoretests)"
+			"Equation-level Wald tests"			"DB sem_estat, __MESSAGE(-eqtest-)     __NAME(sem_estat_eqtest)"
+			"Direct and indirect effects"			"DB sem_estat, __MESSAGE(-teffects-)   __NAME(sem_estat_teffects)"
+			"Testing standardized parameters"		"DB sem_estat, __MESSAGE(-stdize-)     __NAME(sem_estat_stdize)"
+			--------
+			"Likelihood-ratio test"				"DB lrtest"
+			--------
+			"Wald tests of linear hypotheses"		"DB test"
+			"Linear combinations of parameters"		"DB lincom"
+			--------
+			"Wald tests of nonlinear hypotheses"		"DB testnl"
+			"Nonlinear combinations of parameters"		"DB nlcom"
+		}
+		"Goodness of fit" tag1 {
+			"Overall goodness of fit"			"DB sem_estat, __MESSAGE(-gof-)        __NAME(sem_estat_gof)"
+			"Equation-level goodness of fit"		"DB sem_estat, __MESSAGE(-eqgof-)      __NAME(sem_estat_eqgof)"
+			"Matrices of residuals"				"DB sem_estat, __MESSAGE(-residuals-)  __NAME(sem_estat_residuals)"
+			"Information criterion"				"DB sem_estat, __MESSAGE(-ic-)         __NAME(sem_estat_ic)"
+		}
+		"Group statistics" tag1 {
+			"Group-level goodness of fit"			"DB sem_estat, __MESSAGE(-ggof-)       __NAME(sem_estat_ggof)"
+			"Test invariance of parameters across groups"	"DB sem_estat, __MESSAGE(-ginvariant-) __NAME(sem_estat_ginvariant)"
+		}
+		"Predictions" tag1 {
+			"Observed endogenous variables"			"DB sem_p, __MESSAGE(-xb-)             __NAME(sem_p_xb)"
+			"Latent endogenous variables"			"DB sem_p, __MESSAGE(-xblatent-)       __NAME(sem_p_xblatent)"
+			"Factor scores"					"DB sem_p, __MESSAGE(-latent-)         __NAME(sem_p_latent)"
+			"Score variables"				"DB sem_p, __MESSAGE(-scores-)         __NAME(sem_p_scores)"
+		}
+		"Other" tag1 {
+			"Report model framework"			"DB sem_estat, __MESSAGE(-framework-)  __NAME(sem_estat_framework)"
+			"Assess stability of nonrecursive systems"	"DB sem_estat, __MESSAGE(-stable-)     __NAME(sem_estat_stable)"
+			"Estimation-sample summary statistics"		"DB sem_estat, __MESSAGE(-summarize-)  __NAME(sem_estat_summarize)"
+			"Variance-covariance matrix of estimates"	"DB sem_estat, __MESSAGE(-vce-)        __NAME(sem_estat_vce)"
+		}
+	}
+	--------
+	"Survey data analysis" tag1 {
+		"Setup and utilities" tag1 {
+			"Declare survey design for dataset"	"DB svyset"
+			"Describe survey data"			"DB svydescribe"
+		}
+		--------
+		"Tables" tag1 {
+			"One-way tables"	"DB svy_tabulate_oneway"
+			"Two-way tables"	"DB svy_tabulate_twoway"
+		}
+		"Means, proportions, ratios, totals" tag1 {
+			"Means"		"DB mean, __MESSAGE(-svy-) __NAME(svy_mean)"
+			"Proportions"	"DB proportion, __MESSAGE(-svy-) __NAME(svy_proportion)"
+			"Ratios"	"DB ratio, __MESSAGE(-svy-) __NAME(svy_ratio)"
+			"Totals"	"DB total, __MESSAGE(-svy-) __NAME(svy_total)"
+		}
+		--------
+		"Linear models and related" tag1 {
+			"Linear regression"			"DB regress, __MESSAGE(-svy-) __NAME(svy_regress)"
+			"Treatment-effects regression"		"DB treatreg_ml, __MESSAGE(-svy-) __NAME(svy_treatreg_ml)"
+			"Constrained linear regression"		"DB cnsreg, __MESSAGE(-svy-) __NAME(svy_cnsreg)"
+			--------
+
+			"Tobit regression"			"DB tobit, __MESSAGE(-svy-) __NAME(svy_tobit)"
+			"Interval regression"			"DB intreg, __MESSAGE(-svy-) __NAME(svy_intreg)"
+			"Truncated regression"			"DB truncreg, __MESSAGE(-svy-) __NAME(svy_truncreg)"
+			--------
+			"Nonlinear least-squares estimation"	"DB nl, __MESSAGE(-svy-) __NAME(svy_nl)"
+		}
+		"Binary outcomes" tag1 {
+			"Logistic regression, reporting odds ratios" "DB logistic, __MESSAGE(-svy-) __NAME(svy_logistic)"
+			"Logistic regression, reporting coefficients" "DB logit, __MESSAGE(-svy-) __NAME(svy_logit)"
+			"Skewed logistic regression"		"DB scobit, __MESSAGE(-svy-) __NAME(svy_scobit)"
+			--------
+			"Probit regression"			"DB probit, __MESSAGE(-svy-) __NAME(svy_probit)"
+			"Heteroskedastic probit regression"	"DB hetprob, __MESSAGE(-svy-) __NAME(svy_hetprob)"
+			"Bivariate probit regression"		"DB biprobit_notsu, __MESSAGE(-svy-) __NAME(svy_biprobit_notsu)"
+			"Seemingly unrelated bivariate probit regression" "DB biprobit_su, __MESSAGE(-svy-) __NAME(svy_biprobit_su)"
+			--------
+			"Complementary log-log regression"	"DB cloglog, __MESSAGE(-svy-) __NAME(svy_cloglog)"
+		}
+		"Ordinal outcomes" tag1 {
+			"Ordered logistic regression"		"DB ologit, __MESSAGE(-svy-) __NAME(svy_ologit)"
+			"Ordered probit regression"		"DB oprobit, __MESSAGE(-svy-) __NAME(svy_oprobit)"
+		}
+		"Categorical outcomes" tag1 {
+			"Multinomial logistic regression"	"DB mlogit, __MESSAGE(-svy-) __NAME(svy_mlogit)"
+			"Conditional (fixed-effects) logistic regression" "DB clogit, __MESSAGE(-svy-) __NAME(svy_clogit)"
+			"Multinomial probit regression"		"DB mprobit, __MESSAGE(-svy-) __NAME(svy_mprobit)"
+			"Stereotype logistic regression"	"DB slogit, __MESSAGE(-svy-) __NAME(svy_slogit)"
+		}
+		"Count outcomes" tag1 {
+			"Poisson regression"			"DB poisson, __MESSAGE(-svy-) __NAME(svy_poisson)"
+			"Negative binomial regression"		"DB nbreg, __MESSAGE(-svy-) __NAME(svy_nbreg)"
+			"Generalized negative binomial regression"	"DB gnbreg, __MESSAGE(-svy-) __NAME(svy_gnbreg)"
+			--------
+			"Zero-inflated Poisson regression"	"DB zip, __MESSAGE(-svy-) __NAME(svy_zip)"
+			"Zero-inflated negative binomial regression" "DB zinb, __MESSAGE(-svy-) __NAME(svy_zinb)"
+			"Truncated Poisson regression"	"DB tpoisson, __MESSAGE(-svy-) __NAME(svy_ztp)"
+			"Truncated negative binomial regression" "DB tnbreg, __MESSAGE(-svy-) __NAME(svy_ztnb)"
+		}
+		--------
+		"Survival models" tag1 {
+			"Cox proportional hazards model"	"DB stcox, __MESSAGE(-svy-) __NAME(svy_stcox)"
+			"Parametric survival models"		"DB streg, __MESSAGE(-svy-) __NAME(svy_streg)"
+		}
+		--------
+		"Endogenous covariates" tag1 {
+			"Instrumental-variables regression"	"DB ivregress, __MESSAGE(-svy-) __NAME(svy_ivreg)"
+			"Tobit regression with endogenous regressors" "DB ivtobit, __MESSAGE(-svy-) __NAME(svy_ivtobit)"
+			"Probit regression with endogenous regressors" "DB ivprobit, __MESSAGE(-svy-) __NAME(svy_ivprobit)"
+		}
+		"Sample-selection models" tag1 {
+			"Heckman selection model"		"DB heckman_ml, __MESSAGE(-svy-) __NAME(svy_heckman_ml)"
+			"Probit regression with selection"	"DB heckprob, __MESSAGE(-svy-) __NAME(svy_heckprob)"
+		}
+		"Generalized linear models"		"DB glm, __MESSAGE(-svy-) __NAME(svy_glm)"
+		--------
+		"DEFF, MEFF, and other statistics"	"DB svy_estat"
+		--------
+		"Resampling" tag1 {
+			"Balanced repeated replications estimation" "DB svy_brr"
+			"Bootstrap estimation" "DB svy_bootstrap"
+			"Jackknife estimation"	"DB svy_jackknife"
+			"Successive difference replications estimation" "DB svy_sdr"
+		}
+	}
+	--------
+	"Multiple imputation"				"DB mi"
+	--------
+	"Multivariate analysis" tag1 {
+		"MANOVA, multivariate regression, and related" tag1 {
+			"MANOVA"							"DB manova"
+			"Multivariate tests after MANOVA"				"DB manovatest"
+			"Wald test after MANOVA"					"DB testmanova"
+			"Multivariate test of means, covariances, and normality" 	"DB mvtest"
+			"Hotelling's generalized means test"				"DB hotelling"
+			--------
+			"Multivariate regression"	"DB mvreg"
+			--------
+			"Canonical correlations"	"DB canon"
+		}
+		"Cluster analysis" tag1 {
+			"Cluster data" tag1 {
+				"Kmeans"	"DB cluster_kmeans"
+				"Kmedians"	"DB cluster_kmedians"
+				--------
+				"Single linkage"	"DB cluster_singlelinkage"
+				"Average linkage"	"DB cluster_averagelinkage"
+				"Complete linkage"	"DB cluster_completelinkage"
+				"Weighted-average linkage" "DB cluster_waveragelinkage"
+				"Median linkage"	"DB cluster_medianlinkage"
+				"Centroid linkage"	"DB cluster_centroidlinkage"
+				"Ward's linkage"	"DB cluster_wardslinkage"
+			}
+			"Cluster dissimilarity matrix" tag1 {
+				"Single linkage"	"DB clustermat_singlelinkage"
+				"Average linkage"	"DB clustermat_averagelinkage"
+				"Complete linkage"	"DB clustermat_completelinkage"
+				"Weighted-average linkage" "DB clustermat_waveragelinkage"
+				"Median linkage"	"DB clustermat_medianlinkage"
+				"Centroid linkage"	"DB clustermat_centroidlinkage"
+				"Ward's linkage"	"DB clustermat_wardslinkage"
+			}
+			--------
+			"Postclustering" tag1 {
+				"Dendrograms"	"DB cluster_dendrogram"
+				"Cluster analysis stopping rules"	"DB cluster_stop"
+				"Summary variables from cluster analysis" "DB cluster_generate"
+				--------
+				"Cluster analysis notes"	"DB cluster_note"
+				"Detailed listing of clusters"	"DB cluster_list"
+				"Drop cluster analyses"		"DB cluster_drop"
+				"Rename a cluster or cluster variables"	"DB cluster_rename"
+			}
+		}
+		"Discriminant analysis" tag1 {
+			"Linear (LDA)"			"DB discrim, __MESSAGE(-lda-) __NAME(discrim_lda)"
+			"Quadratic (QDA)"		"DB discrim, __MESSAGE(-qda-) __NAME(discrim_qda)"
+			"Logistic"			"DB discrim, __MESSAGE(-logistic-) __NAME(discrim_logistic)"
+			"Kth-nearest neighbor (KNN)"	"DB discrim, __MESSAGE(-knn-) __NAME(discrim_knn)"
+			--------
+			"Canonical linear discriminant analysis"  "DB candisc"
+
+		}
+		"Factor and principal component analysis" tag1 {
+			"Factor analysis"			  "DB factor"
+			"Factor analysis of a correlation matrix" "DB factormat"
+			--------
+			"Principal component analysis (PCA)"	  "DB pca"
+			"PCA of a correlation or covariance matrix"  "DB pcamat"
+			--------
+			"Postestimation" tag1 {
+				"Rotate loadings"		"DB rotate"
+				--------
+				"Loading plot"			"DB loadingplot"
+				"Score variables plot"		"DB scoreplot"
+				"Scree plot of eigenvalues"	"DB screeplot"
+			}
+		}
+		"Multidimensional scaling (MDS)" tag1 {
+			"MDS of data"			"DB mds"
+			"MDS of proximity-pair data"	"DB mdslong"
+			"MDS of proximity matrix"	"DB mdsmat"
+			"Postestimation" tag1 {
+				"Approximating configuration plot" "DB mdsconfig"
+				"Shepard diagram"	"DB mdsshepard"
+			}
+		}
+		"Correspondence analysis" tag1 {
+			"Two-way correspondence analysis (CA)"	"DB ca"
+			"Two-way correspondence analysis of a matrix" "DB camat"
+			"Postestimation after CA" tag1 {
+				"Biplot of row and column points" "DB cabiplot"
+				"Dimension projection plot"   "DB caprojection"
+			}
+			--------
+			"Multiple correspondence analysis (MCA)"	"DB mca"
+			"Joint correspondence analysis (JCA)"		"DB mca, __MESSAGE(-jca-) __NAME(mca_jca)"
+			"Postestimation after MCA or JCA" tag1 {
+				"Plot of category coordinates" "DB mcaplot"
+				"Dimension projection plot"   "DB mcaprojection"
+			}
+		}
+		"Biplot"			"DB biplot"
+		--------
+		"Procrustes transformations"	"DB procrustes"
+		"Procrustes overlay graph"	"DB procoverlay"
+		--------
+		"Cronbach's alpha"		"DB alpha"
+		--------
+		"Orthogonal and oblique rotations of a matrix" "DB rotatemat"
+		--------
+		"Postestimation reports and statistics"	"DB estat"
+	}
+	--------
+	"Power and sample size" tag1 {
+		"Tests of means and proportions"	"DB sampsi"
+		"Tests of means with repeated measures"	"DB sampsi_repmeas"
+		--------
+		"Cox proportional hazards model"	"DB stpower_cox"
+		"Log-rank test"				"DB stpower_logrank"
+		"Exponential test"			"DB stpower_exponential"
+	}
+	--------
+	"Resampling" tag1 {
+		"Bootstrap estimation"		"DB bootstrap"
+		"Report bootstrap results"	"DB bstat"
+		--------
+		"Jackknife estimation"		"DB jackknife"
+		--------
+		"Permutation tests"		"DB permute"
+		--------
+		"Draw bootstrap sample"		"DB bsample"
+		"Draw random sample"		"DB sample"
+	}
+	--------
+	"Postestimation" tag1 {
+		"Predictions, residuals, etc."		"DB predict"
+		"Nonlinear predictions"			"DB predictnl"
+		--------
+		"Marginal means and predictive margins" "DB margins"
+		"Marginal effects"			"DB margins, __MESSAGE(-meffect-) __NAME(margins_meffect)"
+		"Contrasts"				"DB contrast"
+		"Contrasts of margins"			"DB margins, __MESSAGE(-contrast-) __NAME(margins_contrast)"
+		"Pairwise comparisons"			"DB pwcompare"
+		"Pairwise comparisons of margins"	"DB margins, __MESSAGE(-pwcompare-) __NAME(margins_pwcompare)"
+		"Margins plots and profile plots"	"DB marginsplot"
+		--------
+		"Tests" tag1 {
+			"Test linear hypotheses"	"DB test"
+			"Test parameters"		"DB testparm"
+			"Test nonlinear hypotheses"	"DB testnl"
+			"Likelihood-ratio test"		"DB lrtest"
+			"Specification link test for single-equation models"	"DB linktest"
+			"Hausman specification test"		"DB hausman"
+			"Seemingly unrelated estimation"	"DB suest"
+		}
+		--------
+		"Linear combinations of estimates"	"DB lincom"
+		"Nonlinear combinations of estimates"	"DB nlcom"
+		--------
+		"Reports and statistics"		"DB estat"
+		--------
+		"Manage estimation results" tag1 {
+			"Save to disk"			"DB estimates_save"
+			"Load from disk"		"DB estimates_use"
+			"Describe results"		"DB estimates_describe"
+			--------
+			"Store in memory"		"DB estimates_store"
+			"Restore from memory"		"DB estimates_restore"
+			"List results stored in memory"	"DB estimates_dir"
+			"Drop from memory"		"DB estimates_drop"
+			--------
+			"Redisplay estimation output"	"DB estimates_replay"
+			"Table of estimation results"	"DB estimates_table"
+			"Table of fit statistics"	"DB estimates_stats"
+			--------
+			"Title/retitle results"		"DB estimates_title"
+		}
+	}
+	--------
+	"Other" tag1 {
+		"Factor-variable settings"	"DB fvset"
+		--------
+		"Nested model statistics"	"DB nestreg"
+		"Stepwise estimation"		"DB stepwise"
+		"Collect statistics for a command across a by list" "DB statsby"
+		"Manage constraints"		"DB constraint"
+		"Quality control" tag1 {
+			"Cusum plots and test for binary variables" "DB cusum"
+			"C chart"		"DB cchart"
+			"P chart"		"DB pchart"
+			"R chart"		"DB rchart"
+			"X-bar chart"		"DB xchart"
+			"Vertically aligned X-bar and R chart" "DB shewhart"
+			"Standard error bar chart" "DB serrbar"
+		}
+		--------
+		"Draw a sample from a normal distribution"	"DB drawnorm"
+		"Create a dataset with a specified correlation structure"	"DB corr2data"
+	}
+}

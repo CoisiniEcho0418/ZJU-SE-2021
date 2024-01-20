@@ -1,0 +1,376 @@
+/*
+  arima
+
+*!  VERSION 1.2.6  23aug2010
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_glm
+INCLUDE header
+HELP hlp1, view("help arima")
+RESET res1
+
+SCRIPT main_PREINIT
+BEGIN
+	script _constraints_main_setOptionalOn
+END
+
+SCRIPT main_POSTINIT
+BEGIN
+	script max_enableGTolerance
+END
+
+DIALOG main, tabtitle("Model")	///
+	label("arima - ARIMA, ARMAX, and other dynamic regression models")
+BEGIN
+  DEFINE _x _xsetbu
+  DEFINE _y _top
+  INCLUDE _bu_tsset
+
+  TEXT tx_dv 		_lft	_topph	_vnwd	.,			///
+	label("Dependent variable:")
+  VARNAME vn_dv		@ 	_ss	@	.,			///
+	ts								///
+	label("Dependent variable")
+
+  TEXT tx_iv		_vlx	_topph	160	.,			///
+	label("Independent variables:")
+  VARLIST vl_iv		@	_ss	_vlwd	.,			///
+	ts								///
+	allowcat							///
+	label("Independent variables")
+  CHECKBOX ck_nocons @       _ms         @         .,			///
+	label("Suppress constant term")					///
+	option(noconstant)
+
+  DEFINE _y _ls
+  INCLUDE _arima
+
+  DEFINE _x _lft
+  DEFINE _y _xxxxls
+  DEFINE _cx _lw80
+  DEFINE _bux _slw80
+  INCLUDE _constraints
+  
+  DEFINE _x _lft
+  DEFINE _xw _iwd
+  INCLUDE _ck_collinear
+END
+
+INCLUDE _constraints_sc 
+INCLUDE _arima_main_sc
+
+DIALOG adv2, tabtitle("Model 2")
+BEGIN
+  GROUPBOX gb_spec   _lft      _top      _iwd      _ht16,		///
+	label("Seasonal ARIMA specification")
+  RADIO    rb_sarima _indent   _ss       _cwd2     .,			///
+	first label("SARIMA (P,D,Q,S) specification")			///
+	onclickon(script sarima_on)
+  RADIO    rb_terms  _lft2     @         @         .,			///
+	last label("Supply list of multiplicative terms")		///
+	onclickon(script terms_on)
+
+  FRAME    fr_line1  _ilft     _ms       _ibwd     1,
+  TEXT     tx_mark1  _lft2     @         0         0,
+  FRAME    fr_vline1 -15       +2        2         140,
+  SPINNER  sp_p      _ilft     _ss       _spwd     .,			///
+	label("Autoregressive order")					///
+	min(0) max(c(N)) default(0)
+  DEFINE x @x
+  DEFINE y @y
+  TEXT     tx_p      _spsep    @         _rbspr2   .,			///
+	label("Autoregressive order (P)")
+
+  SPINNER  sp_d      x         +27       _spwd     .,			///
+	label("Integrated (difference) order")				///
+	min(0) max(c(N)) default(0)
+  TEXT     tx_d      _spsep    @         _rbspr2   .,			///
+	label("Integrated (difference) order (D)")
+
+  SPINNER  sp_q      x         +27       _spwd     .,			///
+	label("Moving-average order")					///
+	min(0) max(c(N)) default(0)
+  TEXT     tx_q      _spsep    @         _rbspr2   .,			///
+	label("Moving-average order (Q)")
+
+  SPINNER  sp_s      x         +27       _spwd     .,			///
+	label("Seasonal lags")						///
+	min(0) max(c(N)) default(0)
+  TEXT     tx_s      _spsep    @         _rbspr2   .,			///
+	label("Seasonal lag (S)")
+
+  TEXT     tx_mark   _lft2     y         5         .,
+  TEXT     tx_term2  +10       -12       45        .,			///
+  	label("Term")
+  TEXT     tx_lagnum +50       @         100       .,			///
+  	label("Seasonal lag #")
+  TEXT     tx_lags   +105      @         100       .,			///
+  	label(`"Lags (e.g., "1 3")"')
+  FRAME    fm_line   _lft2     _ss       _cwd2     1,
+  TEXT     tx_mar1   _indent   +7        45        .,			///
+  	label("MAR")
+  DEFINE y @y
+  TEXT     tx_mar2   @         _ms       @         .,			///
+  	label("MAR")
+  TEXT     tx_mma1   @         _ms       @         .,			///
+  	label("MMA")
+  TEXT     tx_mma2   @         _ms       @         .,			///
+  	label("MMA")
+
+  EDIT     ed_mar_s1 +50       y         60        ., 			///
+	numonly label("Seasonal lags for MAR")
+  EDIT     ed_mar_s2 @         _ms       @         ., 			///
+	numonly label("Seasonal lags for MARs")
+  EDIT     ed_mma_s1 @         _ms       @         ., 			///
+	numonly label("Seasonal lags for MMA")
+  EDIT     ed_mma_s2 @         _ms       @         ., 			///
+	numonly label("Seasonal lags for MMA")
+
+  EDIT     ed_mar1   +105      y         100       ., label("Lags for MAR")
+  EDIT     ed_mar2   @         _ms       @         ., label("Lags for MAR")
+  EDIT     ed_mma1   @         _ms       @         ., label("Lags for MMA")
+  EDIT     ed_mma2   @         _ms       @         ., label("Lags for MMA")
+END
+
+SCRIPT PREINIT
+BEGIN
+	script se_createAsML
+END
+
+SCRIPT POSTINIT
+BEGIN
+	script max_setDefaultOPG
+	script se_setCluster_off
+END
+
+SCRIPT sarima_on
+BEGIN
+	adv2.sp_p.enable
+	adv2.tx_p.enable
+	adv2.sp_d.enable
+	adv2.tx_d.enable
+	adv2.sp_q.enable
+	adv2.tx_q.enable
+	adv2.sp_s.enable
+	adv2.tx_s.enable
+
+	adv2.tx_term2.disable
+	adv2.tx_lagnum.disable
+	adv2.tx_lags.disable
+	adv2.tx_mar1.disable
+	adv2.tx_mar2.disable
+	adv2.tx_mma1.disable
+	adv2.tx_mma2.disable
+	adv2.ed_mar_s1.disable
+	adv2.ed_mar_s2.disable
+	adv2.ed_mma_s1.disable
+	adv2.ed_mma_s2.disable
+	adv2.ed_mar1.disable
+	adv2.ed_mar2.disable
+	adv2.ed_mma1.disable
+	adv2.ed_mma2.disable
+END
+
+SCRIPT terms_on
+BEGIN
+	adv2.sp_p.disable
+	adv2.tx_p.disable
+	adv2.sp_d.disable
+	adv2.tx_d.disable
+	adv2.sp_q.disable
+	adv2.tx_q.disable
+	adv2.sp_s.disable
+	adv2.tx_s.disable
+
+	adv2.tx_term2.enable
+	adv2.tx_lagnum.enable
+	adv2.tx_lags.enable
+	adv2.tx_mar1.enable
+	adv2.tx_mar2.enable
+	adv2.tx_mma1.enable
+	adv2.tx_mma2.enable
+	adv2.ed_mar_s1.enable
+	adv2.ed_mar_s2.enable
+	adv2.ed_mma_s1.enable
+	adv2.ed_mma_s2.enable
+	adv2.ed_mar1.enable
+	adv2.ed_mar2.enable
+	adv2.ed_mma1.enable
+	adv2.ed_mma2.enable
+END
+
+DIALOG adv3, tabtitle("Model 3")
+BEGIN
+  CHECKBOX ck_cond   _lft      _top      _cwd1     .,			///
+	label("Use conditional MLE instead of full MLE")		///
+	option(condition)
+  CHECKBOX ck_save   _lft      _ms       @         .,			///
+	label("Conserve memory during estimation")			///
+	option(savespace)
+
+  GROUPBOX gb_kalman _lft      _ls       _iwd      _ht12h,		///
+	label("Kalman filter options (advanced)")
+
+  CHECKBOX ck_diffuse _ilft    _ss       _ibwd     .,			///
+	option(diffuse)							///
+	onclickon(script diffuse_on)					///
+	onclickoff(script diffuse_off)					///
+	label("Use a diffuse prior as a starting point for the Kalman filter recursions")
+
+  TEXT     tx_p0     @         _ls       @         .,			///
+	label("MSE of the state vector for starting the Kalman filter recursions:")
+
+  COMBOBOX cb_p0     @         _ss       @         _ht11,		///
+	append dropdown	contents(square) option(p0)			///
+
+  TEXT     tx_state0 @         _ls       @         .,			///
+	label("Alternate state vector for starting the Kalman filter recursions:")
+
+  COMBOBOX cb_state0 @         _ss       @         _ht11,		///
+	append dropdown contents(column)				///
+	option(state0)
+END
+
+SCRIPT diffuse_on
+BEGIN
+	adv3.tx_p0.disable
+	adv3.cb_p0.disable
+	adv3.tx_state0.disable
+	adv3.cb_state0.disable
+END
+
+SCRIPT diffuse_off
+BEGIN
+	adv3.tx_p0.enable
+	adv3.cb_p0.enable
+	adv3.tx_state0.enable
+	adv3.cb_state0.enable
+END
+
+INCLUDE byifin
+INCLUDE weights_i
+INCLUDE se
+
+
+SCRIPT rpt_POSTINIT
+BEGIN
+	create STRING rpt_bu_fmtcoefResults
+	program rpt_bu_fmtcoef_ckResults
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr2
+  DEFINE _y _top
+  INCLUDE _sp_level
+
+  CHECKBOX ck_detail _lft      _ls       _cwd1     .,			///
+	label("Report list of gaps in time series")			///
+	option(detail)
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _nocnsreport
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _vsquish
+
+  DEFINE _x _lft
+  DEFINE _y _ls
+  INCLUDE _bu_coef_table_reporting
+END
+
+INCLUDE fmt_coef_table_reporting_pr
+
+INCLUDE max_ml
+
+PROGRAM command
+BEGIN
+	allowxi
+	INCLUDE _by_pr
+	put "arima "
+	varlist main.vn_dv [main.vl_iv]
+	INCLUDE _weights_pr
+	INCLUDE _ifin_pr
+	beginoptions
+		option main.ck_nocons
+		if main.rb_arma {
+			optionarg main.ed_ar
+			optionarg main.ed_ma
+		}
+		if main.rb_arima & (main.sp_p | main.sp_d | main.sp_q) {
+			put "arima("		///
+				main.sp_p ","	///
+				main.sp_d ","	///
+				main.sp_q ") "
+		}
+		INCLUDE _constraints_main_pr
+		option main.ck_collinear
+
+		if adv2.rb_sarima & (adv2.sp_p | adv2.sp_d 	///
+		   | adv2.sp_q | adv2.sp_s) 			///
+		{
+			put "sarima("		///
+			  adv2.sp_p ","		///
+			  adv2.sp_d ","		///
+			  adv2.sp_q ","		///
+			  adv2.sp_s ")"
+		}
+		if adv2.rb_terms {
+			if !(adv2.ed_mar1 | adv2.ed_mar_s1	///
+			   | adv2.ed_mar2 | adv2.ed_mar_s2	///
+			   | adv2.ed_mma1 | adv2.ed_mma_s1	///
+			   | adv2.ed_mma2 | adv2.ed_mma_s2)	///
+			{
+			    stopbox stop `"On the "Model 2" tab,"'	///
+			    `"at least one "MAR" or "MMA" must be specified."'
+			}
+			if adv2.ed_mar1 | adv2.ed_mar_s1 {
+				require adv2.ed_mar_s1
+				require adv2.ed_mar1
+				put "mar(" adv2.ed_mar1 ", "
+				put adv2.ed_mar_s1 ") "
+			}
+			if adv2.ed_mar2 | adv2.ed_mar_s2 {
+				require adv2.ed_mar_s2
+				require adv2.ed_mar2
+				put "mar(" adv2.ed_mar2 ", "
+				put adv2.ed_mar_s2 ") "
+			}
+			if adv2.ed_mma1 | adv2.ed_mma_s1 {
+				require adv2.ed_mma_s1
+				require adv2.ed_mma1
+				put "mma(" adv2.ed_mma1 ", "
+				put adv2.ed_mma_s1 ") "
+			}
+			if adv2.ed_mma2 | adv2.ed_mma_s2 {
+				require adv2.ed_mma_s2
+				require adv2.ed_mma2
+				put "mma(" adv2.ed_mma2 ", "
+				put adv2.ed_mma_s1 ") "
+			}
+		}
+
+		option adv3.ck_cond
+		option adv3.ck_save
+		option adv3.ck_diffuse
+		optionarg adv3.cb_p0
+		optionarg adv3.cb_state0
+
+		put " " /program se_output
+
+		optionarg /hidedefault rpt.sp_level
+		option rpt.ck_detail
+		INCLUDE _nocnsreport_pr
+		INCLUDE _vsquish_pr
+		put " " rpt_bu_fmtcoefResults
+		put " " /program max_output
+	endoptions
+END

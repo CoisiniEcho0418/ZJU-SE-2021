@@ -1,0 +1,183 @@
+/*
+    lowess_9.dlg
+
+*!  VERSION 1.1.3  03aug2006  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+
+HELP hlp1, view("help lowess")
+RESET res1
+
+DIALOG main, tabtitle("Main") 						///
+	label("lowess - Lowess smoothing")
+BEGIN
+  TEXT     tx_dv     _lft      _top      _cwd4_1   .,			/*
+		*/ label("Dependent variable:")				/*
+		*/
+  VARNAME  vn_dv     @         _ss       _vnwd     .,			/*
+		*/ label("Dependent variable")				/*
+		*/
+
+  TEXT     tx_iv     _lft4_2   _top      _cwd1     .,			/*
+		*/ label("Independent variable:")			/*
+		*/
+  VARNAME  vn_iv     @         _ss       _vnwd     .,			/*
+		*/ label("Independent variable")			/*
+		*/
+
+  GROUPBOX gb_meth   _lft      _ls       _cwd1     _ht4,		/*
+		*/ label("Smoothing methods")				/*
+		*/
+  DEFINE y @y
+  CHECKBOX ck_mean   _indent   _ss       _cwd3     .,			/*
+		*/ label("Running-mean smooth")				/*
+		*/ option("mean")					/*
+		*/
+  CHECKBOX ck_weight @         _ss       @         .,			/*
+		*/ label("Suppress weighted regressions")		/*
+		*/ option("noweight")					/*
+		*/
+
+  CHECKBOX ck_bwidth _lft2     y         _cwd1     _ht4,		/*
+		*/ label(`"Specify the bandwidth"')			/*
+		*/ clickon("script bwidth_on")				/*
+		*/ clickoff("script bwidth_off")			/*
+		*/ groupbox						/*
+		*/
+  EDIT     en_bwidth _indent   _ls       _en7wd    .,			/*
+		*/ label("Bandwidth")					/*
+		*/ default("literal 0.8")				/*
+		*/ numonly						/*
+		*/ option("bwidth")					/*
+		*/
+  TEXT     tx_bwidth _en7sep   @         _en7r2b   .,			/*
+		*/ label("Bandwidth")					/*
+		*/
+
+  CHECKBOX ck_logit  _lft      +55       _cwd1     .,			/*
+		*/ label("Transform dependent variable to logits")	/*
+		*/ option("logit")					/*
+		*/
+
+  CHECKBOX ck_adjust @         _ms       @         .,			/*
+		*/ option("adjust")					/*
+		*/ label("Adjust smoothed mean to equal mean of dependent variable")
+
+  CHECKBOX ck_nogr   @         _ms       @         .,			/*
+		*/ label("Suppress graph")				/*
+		*/ option("nograph")					/*
+		*/ clickon("script graph_off")				/*
+		*/ clickoff("script graph_on")				/*
+		*/
+
+  CHECKBOX ck_gen    _lft      _ls       _iwd      _ht5,		/*
+		*/ label("Generate a new variable containing the smoothed values")/*
+		*/ groupbox						/*
+		*/ clickon("script gen_on")				/*
+		*/ clickoff("script gen_off")				/*
+		*/
+  TEXT     tx_gen    _indent   _ms       _vnwd     .,			/*
+  		*/ label("New variable name:")
+  EDIT     ed_gen    @         _ss       _vnwd     .,			/*
+		*/ label("Variable name")				/*
+		*/ error("New variable name containing smoothed values")/*
+		*/ option("generate")
+END
+
+INCLUDE ifin
+INCLUDE p1_opts
+INCLUDE line_opts
+INCLUDE addplot
+INCLUDE gr_twoway
+INCLUDE gby
+
+SCRIPT PREINIT
+BEGIN
+	script  p1_opts_createAsNoRange
+	script p1_opts_setDefaultScatter
+END
+
+SCRIPT POSTINIT
+BEGIN
+	p1_opts.settabtitle "Scatterplot"
+	script gby_total_disable
+	script gby_missing_disable
+	line_opts.settabtitle "Smoothed line"
+END
+
+
+SCRIPT graph_on
+BEGIN
+	script gby_enable
+	script p1_opts_enable
+	script line_opts_enable
+	script addplot_enable
+	script gr_twoway_enable
+END
+
+SCRIPT graph_off
+BEGIN
+	script gby_disable
+	script p1_opts_disable
+	script line_opts_disable
+	script addplot_disable
+	script gr_twoway_disable
+END
+
+SCRIPT gen_on
+BEGIN
+  main.ed_gen.enable
+  main.tx_gen.enable
+END
+
+SCRIPT gen_off
+BEGIN
+  main.ed_gen.disable
+  main.tx_gen.disable
+END
+
+SCRIPT bwidth_on
+BEGIN
+  main.en_bwidth.enable
+  main.tx_bwidth.enable
+END
+
+SCRIPT bwidth_off
+BEGIN
+  main.en_bwidth.disable
+  main.tx_bwidth.disable
+END
+
+PROGRAM command
+BEGIN
+	put "lowess "
+	varlist main.vn_dv main.vn_iv
+	put " " /program ifin_output
+	beginoptions
+		option main.ck_mean
+		option main.ck_weight
+		if main.ck_bwidth {
+			optionarg main.en_bwidth
+		}
+		option main.ck_logit
+		option main.ck_adjust
+		option main.ck_nogr
+		if main.ck_gen {
+			require main.ed_gen
+			put "generate("
+			put main.ed_gen
+			put ")"
+		}
+
+		put " " /program p1_opts_recast_output
+		put " " /program line_opts_rlopts_output
+		put " " /program addplot_output
+		put " " /program gr_twoway_output
+		put " " /program gby_output
+	endoptions
+END

@@ -1,0 +1,146 @@
+/*
+    bstat
+
+*!  VERSION 2.1.3  23may2011
+
+  keyword:  eclass
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_large
+INCLUDE _ht380
+INCLUDE header
+HELP hlp1, view("help bstat")
+RESET res1
+
+SCRIPT POSTINIT
+BEGIN
+	create STRING rpt_bu_fmtcoefResults
+	program rpt_bu_fmtcoef_ckResults
+END
+
+
+DIALOG main, label("bstat - Report bootstrap results") tabtitle("Main")
+BEGIN
+  GROUPBOX gb_syn    _lft      _top      _iwd      _ht4,	///
+  	label("Dataset")
+  RADIO    rb_syn1   _ilft     _ss       _inwd     .,		///
+  	first onclickon(script main_syn1_on)			///
+  	label("Compare bootstrap statistics using current dataset")
+  RADIO    rb_syn2   @         _ss       @         .,		///
+  	last onclickon(script main_syn2_on)			///
+  	label("Compare bootstrap statistics using dataset on disk")
+
+  TEXT     tx_var    _lft      _xls      _iwd      .,		///
+	label("Variable list: (empty implies all variables)")
+  EDIT     ed_var    @         _ss       @         .,		///
+	label("Variable list")
+  VARLIST  vl_var    @         @         @         .,		///
+	label("Variable list")
+
+  TEXT     tx_using  _lft      _ls       _vlwd     .,		///
+	label("Filename of Stata dataset:")
+  FILE     fi_using  _lft      _ss       _iwd      .,		///
+	filter("Stata Dataset (*.dta)|*.dta|All (*.*)|*.*")	///
+	defext(dta)						///
+	label("Browse...")					///
+	error("Filename of Stata dataset")
+
+  GROUPBOX gb_user   _lft      +35       _iwd      _ht9h,	///
+	label("User-supplied values for each statistic")
+  TEXT     tx_stat   _indent   _ss       _inwd     .,		///
+	label("Observed values:")
+  EDIT     ed_stat   @         _ss       @         .,		///
+	label("Observed values")				///
+	option(stat)
+
+  TEXT     tx_accel  @         _ls       @         .,		///
+	label("Observed acceleration:")
+  EDIT     ed_accel  @         _ss       @         .,		///
+	label("Observed acceleration") option(accel)
+
+  CHECKBOX ck_mse    _lft      _xxls     _cwd0     .,		///
+	label("Use MSE formula for variance estimation")	///
+	option(mse)
+END
+
+SCRIPT main_syn1_on
+BEGIN
+	main.tx_using.hide
+	main.fi_using.hide
+	main.ed_var.hide
+	main.vl_var.show
+	main.gb_user.setposition . 145 . .
+	main.tx_stat.setposition . 165 . .
+	main.ed_stat.setposition . 185 . .
+	main.tx_accel.setposition . 215 . .
+	main.ed_accel.setposition . 235 . .
+	main.ck_mse.setposition . 285 . .
+END
+
+SCRIPT main_syn2_on
+BEGIN
+	main.tx_using.show
+	main.fi_using.show
+	main.ed_var.show
+	main.vl_var.hide
+	main.gb_user.setposition . 195 . .
+	main.tx_stat.setposition . 215 . .
+	main.ed_stat.setposition . 235 . .
+	main.tx_accel.setposition . 265 . .
+	main.ed_accel.setposition . 285 . .
+	main.ck_mse.setposition . 335 . .
+END
+
+INCLUDE _coef_table_common_report_pr
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr
+  DEFINE _y _top
+  INCLUDE _sp_level
+
+  EDIT     ed_n      _lft      _ls       _en7wd    .,		///
+	numonly	 option(n)					///
+	label("Number of observations from which bootstrap samples were taken")
+  TEXT     tx_n      _en7sep   @         _en7r     .,		///
+	label("Number of observations from which bootstrap samples were taken")
+
+  DEFINE _x _lft
+  DEFINE _y _ls
+  DEFINE _xwd _iwd
+  INCLUDE _coef_table_common
+
+  DEFINE _x _lft
+  DEFINE _y _ls
+  INCLUDE _bu_coef_table_reporting
+
+  TEXT     tx_title  _lft      _ls       _iwd      .,		///
+	label("Title:")
+  EDIT     ed_title  @         _ss       @         .,		///
+	label("Title") option(title)
+END
+
+INCLUDE fmt_coef_table_reporting_pr
+
+PROGRAM command
+BEGIN
+	require main.fi_using
+	put "bstat "
+	put main.vl_var
+	put main.ed_var
+	put " " "using " `"""' main.fi_using `"""'
+	beginoptions
+		optionarg main.ed_stat
+		optionarg main.ed_accel
+		option main.ck_mse
+		optionarg /hidedefault rpt.sp_level
+		optionarg rpt.ed_n
+		put /program _coef_table_common_cmd
+		put " " rpt_bu_fmtcoefResults
+		optionarg rpt.ed_title
+	endoptions
+END

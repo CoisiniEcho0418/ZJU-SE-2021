@@ -1,0 +1,825 @@
+/*
+ ts1 -- include file for plot1 of tsline
+
+*!  VERSION 1.1.1  09mar2005
+
+*/
+
+DIALOG p1, label("tsline - Time-series line plots")  tabtitle("Plot 1")
+BEGIN
+  RADIO    rb_tsline   _lft        _top      _cwd4_5      .,		///
+  		label("Time-Series line plot")				///
+  		first							///
+  		onclickon(script p1_tsline_on)
+  RADIO    rb_tsrline  _ilft5_2    @         _cwd3_5      .,		///
+  		label("Time-Series range plot with lines")		///
+  		last							///
+  		onclickon(script p1_tsrline_on)
+
+  TEXT     tx_type     _lft2       @         _txwd        .,		///
+                label("Recast to:") 					///
+                right
+  COMBOBOX cb_tstype   _txsep      @         _vnwd        .,		///
+                label("Recast to") contents(graph_tstype)		///
+                onselchangelist(p1_tsline_change) 			///
+                option(recast)						///
+                dropdownlist
+  COMBOBOX cb_tsrtype  @           @         _vnwd        .,		///
+                label("Recast to") contents(graph_tsrtype)		///
+                onselchangelist(p1_tsrline_change) 			///
+                option(recast)						///
+                dropdownlist
+
+  DEFINE _x _xsetbu
+  DEFINE _y _top
+  INCLUDE _bu_tsset
+
+  TEXT     tx_var      _lft        _xls      _yvarwd     .,		///
+                label("Y:") right
+
+  VARNAME  vn_var      _yvarsep    @         _vnwd       .,		///
+                label("Y variable")
+
+  TEXT     tx_var2     _ilft5_2    @         _yvarwd     .,		///
+  		label("Y2:") right
+  VARNAME  vn_var2     _yvarsep    @         _vnwd       .,		///
+  		label("Y2 variable")
+
+
+DEFINE holdx @x
+  TEXT     tx_if       _ilft5_2    @         _yvarwd     .,		///
+ 		label("if:") right					///
+
+  EXP      ex_if       _yvarsep    @         _gifwd      .,		///
+                label("Create...")
+  TEXT     tx_if2      _ilft5_3    @         _yvarwd     .,		///
+ 		label("if:") right					///
+
+  EXP      ex_if2      _yvarsep    @         _gifwd      .,		///
+                label("Create...")
+
+
+/* BEGIN Line options */
+  GROUPBOX gb_line     _lft        _ls       _gwd1       _ht4h,		///
+  		label("Lines")
+DEFINE opttop @y
+  TEXT     tx_clcol    _igft       _ss       _txwd       .,		///
+  		label("Color:") 					///
+  		right
+DEFINE holdy @y
+  COMBOBOX cb_clcol    _txsep      @         _tcr2b4g    .,		///
+  		option(lcolor)						///
+  		dropdownlist						///
+  		contents(colors) 					///
+  		onselchangelist(p1_color_clcol)
+  COLOR    cl_clcol    _tcr2b4gsep @         _colorwd    .,		///
+  		option(lcolor)
+  TEXT     tx_clpat    _igft       _ms       _txwd       .,		///
+  		label("Pattern:") right
+  COMBOBOX cb_clpat    _txsep      @         _txr2b4g    .,		///
+  		dropdownlist 						///
+  		contents(linepatterns)  				///
+  		option(lpattern)
+
+  TEXT     tx_clwidth  _gft4_2     holdy     _txwd       .,		///
+  		label("Width:") right
+  COMBOBOX cb_clwidth  _txsep      @         _txr2b4g    .,		///
+  		dropdownlist						///
+  		contents(linewidths) 					///
+  		option(lwidth)
+
+  TEXT     tx_conn     _gft4_2     _ms       _txwd       .,		///
+  		label("Type:") right
+  COMBOBOX cb_conn     _txsep      @         _txr2b4g    .,		///
+  		option(connect)						///
+  		dropdownlist 						///
+  		contents(connecttypes)
+/* END Line options */
+
+/* BEGIN Scatter options */
+  GROUPBOX gb_marker   _lft        +35       _gwd1       _ht12h,	///
+  		label("Markers")
+DEFINE ymidopts @y
+  TEXT     tx_msym     _igft       _ss       _txwd       .,		///
+  		label("Symbol:") right
+
+  COMBOBOX cb_msym     _txsep      @         _txr2b4g    .,		///
+  		option(msymbol)						///
+  		dropdownlist						///
+  		contents(symbols)
+
+  TEXT     tx_mcol     _gft4_2     @         _txwd       .,		///
+  		label("Color:") right
+  COMBOBOX cb_mcol     _txsep      @         _tcr2b4g    .,		///
+  		option(mcolor)						///
+  		dropdownlist						///
+  		contents(colors) 					///
+		onselchangelist(p1_color_mcol)
+  COLOR    cl_mcol     _tcr2b4gsep @         _colorwd    .,		///
+  		option(mcolor)
+
+  TEXT     tx_msize    _igft       _ms       _txwd       .,		///
+  		label("Size:") right
+  COMBOBOX cb_msize    _txsep      @         _txr2b4g    .,		///
+  		option(msize)						///
+  		dropdownlist 						///
+  		contents(symbolsizes)
+
+  CHECKBOX ck_mlab     _igft       _ls       _cwd1gb     _ht4h,		///
+  		label("Marker labels") groupbox				///
+  		onclickon(script p1_mlabel_enable)			///
+		onclickoff(script p1_mlabel_disable)
+  TEXT     tx_mlab     _iigft      _ss       _txswd      .,		///
+  		label("Variable:") right
+DEFINE holdy @y
+  VARLIST  vl_mlab     _txssep     @         _txr2b4g    .,		///
+  		label("Marker labels variable") option(mlabel)
+  TEXT     tx_mlsiz    _iigft      _ms       _txswd      .,		///
+  		label("Size:") right
+  COMBOBOX cb_mlsiz    _txssep     @         _txr2b4g    .,		///
+  		option(mlabsize) 					///
+  		dropdownlist						///
+  		contents(textsizes)
+
+  TEXT     tx_mlcol    _gft4_2     holdy     _txswd      .,		///
+  		label("Color:") right
+  COMBOBOX cb_mlcol    _txssep     @         _tcr2b4g    .,		///
+  		option(mlabcolor)					///
+  		dropdownlist						///
+  		contents(colors) 					///
+  		onselchangelist(p1_color_mlcol)
+
+  COLOR    cl_mlcol    _tcr2b4gsep @         _colorwd    .,		///
+  		option(mlabcolor)
+
+  TEXT     tx_mlpos    _gft4_2     _ms       _txswd      .,		///
+  		label("Position:") right
+  COMBOBOX cb_mlpos    _txssep     @         _txr2b4g    .,		///
+  		option(mlabposition) 					///
+  		dropdownlist						///
+  		contents(clockpos)
+
+/* END Scatter options */
+
+/* BEGIN Orientation options */
+  GROUPBOX gb_orient   _lft2g      opttop    _gwd1       _ht4h,		///
+		label("Orientation")
+  RADIO    rb_vertical _igft4_3    +22       _cwd4_gi    .,		///
+   		label("Vertical") 					///
+   		first 							///
+   		option(vertical)
+  DEFINE topy @y
+  RADIO    rb_horizontal @         _ss       @           .,		///
+   		label("Horizontal") 					///
+   		last 							///
+   		option(horizontal)
+/* END Orientation options */
+
+/* BEGIN Area, Bar, Spike, Dropline options */
+  GROUPBOX gb_common   _lft2g      ymidopts  _gwd1       _ht7,		///
+		label("Area")
+  TEXT     tx_blcol    _igft4_3    _ss       _txwd       .,		///
+  		label("Line color:") 					///
+  		right
+DEFINE holdy @y
+  COMBOBOX cb_blcol    _txsep      @         _tcr2b4g    .,		///
+  		contents(colors) 					///
+  		option(lcolor) 						///
+  		dropdownlist						///
+		onselchangelist(p1_color_blcol)
+  COLOR    cl_blcol    _tcr2b4gsep @         _colorwd    .,		///
+  		option(lcolor)
+
+  TEXT     tx_blwid    _igft4_3    _ms       _txwd       .,		///
+  		label("Line width:") right
+  COMBOBOX cb_blwid    _txsep      @         _txr2b4g    .,		///
+  		contents(linewidths) 					///
+  		option(lwidth)						///
+  		dropdownlist
+
+  TEXT     tx_base     _igft4_3    _ms       _txwd       .,		///
+  		label("Base:") right
+  EDIT     en_base     _txsep      @         _txr2b4g    .,		///
+  		label("Base") 						///
+  		default(0) 						///
+  		option(base) 						///
+  		numonly
+
+// bfcol is used with area and bar
+  TEXT     tx_bfcol    _igft4_4    holdy     _txwd       .,		///
+  		label("Fill color:") right
+  COMBOBOX cb_bfcol    _txsep      @         _tcr2b4g    .,		///
+  		contents(colors) 					///
+  		option(bfcolor)						///
+  		dropdownlist 						///
+  		onselchangelist(p1_color_bfcol)
+  COLOR    cl_bfcol    _tcr2b4gsep @         _colorwd    .,		///
+  		option(bfcolor)
+
+// blpat is used with area
+  TEXT     tx_blpat    _igft4_4    _ms       _txwd       .,		///
+  		label("Ln. pattern:") right
+  COMBOBOX cb_blpat    _txsep      @         _txr2b4g    .,		///
+  		contents(linepatterns) 					///
+  		dropdownlist 						///
+  		option(lpattern)
+
+// blpat2 is used with spike and dropline
+  TEXT     tx_blpat2   _igft4_4    holdy     _txwd       .,		///
+  		label("Ln. pattern:") right
+  COMBOBOX cb_blpat2   _txsep      @         _txr2b4g    .,		///
+  		contents(linepatterns) 					///
+  		dropdownlist 						///
+  		option(lpattern)
+
+// barwidth is used with bar
+  TEXT     tx_barwidth _igft4_4    _ms       _txwd       .,		///
+  		label("Bar width:") right
+  EDIT     en_barwidth _txsep      @         _txr2b4g    .,		///
+  		label("Bar width")					///
+  		default(1) 						///
+  		option(barwidth) 					///
+  		numonly
+
+// capsize is used with tsrline rcap only
+  TEXT     tx_capsize  _igft4_4    @         _txwd       .,		///
+  		label("Cap size:") right
+  COMBOBOX cb_capsize  _txsep      @         _txr2b4g    .,		///
+  		option(msize)						///
+  		dropdownlist 						///
+  		contents(symbolsizes)
+
+/* END Area, Bar, Spike, Dropline options */
+END
+
+LIST p1_color_mcol
+BEGIN
+	p1.cl_mcol.hide
+	p1.cl_mcol.show
+	p1.cl_mcol.hide
+END
+
+LIST p1_color_mlcol
+BEGIN
+	p1.cl_mlcol.hide
+	p1.cl_mlcol.show
+	p1.cl_mlcol.hide
+END
+
+LIST p1_color_clcol
+BEGIN
+	p1.cl_clcol.hide
+	p1.cl_clcol.show
+	p1.cl_clcol.hide
+END
+
+LIST p1_color_bfcol
+BEGIN
+	p1.cl_bfcol.hide
+	p1.cl_bfcol.show
+	p1.cl_bfcol.hide
+END
+
+LIST p1_color_blcol
+BEGIN
+	p1.cl_blcol.hide
+	p1.cl_blcol.show
+	p1.cl_blcol.hide
+END
+
+
+LIST p1_tsline_change
+BEGIN
+	program p1_do_line
+	program p1_do_scatter
+	program p1_do_connected
+	program p1_do_area
+	program p1_do_bar
+	program p1_do_spike
+	program p1_do_dropline
+END
+
+LIST p1_tsrline_change
+BEGIN
+	program p1_do_rline
+	program p1_do_rscatter
+	program p1_do_rconnected
+	program p1_do_area
+	program p1_do_bar
+	program p1_do_spike
+	program p1_do_rcap
+	program p1_do_rcapsym
+END
+
+SCRIPT p1_tsline_on
+BEGIN
+	p1.cb_tsrtype.hide
+	p1.tx_var2.hide
+	p1.vn_var2.hide
+	p1.tx_if2.hide
+	p1.ex_if2.hide
+	p1.tx_base.enable
+	p1.en_base.enable
+
+	p1.cb_tstype.show
+	p1.cb_tstype.withvalue p1.cb_tstype.setvalue "@"
+	p1.tx_if.show
+	p1.ex_if.show
+END
+
+SCRIPT p1_tsrline_on
+BEGIN
+	p1.cb_tstype.hide
+	p1.tx_if.hide
+	p1.ex_if.hide
+
+	p1.cb_tsrtype.show
+	p1.cb_tsrtype.withvalue p1.cb_tsrtype.setvalue "@"
+	p1.tx_var2.show
+	p1.vn_var2.show
+	p1.tx_if2.show
+	p1.ex_if2.show
+	// base does not apply to ranges
+	p1.tx_base.disable
+	p1.en_base.disable
+END
+
+SCRIPT p1_line_opts_on
+BEGIN
+	p1.gb_line.enable
+	p1.tx_clcol.enable
+	p1.cb_clcol.enable
+	p1.cl_clcol.enable
+	p1.tx_clpat.enable
+	p1.cb_clpat.enable
+	p1.tx_clwidth.enable
+	p1.cb_clwidth.enable
+	p1.tx_conn.enable
+	p1.cb_conn.enable
+END
+
+SCRIPT p1_line_opts_off
+BEGIN
+	p1.gb_line.disable
+	p1.tx_clcol.disable
+	p1.cb_clcol.disable
+	p1.cl_clcol.disable
+	p1.tx_clpat.disable
+	p1.cb_clpat.disable
+	p1.tx_clwidth.disable
+	p1.cb_clwidth.disable
+	p1.tx_conn.disable
+	p1.cb_conn.disable
+END
+
+SCRIPT p1_mlabel_enable
+BEGIN
+	p1.tx_mlab.enable
+	p1.vl_mlab.enable
+	p1.tx_mlsiz.enable
+	p1.cb_mlsiz.enable
+	p1.tx_mlcol.enable
+	p1.cb_mlcol.enable
+	p1.cl_mlcol.enable
+	p1.tx_mlpos.enable
+	p1.cb_mlpos.enable
+END
+
+PROGRAM p1_scatter_opts_on
+BEGIN
+	call p1.gb_marker.enable
+	call p1.tx_msym.enable
+	call p1.cb_msym.enable
+	call p1.tx_mcol.enable
+	call p1.cb_mcol.enable
+	call p1.cl_mcol.enable
+	call p1.tx_msize.enable
+	call p1.cb_msize.enable
+	call p1.ck_mlab.enable
+	if p1.ck_mlab {
+		call script p1_mlabel_enable
+	}
+END
+
+
+SCRIPT p1_mlabel_disable
+BEGIN
+	p1.tx_mlab.disable
+	p1.vl_mlab.disable
+	p1.tx_mlsiz.disable
+	p1.cb_mlsiz.disable
+	p1.tx_mlcol.disable
+	p1.cb_mlcol.disable
+	p1.cl_mlcol.disable
+	p1.tx_mlpos.disable
+	p1.cb_mlpos.disable
+END
+
+SCRIPT p1_scatter_opts_off
+BEGIN
+	p1.gb_marker.disable
+	p1.tx_msym.disable
+	p1.cb_msym.disable
+	p1.tx_mcol.disable
+	p1.cb_mcol.disable
+	p1.cl_mcol.disable
+	p1.tx_msize.disable
+	p1.cb_msize.disable
+	p1.ck_mlab.disable
+	script p1_mlabel_disable
+
+END
+
+SCRIPT p1_orient_opts_on
+BEGIN
+	p1.gb_orient.show
+	p1.rb_vertical.show
+	p1.rb_horizontal.show
+END
+
+SCRIPT p1_orient_opts_off
+BEGIN
+	p1.gb_orient.hide
+	p1.rb_vertical.hide
+	p1.rb_horizontal.hide
+END
+
+/* Common opts for area, bar, spike, and dropline */
+SCRIPT p1_common_area_opts_on
+BEGIN
+	p1.gb_common.show
+	p1.tx_blcol.show
+	p1.cb_blcol.show
+	p1.cb_blcol.withvalue p1.cb_blcol.setvalue "@"
+	p1.tx_blwid.show
+	p1.cb_blwid.show
+	p1.tx_base.show
+	p1.en_base.show
+END
+
+/* Common opts for area, bar, spike, and dropline */
+SCRIPT p1_common_area_opts_off
+BEGIN
+	p1.gb_common.hide
+	p1.tx_blcol.hide
+	p1.cb_blcol.hide
+	p1.cl_blcol.hide
+	p1.tx_blwid.hide
+	p1.cb_blwid.hide
+	p1.tx_base.hide
+	p1.en_base.hide
+END
+
+SCRIPT p1_area_opts_on
+BEGIN
+	script p1_common_area_opts_on
+	p1.tx_blpat.show
+	p1.cb_blpat.show
+	p1.tx_bfcol.show
+	p1.cb_bfcol.show
+	p1.cb_bfcol.withvalue p1.cb_bfcol.setvalue "@"
+END
+
+SCRIPT p1_area_opts_off
+BEGIN
+	script p1_common_area_opts_off
+	p1.tx_blpat.hide
+	p1.cb_blpat.hide
+	p1.tx_bfcol.hide
+	p1.cb_bfcol.hide
+	p1.cl_bfcol.hide
+END
+
+SCRIPT p1_bar_opts_on
+BEGIN
+	script p1_common_area_opts_on
+	p1.tx_bfcol.show
+	p1.cb_bfcol.show
+	p1.cb_bfcol.withvalue p1.cb_bfcol.setvalue "@"
+	p1.tx_barwidth.show
+	p1.en_barwidth.show
+END
+
+SCRIPT p1_bar_opts_off
+BEGIN
+	script p1_common_area_opts_off
+	p1.tx_bfcol.hide
+	p1.cb_bfcol.hide
+	p1.cl_bfcol.hide
+	p1.tx_barwidth.hide
+	p1.en_barwidth.hide
+END
+
+SCRIPT p1_spike_drop_opts_on
+BEGIN
+	script p1_common_area_opts_on
+	p1.tx_blpat2.show
+	p1.cb_blpat2.show
+END
+
+SCRIPT p1_spike_drop_opts_off
+BEGIN
+	script p1_common_area_opts_off
+	p1.tx_blpat2.hide
+	p1.cb_blpat2.hide
+END
+
+SCRIPT p1_rcap_opts_on
+BEGIN
+	script p1_common_area_opts_on
+	p1.tx_capsize.show
+	p1.cb_capsize.show
+END
+
+SCRIPT p1_rcap_opts_off
+BEGIN
+	script p1_common_area_opts_off
+	p1.tx_capsize.hide
+	p1.cb_capsize.hide
+END
+
+PROGRAM p1_do_line
+BEGIN
+	call script p1_scatter_opts_off
+	call script p1_orient_opts_off
+	call script p1_area_opts_off
+	call script p1_bar_opts_off
+	call script p1_spike_drop_opts_off
+	call script p1_rcap_opts_off
+
+	call script p1_line_opts_on
+
+END
+
+PROGRAM p1_do_rline
+BEGIN
+	// test hidden condition to prevent action from LIST on load
+	if !H(p1.cb_tsrtype) {
+		call script p1_scatter_opts_off
+		call script p1_area_opts_off
+		call script p1_bar_opts_off
+		call script p1_spike_drop_opts_off
+		call script p1_rcap_opts_off
+
+		call script p1_line_opts_on
+		call script p1_orient_opts_on
+	}
+END
+
+PROGRAM p1_do_scatter
+BEGIN
+	call script p1_line_opts_off
+	call script p1_orient_opts_off
+	call script p1_area_opts_off
+	call script p1_bar_opts_off
+	call script p1_spike_drop_opts_off
+	call script p1_rcap_opts_off
+
+	call program p1_scatter_opts_on
+END
+
+PROGRAM p1_do_rscatter
+BEGIN
+	call script p1_line_opts_off
+	call script p1_area_opts_off
+	call script p1_bar_opts_off
+	call script p1_spike_drop_opts_off
+	call script p1_rcap_opts_off
+
+	call program p1_scatter_opts_on
+	call script p1_orient_opts_on
+END
+
+PROGRAM p1_do_connected
+BEGIN
+	call script p1_orient_opts_off
+	call script p1_area_opts_off
+	call script p1_bar_opts_off
+	call script p1_spike_drop_opts_off
+	call script p1_rcap_opts_off
+
+	call script p1_line_opts_on
+	call program p1_scatter_opts_on
+END
+
+PROGRAM p1_do_rconnected
+BEGIN
+	call script p1_area_opts_off
+	call script p1_bar_opts_off
+	call script p1_spike_drop_opts_off
+	call script p1_rcap_opts_off
+
+	call script p1_line_opts_on
+	call program p1_scatter_opts_on
+	call script p1_orient_opts_on
+END
+
+PROGRAM p1_do_area
+BEGIN
+	call script p1_line_opts_off
+	call script p1_scatter_opts_off
+	call script p1_bar_opts_off
+	call script p1_spike_drop_opts_off
+	call script p1_rcap_opts_off
+
+	call script p1_orient_opts_on
+	call script p1_area_opts_on
+	call p1.gb_common.setlabel "Area"
+END
+
+
+PROGRAM p1_do_bar
+BEGIN
+	call script p1_line_opts_off
+	call script p1_scatter_opts_off
+	call script p1_area_opts_off
+	call script p1_spike_drop_opts_off
+
+	call script p1_orient_opts_on
+	call script p1_bar_opts_on
+	call p1.gb_common.setlabel "Bars"
+END
+
+PROGRAM p1_do_spike
+BEGIN
+	call script p1_line_opts_off
+	call script p1_scatter_opts_off
+	call script p1_area_opts_off
+	call script p1_bar_opts_off
+	call script p1_rcap_opts_off
+
+	call script p1_orient_opts_on
+	call script p1_spike_drop_opts_on
+	call p1.gb_common.setlabel "Spikes"
+END
+
+PROGRAM p1_do_rcap
+BEGIN
+	call script p1_line_opts_off
+	call script p1_scatter_opts_off
+	call script p1_area_opts_off
+	call script p1_bar_opts_off
+
+	call script p1_orient_opts_on
+	call script p1_spike_drop_opts_on
+	call p1.gb_common.setlabel "Spikes"
+	call script p1_rcap_opts_on
+END
+
+PROGRAM p1_do_dropline
+BEGIN
+	call script p1_line_opts_off
+	call script p1_area_opts_off
+	call script p1_bar_opts_off
+	call script p1_rcap_opts_off
+
+	call program p1_scatter_opts_on
+	call script p1_orient_opts_on
+	call script p1_spike_drop_opts_on
+	call p1.gb_common.setlabel "Droplines"
+END
+
+PROGRAM p1_do_rcapsym
+BEGIN
+	call script p1_line_opts_off
+	call script p1_area_opts_off
+	call script p1_bar_opts_off
+	call script p1_rcap_opts_off
+
+	call program p1_scatter_opts_on
+	call script p1_orient_opts_on
+	call script p1_spike_drop_opts_on
+	call p1.gb_common.setlabel "Spikes"
+END
+
+PROGRAM p1_line_opts
+BEGIN
+	if !Hcc(p1.cb_clcol) {
+		optionarg /hidedefault p1.cb_clcol
+	}
+	if Hcc(p1.cb_clcol) {
+		optionarg /quoted p1.cl_clcol
+	}
+	optionarg p1.cb_clpat
+	optionarg p1.cb_clwidth
+	optionarg p1.cb_conn
+END
+
+PROGRAM p1_rline_opts
+BEGIN
+	// options and optionarg are not used here because tsrline
+	// uses different options, therefore they are hard coded
+	if !Hcc(p1.cb_clcol) & p1.cb_clcol {
+		put " " "lcolor(" p1.cb_clcol ")"
+	}
+	if Hcc(p1.cb_clcol) {
+		put " " `"lcolor(""' p1.cl_clcol `"")"'
+	}
+	if p1.cb_clpat {
+		put " " "lpattern(" p1.cb_clpat ")"
+	}
+	if p1.cb_clwidth {
+		put " " "lwidth(" p1.cb_clwidth ")"
+	}
+	optionarg p1.cb_conn
+END
+
+PROGRAM p1_scatter_opts
+BEGIN
+	optionarg p1.cb_msym
+	if !Hcc(p1.cb_mcol) {
+		optionarg /hidedefault p1.cb_mcol
+	}
+	if Hcc(p1.cb_mcol) {
+		optionarg /quoted p1.cl_mcol
+	}
+	optionarg p1.cb_msize
+	if p1.ck_mlab {
+		require p1.vl_mlab
+		optionarg p1.vl_mlab
+		optionarg p1.cb_mlsiz
+		if !Hcc(p1.cb_mlcol) {
+			optionarg /hidedefault p1.cb_mlcol
+		}
+		if Hcc(p1.cb_mlcol) {
+			optionarg /quoted p1.cl_mlcol
+		}
+		optionarg p1.cb_mlpos
+	}
+END
+
+
+/* Common opts for area, bar, spike, and dropline */
+PROGRAM p1_common_area_opts
+BEGIN
+	if !Hcc(p1.cb_blcol) {
+		optionarg /hidedefault p1.cb_blcol
+	}
+	if Hcc(p1.cb_blcol) {
+		optionarg /quoted p1.cl_blcol
+	}
+  	optionarg p1.cb_blwid
+  	optionarg /hidedefault p1.en_base
+
+
+	// bfcol is used with area and bar
+	if !Hcc(p1.cb_bfcol) {
+		optionarg /hidedefault p1.cb_bfcol
+	}
+	if Hcc(p1.cb_bfcol) {
+		optionarg /quoted p1.cl_bfcol
+	}
+
+	// blpat is used with area
+	optionarg p1.cb_blpat
+
+	// blpat2 is used with spike and dropline
+	optionarg p1.cb_blpat2
+
+	// barwidth is used with bar
+	optionarg /hidedefault p1.en_barwidth
+
+	// capsize is used with tsrline rcap only
+	optionarg /hidedefault p1.cb_capsize
+END
+
+PROGRAM p1_tsline_sub
+BEGIN
+	varlist p1.vn_var
+	ifexp p1.ex_if
+	beginoptions
+		optionarg p1.cb_tstype
+		put " " /program p1_line_opts
+		put " " /program p1_scatter_opts
+		option p1.rb_horizontal
+		put " " /program p1_common_area_opts
+	endoptions
+END
+
+PROGRAM p1_tsrline_sub
+BEGIN
+	varlist p1.vn_var
+	varlist p1.vn_var2
+	ifexp p1.ex_if2
+	beginoptions
+		optionarg p1.cb_tsrtype
+		put " " /program p1_rline_opts
+		put " " /program p1_scatter_opts
+		option p1.rb_horizontal
+		put " " /program p1_common_area_opts
+	endoptions
+END
+
+PROGRAM p1_output
+BEGIN
+	if p1.rb_tsline {
+		put "(tsline "
+		put /program p1_tsline_sub
+		put ") "
+	}
+	if p1.rb_tsrline {
+		put "(tsrline "
+		put /program p1_tsrline_sub
+		put ") "
+	}
+END

@@ -1,0 +1,6 @@
+*! version 1.0.0  22dec2002
+sequence 5430
+label "emidblue"
+
+* 5425 C
+set rgb "123 146 168"

@@ -1,0 +1,82 @@
+/*
+	Include file for the common items found in corr2data and drawnorm
+	Will not work with small or medium sizes
+
+*! VERSION 1.0.3  28aug2006
+
+*/
+  GROUPBOX gb_generate  _lft      _top      _iwd      _ht9h,		/*
+		*/ label("Generate")
+  TEXT     tx_var       _indent   _ss       _cwd2     .,		/*
+		*/ label("New variables:")
+  DEFINE   holdx @x
+
+  CHECKBOX ck_clear     _lft2     @         @         .,		/*
+		*/ option(clear) nomem					/*
+		*/ label("Replace the current dataset") 
+
+  EDIT     ed_var       holdx     _ss       _ibwd     .,		/*
+		*/ label("Generate variables")
+
+  RADIO    rb_ndef      _lft2     _ls       _cwd2     ., first		/*
+		*/ clickon("gaction main.sp_n.disable")			/*
+		*/ label("Current number of observations")
+  DEFINE _x _ilft
+  DEFINE _y @y
+  DEFINE _cx _cwd2
+  INCLUDE _type
+  RADIO    rb_n         _lft2     @         _rbwd     ., last		/*
+		*/ clickon("gaction main.sp_n.enable")			/*
+		*/ label("")
+  SPINNER  sp_n         _rbsep    @         _spwd     .,		/*
+		*/ min(2) max(10000000) default(c(N))			/*
+		*/ option(n)						/*
+		*/ label("Number of observations")
+  TEXT     tx_n         _spsep    @         _rbspr2b  .,		/*
+		*/ label("Observations")
+
+  CHECKBOX ck_corr      _lft      +45       _iwd      _ht11,		/*
+		*/ groupbox						/*
+*/ label("Specify covariance structure: (default: uncorrelated and unit variance)")/*
+		*/ clickon("script ck_corr_on")				/*
+		*/ clickoff("script ck_corr_off")			/*
+		*/
+
+  TEXT     tx_sds       _ilft     _ss       _cwd2     .,		/*
+		*/ label("Std. dev. vector: (default: unit variance)")
+  DEFINE   holdy @y
+  COMBOBOX cb_sds       @         _ss       @         ., dropdown	/*
+		*/ contents(vector)					/*
+		*/ option(sds)						/*
+		*/ label("Standard deviations vector") 
+
+  RADIO    rb_corr      _lft2     holdy     _cwd4_3   ., first		/*
+		*/ clickon("script cr_on")				/*
+		*/ label("Correlation:")
+  RADIO    rb_cov       _ilft4_4  @         @         ., last		/*
+		*/ clickon("script cv_on")				/*
+		*/ label("Covariance:")
+  COMBOBOX cb_corr      _lft2     _ss       _cwd2     ., dropdown	/*
+		*/ contents(matrix)					/*
+		*/ label("Correlation")
+  TEXT     tx_cstorage  @         _ms       @         .,		/*
+  		*/ label("Storage mode:")
+  COMBOBOX cb_cstorage  @         _ss       _cwd4_3   .,		/*
+  		*/ label("Storage mode") 				/*
+  		*/ dropdownlist						/*
+  		*/ contents(cstorage_list) 				/*
+  		*/ option(cstorage)
+  CHECKBOX ck_forcepsd  _ilft     _ms       _ibwd     .,		/*
+*/ label("Force the covariance/correlation matrix to be positive semidefinite")	/*
+		*/ option(forcepsd)
+
+  CHECKBOX ck_means     _lft      _xls      _iwd      _ht3,		/*
+		*/ groupbox						/*
+	*/ label("Specify mean vector: (default: mean zero)")	/*
+		*/ clickon("gaction main.cb_means.enable")		/*
+		*/ clickoff("gaction main.cb_means.disable")		/*
+		*/
+  COMBOBOX cb_means     _ilft     _ms       _cwd1     ., dropdown	/*
+		*/ contents(vector)					/*
+		*/ option(means)					/*
+		*/ label("User-specified mean vector")

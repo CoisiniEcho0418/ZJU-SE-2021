@@ -1,0 +1,207 @@
+/*
+	xtmixed_estat
+
+*!  VERSION 1.0.4  01jun2009
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_large
+DEFINE _dlght 400
+INCLUDE header
+
+HELP hlp1, view("help xtmixed postestimation")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	create BOOLEAN has_FactorVars
+	has_FactorVars.settrue
+	program sum_bu_facvars_ckResults
+	program vce_bu_facvars_ckResults
+END
+
+DIALOG main, label("estat -  Postestimation tools for xtmixed") tabtitle("Main")
+BEGIN
+  TEXT     tx_subcmd		_lft	_top	_cwd1	.,		///
+  	label("Reports and statistics: (subcommand)")
+  LISTBOX  lb_subcmd		@	_ss	_iwd	70,		///
+  	contents(main_subcommand_contents)				///
+  	values(main_subcommand_values)					///
+  	onselchangelist(main_subcommand_scripts)
+
+  DEFINE holdy 110
+  // group
+  TEXT     tx_gpnote		_lft	holdy	_iwd	.,		///
+  	label("Click OK or Submit to summarize the composition of the nested groups")
+
+  // recovariance options
+  CHECKBOX ck_level		_lft	holdy	_iwd	.,		///
+	onclickon(script level_on)					///
+	onclickoff(script level_off)					///
+	label("Specify level at which the random-effects covariance matrix is to be displayed")
+  COMBOBOX cb_level	       _indent2	_ss	_vnwd	.,		///
+	dropdown							///
+	contents(e(ivars))						///
+	option(level) 							///
+	label("Level at which the random-effects covariance matrix is to be displayed")
+  TEXT     tx_level		_vnsep	@	200	.,		///
+  	label("Level")
+
+  // Information criteria
+  CHECKBOX ck_n			_lft	holdy	_iwd	.,		///
+	onclickon(main.sp_n.enable)					///
+	onclickoff(main.sp_n.disable)					///
+	label("Number of observations for calculating BIC")
+  SPINNER sp_n			_indent2 _ss	_spwd	.,		///
+	default(e(N)) min(1) max(e(N))					///
+	option(n)
+
+  INCLUDE estat_sum
+  INCLUDE estat_vce
+END
+
+INCLUDE estat_sum_pr
+INCLUDE estat_vce_pr
+
+LIST main_subcommand_contents
+BEGIN
+  	 "Summarize the composition of the nested groups (group)"
+  	 "Estimated random-effects covariance matrix (recovariance)"
+ 	 "Information criteria (ic)"
+ 	 "Summarize estimation sample (summarize)"
+ 	 "Covariance matrix estimates (vce)"
+END
+
+LIST main_subcommand_values
+BEGIN
+	group
+	recovariance
+	ic
+	summarize
+	vce
+END
+
+LIST main_subcommand_scripts
+BEGIN
+	script sel_group
+	script sel_recovariance
+	script sel_ic
+	script sel_summarize
+	script sel_vce
+END
+
+SCRIPT sel_group
+BEGIN
+	main.ck_n.hide
+	main.sp_n.hide
+	script main_summ_off
+	program vce_off
+	script non_basic_opt_off
+	main.tx_gpnote.show
+END
+
+SCRIPT sel_recovariance
+BEGIN
+	main.ck_n.hide
+	main.sp_n.hide
+	script main_summ_off
+	program vce_off
+	script non_basic_opt_off
+	script recovariance_on
+END
+
+SCRIPT sel_ic
+BEGIN
+	main.ck_n.show
+	main.sp_n.show
+	script main_summ_off
+	program vce_off
+	script non_basic_opt_off
+END
+
+SCRIPT sel_summarize
+BEGIN
+	main.ck_n.hide
+	main.sp_n.hide
+	program main_summ_on
+	program vce_off
+	script non_basic_opt_off
+END
+
+SCRIPT sel_vce
+BEGIN
+	main.ck_n.hide
+	main.sp_n.hide
+	program vce_on
+	script main_summ_off
+	script non_basic_opt_off
+END
+
+SCRIPT recovariance_on
+BEGIN
+	// controls located in estat_vce
+	main.gb_matdisp.show
+	main.rb_covariance.show
+	main.rb_correlation.show
+
+	main.ck_level.setposition . 170 . .
+	main.cb_level.setposition . 190 . .
+	main.tx_level.setposition . 190 . .
+	main.ck_level.show
+	main.cb_level.show
+	main.tx_level.show
+END
+
+SCRIPT non_basic_opt_off
+BEGIN
+	main.tx_gpnote.hide
+	main.ck_level.hide
+	main.cb_level.hide
+	main.tx_level.hide
+END
+
+SCRIPT level_on
+BEGIN
+	main.cb_level.enable
+	main.tx_level.enable
+END
+
+SCRIPT level_off
+BEGIN
+	main.cb_level.disable
+	main.tx_level.disable
+END
+
+PROGRAM vl_output
+BEGIN
+	put main.vl_spec
+END
+
+PROGRAM vl_eq_output
+BEGIN
+	put main.vl_eq
+END
+
+PROGRAM command
+BEGIN
+	put "estat "
+	put main.lb_subcmd
+	put " " /program summarize_output
+	beginoptions
+		// ic options
+		optionarg main.sp_n
+		
+		// Summarize options
+		put " " /program summarize_opts_output
+
+		put /program vce_output
+
+		// other options
+		if main.ck_level {
+			require main.cb_level
+			optionarg main.cb_level
+		}
+	endoptions
+END

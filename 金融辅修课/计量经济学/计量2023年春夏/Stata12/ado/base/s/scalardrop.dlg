@@ -1,0 +1,42 @@
+/*
+  scalar drop
+
+  VERSION 1.0.0  21dec2002
+
+*/
+
+VERSION 8.0
+
+INCLUDE _std_small
+INCLUDE header
+
+HELP hlp1, view("help scalar")
+RESET res1
+
+DIALOG main, label("scalar drop - Drop scalars") tabtitle("Main")
+BEGIN
+  RADIO    rb_snames    _lft      _top      _iwd      ., first		/*
+		*/ clickon("gaction main.cb_snames.enable")		/*
+		*/ label("Drop:")
+  COMBOBOX cb_snames    _indent2  _ss       _inwd     _ht10, append	/*
+		*/ contents(scalar)					/*
+		*/ error("Drop")					/*
+		*/ label("Drop") 
+  RADIO    rb_all       _lft      _vs10     _iwd      ., last		/*
+		*/ clickon("gaction main.cb_snames.disable")		/*
+		*/ label("Drop all scalars")
+END
+
+
+PROGRAM command
+BEGIN
+	put "scalar drop "
+	if main.rb_all {
+		put "_all"
+	}
+	if main.rb_snames {
+		require main.cb_snames
+		put main.cb_snames
+	}
+END
+

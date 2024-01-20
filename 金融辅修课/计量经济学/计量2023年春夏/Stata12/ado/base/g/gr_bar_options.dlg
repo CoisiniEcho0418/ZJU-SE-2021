@@ -1,0 +1,153 @@
+/*
+    gr_bar_options.dlg
+    
+*!  VERSION 1.0.0  02jan2007
+
+	// SCRIPTS and PROGRAMS for external use
+		* SCRIPT  gr_bar_setHistogramOn
+
+*/
+
+VERSION 10
+
+INCLUDE _std_vsmall
+DEFINE _dlght 255
+INCLUDE header_gr_child
+
+DEFINE _clwd	15
+DEFINE _wd	140
+DEFINE _sep	+145
+DEFINE _cbwd	130
+DEFINE _cbsep	+135
+
+HELP hlp1, view("help twoway_bar")
+RESET res1
+
+SCRIPT  gr_bar_setHistogramOn
+BEGIN
+	main.tx_base.hide
+	main.ed_base.hide
+	main.tx_gap.show
+	main.sp_gap.show
+	histogramOn.settrue
+END
+
+PROGRAM PREINIT_PROGRAM
+BEGIN
+	call main.tx_gap.hide
+	call main.sp_gap.hide
+	call create PBOOLEAN histogramOn
+	if histogramOn {
+		call script gr_bar_setHistogramOn
+	}
+END
+
+DIALOG main, label("Line options")
+BEGIN
+  TEXT     tx_fclr	_lft	20	_wd	.,		///
+	label("Fill color:") right
+  COMBOBOX cb_fclr	_sep	@	_cbwd	.,		///
+	dropdownlist contents(colors) option(fcolor)		///
+	onselchangelist(main_cl_fclr_sel)
+  COLOR    cl_fclr	_cbsep	@	_clwd	., option(fcolor)
+
+  TEXT     tx_intensity	_lft	_mls	_wd	.,		///
+	label("Fill intensity:") right
+  EDIT     ed_intensity	_sep	@	_cbwd	.,		///
+	option(fintensity)
+	
+  TEXT     tx_clr	_lft	_mls	_wd	.,		///
+	label("Outline color:") right
+  COMBOBOX cb_clr	_sep	@	_cbwd	.,		///
+	dropdownlist contents(colors) option(lcolor)		///
+	onselchangelist(main_cl_clr_sel)
+  COLOR    cl_clr	_vnsep	@	_clwd	., option(lcolor)
+
+  TEXT     tx_width	_lft	 _mls	_wd	.,		///
+	label("Outline width:") right
+  COMBOBOX cb_width	_sep	@	_cbwd	.,		///
+	dropdown option(lwidth)					///
+	contents(linewidths)
+
+  TEXT     tx_lpattern	_lft	_mls	_wd	.,		///
+	label("Outline pattern") right
+  COMBOBOX cb_lpattern	_sep	@	_cbwd	.,		///
+	dropdownlist option(lpattern)				///
+	contents(linepatterns)
+	
+  TEXT     tx_orient	_lft	_mls	_wd	.,		///
+	label("Orientation:") right
+  COMBOBOX cb_orient	_sep	@	_cbwd	.,		///
+	dropdownlist 						///
+	contents(orientation_contents)  			///
+	values(orientation_values)
+	
+  TEXT     tx_barwidth	_lft	_mls	_wd	.,		///
+	label("Bar width:") right
+  EDIT     ed_barwidth	_sep	@	_cbwd	.,		///
+	option(barwidth)
+	
+  TEXT     tx_base	_lft	_mls	_wd	.,		///
+	label("Base line:") right
+  EDIT     ed_base	_sep	@	_cbwd	.,		///
+	option(base)
+
+  /* for histogram */
+  TEXT     tx_gap	_lft	@	_wd	.,		///
+	label("Bar gap:") right
+  SPINNER  sp_gap	_sep	@	_cbwd	.,		///
+	option(gap) min(0) max(100) default(0)
+END
+
+LIST main_cl_clr_sel
+BEGIN
+	main.cl_clr.hide
+	main.cl_clr.show
+	main.cl_clr.hide
+END
+
+LIST main_cl_fclr_sel
+BEGIN
+	main.cl_fclr.hide
+	main.cl_fclr.show
+	main.cl_fclr.hide
+END
+
+LIST orientation_contents
+BEGIN
+	Default
+	Horizontal
+	Vertical
+END
+
+LIST orientation_values
+BEGIN
+	""
+	horizontal
+	vertical
+END
+
+PROGRAM command
+BEGIN	
+	if main.cl_fclr.isvisible() {
+		optionarg /quoted main.cl_fclr
+	}
+	if ! main.cl_fclr.isvisible() {
+		optionarg /hidedefault main.cb_fclr
+	}
+	optionarg main.ed_intensity    
+	
+	if main.cl_clr.isvisible() {
+		optionarg /quoted main.cl_clr
+	}
+	if ! main.cl_clr.isvisible() {
+		optionarg /hidedefault main.cb_clr
+	}	
+	optionarg /hidedefault main.cb_width
+	optionarg /hidedefault main.cb_lpattern	
+	
+	put " " main.cb_orient
+	optionarg main.ed_barwidth
+	optionarg main.ed_base
+	optionarg /hidedefault main.sp_gap
+END

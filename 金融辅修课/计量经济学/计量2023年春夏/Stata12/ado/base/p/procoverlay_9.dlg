@@ -1,0 +1,265 @@
+/*
+    procoverlay_9.dlg
+
+*!  VERSION 1.0.1  08sep2006 (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+
+HELP hlp1, view("help procoverlay")
+RESET res1
+
+DIALOG main, tabtitle("Main") label("procoverlay - Procrustes overlay plot")
+BEGIN
+  CHECKBOX ck_autoaspect   _lft        _top      _gwd1     .,		///
+  		option(autoaspect)					///
+  		label("Automatically adjust the aspect ratio based on the data")
+
+
+  GROUPBOX gb_tgtopts      _lft        _ls       _gwd1     _ht17h,	///
+  		label("Target options")
+  DEFINE ybox @y
+  CHECKBOX ck_noLabelTgt   _igft       _ss       _gwd2     .,		///
+  		label("Do not show default observation labels")		///
+  		option(nolabel)
+
+/**** BEGIN -- Scatter options ****/
+  TEXT     tx_tmsymbol     _igft       _ls       _txwd     .,		///
+		label("Symbol:") right
+  COMBOBOX cb_tmsymbol     _txsep      @         _txr4gi   .,		///
+		option(msymbol)						///
+		dropdownlist						///
+		contents(symbols)
+
+  TEXT     tx_tmcolor     _igft       _ls       _txwd      .,		///
+		label("Color:") right
+  COMBOBOX cb_tmcolor     _txsep      @         _tcr4gi    .,		///
+		option(mcolor)						///
+		dropdownlist						///
+		contents(colors)					///
+		onselchangelist(main_color_tmcolor)
+  COLOR    cl_tmcolor      _tcr4gisep  @         _btwd      .,		///
+		option(mcolor)
+
+  TEXT     tx_tmsize       _lft4_2gi   @         _txwd      .,		///
+		label("Size:") right
+  COMBOBOX cb_tmsize       _txsep      @         _txr4gi    .,		///
+		option(msize)						///
+		dropdownlist 						///
+		contents(symbolsizes)
+
+  GROUPBOX gb_tmlabel      _igft       _ls       _gwd2	    85,		///
+		label("Labels")
+
+  TEXT     tx_tmlabel      _iigft      _ss       _txswd     .,		///
+		label("Variable:") right
+  VARNAME  vn_tmlabel      _txssep     @         _txr4gi    .,		///
+  		option(mlabel)
+
+  TEXT     tx_tmlcolor     _lft4_2gi   @         _txswd	    .,		///
+		label("Color:") right
+  COMBOBOX cb_tmlcolor     _txssep     @         _tcr4gi    .,		///
+		option(mlabcolor)					///
+		dropdownlist						///
+		contents(colors)					///
+		onselchangelist(main_color_tmlcolor)
+  COLOR    cl_tmlcolor     _tcr4gisep  @         _btwd      .,		///
+		option(mlabcolor)
+
+  TEXT     tx_tmlsize      _iigft      _ls       _txswd     .,		///
+		label("Size:") right
+  COMBOBOX cb_tmlsize      _txssep     @         _txr4gi    .,		///
+		option(mlabsize) 					///
+		dropdownlist						///
+		contents(textsizes)
+
+  TEXT     tx_tmlposition    _lft4_2gi @         _txswd     .,		///
+		label("Position:") right
+  COMBOBOX cb_tmlposition    _txssep   @         _txr4gi    .,		///
+		option(mlabposition) 					///
+		dropdownlist						///
+		contents(clockpos)
+/**** END   -- Scatter options  ****/
+
+  GROUPBOX gb_srcopts      _gft2       ybox      _gwd1     _ht17h,	///
+  		label("Source options")
+  CHECKBOX ck_noLabelSrc   _igft2      _ss       _gwd2     .,		///
+  		label("Do not show default observation labels")		///
+  		option(nolabel)
+/**** BEGIN -- Scatter options ****/
+  TEXT     tx_smsymbol     _igft2      _ls       _txwd     .,		///
+		label("Symbol:") right
+  COMBOBOX cb_smsymbol     _txsep      @         _txr4gi   .,		///
+		option(msymbol)						///
+		dropdownlist						///
+		contents(symbols)
+
+  TEXT     tx_smcolor     _igft2      _ls       _txwd      .,		///
+		label("Color:") right
+  COMBOBOX cb_smcolor     _txsep      @         _tcr4gi    .,		///
+		option(mcolor)						///
+		dropdownlist						///
+		contents(colors)					///
+		onselchangelist(main_color_smcolor)
+  COLOR    cl_smcolor      _tcr4gisep  @         _btwd      .,		///
+		option(mcolor)
+
+  TEXT     tx_smsize       _lft4_4gi   @         _txwd      .,		///
+		label("Size:") right
+  COMBOBOX cb_smsize       _txsep      @         _txr4gi    .,		///
+		option(msize)						///
+		dropdownlist 						///
+		contents(symbolsizes)
+
+  GROUPBOX gb_smlabel      _igft2      _ls       _gwd2	    85,		///
+		label("Labels")
+
+  TEXT     tx_smlabel      _iigft2     _ss       _txswd     .,		///
+		label("Variable:") right
+  VARNAME  vn_smlabel      _txssep     @         _txr4gi    .,		///
+  		option(mlabel)
+
+  TEXT     tx_smlcolor     _lft4_4gi   @         _txswd	    .,		///
+		label("Color:") right
+  COMBOBOX cb_smlcolor     _txssep     @         _tcr4gi    .,		///
+		option(mlabcolor)					///
+		dropdownlist						///
+		contents(colors)					///
+		onselchangelist(main_color_smlcolor)
+  COLOR    cl_smlcolor     _tcr4gisep  @         _btwd      .,		///
+		option(mlabcolor)
+
+  TEXT     tx_smlsize      _iigft2     _ls       _txswd     .,		///
+		label("Size:") right
+  COMBOBOX cb_smlsize      _txssep     @         _txr4gi    .,		///
+		option(mlabsize) 					///
+		dropdownlist						///
+		contents(textsizes)
+
+  TEXT     tx_smlposition    _lft4_4gi @         _txswd     .,		///
+		label("Position:") right
+  COMBOBOX cb_smlposition    _txssep   @         _txr4gi    .,		///
+		option(mlabposition) 					///
+		dropdownlist						///
+		contents(clockpos)
+/**** END   -- Scatter options  ****/
+END
+
+LIST main_color_smcolor
+BEGIN
+	main.cl_smcolor.hide
+	main.cl_smcolor.show
+	main.cl_smcolor.hide
+END
+
+LIST main_color_smlcolor
+BEGIN
+	main.cl_smlcolor.hide
+	main.cl_smlcolor.show
+	main.cl_smlcolor.hide
+END
+
+LIST main_color_tmcolor
+BEGIN
+	main.cl_tmcolor.hide
+	main.cl_tmcolor.show
+	main.cl_tmcolor.hide
+END
+
+LIST main_color_tmlcolor
+BEGIN
+	main.cl_tmlcolor.hide
+	main.cl_tmlcolor.show
+	main.cl_tmlcolor.hide
+END
+
+INCLUDE ifin
+INCLUDE gr_twoway
+INCLUDE gby
+
+SCRIPT POSTINIT
+BEGIN
+	script gby_setViewByopts
+END
+
+PROGRAM main_source_options_output
+BEGIN
+	option main.ck_noLabelSrc
+	optionarg /hidedefault main.cb_smsymbol
+	if H(main.cl_smcolor) {
+		optionarg /hidedefault main.cb_smcolor
+	}
+	if !H(main.cl_smcolor) {
+		optionarg /quoted main.cl_smcolor
+	}
+	optionarg /hidedefault main.cb_smsize
+	optionarg /hidedefault main.vn_smlabel
+	if H(main.cl_smlcolor) {
+		optionarg /hidedefault main.cb_smlcolor
+	}
+	if !H(main.cl_smlcolor) {
+		optionarg /quoted main.cl_smlcolor
+	}
+	optionarg /hidedefault main.cb_smlsize
+	optionarg /hidedefault main.cb_smlposition
+END
+
+PROGRAM main_target_options_output
+BEGIN
+	option main.ck_noLabelTgt
+	optionarg /hidedefault main.cb_tmsymbol
+	if H(main.cl_tmcolor) {
+		optionarg /hidedefault main.cb_tmcolor
+	}
+	if !H(main.cl_tmcolor) {
+		optionarg /quoted main.cl_tmcolor
+	}
+	optionarg /hidedefault main.cb_tmsize
+	optionarg /hidedefault main.vn_tmlabel
+	if H(main.cl_tmlcolor) {
+		optionarg /hidedefault main.cb_tmlcolor
+	}
+	if !H(main.cl_tmlcolor) {
+		optionarg /quoted main.cl_tmlcolor
+	}
+	optionarg /hidedefault main.cb_tmlsize
+	optionarg /hidedefault main.cb_tmlposition
+END
+
+PROGRAM command
+BEGIN
+	put "procoverlay "
+	put /program ifin_output
+	beginoptions
+		option main.ck_autoaspect
+
+		if main.ck_noLabelTgt | main.cb_tmsymbol 		///
+			| main.cb_tmcolor | !H(main.cl_tmcolor)		///
+			| main.cb_tmsize | main.vn_tmlabel		///
+			| main.cb_tmlcolor | !H(main.cl_tmlcolor)	///
+			| main.cb_tmlsize | main.cb_tmlposition		///
+		{
+			put " " "targetopts("
+			put /program main_target_options_output
+			put ") "
+		}
+
+		if main.ck_noLabelSrc | main.cb_smsymbol 		///
+			| main.cb_smcolor | !H(main.cl_smcolor)		///
+			| main.cb_smsize | main.vn_smlabel		///
+			| main.cb_smlcolor | !H(main.cl_smlcolor)	///
+			| main.cb_smlsize | main.cb_smlposition		///
+		{
+			put " " "sourceopts("
+			put /program main_source_options_output
+			put ") "
+		}
+
+		put " " /program gr_twoway_output
+		put " " /program gby_byopts_output
+	endoptions
+END

@@ -1,0 +1,64 @@
+/*
+    gr_histogram_options.dlg
+    
+*!  VERSION 1.0.0  06jun2006 
+
+*/
+
+VERSION 10
+
+INCLUDE _std_msmall
+INCLUDE header_gr_child
+
+DEFINE _clwd 15
+
+HELP hlp1, view("help twoway_histogram")
+RESET res1
+
+DIALOG main, label("Histogram options") tabtitle("Main")
+BEGIN
+  GROUPBOX gb_scale		_lft	_top	_iwd	_ht8,	///
+	label("Scale")
+  RADIO    rb_density		_ilft	_ss	_ibwd	.,	///
+	first							///
+	label("Scale so that sum of areas is equal 1 (default)")
+  RADIO    rb_fraction		@	_ss	@	.,	///
+	option(fraction)					///
+	label("Scale so that sum of heights is equal 1")
+  RADIO    rb_frequency		@	_ss	@	.,	///
+	option(frequency)					///
+	label("Scale to number of observations in each category")
+  RADIO    rb_percent		_ilft	_ss	_ibwd	.,	///
+	last							///
+	option(percent)						///
+	label("Scale so that sum of heights is equal 100 percent")
+	
+  EDIT     ed_start		_lft	+45	_en7wd	.,	///
+	option(start)
+  TEXT     tx_start		_en7sep	@	300	.,	///
+	label("Theoretical minimum value")
+	
+  EDIT     ed_bins		_lft	_ls	_en7wd	.,	///
+	option(bin)
+  TEXT     tx_bins		_en7sep	@	300	.,	///
+	label("Number of bins to use with continuous data")
+END
+
+SCRIPT gr_histogram_setContinuousOn
+BEGIN
+	main.tx_bins.enable
+	main.ed_bins.enable
+END
+
+SCRIPT gr_histogram_setDiscreteOn
+BEGIN
+	main.tx_bins.disable
+	main.ed_bins.disable
+END
+
+PROGRAM command
+BEGIN
+	option radio(main rb_fraction rb_frequency rb_percent)
+	optionarg main.ed_start
+	optionarg main.ed_bins
+END

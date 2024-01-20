@@ -1,0 +1,7 @@
+*! version 1.0.0  22dec2002
+sequence 1120
+label "Small"
+
+set val 1.04166
+
+* 3 pt based on a 4 inch high graph

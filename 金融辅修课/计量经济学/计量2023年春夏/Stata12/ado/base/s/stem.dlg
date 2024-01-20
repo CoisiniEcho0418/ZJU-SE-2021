@@ -1,0 +1,126 @@
+/*
+	stem
+
+*!  VERSION 1.1.0  10jan2005
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+INCLUDE _ht260
+INCLUDE header
+
+HELP hlp1, view("help stem")
+RESET res1
+
+DIALOG main, label("stem - Stem-and-leaf displays") tabtitle("Main")
+BEGIN
+  TEXT     tx_var        _lft     _top     _iwd        .,		/*
+		*/ label("Variable:")
+  VARNAME  vn_var           @      _ss    _vnwd        .,		/*
+		*/ label("Variable")
+
+  CHECKBOX ck_prune      _lft 	   _ls     _iwd	       .,		/*
+		*/ option("prune")					/*
+  		*/ label("Do not print stems that have no leaves")
+
+  CHECKBOX ck_round         @      _ls    _ckwd        .,		/*
+		*/ label("")						/*
+		*/ clickon("gaction main.sp_round.enable")		/*
+		*/ clickoff("gaction main.sp_round.disable")
+  SPINNER  sp_round    _cksep        @    _spwd        .,		/*
+		*/ option("round")					/*
+		*/ label("Round")					/*
+		*/ min(1) 						/*
+		*/ max(10000)
+  TEXT     tx_round    _spsep        @   _ckspr        .,		/*
+		*/ label("Round data to this value")
+
+  CHECKBOX ck_digits     _lft      _ls    _ckwd        .,		/*
+		*/ label("")						/*
+		*/ clickon("gaction main.sp_digits.enable")		/*
+		*/ clickoff("gaction main.sp_digits.disable")
+  SPINNER  sp_digits   _cksep        @    _spwd        .,		/*
+		*/ option("digits")					/*
+		*/ label("Digits per leaf")				/*
+		*/ min(1) 						/*
+		*/ max(10000)
+  TEXT     tx_digits   _spsep        @   _ckspr        .,		/*
+		*/ label("Digits per leaf")
+
+  GROUPBOX gb_lines      _lft      _ls     _iwd     _ht7,		/*
+		*/ label("Lines (number of stems per interval of 10^digits)")
+  RADIO    rb_default _indent      _ss    _inwd        .,		/*
+  		*/ first						/*
+		*/ label("Use the default") 				/*
+		*/ clickon("script clickon_default")
+  RADIO    rb_lines         @      _ms    _rbwd        .,		/*
+		*/ label("") 						/*
+		*/ clickon("script clickon_lines")
+  DEFINE   holdx @x
+  SPINNER  sp_lines  _indent2        @    _spwd	       .,		/*
+		*/ option("lines")					/*
+  		*/ label("Lines")					/*
+		*/ min(10) 						/*
+		*/ max(10000)
+  TEXT     tx_lines    _spsep	     @    _rbsprb      .,		/*
+		*/ label("Lines")
+
+  RADIO    rb_width     holdx      _ms    _rbwd        .,		/*
+  		*/ last							/*
+		*/ label("")						/*
+		*/ clickon("script clickon_width")
+  SPINNER  sp_width  _indent2        @    _spwd	       .,		/*
+		*/ option("width")					/*
+  		*/ label("Lines")					/*
+		*/ min(1) 						/*
+		*/ max(10000)
+  TEXT     tx_width    _spsep	     @    _rbsprb      .,		/*
+		*/ label("Stem width (lines = (10^digits)/width)")
+
+END
+
+INCLUDE byifin
+
+SCRIPT clickon_default
+BEGIN
+main.sp_lines.disable
+main.sp_width.disable
+END
+
+SCRIPT clickon_lines
+BEGIN
+main.sp_lines.enable
+main.sp_width.disable
+END
+
+SCRIPT clickon_width
+BEGIN
+main.sp_width.enable
+main.sp_lines.disable
+END
+
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "stem "
+	varlist main.vn_var
+	INCLUDE _ifin_pr
+	beginoptions
+		if main.ck_digits {
+			optionarg main.sp_digits
+		}
+		if main.rb_lines {
+			optionarg main.sp_lines
+		}
+		if main.rb_width {
+			optionarg main.sp_width
+		}
+		if main.ck_round {
+			optionarg main.sp_round
+		}
+		option main.ck_prune
+	endoptions
+END

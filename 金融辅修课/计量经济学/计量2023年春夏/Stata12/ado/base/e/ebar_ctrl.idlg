@@ -1,0 +1,37 @@
+/*
+  Include file for easy bar and hbar graph controls
+
+*!  VERSION 1.0.1  22apr2005
+
+*/
+
+  TEXT     tx_x        _lft	   _top      _inwd       .,	///
+  	label("Statistic:")
+  COMBOBOX cb_stat     @           _ss	     _vnwd       .,	///
+  	label("Statistic")					///
+  	dropdownlist						///
+  	contents(main_stat) values(main_stat_val)		///
+  	onselchangelist(main_stats_change)
+  TEXT     tx_var      _vlx        _top      _vlwd       .,	///
+  	label("Variables:")
+  VARLIST  vl_var      @           _ss	     @           .,	///
+  	label("Variables")
+  TEXT     tx_perct    _lft        _ms       _vnwd       .,	///
+    	label("Percentile:")
+  SPINNER  sp_perct    @           _ss       _en7wd      .,	///
+    	label("Percentile")					///
+  	min(1) max(99) default(50)
+  GROUPBOX gb_bar_opts _lft        _ls       _iwd        _ht5,
+  CHECKBOX ck_stack    _ilft       _ss       _inwd       .,	///
+	label("Stack bars (over Y-variables)")			///
+	option(stack)
+  CHECKBOX ck_perct    @           _ms       @           .,     ///
+	label("Percentages of total (over Y-variables)")	///
+	option(percentages)
+
+  GROUPBOX gb_orientation	_lft	+45	_iwd	_ht4,	///
+  	label("Orientation")
+  RADIO    rb_vertical		_ilft	_ss	_inwd	.,	///
+  	first label("Vertical bars")
+  RADIO	   rb_horizontal	@	_ss	@	.,	///
+  	last label("Horizontal bars")

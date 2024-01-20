@@ -1,0 +1,385 @@
+/*
+    gr_legend_options.dlg
+    
+*!  VERSION 1.0.1  28apr2011
+    	
+	// SCRIPTS and PROGRAMS for external use
+		*
+*/
+
+VERSION 10.0
+
+INCLUDE _std_mlarge
+DEFINE _dlght 300
+INCLUDE header_gr_child
+
+DEFINE _clwd	15
+DEFINE _wd	150
+DEFINE _sep	+155
+DEFINE _wd2	140
+DEFINE _sep2	+145
+DEFINE _cbwd	120
+DEFINE _cbsep	+125
+
+INCLUDE gr_orientation
+
+HELP hlp1, view("help legend_options")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	create STRING tmp
+	create ARRAY  tmpArray
+	create STRING labels_marginResult
+END
+
+SCRIPT POSTINIT
+BEGIN
+	script gr_titles_setLegend_on
+	program labels_checkMarginResult
+END
+
+DIALOG main, tabtitle("Organization")
+BEGIN
+  GROUPBOX	gb_organization	_lft	_top	_iwd	_ht25,	///
+	label("Organization")
+
+  TEXT		tx_layout	_ilft   _ss	_wd	.,	///
+	label("Rows/Columns:") right
+  COMBOBOX	cb_layout	_sep	@	_cbwd	.,	///
+	dropdownlist 						///
+	contents(rows_columns) values(rows_columns_val)		///
+	onselchangelist(rows_columns_sel)
+  SPINNER	sp_rowcol	_cbsep	@	50	.,	///
+	default(1)
+  TEXT		tx_rowcol	+55	@	80	.,	///
+	label("Rows")
+
+  TEXT		tx_stack	_ilft	_mls	_wd	.,	///
+	label("Stack symbols and text:") right
+  COMBOBOX	cb_stack	_sep	@	_cbwd	.,	///
+	dropdownlist 						///
+	contents(yesno) values(stack_val)
+
+  TEXT		tx_colfirst	_ilft	_mls	_wd	.,	///
+	label("Key sequence:") right
+  COMBOBOX	cb_colfirst	_sep	@	_cbwd	.,	///
+	dropdownlist 						///
+	contents(key_sequence) 	values(key_sequence_val)
+	
+  TEXT		tx_textfirst	_ilft	_mls	_wd	.,	///
+	label("Symbol order:") right
+  COMBOBOX	cb_textfirst	_sep	@	_cbwd	.,	///
+	dropdownlist 						///
+	contents(symbol_order) 	values(symbol_order_val)
+	
+  TEXT		tx_placement	_ilft	_mls	_wd	.,	///
+	label("Symbol alignment:") right
+  COMBOBOX	cb_placement	_sep	@	_cbwd	.,	///
+	dropdownlist 						///
+	contents(compass) option(symplacement)
+	
+  TEXT		tx_rowgap	_ilft	_mls	_wd	.,	///
+	label("Row gap:") right
+  COMBOBOX	cb_rowgap	_sep	@	_cbwd	.,	///
+	option(rowgap) dropdown contents(textsizes)
+
+  TEXT		tx_colgap	_ilft	_mls	_wd	.,	///
+	label("Column gap:") right
+  COMBOBOX	cb_colgap	_sep	@	_cbwd	.,	///
+	option(colgap) dropdown contents(textsizes)
+
+  TEXT		tx_keygap	_ilft	_mls	_wd	.,	///
+	label("Key gap:") right
+  COMBOBOX	cb_keygap	_sep	@	_cbwd	.,	///
+	option(keygap) dropdown contents(textsizes)
+
+  CHECKBOX	ck_all		_ilft	_ls	_ibwd	.,	///
+	option(all) 						///
+	label("Generate keys for all symbols: (allow duplicates)")
+END
+
+LIST key_sequence
+BEGIN
+	"Default"
+	"Across first"
+	"Down first"
+END
+LIST key_sequence_val
+BEGIN
+	""
+	"nocolfirst"
+	"colfirst"
+END
+
+LIST symbol_order
+BEGIN
+	"Default"
+	"Symbols first"
+	"Labels first"
+END
+LIST symbol_order_val
+BEGIN
+	""
+	"notextfirst"
+	"textfirst"
+END
+
+LIST stack_val
+BEGIN
+	""
+	"stack"
+	"nostack"
+END
+
+//**
+LIST rows_columns
+BEGIN
+	"Default"
+	"Rows"
+	"Columns"
+END
+LIST rows_columns_val
+BEGIN
+	""
+	"rows"
+	"cols"
+END
+LIST rows_columns_sel
+BEGIN
+	script row_col_value_hide
+	script row_value_show
+	script col_value_show
+END
+SCRIPT row_col_value_hide
+BEGIN
+	main.sp_rowcol.hide
+	main.tx_rowcol.hide
+END
+SCRIPT row_value_show
+BEGIN
+	main.sp_rowcol.show
+	main.tx_rowcol.show
+	main.tx_rowcol.setlabel "Rows"
+END
+SCRIPT col_value_show
+BEGIN
+	main.sp_rowcol.show
+	main.tx_rowcol.show
+	main.tx_rowcol.setlabel "Columns"
+END
+//--
+
+PROGRAM main_output
+BEGIN
+	put main.cb_colfirst
+	put " " main.cb_textfirst
+	optionarg /hidedefault main.cb_placement
+	put " " main.cb_stack 
+	if main.cb_layout & main.cb_layout.isvisible() {
+		put " " main.cb_layout "("
+		put main.sp_rowcol
+		put ")"
+	}
+	optionarg main.cb_rowgap
+	optionarg main.cb_colgap
+	optionarg main.cb_keygap
+	option main.ck_all
+END
+
+DIALOG labels, tabtitle("Labels")
+BEGIN
+  GROUPBOX	gb_text	_lft	_top	_iwd	_ht22h,	///
+	label("Labels")
+  TEXT     tx_size	_ilft	_ss	_wd	.,		///
+	label("Size:") right
+  COMBOBOX cb_size	_sep	@	_cbwd	.,		///
+	dropdown contents(textsizes) option(size)
+
+  TEXT     tx_clr	_ilft	_mls	_wd	.,		///
+	label("Color:") right	
+  COMBOBOX cb_clr	_sep	@	_cbwd	.,		///
+	dropdownlist contents(colors) option(color)		///
+	onselchangelist(labels_cl_clr_sel)
+  COLOR    cl_clr	_cbsep	@	_clwd	., 		///
+	option(color)
+	
+  TEXT     tx_margin	_ilft	_mls	_wd	.,		///
+	label("Margin:") right
+  COMBOBOX cb_margin	_sep	@	_cbwd	.,		///
+	dropdownlist contents(margin) option(margin)		///
+	onselchange(program labels_cb_margin_check)
+  BUTTON   bu_margin	_vnsep	@	_clwd	.,		///
+	label("..") tooltip("Custom margin")			///
+	onpush(script labels_show_margin_dialog)
+
+  TEXT     tx_lgap	_ilft	_mls	_wd	.,		///
+	label("Line gap:") right
+  COMBOBOX cb_lgap	_sep	@	_cbwd	.,		///
+	dropdown option(linegap) contents(textsizes)		///
+	tooltip("Useful for multiline labels")
+
+	
+  GROUPBOX gb_box	_ilft	_ls	_ibwd	_ht8,		///
+	label("Text box")
+
+  TEXT     tx_box	_iilft	_ss	_wd2	.,		///
+	label("Show box:") right
+  COMBOBOX cb_box	_sep2	@	_cbwd	.,		///
+	dropdownlist contents(yesno) values(labels_box_values)	///
+	onselchangelist(labels_box_selection)
+
+  TEXT     tx_bclr	_iilft	_mls	_wd2	.,		///
+	label("Fill color:") right
+  COMBOBOX cb_bclr	_sep2	@	_cbwd	.,		///
+	dropdownlist contents(colors) option(fcolor)		///
+	onselchangelist(labels_cl_bclr_sel)
+  COLOR    cl_bclr   	_cbsep	@	_clwd	., 		///
+	option(fcolor)
+
+  TEXT     tx_blclr	_iilft	_mls	_wd2	.,		///
+	label("Outline color:") right
+  COMBOBOX cb_blclr	_sep2    @	_cbwd	.,		///
+	dropdownlist contents(colors) option(lcolor)		///
+	onselchangelist(labels_cl_blclr_sel)
+  COLOR    cl_blclr	_cbsep	@	_clwd	., 		///
+	option(lcolor)
+END
+
+PROGRAM labels_cb_margin_check
+BEGIN
+	if labels.cb_margin.iseq("custom") {
+		call labels.bu_margin.show
+	}
+	else {
+		call labels.bu_margin.hide
+	}
+END
+
+SCRIPT labels_show_margin_dialog
+BEGIN
+	create CHILD gr_margin_create AS labels_margin_dlg
+	labels_margin_dlg.setExitString labels_marginResult
+	labels_margin_dlg.setExitAction "program labels_checkMarginResult"
+END	
+PROGRAM labels_checkMarginResult
+BEGIN
+	if labels_marginResult {
+		call labels_marginResult.tokenize tmpArray
+		call tmp.setvalue "Custom margin "
+		call tmp.append "(Left:"
+		call tmp.append class tmpArray[1]
+		call tmp.append " Right:"
+		call tmp.append class tmpArray[2]
+		call tmp.append " Bottom:"
+		call tmp.append class tmpArray[3]
+		call tmp.append " Top:"
+		call tmp.append class tmpArray[4]
+		call tmp.append ")"
+		call tmp.withvalue labels.bu_margin.settooltip "@"
+	}
+	else {
+		call labels.bu_margin.settooltip "Custom margin (not defined)"
+	}
+END
+
+LIST labels_cl_clr_sel
+BEGIN
+	labels.cl_clr.hide
+	labels.cl_clr.show
+	labels.cl_clr.hide
+END
+
+LIST labels_cl_bclr_sel
+BEGIN
+	labels.cl_bclr.hide
+	labels.cl_bclr.show
+	labels.cl_bclr.hide
+END
+
+LIST labels_cl_blclr_sel
+BEGIN
+	labels.cl_blclr.hide
+	labels.cl_blclr.show
+	labels.cl_blclr.hide
+END
+
+LIST labels_box_values
+BEGIN
+	""
+	box
+	nobox
+END
+
+LIST labels_box_selection
+BEGIN
+	script labels_box_on
+	script labels_box_on
+	script labels_box_off
+END
+
+SCRIPT labels_box_on
+BEGIN
+	labels.tx_bclr.enable
+	labels.cb_bclr.enable
+	labels.cl_bclr.enable
+	labels.tx_blclr.enable
+	labels.cb_blclr.enable
+	labels.cl_blclr.enable
+END
+
+SCRIPT labels_box_off
+BEGIN
+	labels.tx_bclr.disable
+	labels.cb_bclr.disable
+	labels.cl_bclr.disable
+	labels.tx_blclr.disable
+	labels.cb_blclr.disable
+	labels.cl_blclr.disable
+END
+
+PROGRAM labels_output
+BEGIN
+	optionarg /hidedefault labels.cb_size
+	if labels.cl_clr.isvisible() {
+		optionarg /quoted labels.cl_clr
+	}
+	if ! labels.cl_clr.isvisible() {
+		optionarg /hidedefault labels.cb_clr
+	}
+	if labels.cb_margin.isneq("custom") {
+		optionarg /hidedefault labels.cb_margin
+	}
+	else {
+		if labels_marginResult {
+			put " margin("
+			put labels_marginResult
+			put ") "
+		}
+	}
+	put " " labels.cb_box
+	if ! labels.cl_bclr.isvisible() {
+		optionarg /hidedefault labels.cb_bclr
+	}
+	if labels.cl_bclr.isvisible() {
+		optionarg /quoted labels.cl_bclr
+	}
+	if ! labels.cl_blclr.isvisible() {
+		optionarg /hidedefault labels.cb_blclr
+	}
+	if labels.cl_blclr.isvisible() {
+		optionarg /quoted labels.cl_blclr
+	}
+	optionarg labels.cb_lgap
+END
+
+INCLUDE gr_legend_region_options
+INCLUDE gr_titles
+
+PROGRAM command
+BEGIN
+	put " " /program main_output
+	put " " /program labels_output
+	put " " /program gr_legend_region_output
+	put " " /program gr_titles_output
+END

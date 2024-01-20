@@ -1,0 +1,38 @@
+/*
+  cluster drop
+
+*!  VERSION 1.1.0  28mar2005
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_small
+INCLUDE header
+HELP hlp1, view("help cluster_utility")
+RESET res1
+
+DIALOG main, label("cluster drop - Drop cluster analyses") tabtitle("Main")
+BEGIN
+  TEXT     tx_clnames   _lft      _top      _iwd      ., 		///
+	label("Cluster variable to drop:")
+  COMBOBOX cb_clnames   @         _ss       @          _ht10, append	///
+	contents(char _dta[_cl]) label("Cluster variable to drop")
+  CHECKBOX ck_all	_lft      _vs9     @          ., 		///
+	onclickon(main.cb_clnames.disable)				///
+	onclickoff(main.cb_clnames.enable)				///
+	label("Drop all cluster analyses")
+END
+
+
+PROGRAM command
+BEGIN
+	put "cluster drop "
+	if main.ck_all {
+		put "_all"
+	}
+	if ! main.ck_all {
+		require main.cb_clnames
+		put main.cb_clnames
+	}
+END

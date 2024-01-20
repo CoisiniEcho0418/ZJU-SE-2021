@@ -1,0 +1,199 @@
+/*
+  odbc_insert.dlg
+
+*! VERSION 1.0.0  19sep2008
+
+*/
+
+VERSION 10.0
+SYNCHRONOUS_ONLY
+MODAL
+
+INCLUDE _std_large
+DEFINE _dlght 385 
+INCLUDE header
+
+RESET res1
+
+PROGRAM PREINIT_PROGRAM
+BEGIN
+	call create BOOLEAN isLoading
+	call create STRING odbc_err_msg
+	call create DOUBLE command_flag
+	call isLoading.settrue
+	put "capture odbc list"
+	stata hidden immediate
+	call command_flag.setvalue 0
+END
+
+SCRIPT POSTINIT
+BEGIN
+	isLoading.setfalse
+END
+
+DIALOG main, tabtitle("Main") 				///	
+	title("Export data to an ODBC data source")
+BEGIN
+  BUTTON   bu_set_auth	_rj100	_top	100	.,	///
+	label("Authentication")				///
+	onpush(program main_set_auth)			///
+	tooltip("Click to set your database user ID and password")
+  TEXT     tx_dsn	_lft	_topph	_cwd1	.,	///
+	label("ODBC data sources:")		
+  LISTBOX  lb_dsn	_lft	_ss	_iwd	80,	///
+	nomemory					///
+	onselchange(program ds_selected)		///
+	option(dsn)					///
+	contents(.__ODBC_INFO.DSLABEL) values(.__ODBC_INFO.DS)
+
+  TEXT     tx_tables	_lft	+90	_cwd1	.,	///
+	label("Tables:")
+  COMBOBOX  cb_tables	_lft	_ss	_iwd	150,	///
+	nomemory					///
+	dropdown					///
+	append						///
+	option(table)					///
+	onselchange(program table_selected)		///
+	contents(.__ODBC_INFO.TABLE)			///
+	label("Tables")
+
+  TEXT tx_varlist	_lft	_ls	_cwd1	.,	///
+	label("Variables:")
+  VARLIST vl_varlist	@	_ss	_iwd	.,	///
+	label("Variables")
+  TEXT tx_aslist	_lft	_ls	_cwd1	.,	///
+	label("Insert variables as:")
+  COMBOBOX  cb_asvars	@	_ss	_iwd	.,	///
+	nomemory					///
+	dropdown					///
+	append						///
+	contents(.__ODBC_INFO.VARIABLES)		///
+	label("Variables")
+
+  GROUPBOX gb_iopts	_lft	_ls	_iwd	_ht4,	/// 
+	label("Insertion options") 
+  RADIO rb_insert	_ilft	_ss	_cwd1	.,	///
+	first						///
+	option(insert)					///
+	label("Append data into an existing table")
+  DEFINE y @y 
+  RADIO rb_overwrite	_lft2	y	@	.,	///
+	option(overwrite)				///
+	label("Delete data in table before writing")
+  RADIO rb_create	_ilft	_ss	@	., 	///
+	last						///
+	option(create)					///
+	label("Create new table")
+  
+  CHECKBOX ck_quoted	_lft	_xls	_iwd	.,	///
+	option(quoted)					///
+	label("Quote all values with single quotes")
+  
+END
+
+PROGRAM ds_selected
+BEGIN
+	call .__ODBC_INFO.TABLE.Arrdropall
+	call .__ODBC_INFO.VARIABLES.Arrdropall
+
+	if isLoading {
+		exit
+	}
+
+	if main.lb_dsn {
+		put "capture odbc query "
+		put `"""'
+		put main.lb_dsn
+		put `"""'
+		stata hidden immediate
+
+		call odbc_err_msg.setvalue class .__ODBC_INFO.ODBC_ERR_MSG
+	
+		if (odbc_err_msg) {
+			call command_flag.setvalue 1
+			call create CHILD odbc_error
+			call main.cb_tables.repopulate
+			call main.cb_asvars.repopulate
+		}
+		else {
+			call main.cb_tables.repopulate
+			call main.cb_asvars.repopulate
+		}
+	}
+END
+
+PROGRAM table_selected
+BEGIN
+	if isLoading {
+		exit
+	}
+	call .__ODBC_INFO.VARIABLES.Arrdropall
+	call main.cb_asvars.setvalue ""
+	
+	if main.lb_dsn  & main.cb_tables {
+		put "capture odbc describe "
+		put `"""'
+			put main.cb_tables
+		put `"""'
+		beginoptions
+			optionarg /quoted main.lb_dsn
+		endoptions
+
+		stata hidden immediate
+
+		call odbc_err_msg.setvalue class .__ODBC_INFO.ODBC_ERR_MSG
+	
+		if (odbc_err_msg) {
+			call command_flag.setvalue 2
+			call create CHILD odbc_error
+			call main.cb_asvars.repopulate
+		}
+		else {
+			call main.cb_asvars.repopulate
+		}
+	}
+END
+
+PROGRAM main_set_auth
+BEGIN
+	call create STRING odbc_insert_result // Not used
+	call create CHILD odbc_setauth
+	call odbc_setauth.setExitString "odbc_insert_result"	
+	call odbc_setauth.setExitAction "program process_setauth"	
+	
+END
+
+PROGRAM process_setauth
+BEGIN
+	if(command_flag.iseq(1)) {
+		call program ds_selected
+	}	
+	if(command_flag.iseq(2)){
+		call program table_selected
+	}	
+END
+
+PROGRAM command
+BEGIN
+	if ! main.lb_dsn | ! main.cb_tables {
+		stopbox stop `"On the "Main" tab,"'             ///
+		"A data source and table have not been selected."
+        }
+
+	put "odbc insert "
+
+	if main.vl_varlist {
+		put main.vl_varlist
+	}
+	beginoptions
+		if main.cb_asvars {
+			put `"as(""'
+			put main.cb_asvars
+			put `"")"'
+		}
+		optionarg /quoted main.lb_dsn
+		optionarg /quoted main.cb_tables
+		option main.ck_quoted
+		option radio(main rb_insert rb_create rb_overwrite)	
+	endoptions
+END

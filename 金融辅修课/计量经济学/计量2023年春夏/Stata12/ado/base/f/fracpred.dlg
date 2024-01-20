@@ -1,0 +1,47 @@
+/*
+  fracpred
+
+*! VERSION 1.1.1  26mar2005
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_large
+INCLUDE header
+HELP hlp1, view("help fracpred")
+RESET res1
+
+DIALOG main, tabtitle("Main") 					///
+	label("fracpred - Fractional polynomial regression predictions")
+BEGIN
+  TEXT     tx_newvar _lft      _top      _iwd      .,		///
+		label("New variable name:")
+  EDIT     ed_newvar _lft      _ss       _vnwd     .,		///
+		label("New variable name")
+
+  GROUPBOX gb_opts   _lft      _ls       _iwd      _ht9h,	///
+		label("Options")
+  TEXT     tx_for    _indent   _ss       _ibwd     .,		///
+		label("Compute prediction for variable:")
+  VARNAME  vn_for    @         _ss       _vnwd     .,		///
+		label("Compute prediction for variable")	///
+		option(for)
+  CHECKBOX ck_dresid @         _ls       _ibwd     .,		///
+		label("Compute deviance residuals")		///
+		option(dresid)
+  CHECKBOX ck_stdp   @         _ms       @         .,		///
+		label("Compute SEs of the fitted values")	///
+		option(stdp)
+END
+
+PROGRAM command
+BEGIN
+	put "fracpred "
+	put main.ed_newvar " "
+	beginoptions
+		optionarg main.vn_for
+		option main.ck_dresid
+		option main.ck_stdp
+	endoptions
+END

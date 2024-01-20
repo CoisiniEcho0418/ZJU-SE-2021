@@ -1,0 +1,36 @@
+/*
+	mi_copy
+
+*!  VERSION 1.0.1  12jun2009
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_vsmall
+DEFINE _dlght 100
+INCLUDE header
+
+HELP hlp1, view("help mi_copy")
+RESET res1
+
+DIALOG main, label("mi copy - Copy mi flongsep data") tabtitle("Main")
+BEGIN
+
+  TEXT tx_name		_lft	_top	_iwd	.,			///
+	label("New name:")
+  EDIT ed_name		@	_ss	@	., 			///
+	label("New name")
+  CHECKBOX ck_replace	@	_ls	@	.,			///
+	option(replace)							///
+	label("Overwrite existing files")
+END
+
+PROGRAM command
+BEGIN
+	put "mi copy "
+	put main.ed_name
+	beginoptions
+		option main.ck_replace
+	endoptions
+END

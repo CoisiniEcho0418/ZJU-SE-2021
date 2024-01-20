@@ -1,0 +1,32 @@
+/*
+  test_new_ca0.dlg
+
+*!  VERSION 1.0.0  17jun2009
+
+  keyword:  eclass
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_large
+DEFINE _dlght 80
+INCLUDE header
+
+RESET res1
+
+DIALOG main, tabtitle("Main")
+BEGIN
+  TEXT tx_coef		_lft	_top	_iwd	.,			///
+	label("Test these coefficients:")
+  VARLIST vl_coef	@	_ss	_iwd	.,			///
+	label("Test these coefficients")
+END
+
+PROGRAM command
+BEGIN
+	require main.vl_coef
+	put "("
+	put main.vl_coef
+	put ")"
+END

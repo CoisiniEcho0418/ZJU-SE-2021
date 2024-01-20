@@ -1,0 +1,220 @@
+/*
+  ratio
+
+*!  VERSION 1.2.2  11may2009
+
+  keyword:  eclass
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_large
+DEFINE _dlght 300
+INCLUDE header
+
+HELP hlp1, view("help ratio")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	program parseMessage
+	script se_createAsSvyLinearized
+	program svy_check_title
+END
+
+PROGRAM parseMessage
+BEGIN
+	if __MESSAGE.contains("__MI__") {
+		call script se_setMI_on
+	}
+END
+
+SCRIPT POSTINIT
+BEGIN
+	script se_setTitleSeCluster
+	script sub_set_over_on
+	program se_setFinalInitState
+END
+
+SCRIPT svy_is_on
+BEGIN
+	//
+END
+SCRIPT svy_is_off
+BEGIN
+	//
+END
+PROGRAM svy_check_title
+BEGIN
+	if __MESSAGE.contains("-svy-") {
+		call settitle "svy: ratio - Estimate ratios for survey data"
+	}
+END
+
+DIALOG main, tabtitle("Model")						///
+	title("ratio - Estimate ratios") // has svy title
+BEGIN
+  DEFINE col1 70
+  DEFINE colwd 120
+  DEFINE col2 200
+  DEFINE col3 330
+
+  TEXT     tx_numer  col1      _top      colwd     .,			///
+		label("Numerator")
+  TEXT     tx_denom  col2      @         @         .,			///
+		label("Denominator")
+  TEXT     tx_name   col3      @         @         .,			///
+		label("Optional label")
+
+  TEXT     tx_ratio1 _lft      _ss       55        .,			///
+  		label("Ratio 1:") right
+  VARNAME  vn_numer1 col1      @         colwd     .,			///
+		label("Numerator variable for ratio 1")
+  VARNAME  vn_denom1 col2      @         @         .,			///
+		label("Denominator variable for ratio 1")
+  EDIT     ed_name1  col3      @         160       .,			///
+		label("Name for ratio 1")
+
+  TEXT     tx_ratio2 _lft      _ms       55        .,			///
+  		label("Ratio 2:") right
+  VARNAME  vn_numer2 col1      @         colwd     .,			///
+		label("Numerator variable for ratio 2")
+  VARNAME  vn_denom2 col2      @         @         .,			///
+		label("Denominator variable for ratio 2")
+  EDIT     ed_name2  col3      @         160       .,			///
+		label("Name for ratio 2")
+
+  TEXT     tx_ratio3 _lft      _ms       55        .,			///
+  		label("Ratio 3:") right
+  VARNAME  vn_numer3 col1      @         colwd     .,			///
+		label("Numerator variable for ratio 3")
+  VARNAME  vn_denom3 col2      @         @         .,			///
+		label("Denominator variable for ratio 3")
+  EDIT     ed_name3  col3      @         160       .,			///
+		label("Name for ratio 3")
+
+  TEXT     tx_ratio4 _lft      _ms       55        .,			///
+  		label("Ratio 4:") right
+  VARNAME  vn_numer4 col1      @         colwd     .,			///
+		label("Numerator variable for ratio 4")
+  VARNAME  vn_denom4 col2      @         @         .,			///
+		label("Denominator variable for ratio 4")
+  EDIT     ed_name4  col3      @         160       .,			///
+		label("Name for ratio 4")
+
+  TEXT     tx_ratio5 _lft      _ms       55        .,			///
+  		label("Ratio 5:") right
+  VARNAME  vn_numer5 col1      @         colwd     .,			///
+		label("Numerator variable for ratio 5")
+  VARNAME  vn_denom5 col2      @         @         .,			///
+		label("Denominator variable for ratio 5")
+  EDIT     ed_name5  col3      @         160       .,			///
+		label("Name for ratio 5")
+
+  INCLUDE svy_stdize
+END
+
+INCLUDE svy_stdize_pr
+
+INCLUDE sub_by_ifin_over_subpop
+INCLUDE weights_fpi
+INCLUDE se
+INCLUDE srsrpt
+
+
+PROGRAM ratio_output
+BEGIN
+	if !(main.vn_numer1 | main.vn_numer2 | main.vn_numer3 ///
+	 | main.vn_numer4 | main.vn_numer5 ///
+	 | main.vn_denom1 | main.vn_denom2 | main.vn_denom3 ///
+	 | main.vn_denom4 | main.vn_denom5) {
+		require main.vn_denom1
+		require main.vn_numer1
+	}
+	if main.vn_numer1 {
+		require main.vn_denom1
+		if main.ed_name1 {
+			put "(" main.ed_name1 ": " ///
+				main.vn_numer1 "/" main.vn_denom1 ")"
+		}
+		if !main.ed_name1 {
+			put "(" main.vn_numer1 "/" main.vn_denom1 ")"
+		}
+	}
+
+	put " "
+	if !main.vn_numer2 & main.vn_denom2 {
+		require main.vn_numer2
+	}
+	if main.vn_numer2 {
+		require main.vn_denom2
+		if main.ed_name2 {
+			put "(" main.ed_name2 ": " ///
+				main.vn_numer2 "/" main.vn_denom2 ")"
+		}
+		if !main.ed_name2 {
+			put "(" main.vn_numer2 "/" main.vn_denom2 ")"
+		}
+	}
+
+	put " "
+	if !main.vn_numer3 & main.vn_denom3 {
+		require main.vn_numer3
+	}
+	if main.vn_numer3 {
+		require main.vn_denom3
+		if main.ed_name3 {
+			put "(" main.ed_name3 ": " ///
+				main.vn_numer3 "/" main.vn_denom3 ")"
+		}
+		if !main.ed_name3 {
+			put "(" main.vn_numer3 "/" main.vn_denom3 ")"
+		}
+	}
+
+	put " "
+	if !main.vn_numer4 & main.vn_denom4 {
+		require main.vn_numer4
+	}
+	if main.vn_numer4 {
+		require main.vn_denom4
+		if main.ed_name4 {
+			put "(" main.ed_name4 ": " ///
+				main.vn_numer4 "/" main.vn_denom4 ")"
+		}
+		if !main.ed_name4 {
+			put "(" main.vn_numer4 "/" main.vn_denom4 ")"
+		}
+	}
+
+	put " "
+	if !main.vn_numer5 & main.vn_denom5 {
+		require main.vn_numer5
+	}
+	if main.vn_numer5 {
+		require main.vn_denom5
+		if main.ed_name5 {
+			put "(" main.ed_name5 ": " ///
+				main.vn_numer5 "/" main.vn_denom5 ")"
+		}
+		if !main.ed_name5 {
+			put "(" main.vn_numer5 "/" main.vn_denom5 ")"
+		}
+	}
+END
+
+PROGRAM command
+BEGIN
+	put /program se_prefix_output " "
+	put "ratio "
+	put " " /program ratio_output
+	put " " /program ifin_output
+	put " " /program weights_output
+	beginoptions
+		put /program svy_stdize_output
+		put " " /program over_output
+		put " " /program se_output
+		put " " /program srsrpt_output
+	endoptions
+END

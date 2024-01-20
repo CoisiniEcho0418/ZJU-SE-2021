@@ -1,0 +1,131 @@
+/*
+  fracgen
+
+*! VERSION 1.1.1  01jun2009
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_large
+INCLUDE _ht330
+INCLUDE header
+HELP hlp1, view("help fracgen")
+RESET res1
+
+DIALOG main, /*
+*/label("fracgen - Generate fractional polynomial powers of a variable")/*
+		*/ tabtitle("Main")
+BEGIN
+  /*--+----1----+----2----+----3----+----4----+----5----+----6----+----7----+*/ 
+  TEXT     tx_var    _lft      _top      _iwd      .,			/*
+		*/ label("Variable:")					/*
+		*/
+  VARNAME  vn_var    @         _ss       _vnwd     .,			/*
+		*/ label("Variable")					/*
+		*/
+
+  TEXT     tx_pow    @         _ls       _iwd      .,			/*
+	*/ label("Fractional powers to generate from above variable:")	/*
+		*/
+  EDIT     ed_pow    @         _ss       @         .,			/*
+	*/ label("Fractional powers to generate from above variable")	/*
+		*/
+
+  GROUPBOX gb_opts   @         _ls       @         _ht18,		/*
+		*/ label("Options")					/*
+		*/
+  GROUPBOX gb_center	_indent   _ss       _cwd2     _ht7,		/*
+		*/ label("Centering of variable")			/*
+		*/
+  DEFINE y @y
+  RADIO    rb_no     _indent   _ss       _inwd     .,			/*
+		*/ label("Do not center")				/*
+		*/ clickon("gaction main.en_value.disable")		/*
+		*/ first						/*
+		*/ option(NONE)						/*
+		*/
+  RADIO    rb_mean   @         _ms       @         .,			/*
+		*/ label("Center on the mean")				/*
+		*/ clickon("gaction main.en_value.disable")		/*
+		*/ option("center(mean)")				/*
+		*/
+  RADIO    rb_value  @         _ms       _rbwd     .,			/*
+		*/ label("")						/*
+		*/ clickon("gaction main.en_value.enable")		/*
+		*/ last							/*
+		*/ option(NONE)						/*
+		*/
+  EDIT     en_value  _rbsep    @         _en7wd    .,			/*
+		*/ label("User-supplied value")				/*
+		*/ numonly						/*
+		*/ option("center")					/*
+		*/
+  TEXT     tx_value  _en7sep   @         _rben7r2bb .,			/*
+		*/ label("User-supplied value")				/*
+		*/
+
+  GROUPBOX gb_restrict _ilft  _xls       _ibwd      _ht4,		/*
+	*/ label("Subsample for determining centering and scaling")
+  TEXT     tx_restrict _indent _ss       _vnwd      .,			/*
+  		*/ label("Indicator variable:")
+DEFINE y2 @y
+  VARNAME  vn_restrict @       _ss       _cwd3_2    .,			/*
+		*/ label("Indicator variable")
+  TEXT     tx_if       180     y2        290         .,			/*
+		*/ label("If: (expression)")
+  EXP      ex_if       @       _ss       @           .,			/*
+		*/ label("Create...")
+
+
+  CHECKBOX ck_noscal _lft2     y         _cwd2     .,			/*
+		*/ label("Suppress scaling of variable")		/*
+		*/ option("noscaling")					/*
+		*/
+  CHECKBOX ck_replac @         _ms       @         .,			/*
+		*/ label("Replace variables if they exist")		/*
+		*/ option("replace") nomem				/*
+		*/
+
+END
+
+PROGRAM restrict_if_output
+BEGIN
+	if main.ex_if {
+		ifexp main.ex_if
+	}
+END
+
+PROGRAM restrict_output
+BEGIN
+	if main.vn_restrict | main.ex_if {
+		put "restrict("
+		put main.vn_restrict
+		if (main.ex_if) {
+			put " "
+		}
+		put /program restrict_if_output
+		put ")"
+	}
+END
+
+INCLUDE ifin
+PROGRAM command
+BEGIN
+	put "fracgen "
+	varlist main.vn_var
+	require main.ed_pow
+	put main.ed_pow
+	INCLUDE _ifin_pr
+	beginoptions
+		option radio(main rb_no rb_mean rb_value)
+		if main.rb_value {
+			require main.en_value
+			optionarg main.en_value
+		}
+		option main.ck_noscal
+		option main.ck_replac
+		put /program restrict_output
+	endoptions
+END
+

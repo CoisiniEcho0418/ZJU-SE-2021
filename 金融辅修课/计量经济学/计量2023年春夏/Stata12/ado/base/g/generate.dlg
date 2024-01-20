@@ -1,0 +1,127 @@
+/*
+  generate
+
+*!  VERSION 1.2.1  07nov2008
+
+** This dialog box may be called internally by the Data Editor
+
+*/
+
+VERSION 11.0
+INCLUDE _std_medium
+DEFINE _dlght 230
+INCLUDE header
+HELP hlp1, view("help generate")
+RESET res1
+
+DIALOG main, label("generate - Create a new variable")		///
+	tabtitle("Main")
+BEGIN
+  TEXT     tx_type	_lft	_top	_cwd1	.,		///
+	label("Variable type:")
+  COMBOBOX cb_type	@	_ss	_vnwd	.,		///
+	label("Type") dropdownlist contents(type) 		///
+	onselchangelist(main_type_actions) default(c(type))
+
+  TEXT     tx_newname	_lft2	_top	_cwd3_1	.,		///
+	label("Variable name:")
+  EDIT     ed_newname	@	_ss	_vnwd	.,		///
+	label("Variable name") nomemory
+
+  GROUPBOX gb_contents	_lft	+35	_iwd	_ht7,		///
+	label("Contents of variable")
+  RADIO    rb_exp	_ilft	_ss	_ibwd	.,		///
+	first label("Specify a value or an expression")		///
+	onclickon(program check_values_exp)
+  RADIO    rb_missing	@	+50	@	.,		///
+	last label("Fill with missing data")			///
+	onclickon(program check_values_exp)
+  EXP      ex_exp	_indent2 -30	_inwd	.,		///
+  	error("Specify a value or an expression") label("Create ...")
+  
+  CHECKBOX ck_vlab	_lft	+70	_cwd1	.,		///
+	label("Attach value label:")				///
+	onclickon(main.cb_vlab.enable)				///
+	onclickoff(main.cb_vlab.disable)
+  COMBOBOX cb_vlab	@	_ss	@	.,		///
+	label("Attach value label")				///
+	contents(valuelabels) dropdown
+END
+
+PROGRAM check_values_exp
+BEGIN
+	if main.rb_exp {
+		call main.ex_exp.enable
+		call script ifin_enable
+	}
+	else {
+		call main.ex_exp.disable
+		call script ifin_disable
+	}
+END
+
+LIST main_type_actions
+BEGIN
+	program main_value_labels_enable
+	program main_value_labels_enable
+	program main_value_labels_enable
+	program main_value_labels_enable
+	program main_value_labels_enable
+	script  main_value_labels_disable
+END
+
+SCRIPT main_value_labels_disable
+BEGIN
+	main.ck_vlab.disable
+	main.cb_vlab.disable
+END
+
+PROGRAM main_value_labels_enable
+BEGIN
+	call main.ck_vlab.enable
+	if main.ck_vlab {
+		call main.cb_vlab.enable
+	}
+END
+
+INCLUDE ifin
+INCLUDE _type_list_all_string
+
+PROGRAM command
+BEGIN
+	put "generate "
+	if ! main.cb_type.isdefault() {
+		put " " main.cb_type " "
+	}
+
+	require main.ed_newname
+	if ! main.ed_newname.isvalidname() {
+		stopbox stop `"The variable name you specified is invalid."'
+	}
+	if main.ed_newname.isvarname() {
+		stopbox stop `"The variable name you specified already exists."'
+	}
+	put main.ed_newname
+
+	if main.ck_vlab & !D(main.ck_vlab) {
+		require main.cb_vlab
+		put ":"
+		put main.cb_vlab
+	}
+	
+	put " " "= "
+	if main.rb_exp {
+		require main.ex_exp
+		put main.ex_exp
+	}
+	else {
+		if main.cb_type.iseq("str") {
+			put `""""'
+		}
+		else {
+			put "."
+		}
+	}
+	
+	put " " /program ifin_output
+END

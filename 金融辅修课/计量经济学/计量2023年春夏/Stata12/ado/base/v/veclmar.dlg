@@ -1,0 +1,65 @@
+/*
+    veclmar.dlg
+
+*!  VERSION 1.1.0  07feb2007
+
+*/
+
+VERSION 8.0
+
+INCLUDE _std_medium
+INCLUDE _ht220
+INCLUDE header
+
+HELP hlp1, view("help veclmar")
+RESET res1
+
+DIALOG main, tabtitle("Main")	///
+	label("veclmar - LM test for residual autocorrelation after vec")
+		
+BEGIN
+  DEFINE _x _xsetbu
+  DEFINE _y _top
+  INCLUDE _bu_tsset
+
+  SPINNER  sp_mlag           _lft      _ss        _spwd     .,		///
+		label("Maximum order of autocorrelation")		///
+		min(1) max(c(N)) default(2)				///
+		option(mlag)
+  TEXT     tx_mlag           _spsep    @          190      .,		///
+		label("Maximum order of autocorrelation")
+
+  GROUPBOX  gb_est           _lft      _ls       _iwd      _ht6h,
+  RADIO    rb_curres         _ilft     _ss       _inwd     ., first	///
+		label("Use active vec results")
+  RADIO    rb_use            @         _ss       @         ., last	///
+		label("Use alternative results:")			///
+		onclickon(main.cb_estimates.enable)			///
+		onclickoff(main.cb_estimates.disable)
+  COMBOBOX cb_estimates      _indent2  _ss       _vnwd     .,		///
+		dropdown						///
+		option(estimates)					///
+		contents(estimates)					///
+		label("Alternative vec results")
+
+  SPINNER  sp_sep            _lft      _xxls     _spwd     .,		///
+		label("Separator every N lines")			///
+		min(0) max(500) default(0)				///
+		option(separator)
+  TEXT     tx_sep            _spsep    @         _cwd1     .,		///
+		label("Separator every N lines")
+END
+
+PROGRAM command
+BEGIN
+	if main.rb_use {
+		require main.cb_estimates
+	}
+
+	put "veclmar"
+	beginoptions
+		optionarg /hidedefault main.sp_mlag
+		optionarg main.cb_estimates
+		optionarg /hidedefault main.sp_sep
+	endoptions
+END

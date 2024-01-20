@@ -1,0 +1,53 @@
+/*
+	predict (after areg)
+
+*!  VERSION 1.1.1  28mar2005
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+INCLUDE header
+HELP hlp1, view("help areg postestimation")
+RESET res1
+
+DIALOG main, label("predict - Prediction after estimation") tabtitle("Main")
+BEGIN
+  INCLUDE  _p_gentype
+
+  GROUPBOX gb_opts       _lft      _ls     _iwd    _ht12,	/*
+		*/ label("Produce:")
+  RADIO    rb_xb      _indent      _ss    _inwd        ., first /*
+		*/ option(xb)					/*
+		*/ label("Fitted values (xb)")
+  RADIO    rb_stdp          @      _ss        @        .,	/*
+		*/ option(stdp)					/*
+		*/ label("Standard error of the prediction")
+  RADIO    rb_dresid        @      _ss        @        .,	/*
+		*/ option(dresiduals)				/*
+		*/ label("Residuals plus effect of absorbed variable")
+  RADIO    rb_xbd           @      _ss        @        .,	/*
+		*/ option(xbd)					/*
+		*/ label("Fitted values including effect of absorbed variable")
+  RADIO    rb_d             @      _ss        @        .,	/*
+		*/ option(d)					/*
+		*/ label("Individual coefficients for absorbed variable")
+  RADIO    rb_resid         @      _ss        @        ., last	/*
+		*/ option(residuals)				/*
+		*/ label("Residuals (equation-level score variable)")
+END
+
+INCLUDE _p_gentype_sc
+INCLUDE ifin
+INCLUDE _type_list_fd
+
+PROGRAM command
+BEGIN
+	put "predict "
+	put " " /program _p_gentype_output
+	INCLUDE _ifin_pr
+	beginoptions
+		option radio(main rb_xb rb_stdp rb_dresid rb_xbd rb_d rb_resid)
+	endoptions
+END

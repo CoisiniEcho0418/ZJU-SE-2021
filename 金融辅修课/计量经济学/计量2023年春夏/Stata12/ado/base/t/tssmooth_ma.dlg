@@ -1,0 +1,254 @@
+/*
+
+	tssmooth ma
+
+*!  VERSION 1.1.1  31mar2005
+
+*/
+
+VERSION 9.0
+INCLUDE _std_large
+INCLUDE header
+HELP hlp1, view("help tssmooth_ma")
+RESET res1
+DEFINE _btwd 18
+
+DIALOG main, label("tssmooth ma - Moving-average filter") 		/*
+		*/ tabtitle("Main")
+BEGIN
+  DEFINE _x _xsetbu
+  DEFINE _y _top
+  INCLUDE _bu_tsset
+
+  TEXT     tx_gener    _lft      _ms       _cwd3_1   .,			/*
+  		*/label("New variable:")
+
+  TEXT     tx_exp      _lft3_2   @         _comb3_1  .,			/*
+  		*/label("Expression to smooth: ")
+
+  EDIT     ed_gener    _lft      _ss       _vnwd     .,			/*
+  		*/label("New variable ")
+
+  TEXT     tx_equals   _eqxpos	 @	   _eqwd     .,			/*
+  		*/center						/*
+  		*/label("=")
+
+  EXP      ex_exp      _lft3_2   @         _comb3_1  .,			/*
+  		*/label("Create ...")					/*
+  		*/error("Expression to smooth")
+
+  DEFINE _x _lft
+  DEFINE _y _ls
+  DEFINE _cx _cwd1
+INCLUDE _type
+  DEFINE holdy @y
+
+  TEXT     tx_holdx    _indent2  _vss      0         .,
+
+  DEFINE holdx1 @x
+
+  CHECKBOX ck_replace  _lft3_2   holdy     _cwd2     .,			/*
+		*/ option(replace) nomem				/*
+		*/ label("Replace existing variable")
+
+  CHECKBOX ck_winopt1  _lft3_2   _ls       _cwd3_1   .,			/*
+		*/ label("Current observation:")			/*
+		*/clickon(program main_winopt1_on)			/*
+		*/clickoff(program main_winopt1_off)
+  DEFINE holdy1 @y
+
+
+  RADIO rb_include     _indent2  _ss       _rbspr2   .,			/*
+    		*/ label("Include    (1)")				/*
+		*/ first
+  DEFINE holdy10 @y
+  RADIO rb_exclude     @         _ss       _rbspr2   .,			/*
+    		*/ label("Exclude   (0)")				/*
+		*/ last
+
+  DEFINE holdx2 @x
+
+  CHECKBOX ck_winopt2  _lft3_3   holdy1    _cwd3_1   .,			/*
+		*/ label("Number of lead terms:")			/*
+		*/clickon(gaction main.sp_win3.enable)			/*
+		*/clickoff(gaction main.sp_win3.disable)
+
+  SPINNER  sp_win3     _indent2  _ss       _spwd    .,			/*
+		*/ min(0)						/*
+		*/ max(c(N))
+
+  DEFINE holdy2 @y
+
+  DEFINE holdx3 @x
+
+  SPINNER  sp_win1     holdx1    _vss       _spwd     .,		/*
+		*/ min(0)						/*
+		*/ max(c(N))
+
+  DEFINE holdy2 @y
+
+  CHECKBOX ck_weiopt1  _lft3_2   _xls      _cwd3_0   .,			/*
+		*/ label("Weights for lagged terms:")			/*
+		*/clickon(gaction main.ed_wei2.enable)			/*
+		*/clickoff(gaction main.ed_wei2.disable)
+  DEFINE holdy3 @y
+  EDIT     ed_wei2     holdx2    _ss   	   _en7wd    .,			/*
+  		*/label("Weights for lagged terms")
+
+  BUTTON   bt_numlist1 _en7sep   @         _btwd     .,			/*
+      		*/ label("?")						/*
+    		*/ onpush(view help numlist##|_new)
+
+  CHECKBOX ck_weiopt2  _lft3_3   holdy3    _cwd3_1   .,			/*
+		*/ label("Weights for lead terms:")			/*
+		*/clickon(gaction main.ed_wei3.enable)			/*
+		*/clickoff(gaction main.ed_wei3.disable)
+
+  EDIT     ed_wei3     holdx3    _ss       _en7wd    .,			/*
+  		*/label("Weights for lead terms")
+
+  BUTTON   bt_numlist2 _en7sep   @         _btwd     .,			/*
+        	*/ label("?")						/*
+    		*/ onpush(view help numlist##|_new)
+
+  DEFINE holdx3_1 @x
+
+  EDIT  en_wei1        holdx1    _vss     _en7wd    ., numonly		/*
+		*/error("Weight for current observations")
+
+  RADIO    rb_window   _lft      holdy1    _rbspr2   .,			/*
+  		*/ label("Number of")					/*
+		*/ clickon(program rb_main_window_on)			/*
+		*/ first
+
+  TEXT     tx_window   _indent2  _vss      _cwd4_1   .,			/*
+  		*/label("lagged terms:")
+
+  DEFINE holdx1 @x
+
+  RADIO    rb_weights  _lft      holdy3    _rbspr2   .,			/*
+  		*/ label("Weight for current")				/*
+		*/ clickon(program rb_main_weights_on)			/*
+		*/ last
+
+  TEXT     tx_weights    _indent2  _vss      _cwd4_1   .,		/*
+  		*/label("observations: ")
+
+END
+
+
+INCLUDE ifin
+INCLUDE _type_list_fd
+
+
+PROGRAM rb_main_window_on
+BEGIN
+	call gaction main.en_wei1.disable
+	call gaction main.ck_weiopt1.disable
+	call gaction main.ed_wei2.disable
+	call gaction main.ck_weiopt2.disable
+	call gaction main.ed_wei3.disable
+	call gaction main.sp_win1.enable
+	call gaction main.ck_winopt1.enable
+
+	if main.ck_winopt1 {
+		call gaction main.rb_include.enable
+		call gaction main.rb_exclude.enable
+		call gaction main.ck_winopt2.enable
+		if main.ck_winopt2 {
+			call gaction main.sp_win3.enable
+		}
+	}
+END
+
+PROGRAM rb_main_weights_on
+BEGIN
+	call gaction main.sp_win1.disable
+	call gaction main.ck_winopt1.disable
+	call gaction main.rb_include.disable
+	call gaction main.rb_exclude.disable
+	call gaction main.ck_winopt2.disable
+	call gaction main.sp_win3.disable
+	call gaction main.en_wei1.enable
+	call gaction main.ck_weiopt1.enable
+	call gaction main.ck_weiopt2.enable
+
+	if main.ck_weiopt1 {
+		call gaction main.ed_wei2.enable
+	}
+	if main.ck_weiopt2 {
+		call gaction main.ed_wei3.enable
+	}
+END
+
+PROGRAM main_winopt1_on
+BEGIN
+	call gaction main.ck_winopt2.enable
+	call gaction main.rb_include.enable
+	call gaction main.rb_exclude.enable
+
+	if main.ck_winopt2 {
+		call gaction main.sp_win3.enable
+	}
+END
+
+PROGRAM main_winopt1_off
+BEGIN
+	call gaction main.sp_win3.disable
+	call gaction main.ck_winopt2.disable
+	call gaction main.rb_include.disable
+	call gaction main.rb_exclude.disable
+END
+
+PROGRAM command
+BEGIN
+	put "tssmooth ma "
+	INCLUDE _type_pr
+	require main.ed_gener
+	put main.ed_gener
+	put " "
+	put "= "
+	require main.ex_exp
+	put main.ex_exp
+	INCLUDE _ifin_pr
+	put ", "
+		if main.rb_window {
+			put "window("
+			put main.sp_win1
+				if main.ck_winopt1{
+					if main.rb_include {
+						 put " "
+						 put "1"
+					}
+					if main.rb_exclude {
+						put " "
+						put "0"
+					}
+				}
+				if main.ck_winopt2 {
+					put " "
+					put main.sp_win3
+				}
+
+			put ")"
+			put " "
+		}
+		if main.rb_weights {
+			require main.en_wei1
+			put "weights("
+				if main.ck_weiopt1 {
+					require main.ed_wei2
+					put main.ed_wei2
+					put " "
+				}
+			put "<" main.en_wei1 ">"
+				if main.ck_weiopt2 {
+					require main.ed_wei3
+					put " "
+					put main.ed_wei3
+				}
+			put ")"
+			put " "
+		}
+	option main.ck_replace
+END

@@ -1,0 +1,184 @@
+/*
+  strate_9
+
+*! VERSION 1.1.2  03aug2006  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+
+HELP hlp1, view("help strate")
+RESET res1
+
+DIALOG main, tabtitle("Main")	///
+	label("strate - Tabulate failure rates and rate ratios")
+BEGIN
+  DEFINE _x _xsetbu
+  DEFINE _y _top
+  INCLUDE _bu_stset
+  TEXT     tx_var          _lft      _top       _cwd1     .,		///
+	label("Variables: (optional)")
+  VARLIST  vl_var          @         _ss        @         .,		///
+	allowcat label("Variables")
+
+  GROUPBOX gb_opt          @         _ls        _iwd      _ht25,	///
+	label("Options")
+  TEXT     tx_per          _indent   _ss        _cwd2     .,		///
+	label("Units used to report rates:")
+  DEFINE y @y
+  EDIT     en_per          @         _ss        _en7wd    .,		///
+	numonly	 option(per)
+
+  TEXT     tx_smr          @         _ls        _cwd2     .,		///
+	label("Reference-rate variable:")
+  VARNAME  vn_smr          @         _ss        _vnwd     .,		///
+	label("Reference-rate variable")				///
+	option(smr)
+
+  TEXT     tx_clus         @         _ls        _cwd2     .,		///
+	label("Cluster variable: (implies jackknife)")
+  VARNAME  vn_clus         @         _ss        _vnwd     .,		///
+	label("Cluster variable")					///
+	option(cluster)
+
+  CHECKBOX ck_jack         @         _ls        _cwd2	  .,		///
+	label("Jackknife confidence intervals")				///
+	option(jackknife)
+  CHECKBOX ck_miss         @         _ms        _ibwd     .,		///
+	option(miss)							///
+	label("Include missing values of explanatory variables of as extra categories")
+
+  DEFINE _x @
+  DEFINE _y _ls
+  DEFINE _cx _spr2b
+  INCLUDE _sp_level
+
+  CHECKBOX ck_out          _lft2     y        _cwd2       _ht7h,	///
+	label("Save summary dataset in a file")				///
+	onclickon(script out_on)					///
+	onclickoff(script out_off)					///
+	option(output) groupbox
+  TEXT     tx_out	   _indent   _ms      _inwd	  .,		///
+  	label("Filename:")
+  FILE     fi_out          @         _ss      @           .,		///
+	label("Save As...") save					///
+	filter("Stata Dataset (*.dta)|*.dta|All Files (*.*)|*.*")	///
+	defext(dta) error("Save summary dataset in file")
+  CHECKBOX ck_list         @         _ls      @           .,		///
+	label("Suppress listed output")					///
+	option(nolist)
+
+  CHECKBOX ck_graph       _lft2      _xxls    _cwd2       .,		///
+	label("Graph rates against exposure category")			///
+	option(graph)							///
+	onclickon(script graph_on)					///
+	onclickoff(script graph_off)
+  CHECKBOX ck_nowhis      @          _ms      @           .,		///
+	label("Omit confidence intervals from the graph")		///
+	onclickon(program check_nowhis)					///
+	onclickoff(program check_nowhis)				///
+	option(nowhisker)
+END
+
+INCLUDE ifin
+INCLUDE p1_opts
+INCLUDE p2_opts
+INCLUDE addplot
+INCLUDE gr_twoway
+
+SCRIPT PREINIT
+BEGIN
+	script p1_opts_createAsNoRange
+	script p1_opts_setDefaultScatter
+	script p2_opts_createAsRange
+	script p2_opts_setDefaultRspike
+END
+
+SCRIPT POSTINIT
+BEGIN
+	script p2_opts_setTabtitleCi
+END
+
+PROGRAM check_nowhis
+BEGIN
+	if main.ck_graph {
+		if ! main.ck_nowhis {
+			call script p2_opts_enable
+		}
+		if !H(main.ck_nowhis) & main.ck_nowhis {
+			call script p2_opts_disable
+		}
+	}
+END
+
+SCRIPT graph_on
+BEGIN
+	main.ck_nowhis.enable
+	script p1_opts_enable
+	script addplot_enable
+	program check_nowhis
+	script gr_twoway_enable
+END
+
+SCRIPT graph_off
+BEGIN
+	main.ck_nowhis.disable
+	script p1_opts_disable
+	script p2_opts_disable
+	script addplot_disable
+	script gr_twoway_disable
+END
+
+SCRIPT out_on
+BEGIN
+  main.fi_out.enable
+  main.tx_out.enable
+  main.ck_list.enable
+END
+
+SCRIPT out_off
+BEGIN
+  main.fi_out.disable
+  main.tx_out.disable
+  main.ck_list.disable
+END
+
+PROGRAM command
+BEGIN
+	allowxi
+	put "strate "
+	varlist [main.vl_var]
+	INCLUDE _ifin_pr
+	beginoptions
+		optionarg main.en_per
+		optionarg main.vn_clus
+		option main.ck_jack
+		option main.ck_list
+		optionarg main.vn_smr
+		if main.ck_out {
+			require main.fi_out
+			repfile main.fi_out
+			put `"output("'
+			put `"""'
+			put main.fi_out
+			put `"""'
+			put ", replace"
+			put `") "'
+		}
+		option main.ck_miss
+		INCLUDE _level_main_pr
+		option main.ck_graph
+		if main.ck_graph {
+			option main.ck_nowhis
+		}
+
+		put " " /program p1_opts_output
+		put " " /program p2_opts_ci_output
+		put " " /program addplot_output
+		put " " /program gr_twoway_output
+	endoptions
+END
+/* end */

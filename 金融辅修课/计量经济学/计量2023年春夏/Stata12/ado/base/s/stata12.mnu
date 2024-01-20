@@ -1,0 +1,8 @@
+*! version 1.1.0  21jan2010
+*! Stata 12 Main menu
+
+#include stata12import
+#include stata12export
+#include stata12data
+#include stata12graphics
+#include stata12stats

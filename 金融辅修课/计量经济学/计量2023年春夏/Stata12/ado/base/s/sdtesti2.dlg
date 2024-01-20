@@ -1,0 +1,115 @@
+/*
+	sdtesti	
+
+*!  VERSION 1.1.1  20mar2007
+
+	Two sample immediate sdtest.
+*/
+
+VERSION 8.0
+
+INCLUDE _std_large
+INCLUDE header
+
+HELP hlp1, view("help sdtesti")
+RESET res1
+
+DIALOG main, label("sdtesti - Two-sample variance-comparison test calculator")/*
+	*/tabtitle("Main")
+BEGIN
+
+  GROUPBOX gb_sample1   _lft      _top       _cwd1  _ht14h,		/*
+		*/ label("Sample one")
+  SPINNER  sp_obs1   _indent       _ms       _spwd      .,		/*
+		*/ label("Sample size")					/*
+		*/ min(1) max(10000000) default(100)
+  DEFINE   _x @x
+  TEXT     tx_obs1    _spsep         @       _spr2b     .,		/*
+		*/ label("Sample size")	
+
+  EDIT     en_sd1         _x       _ls      _en7wd      ., 		/*
+		*/ label("Standard deviation")				/*
+		*/ numonly
+  TEXT     tx_sd1    _en7sep         @      _en7r2b     .,		/*
+		*/ label("Standard deviation")	
+
+  GROUPBOX gb_mean1       _x       _ls       _cwd3  _ht5, 		/*
+		*/ label("Sample mean")
+  RADIO    rb_nomean1 _indent      _ss       _inwd      .,		/*
+		*/ first						/*
+		*/ option(".")						/*
+		*/ clickon("gaction main.en_mean1.disable")		/*
+		*/ label("Omit mean")
+  RADIO    rb_mean1        @       _ms       _rbwd      .,		/*
+		*/ last 						/*
+		*/ clickon("gaction main.en_mean1.enable")		/*
+		*/ label("")
+  EDIT     en_mean1   _rbsep         @      _en7wd      .,   		/*
+		*/ label("Sample mean")					/*
+		*/ numonly 
+
+  GROUPBOX gb_sample2  _lft2      _top       _cwd1  _ht14h,		/*
+		*/ label("Sample two")
+  SPINNER  sp_obs2   _indent       _ms       _spwd      .,		/*
+		*/ label("Sample size")					/*
+		*/ min(1) max(10000000) default(100)
+  DEFINE   _x @x
+  TEXT     tx_obs2    _spsep         @       _spr2b     .,		/*
+		*/ label("Sample size")	
+
+  EDIT     en_sd2         _x       _ls      _en7wd      ., 		/*
+		*/ label("Standard deviation")				/*
+		*/ numonly
+  TEXT     tx_sd2    _en7sep         @      _en7r2b     .,		/*
+		*/ label("Standard deviation")	
+
+  GROUPBOX gb_mean2       _x       _ls       _cwd3  _ht5, 		/*
+		*/ label("Sample mean")
+  RADIO    rb_nomean2 _indent      _ss       _inwd      .,		/*
+		*/ first						/*
+		*/ option(".")						/*
+		*/ clickon("gaction main.en_mean2.disable")		/*
+		*/ label("Omit mean")
+  RADIO    rb_mean2        @       _ms       _rbwd      .,		/*
+		*/ last 						/*
+		*/ clickon("gaction main.en_mean2.enable")		/*
+		*/ label("")
+  EDIT     en_mean2   _rbsep         @      _en7wd      .,   		/*
+		*/ label("Sample mean")					/*
+		*/ numonly 
+
+  DEFINE   _x _lft
+  DEFINE   _y _xxxls
+  DEFINE   _cx _spr2
+  INCLUDE  _sp_level
+END
+
+
+PROGRAM command
+BEGIN
+	put "sdtesti "	
+	put main.sp_obs1 
+	put " "
+	option main.rb_nomean1
+	if main.rb_mean1 {
+		require main.en_mean1
+		put main.en_mean1
+	}
+	put " "
+	require main.en_sd1
+	put main.en_sd1
+	put " "
+	put main.sp_obs2 
+	put " "
+	option main.rb_nomean2
+	if main.rb_mean2 {
+		require main.en_mean2
+		put main.en_mean2
+	}
+	put " "
+	require main.en_sd2
+	put main.en_sd2
+	beginoptions
+		INCLUDE _level_main_pr
+	endoptions
+END

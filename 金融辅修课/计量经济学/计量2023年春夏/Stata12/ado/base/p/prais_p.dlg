@@ -1,0 +1,45 @@
+/*
+	predict (after prais)
+
+*!  VERSION 1.1.2  28mar2005
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help prais postestimation")
+RESET res1
+
+DIALOG main, label("predict - Prediction after estimation") tabtitle("Main")
+BEGIN
+  INCLUDE  _p_gentype
+
+  GROUPBOX gb_opts       _lft     _xls     _iwd     _ht6,	///
+	label("Produce:")
+  RADIO    rb_xb      _indent      _ss    _inwd        ., first ///
+	option(xb)						///
+	label("Linear prediction (does not apply rho to prior residuals)")
+  RADIO    rb_stdp          @      _ss        @        ., 	///
+	option(stdp)						///
+	label("Standard error of linear prediction (assumes no error in rho)")
+  RADIO    rb_resid         @      _ss        @        .,last	///
+	option(resid)						///
+	label("Residuals from the linear prediction")
+END
+
+INCLUDE _p_gentype_sc
+INCLUDE ifin
+INCLUDE _type_list_fd
+
+PROGRAM command
+BEGIN
+	put "predict "
+	put " " /program _p_gentype_output
+	INCLUDE _ifin_pr
+	beginoptions
+		option radio(main rb_xb rb_resid rb_stdp)
+	endoptions
+END

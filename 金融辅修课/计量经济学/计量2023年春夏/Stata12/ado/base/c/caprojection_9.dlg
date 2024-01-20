@@ -1,0 +1,118 @@
+/*
+	caprojection_9
+
+*!  VERSION 1.0.1  28sep2006 (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+
+HELP hlp1, view("help caprojection")
+RESET res1
+
+DIALOG main, label("caprojection - Correspondence analysis dimension projection plot") ///
+		tabtitle("Main")
+BEGIN
+  GROUPBOX gb_dim		_lft	_top	_cwd1	_ht6,	///
+  		label("Dimensions")
+  RADIO    rb_default_dim	_ilft	_ss	_cwd3	.,	///
+  		first label("Plot all dimensions")		///
+  		onclickon(script main_dim_off)
+  RADIO    rb_dim		@	_ss	@	.,	///
+		last label("Specify dimensions to plot")	///
+		onclickon(script main_dim_on)
+  EDIT     ed_dim		_indent2 _ss	_en7wd	.,	///
+  		label("List of dimensions to plot") option(dim)
+  TEXT     tx_dim		_en7sep	@	200	.,	///
+  		label("List of dimensions to plot")
+
+  CHECKBOX ck_norow		_lft	+45	_cwd1	.,	///
+  		label("Suppress row coordinates")		///
+  		option(norow) 					///
+  		onclickon(program main_cgraph_check)		///
+  		onclickoff(program main_cgraph_check)
+  CHECKBOX ck_nocolumn		@	_ms	@	.,	///
+  		label("Suppress column coordinates")		///
+  		option(nocolumn)				///
+  		onclickon(program main_cgraph_check)		///
+  		onclickoff(program main_cgraph_check)
+
+  CHECKBOX ck_alternate		@	_ms	@	.,	///
+  		label("Alternate labels") option(alternate)
+
+  SPINNER  sp_maxlength		@	_ms	_spwd	.,	///
+  		default(12) min(1) max(32) option(maxlength)
+  TEXT     tx_maxlength		_spsep	@	_spr2	.,	///
+  		label("Maximum number of characters displayed for labels")
+
+  DEFINE y _top
+  INCLUDE cgraph_opts
+END
+
+INCLUDE cgraph_opts_pr
+
+PROGRAM main_cgraph_check
+BEGIN
+	if main.ck_norow | main.ck_nocolumn {
+		call script cgraph_opts_disable
+	}
+	if ! main.ck_norow & ! main.ck_nocolumn {
+		call script cgraph_opts_enable
+	}
+
+	if main.ck_norow {
+		call main.ck_nocolumn.disable
+	}
+	if !main.ck_norow {
+		call main.ck_nocolumn.enable
+	}
+
+	if main.ck_nocolumn {
+		call main.ck_norow.disable
+	}
+	if ! main.ck_nocolumn {
+		call main.ck_norow.enable
+	}
+END
+
+SCRIPT main_dim_on
+BEGIN
+	main.ed_dim.enable
+	main.tx_dim.enable
+END
+SCRIPT main_dim_off
+BEGIN
+	main.ed_dim.disable
+	main.tx_dim.disable
+END
+
+INCLUDE ca_row
+INCLUDE ca_column
+INCLUDE gr_twoway
+
+PROGRAM command
+BEGIN
+	put "caprojection "
+	beginoptions
+		if main.rb_dim {
+			require main.ed_dim
+			optionarg main.ed_dim
+		}
+		option main.ck_norow
+		option main.ck_nocolumn
+		option main.ck_alternate
+		optionarg /hidedefault main.sp_maxlength
+		put " " /program cgraph_opts_output
+		put " " /program ca_row_output
+		put " " /program ca_column_output
+		put " " /program gr_twoway_output
+	endoptions
+END
+
+SCRIPT POSTINIT
+BEGIN
+	script cgraph_opts_setLayoutMLS
+END

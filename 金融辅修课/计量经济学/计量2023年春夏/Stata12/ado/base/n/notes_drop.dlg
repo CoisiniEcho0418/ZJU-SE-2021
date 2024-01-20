@@ -1,0 +1,126 @@
+/*
+	notes [list]
+
+*! VERSION 1.0.1  27aug2003
+
+	which notes - *! version 1.0.3  04jan2001
+*/
+
+VERSION 8.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help notes")
+RESET res1
+
+DEFINE fromwd 50
+DEFINE fromsep +55
+DEFINE towd 35
+DEFINE tosep +40
+
+DIALOG main, label("notes - Delete notes") tabtitle("Main")
+BEGIN
+  /*--+----1----+----2----+----3----+----4----+----5----+----6----+----7----+*/
+  RADIO    rb_sel    _lft      _top      _iwd      .,		/*
+		*/ first					/*
+		*/ clickon("script all_off")			/*
+		*/ label("Delete:")
+
+  CHECKBOX ck_dta    _indent2  _ss       _inwd     .,		/*
+		*/ label("Notes for dataset")
+
+  CHECKBOX ck_var    @         _ms       @         ., 		/*
+		*/ clickon("gaction main.vl_var.enable")	/*
+		*/ clickoff("gaction main.vl_var.disable")	/*
+		*/ label("Notes for variables:")
+
+  VARLIST  vl_var    _indent2  _ss       _inwd     .,	/*
+		*/ label("Notes for Variables")
+
+  RADIO    rb_all    _lft      _ls       _iwd      .,		/*
+		*/ option(_all)					/*
+		*/ last						/*
+		*/ clickon("script all_on")			/*
+		*/ label("Delete notes for both dataset and variables")
+
+  CHECKBOX ck_ran    _lft      _ls       _iwd      _ht4,	/*
+		*/ label("Restrict to range of notes:")		/*
+		*/ clickon("script ran_on")			/*
+		*/ clickoff("script ran_off")			/*
+		*/ groupbox
+
+  TEXT     tx_from   _ilft     _ls       fromwd    .,		/*
+		*/ right					/*
+		*/ label("from:")
+
+  SPINNER  sp_from   fromsep   @         _spwd     .,		/*
+		*/ min(1)					/*
+		*/ max(9999)					/*
+		*/ default(1)
+
+  CHECKBOX ck_to     _lft2     @         towd      .,		/*
+		*/ clickon("gaction main.sp_to.enable")		/*
+		*/ clickoff("gaction main.sp_to.disable")	/*
+		*/ label("to:")
+
+  SPINNER  sp_to     tosep     @         _spwd     .,		/*
+		*/ min(1)					/*
+		*/ max(9999)					/*
+		*/ default(1)	
+
+END
+
+SCRIPT all_on
+BEGIN
+main.ck_dta.disable
+main.ck_var.disable
+END
+
+SCRIPT all_off
+BEGIN
+main.ck_dta.enable
+main.ck_var.enable
+END
+
+SCRIPT ran_on
+BEGIN
+main.sp_from.enable
+main.ck_to.enable
+END
+
+SCRIPT ran_off
+BEGIN
+main.sp_from.disable
+main.ck_to.disable
+END
+
+
+PROGRAM command
+BEGIN
+	put "notes drop "
+	if main.rb_all {
+		option main.rb_all
+	}
+	if !main.rb_all {
+		if main.ck_dta {
+			put "_dta "
+		}
+		if main.ck_var {
+			varlist main.vl_var
+		}
+		if !main.ck_dta & !main.ck_var {
+			stopbox stop `"Nothing has been selected"' /*
+				*/ `"to be deleted"'
+		}
+	}
+	if main.ck_ran {
+		require main.sp_from
+		put "in " main.sp_from
+		if main.ck_to {
+			require main.sp_to
+			put "/" main.sp_to
+		}
+	}
+END
+

@@ -1,0 +1,55 @@
+/*
+	predict (after xtdpd and xtdpdsys)
+
+*!  VERSION 1.0.0  12apr2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_msmall
+INCLUDE header
+
+HELP hlp1, view("help xtdpd postestimation")
+RESET res1
+
+DIALOG main, label("predict - Prediction after estimation") tabtitle("Main")
+BEGIN
+  INCLUDE  _p_gentype
+
+  GROUPBOX gb_opts	_lft	_ls	_iwd	_ht6,		///
+	label("Produce:")
+  RADIO rb_xb		_indent	_ss	_cwd2	.,		///
+	first							///
+	option(xb)						///
+	onclickon(main.ck_difference.enable)			///
+	label("Fitted values (xb)")
+  RADIO rb_e		@	_ss	@	.,		///
+	option(e)						///
+	onclickon(main.ck_difference.enable)			///
+	label("Residual error")
+  RADIO rb_stdp		@	_ss	@	.,		///
+	last							///
+	option(stdp)						///
+	onclickon(main.ck_difference.disable)			///
+	label("Standard error of the prediction")
+  CHECKBOX ck_difference _lft	_xls	_iwd	.,		///
+	option(difference)					///
+	label("Calculate statistic for the first differences instead of levels")
+END
+
+INCLUDE ifin
+
+INCLUDE _p_gentype_sc
+INCLUDE _type_list_fd
+
+PROGRAM command
+BEGIN
+	put "predict "
+	put " " /program _p_gentype_output
+	INCLUDE _ifin_pr
+	beginoptions
+		option radio(main rb_xb rb_e rb_stdp)
+		option main.ck_difference
+	endoptions
+END

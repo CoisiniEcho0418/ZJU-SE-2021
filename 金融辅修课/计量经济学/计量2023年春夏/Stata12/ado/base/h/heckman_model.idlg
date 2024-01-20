@@ -1,0 +1,72 @@
+/*
+  heckman_model.idlg
+  
+  NOTE: Must include heckman_model_sc
+
+*!  VERSION 1.0.4  17apr2009
+
+*/
+  TEXT tx_dv 		_lft	_topph	_vnwd	.,			///
+	label("Dependent variable:")
+  VARNAME vn_dv		@ 	_ss	@	.,			///
+	ts								///
+	label("Dependent variable")
+
+  TEXT tx_iv		_vlx	_topph	160	.,			///
+	label("Independent variables:")
+  VARLIST vl_iv		@	_ss	_vlwd	.,			///
+	fv ts								///
+	allowcat							///
+	label("Independent variables")
+
+  CHECKBOX ck_nocons   @           _ms       @           .,		///
+		label("Suppress constant term")				///
+		option(noconstant)
+		
+  CHECKBOX ck_sdv      _lft        _ls       _vnwd       .,		///
+		label("Selection DV:")					///
+		onclickon(gaction main.vn_sdv.enable)			///
+		onclickoff(gaction main.vn_sdv.disable)
+		
+  DEFINE y @y
+  VARNAME  vn_sdv      @           _ss       @           .,		///
+		label("Selection variable") ts
+		
+  TEXT     tx_siv      _vlx        y         _vlwd       .,		///
+		label("Selection independent variables:")		
+		
+  VARLIST  vl_siv      @           _ss       @           .,		///
+		label("Selection independent variables")		///
+		allowcat ts fv
+		
+  CHECKBOX ck_snocon   @           _ms       @           .,		///
+		label("Suppress selection constant term")		///
+		option(noconstant)
+		
+  GROUPBOX gb_opt      _lft        _ls       _iwd        _ht12h, 	///
+		label("Options")		
+
+  TEXT     tx_offset   _ilft       _ms       _cwd2       .,		///
+		label("Regression offset variable:")	
+		
+  TEXT     tx_seloff   _lft2       @         @           .,		///
+		label("Selection offset variable:")
+		
+  VARNAME  vn_offset   _ilft       _ss       _cwd3_2     .,		///
+		label("Regression offset")				///
+		option(offset)	
+  VARNAME  vn_seloff   _lft2       @         @           .,		///
+		label("Selection offset")				///
+		option(offset)	
+		
+  DEFINE _x _ilft
+  DEFINE _y _ls
+  DEFINE _cx _ilw80
+  DEFINE _bux _islw80
+  INCLUDE _constraints
+
+  DEFINE _x _ilft
+  DEFINE _xw _ibwd
+  INCLUDE _ck_collinear
+
+/* END: heckman_model.idlg */

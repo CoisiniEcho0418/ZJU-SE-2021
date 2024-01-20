@@ -1,0 +1,216 @@
+/*
+  hetprob
+
+*!  VERSION 1.2.6  23aug2010
+
+  keyword:  eclass
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_xlarge // has long title
+DEFINE _dlght 405
+INCLUDE header
+HELP hlp1, view("help hetprob")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	script se_createAsSvyJknifeBstrapML
+	program svy_check_title
+END
+
+SCRIPT POSTINIT
+BEGIN
+	script sub_set_by_on
+	program se_setFinalInitState
+END
+
+SCRIPT svy_is_on
+BEGIN
+	rpt.gb_tests.disable
+	rpt.ck_noskip.disable
+	rpt.ck_nolrt.disable
+	script max_setDefaultNoLog
+END
+SCRIPT svy_is_off
+BEGIN
+	rpt.gb_tests.enable
+	rpt.ck_noskip.enable
+	rpt.ck_nolrt.enable
+	script max_setDefaultLog
+END
+PROGRAM svy_check_title
+BEGIN
+	if __MESSAGE.contains("-svy-") {
+		call settitle "svy: hetprob - Heteroskedastic probit model for survey data"
+	}
+END
+
+DIALOG main, tabtitle("Model")	///
+	title("hetprob - Heteroskedastic probit model") // has svy title
+BEGIN
+  TEXT tx_dv 		_lft	_top	_vnwd	.,			///
+	label("Dependent variable:")
+  VARNAME vn_dv		@ 	_ss	@	.,			///
+	ts								///
+	label("Dependent variable")
+
+  TEXT tx_iv		_vlx	_top	160	.,			///
+	label("Independent variables:")
+  VARLIST vl_iv		@	_ss	_vlwd	.,			///
+	fv ts								///
+	allowcat							///
+	label("Independent variables")
+  CHECKBOX ck_nocons @         _ms       @         .,			/*
+		*/ label("Suppress constant term")			/*
+		*/ option("noconstant")					/*
+		*/
+
+  TEXT     tx_het    _lft      _ls       _iwd      .,			/*
+		*/ label("Independent variables to model the variance:")/*
+		*/
+  VARLIST  vl_het    @         _ss       @         .,			/*
+		*/ label("Independent variables to model the variance")	/*
+		*/ allowcat ts fv					/*
+		*/
+
+  GROUPBOX gb_output _lft      _ls       _iwd      _ht17h,		/*
+		*/ label("Options")					/*
+		*/
+
+  TEXT     tx_offset _ilft     _ms       _cwd2     .,			/*
+		*/ label("Offset variable:")				/*
+		*/
+  VARNAME  vn_offset _ilft     _ss       _vnwd     .,			/*
+		*/ label("Offset variable")				/*
+		*/ option("offset")					/*
+		*/
+  CHECKBOX ck_asis   _lft2     @         _cwd2     .,			/*
+		*/ label("Retain perfect predictor variables")		/*
+		*/ option("asis")					/*
+		*/
+  TEXT     tx_hetoff _ilft     _ls       _cwd2     .,			/*
+		*/ label("Variance model offset variable:")		/*
+		*/
+  VARNAME  vn_hetoff @         _ss       _vnwd     .,			/*
+		*/ label("Variance model offset variable")		/*
+		*/ option("offset")					/*
+		*/
+
+  DEFINE _x _ilft
+  DEFINE _y _ls
+  DEFINE _cx _ilw80
+  DEFINE _bux _islw80
+  INCLUDE _constraints
+
+  DEFINE _x _ilft
+  DEFINE _xw _ibwd
+  INCLUDE _ck_collinear
+END
+
+INCLUDE _constraints_sc 
+INCLUDE sub_by_ifin_over_subpop
+INCLUDE weights_fpi
+INCLUDE se
+
+SCRIPT rpt_POSTINIT
+BEGIN
+	create STRING rpt_bu_fmtcoefResults
+	program rpt_bu_fmtcoef_ckResults
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr2b
+  DEFINE _y _top
+  INCLUDE _sp_level
+
+  GROUPBOX gb_tests  _lft      _xls     _iwd       _ht4h,		/*
+  		*/ label("Additional test statistics")
+  CHECKBOX ck_noskip _ilft     _ss      _cwd2      .,			/*
+		*/ label("Perform likelihood-ratio test")		/*
+		*/ option("noskip")					/*
+		*/
+  CHECKBOX ck_nolrt  @         _ms       @         .,			/*
+		*/ label("Perform Wald test on variance")		/*
+		*/ option("nolrtest")					/*
+		*/
+
+  DEFINE _x _lft
+  DEFINE _y _xls
+  DEFINE _cx _iwd
+  INCLUDE _nocnsreport
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _noomitted
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _vsquish
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _factor_vars_reporting
+
+  DEFINE _x _lft
+  DEFINE _y _xxxls
+  INCLUDE _bu_coef_table_reporting
+END
+
+INCLUDE fmt_coef_table_reporting_pr
+
+PROGRAM rpt_output
+BEGIN
+	optionarg /hidedefault rpt.sp_level
+	option rpt.ck_noskip
+	option rpt.ck_nolrt
+	INCLUDE _nocnsreport_pr
+	INCLUDE _noomitted_pr
+	INCLUDE _vsquish_pr
+	INCLUDE _factor_vars_reporting_pr
+	put " " rpt_bu_fmtcoefResults
+END
+
+INCLUDE max_ml
+
+PROGRAM subcommand
+BEGIN
+	varlist main.vl_het
+	beginoptions
+		optionarg main.vn_hetoff
+	endoptions
+END
+
+PROGRAM command
+BEGIN
+	put /program by_output " "
+	put /program se_prefix_output " "
+	put "hetprob "
+	varlist main.vn_dv [main.vl_iv]
+	if !main.vl_iv & main.ck_nocons {
+	  stopbox stop `""Suppress constant term" is selected without independent variables."'
+	}
+	put " " /program ifin_output
+	put " " /program weights_output
+	beginoptions
+		option main.ck_nocons
+		put "het("
+		put /program subcommand
+		put ")"
+		optionarg main.vn_offset
+		option main.ck_asis
+		INCLUDE _constraints_main_pr
+		option main.ck_collinear
+
+		put " " /program se_output
+		put " " /program rpt_output
+		put " " /program max_output
+	endoptions
+END

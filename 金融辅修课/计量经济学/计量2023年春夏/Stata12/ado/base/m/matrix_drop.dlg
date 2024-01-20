@@ -1,0 +1,37 @@
+/*
+  -matrix drop-
+
+*!  VERSION 1.1.0  28mar2005
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_small
+INCLUDE header
+
+HELP hlp1, view("help matrix utility")
+RESET res1
+
+DIALOG main, label("matrix drop - Drop matrices") tabtitle("Main")
+BEGIN
+  TEXT     tx_mnames    _lft      _top      _iwd      ., 		///
+	label("Matrices to drop:")
+  COMBOBOX cb_mnames    @         _ss       @         _ht10, append	///
+  	contents(matrix) label("Matrices to drop")
+  CHECKBOX ck_all       _lft      _vs9      _iwd      ., 		///
+	onclickon(main.cb_mnames.disable)				///
+	label("Drop all matrices")
+END
+
+PROGRAM command
+BEGIN
+	put "matrix drop "
+	if main.ck_all {
+		put "_all"
+	}
+	if ! main.ck_all {
+		require main.cb_mnames
+		put main.cb_mnames
+	}
+END

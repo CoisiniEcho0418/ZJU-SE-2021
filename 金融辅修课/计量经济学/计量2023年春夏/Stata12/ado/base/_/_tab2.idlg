@@ -1,0 +1,122 @@
+/*
+  _tab2.idlg
+
+*!  VERSION 1.0.3  09oct2008
+
+  To be included within a DIALOG.
+
+  Note that macros _y must already be DEFINEd.
+
+*/
+
+  /*--+----1----+----2----+----3----+----4----+----5----+----6----+----7----+*/
+  GROUPBOX gb_tests  _lft      _y        _cwd1     _ht17,		/*
+		*/ label("Test statistics")				/*
+		*/
+  DEFINE y @y
+  CHECKBOX ck_chi2   _indent   _ss       _inwd     .,			/*
+		*/ label("Pearson's chi-squared")			/*
+		*/ option("chi2")					/*
+		*/
+  DEFINE ydown @y
+  CHECKBOX ck_exact  @         _ms       @         .,			/*
+		*/ label("Fisher's exact test")				/*
+		*/ option("exact")					/*
+		*/ onclickon(main.ck_nolog.enable)			/*
+		*/ onclickoff(main.ck_nolog.disable)			/*
+		*/
+  CHECKBOX ck_gamma  @         _ms       @         .,			/*
+		*/ label("Goodman and Kruskal's gamma")			/*
+		*/ option("gamma")					/*
+		*/
+  CHECKBOX ck_lrchi2 @         _ms       @         .,			/*
+		*/ label("Likelihood-ratio chi-squared")		/*
+		*/ option("lrchi2")					/*
+		*/
+  CHECKBOX ck_taub   @         _ms       @         .,			/*
+		*/ label("Kendall's tau-b")				/*
+		*/ option("taub")					/*
+		*/
+  CHECKBOX ck_V      @         _ms       @         .,			/*
+		*/ label("Cramer's V")					/*
+		*/ option("V")						/*
+		*/
+
+/* column 2 */
+  GROUPBOX gb_cell   _lft2     y         _cwd1     _ht17,		/*
+		*/ label("Cell contents")				/*
+		*/
+
+  CHECKBOX ck_cchi2  _indent   _ss       _inwd     .,			/*
+		*/ label("Pearson's chi-squared")			/*
+		*/ option("cchi2")					/*
+		*/ onclickon(program _tab2_test_check)			/*
+		*/ onclickoff(program _tab2_test_check)			/*
+		*/
+  CHECKBOX ck_col    @         _ms       @         .,			/*
+		*/ label("Within-column relative frequencies")		/*
+		*/ option("column")					/*
+		*/ onclickon(program _tab2_test_check)			/*
+		*/ onclickoff(program _tab2_test_check)			/*
+		*/
+  CHECKBOX ck_row    @         _ms       @         .,			/*
+		*/ label("Within-row relative frequencies")		/*
+		*/ option("row")					/*
+		*/ onclickon(program _tab2_test_check)			/*
+		*/ onclickoff(program _tab2_test_check)			/*
+		*/
+  CHECKBOX ck_clrchi2 @        _ms       @         .,			/*
+		*/ label("Likelihood-ratio chi-squared")		/*
+		*/ option("clrchi2")					/*
+		*/ onclickon(program _tab2_test_check)			/*
+		*/ onclickoff(program _tab2_test_check)			/*
+		*/
+  CHECKBOX ck_cell   @         _ms       @         .,			/*
+		*/ label("Relative frequencies")			/*
+		*/ option("cell")					/*
+		*/ onclickon(program _tab2_test_check)			/*
+		*/ onclickoff(program _tab2_test_check)			/*
+		*/
+  CHECKBOX ck_expect @         _ms       @         .,			/*
+		*/ label("Expected frequencies")			/*
+		*/ option("expected")					/*
+		*/ onclickon(program _tab2_test_check)			/*
+		*/ onclickoff(program _tab2_test_check)			/*
+		*/
+  CHECKBOX ck_nofreq @         _ms       @         .,			/*
+		*/ label("Suppress frequencies")			/*
+		*/ option("nofreq")					/*
+		*/ onclickon(program _tab2_test_check)			/*
+		*/ onclickoff(program _tab2_test_check)			/*
+		*/
+
+  CHECKBOX ck_miss   _lft      _xls      _cwd1     .,			/*
+		*/ label("Treat missing values like other values")	/*
+		*/ option("miss")					/*
+		*/
+  DEFINE y2 @y
+
+  CHECKBOX ck_wrap   @         _ms       @         .,			/*
+		*/ label("Do not wrap wide tables")			/*
+		*/ option("wrap")					/*
+		*/
+  /* ck_first is exposed globally. Do not delete or change name */
+  CHECKBOX ck_first  @         _ms       @         .,			/*
+		*/ label("Show only tables that include the first variable")/* 
+		*/ option("firstonly")					/*
+		*/
+
+  CHECKBOX ck_nokey  _lft2     y2        @         .,			/*
+		*/ label("Suppress the cell contents key")		/*
+		*/ option("nokey")					/*
+		*/
+
+  CHECKBOX ck_nolab  @         _ms       @         .,			/*
+		*/ label("Suppress value labels")			/*
+		*/ option("nolabel")					/*
+		*/
+  CHECKBOX ck_nolog  @         _ms       @         .,			/*
+		*/ label("Suppress enumeration log")			/*
+		*/ option("nolog")					/*
+		*/
+/* END: _tab2.idlg */

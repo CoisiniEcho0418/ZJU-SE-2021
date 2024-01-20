@@ -1,0 +1,29 @@
+/*
+   clustermat wardslinkage
+
+*!  VERSION 1.2.1  31may2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_medium
+DEFINE _dlght 280
+INCLUDE header
+HELP hlp1, view("help cluster_linkage")
+RESET res1
+
+DIALOG main, label("clustermat wardslinkage - Ward's linkage clustering") /*
+		*/ tabtitle("Main")
+BEGIN
+  INCLUDE _clusmat_hier
+END
+
+INCLUDE _clusmat_hier2
+
+PROGRAM command
+BEGIN
+	allowxi
+	put "clustermat wardslinkage "
+	INCLUDE _clusmat_hier_pr
+END

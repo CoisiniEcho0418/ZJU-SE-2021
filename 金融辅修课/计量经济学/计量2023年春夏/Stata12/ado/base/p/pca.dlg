@@ -1,0 +1,156 @@
+/*
+	pca
+
+*!  VERSION 1.1.0  17feb2005
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_large
+INCLUDE header
+
+HELP hlp1, view("help pca")
+RESET res1
+
+DIALOG main, label("pca - Principal component analysis") tabtitle("Model")
+BEGIN
+  TEXT     tx_var		_lft	_top	_iwd	.,		///
+	label("Variables:")
+  VARLIST  vl_var		@	_ss	@	.,		///
+	label("Variables")
+END
+
+DIALOG model2, tabtitle("Model 2")
+BEGIN
+  CHECKBOX ck_components	_lft	_top	_iwd	.,		///
+	label("Maximum number of principal components to retain:")	///
+	onclickon(model2.sp_components.enable)				///
+	onclickoff(model2.sp_components.disable)
+  SPINNER  sp_components	_cksep	_ss	_spwd	.,		///
+	min(1) max(100000)						///
+	option(components)
+  CHECKBOX ck_mineigen		_lft	_ls	_iwd	.,		///
+  	onclickon(model2.en_mineigen.enable)				///
+  	onclickoff(model2.en_mineigen.disable)				///
+	label("Minimum eigenvalue to be retained:")
+  EDIT     en_mineigen	       _indent2	_ss	_en7wd	.,		///
+	option(mineigen) default(1e-5)					///
+	label("Minimum eigenvalue to be retained")
+  CHECKBOX ck_covar		_lft	_ls	_iwd	.,		///
+	option(covariance)						///
+	label("Use covariance instead of correlation matrix")
+  CHECKBOX ck_vce		@	_ms	@	.,		///
+	option(vce(normal))						///
+  	onclickon(program ck_vce_on)					///
+  	onclickoff(script ck_vce_off)					///
+	label("Compute VCE of the eigenvalues and vectors assuming multivariate normality")
+END
+
+INCLUDE byifin
+INCLUDE weights_fa
+
+PROGRAM ck_vce_on
+BEGIN
+	call report.sp_level.enable
+	call report.tx_level.enable
+	call report.ck_blanks.enable
+	if report.ck_blanks {
+		call report.en_blanks.enable
+		call report.tx_blanks.enable
+	}
+	call adv.en_tol.enable
+	call adv.tx_tol.enable
+	call adv.ck_ignore.enable
+END
+
+SCRIPT ck_vce_off
+BEGIN
+	report.sp_level.disable
+	report.tx_level.disable
+	report.ck_blanks.disable
+	report.en_blanks.disable
+	report.tx_blanks.disable
+	adv.en_tol.disable
+	adv.tx_tol.disable
+	adv.ck_ignore.disable
+END
+
+DIALOG report, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr
+  DEFINE _y _top
+  INCLUDE _sp_level
+
+  CHECKBOX ck_blanks		_lft	_ls	_iwd	.,		///
+  	onclickon(script ck_blanks_on)					///
+  	onclickoff(script ck_blanks_off)				///
+	label("Display loadings as blank when absolute value of loadings is less than:")
+  EDIT     en_blanks	       _indent2	_ss	_en7wd	.,		///
+	option(blanks)							///
+	label("Value")
+  TEXT     tx_blanks		_spsep	@	_cksprb	.,		///
+	label("Value")
+
+  CHECKBOX ck_novce		_lft	_ls	_iwd	.,		///
+	option(novce)							///
+	label("Suppress display of standard errors, even if computed")
+  CHECKBOX ck_means		_lft	_ms	_iwd	.,		///
+	option(means)							///
+	label("Display summary statistics of variables")
+END
+
+SCRIPT ck_blanks_on
+BEGIN
+	report.en_blanks.enable
+	report.tx_blanks.enable
+END
+
+SCRIPT ck_blanks_off
+BEGIN
+	report.en_blanks.disable
+	report.tx_blanks.disable
+END
+
+DIALOG adv, tabtitle("Advanced")
+BEGIN
+  EDIT     en_tol		_lft	_top	_en7wd	.,		///
+	default(1e-5)							///
+	option(tol)							///
+	label("Numeric tolerance (rarely needed)")
+  TEXT     tx_tol		_spsep	@	_cksprb	.,		///
+	label("Numeric tolerance (rarely needed)")
+  CHECKBOX ck_ignore		_lft	_ls	_iwd	.,		///
+	option(ignore)							///
+	label("Continue computation of standard errors and tests (rarely needed)")
+END
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "pca "
+	varlist main.vl_var
+	INCLUDE _weights_pr
+	INCLUDE _ifin_pr
+	beginoptions
+		if model2.ck_components {
+			optionarg model2.sp_components
+		}
+		if model2.ck_mineigen {
+			require model2.en_mineigen
+			optionarg /hidedefault model2.en_mineigen
+		}
+		option model2.ck_covar
+		option model2.ck_vce
+		optionarg /hidedefault report.sp_level
+		if report.ck_blanks {
+			require report.en_blanks
+			optionarg /hidedefault report.en_blanks
+		}
+		option report.ck_novce
+		option report.ck_means
+		optionarg /hidedefault adv.en_tol
+		option adv.ck_ignore
+	endoptions
+END

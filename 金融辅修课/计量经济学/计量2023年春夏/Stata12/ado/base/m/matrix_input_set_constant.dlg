@@ -1,0 +1,39 @@
+/*
+  matrix_input_set_constant.dlg 
+
+*! VERSION 1.0.0  11jan2007
+
+*/
+
+VERSION 10.0
+
+DEFINE _dlgwd 250
+DEFINE _dlght 100
+INCLUDE header
+
+DIALOG main, title("Load matrix with constant")
+BEGIN
+  RADIO	   rb_diag	10	10	230	.,	///
+	first						///
+	label("Load diagonal with constant")
+  RADIO	   rb_full	@	+20	@	.,	///
+	last						///
+	label("Load entire matrix with constant")
+
+  EDIT     ed_cons	+20	+25	50	.,	///
+	label("Value") numonly
+  TEXT     tx_cons	+55	@	100	.,	///
+	label("Value")
+END
+
+PROGRAM command
+BEGIN
+	require main.ed_cons
+	if main.rb_diag {
+		put "loadConstantDiag "
+	}
+	else {
+		put "loadConstantFull "
+	}
+	put main.ed_cons
+END

@@ -1,0 +1,73 @@
+/*
+	swilk
+
+*!  VERSION 1.1.0  10jan2005
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help swilk")
+RESET res1
+
+
+DIALOG main, label("swilk - Shapiro-Wilk normality test") tabtitle("Main")
+BEGIN
+  TEXT     tx_var        _lft     _top     _iwd        .,		///
+	label("Variables:")
+  VARLIST  vl_var           @      _ss        @        .,		///
+	label("Variables")
+  GROUPBOX gb_opt           @     _xls        @    _ht13, 		///
+	label("Options")
+
+  CHECKBOX ck_gen     _indent     _ms     _ibwd     _ht4,		///
+	onclickon(script main_gen_on) 					///
+	onclickoff(script main_gen_off)					///
+	groupbox							///
+	label("Create a variable containing the W test coefficients")
+  TEXT     tx_gen     _indent     _ss     _inwd        .,		///
+	label("New variable name:")
+  EDIT	   ed_gen           @     _ss	  _vnwd        .,		///
+	max(32)								///
+	option(generate) 						///
+	label("New variable name")
+  CHECKBOX ck_lnn       _ilft    _xls     _ibwd        ., 		///
+	option(lnnormal)						///
+	label("Test for three-parameter log normality")
+  CHECKBOX ck_noties        @     _ms     _ibwd        ., 		///
+	option(noties)							///
+	label("Do not use average ranks for tied values")
+END
+
+SCRIPT main_gen_on
+BEGIN
+	main.tx_gen.enable
+	main.ed_gen.enable
+END
+
+SCRIPT main_gen_off
+BEGIN
+	main.tx_gen.disable
+	main.ed_gen.disable
+END
+
+INCLUDE byifin
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "swilk "
+	varlist main.vl_var
+	INCLUDE _ifin_pr
+	beginoptions
+		if main.ck_gen {
+			require main.ed_gen
+			optionarg main.ed_gen
+		}
+		option main.ck_lnn
+		option main.ck_noties
+	endoptions
+END

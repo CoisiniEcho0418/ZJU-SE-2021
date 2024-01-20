@@ -1,0 +1,43 @@
+/*
+    irf_stat_list.idlg
+
+*!  VERSION 1.1.0  10apr2007
+
+  This file contains lists used by COMBOBOXes for the -irf- dialog boxes.
+  It is INCLUDEd in one or more of the following files:
+
+  	irf_graph.idlg
+  	irf_cgraph.idlg
+  	irf_ograph.idlg
+  	irf_table.idlg
+  	irf_otable.idlg
+
+*/
+
+LIST irf_stat_contents
+BEGIN
+	Impulse-response functions (irf)
+	Orthogonalized impulse-response functions (oirf)
+	Dynamic-multiplier function (dm)
+	Cumulative impulse-response functions (cirf)
+	Cumulative orthogonalized impulse-response functions (coirf)
+	Cumulative dynamic-multiplier function (cdm)
+	Cholesky forecast-error variance decomposition (fevd)
+	Structural impulse-response functions (sirf)
+	Structural forecast-error variance decomposition (sfevd)
+END
+
+LIST irf_stat_values
+BEGIN
+	irf
+	oirf
+	dm
+	cirf
+	coirf
+	cdm
+	fevd
+	sirf
+	sfevd
+END
+
+/* END: irf_stat_list.idlg */

@@ -1,0 +1,6 @@
+*! version 1.0.0  19dec2004
+sequence 4351
+
+set width    scheme p#arrow
+set color    scheme p#arrow
+set pattern  scheme p#arrow

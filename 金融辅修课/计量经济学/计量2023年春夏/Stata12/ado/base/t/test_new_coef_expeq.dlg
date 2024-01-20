@@ -1,0 +1,30 @@
+/*
+  test_new_coef_expeq.dlg
+
+*!  VERSION 1.0.0  26apr2009
+
+  keyword:  eclass
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_large
+DEFINE _dlght 100
+INCLUDE header
+
+RESET res1
+
+DIALOG main, tabtitle("Main")
+BEGIN
+  TEXT tx_spec		_lft	_top	_iwd	.,			///
+	label("Specification:")
+  VARLIST vl_spec	@	_ss	@	.,			///
+	label("Specification")
+END
+
+PROGRAM command
+BEGIN
+	require main.vl_spec
+	put "(" main.vl_spec ")"
+END

@@ -1,0 +1,26 @@
+/*
+  odbc_error.dlg
+
+*! VERSION 1.0.0  19sep2008
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_vsmall
+POSITION . . 350 120
+OK ok1, label("OK")
+
+PROGRAM POSTINIT_PROGRAM
+BEGIN
+	call create STRING odbc_err_msg
+	call odbc_err_msg.setvalue class .__ODBC_INFO.ODBC_ERR_MSG
+	call odbc_err_msg.withvalue odbc_error.txb_error.setlabel "@"
+END
+
+DIALOG odbc_error, title("ODBC Driver Error Message") 
+BEGIN
+  TEXTBOX txb_error 	_lft	_top	_iwd	.,	/// 
+	label("")
+END
+

@@ -1,0 +1,55 @@
+/*
+	predict (after cloglog)
+
+*!  VERSION 1.2.0  02may2007
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+INCLUDE header
+HELP hlp1, view("help cloglog postestimation")
+RESET res1
+
+DIALOG main, label("predict - Prediction after estimation") tabtitle("Main")
+BEGIN
+  INCLUDE  _p_gentype
+
+  GROUPBOX gb_opts       _lft      _ls     _iwd     _ht8,	/*
+		*/ label("Produce:")
+  RADIO    rb_p       _indent      _ss    _inwd        ., first /*
+		*/ option(p)					/*
+		*/ onclickon(script _p_gentype_score_off)	/*
+		*/ label("Probability of a positive outcome")
+  RADIO    rb_xb            @      _ss        @        .,	/*
+		*/ option(xb)					/*
+		*/ onclickon(script _p_gentype_score_off)	/*
+		*/ label("Linear prediction (xb)")
+  RADIO    rb_stdp          @      _ss        @        .,	/*
+		*/ option(stdp)					/*
+		*/ onclickon(script _p_gentype_score_off)	/*
+		*/ label("Standard error of the linear prediction")
+  RADIO    rb_score         @      _ss        @        ., last	/*
+		*/ option(score)				/*
+		*/ onclickon(script _p_gentype_score_on)	/*
+		*/ label("Equation-level scores")
+
+  INCLUDE  _p_nooffset
+END
+
+INCLUDE _p_gentype_sc
+INCLUDE ifin
+
+INCLUDE _type_list_fd
+
+PROGRAM command
+BEGIN
+	put "predict "
+	put " " /program _p_gentype_output
+	INCLUDE _ifin_pr
+	beginoptions
+		option radio(main rb_p rb_xb rb_stdp rb_score)
+	endoptions
+	INCLUDE _p_nooffset_pr
+END

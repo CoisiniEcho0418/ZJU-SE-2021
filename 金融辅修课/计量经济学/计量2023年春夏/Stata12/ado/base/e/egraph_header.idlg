@@ -1,0 +1,41 @@
+/*
+  egraph_header.idlg
+
+*!  VERSION 1.0.1  03aug2006  (deprecated)
+
+  To be included at the top of easy graph dialogs.
+  
+  This file is deprecated as of version 10.
+
+*/
+
+INCLUDE _std_large
+INCLUDE _ht350
+
+/* DEFINE & EQUATION ********************************************************/
+
+DEFINE _hssep +3
+DEFINE _txwd 52
+DEFINE _txsep +55
+DEFINE _txlwd 70
+DEFINE _txlsep +73
+DEFINE _txswd 30
+DEFINE _txssep +33
+DEFINE _txtwd 19
+DEFINE _txtsep +22
+
+DEFINE _btwd 15
+DEFINE _vllwd 280
+DEFINE _vllwdmbu 262
+DEFINE _vlxlwd 405
+DEFINE _vlxlwdmbu 387
+DEFINE _vlxlwdbusep +390
+DEFINE _vllwdbusep +265
+DEFINE _cbwd 102
+DEFINE _ilft2_1 197
+
+DEFINE _txmswd 39
+DEFINE _txmssep +42
+DEFINE _vlmlwd 273
+DEFINE _lft3_002 162
+/* END: egraph_header.idlg */

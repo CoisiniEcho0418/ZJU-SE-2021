@@ -1,0 +1,5 @@
+*! version 1.0.0  22dec2002
+sequence 2500
+label "Dash dot"
+
+set pattern "2 .9 .1 .9"

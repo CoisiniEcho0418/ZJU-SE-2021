@@ -1,0 +1,24 @@
+/*
+	logit/logistic estat
+
+*!  VERSION 1.0.5  09jan2008
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_large
+DEFINE _dlght 380	//dialog length for bootstrap options
+INCLUDE header
+
+HELP hlp1, view("help logit postestimation")
+RESET res1
+
+SCRIPT POSTINIT
+BEGIN
+	settitle "estat - Postestimation tools for logit"
+END
+
+INCLUDE logit_probit_estat
+
+

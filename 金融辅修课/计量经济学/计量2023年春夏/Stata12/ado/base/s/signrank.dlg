@@ -1,0 +1,45 @@
+/*
+	signrank	
+
+	VERSION 1.0.0  21dec2002
+
+*/
+
+VERSION 8.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help signrank")
+RESET res1
+
+DIALOG main, label("signrank - Wilcoxon matched-pairs signed-ranks test") /*
+		*/ tabtitle("Main")
+BEGIN
+  TEXT     tx_var         _lft      _top    _cwd3_1       .,		/*
+		*/ label("Variable:")
+  VARNAME  vn_var            @       _ms      _vnwd       .,		/*
+		*/ label("Variable")
+  TEXT     tx_equals   _eqxpos         @      _eqwd       .,            /*
+		*/ center						/*
+		*/ label("=")
+  TEXT     tx_exp      _lft3_2      _top   _comb3_1       .,		/*
+		*/ label("Expression:")	
+  EXP      ex_exp      _lft3_2      _ms    _vlwd          .,            /*
+                */ label("Create...")                                   /*
+                */ error("Expression")	
+END
+
+INCLUDE byifin
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "signrank "
+	varlist main.vn_var
+	put " = "
+	varlist main.ex_exp
+	INCLUDE _ifin_pr
+END
+
+

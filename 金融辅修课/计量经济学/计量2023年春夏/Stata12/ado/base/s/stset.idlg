@@ -1,0 +1,479 @@
+/*
+  stset INCLUDE file
+
+*!  VERSION 1.0.1  12jun2009
+
+*/
+
+  TEXT     tx_t      _lft      _top      _cwd3_2     .,			/*
+		*/ label("Time variable:")				/*
+		*/
+  VARNAME  vn_t      @         _ss       _vnwd     .,			/*
+		*/ label("Time variable")				/*
+		*/ option("t")						/*
+		*/ default(char _dta[st_bt])				/*
+		*/ nomemory						/*
+		*/
+
+  CHECKBOX ck_id     _lft3_2   _top      _cwd1     .,			/*
+		*/ label("Multiple-record ID variable:")		/*
+		*/ clickon("script id_on")				/*
+		*/ clickoff("script id_off")				/*
+		*/
+  DEFINE y @y
+  VARNAME  vn_id     @         _ss       _vnwd     .,			/*
+		*/ label("Multiple-record ID variable")			/*
+		*/ default(char _dta[st_id])				/*
+		*/ nomemory						/*
+		*/ option("id")						/*
+		*/
+
+  GROUPBOX gb_fail   _lft      +35       _iwd      _ht4h,		/*
+		*/ label("Failure event")				/*
+		*/
+  TEXT     tx_fail   _ilft     _ss       _cwd1     .,			/*
+		*/ label("Failure variable:")				/*
+		*/
+  DEFINE y @y
+  VARNAME  vn_fail   @         _ss       _vnwd     .,			/*
+		*/ label("Failure variable")				/*
+		*/ default(char _dta[st_bd])				/*
+		*/ nomemory						/*
+		*/
+  TEXT     tx_fail2  _ilft3_2  y         _vnwd     .,			/*
+		*/ label("Failure values:")				/*
+		*/
+  EDIT     ed_fail   @         _ss       _vnwd     .,			/*
+		*/ label("Failure values")				/*
+		*/ default(char _dta[st_ev])				/*
+		*/ nomemory						/*
+		*/
+
+  CHECKBOX ck_noshow _lft      +45       _cwd2     .,			/*
+		*/ label("Do not show st setting information")		/*
+		*/ option("noshow")					/*
+		*/
+  CHECKBOX ck_clear  _lft      _ms       _cwd1     .,			/*
+		*/ label("Clear all settings")				/*
+		*/ clickon("script clear_on")				/*
+		*/ clickoff("script clear_off")				/*
+		*/ option("clear")					/*
+		*/ nomem
+
+END
+
+PROGRAM check_id
+BEGIN
+	if main.ck_id {
+		call script id_on
+	}
+	if ! main.ck_id {
+		call script id_off
+	}
+END
+
+PROGRAM check_ormin
+BEGIN
+	if opt.ck_ormin {
+		call script ormin_on
+	}
+	if ! ((opt.ck_ormin) |  D(opt.ck_ormin)) {
+		call script ormin_off
+	}
+END
+
+SCRIPT id_on
+BEGIN
+	main.vn_id.enable
+	opt.tx_origin.enable
+	opt.vn_origin.enable
+	opt.tx_ornl.enable
+	opt.ed_ornl.enable
+	opt.ck_ormin.enable
+	program check_ormin
+	opt.tx_enter.enable
+	opt.vn_enter.enable
+	opt.tx_ennl.enable
+	opt.ed_ennl.enable
+	opt.tx_enexp.enable
+	opt.ed_enexp.enable
+	opt.tx_exit.enable
+	opt.vn_exit.enable
+	opt.tx_exnl.enable
+	opt.ed_exnl.enable
+	opt.tx_exexp.enable
+	opt.ed_exexp.enable
+	adv.tx_ever.enable
+	adv.ed_ever.enable
+	adv.tx_never.enable
+	adv.ed_never.enable
+	adv.tx_after.enable
+	adv.ed_after.enable
+	adv.tx_before.enable
+	adv.ed_before.enable
+END
+
+SCRIPT id_off
+BEGIN
+	main.vn_id.disable
+	opt.tx_origin.disable
+	opt.vn_origin.disable
+	opt.tx_ornl.disable
+	opt.ed_ornl.disable
+	opt.tx_orexp.enable
+	opt.ed_orexp.enable
+	opt.ck_ormin.disable
+	opt.tx_enter.disable
+	opt.vn_enter.disable
+	opt.tx_ennl.disable
+	opt.ed_ennl.disable
+	opt.tx_enexp.enable
+	opt.ed_enexp.enable
+	opt.tx_exit.disable
+	opt.vn_exit.disable
+	opt.tx_exnl.disable
+	opt.ed_exnl.disable
+	opt.tx_exexp.enable
+	opt.ed_exexp.enable
+	adv.tx_ever.disable
+	adv.ed_ever.disable
+	adv.tx_never.disable
+	adv.ed_never.disable
+	adv.tx_after.disable
+	adv.ed_after.disable
+	adv.tx_before.disable
+	adv.ed_before.disable
+END
+
+SCRIPT clear_on
+BEGIN
+	main.tx_t.disable
+	main.vn_t.disable
+	main.ck_id.disable
+	main.vn_id.disable
+	main.gb_fail.disable
+	main.tx_fail.disable
+	main.vn_fail.disable
+	main.tx_fail2.disable
+	main.ed_fail.disable
+	opt.tx_scale.disable
+	opt.en_scale.disable
+	main.ck_noshow.disable
+	program disable_sub
+	program disable_weights
+	opt.gb_origin.disable
+	opt.tx_origin.disable
+	opt.vn_origin.disable
+	opt.tx_ornl.disable
+	opt.ed_ornl.disable
+	opt.tx_orexp.disable
+	opt.ed_orexp.disable
+	opt.ck_ormin.disable
+	opt.gb_enter.disable
+	opt.tx_enter.disable
+	opt.vn_enter.disable
+	opt.tx_ennl.disable
+	opt.ed_ennl.disable
+	opt.tx_enexp.disable
+	opt.ed_enexp.disable
+	opt.gb_exit.disable
+	opt.tx_exit.disable
+	opt.vn_exit.disable
+	opt.tx_exnl.disable
+	opt.ed_exnl.disable
+	opt.tx_exexp.disable
+	opt.ed_exexp.disable
+	adv.tx_if.disable
+	adv.ed_if.disable
+	adv.tx_ever.disable
+	adv.ed_ever.disable
+	adv.tx_never.disable
+	adv.ed_never.disable
+	adv.tx_after.disable
+	adv.ed_after.disable
+	adv.tx_before.disable
+	adv.ed_before.disable
+	adv.tx_time0.disable
+	adv.vn_time0.disable
+END
+
+SCRIPT clear_off
+BEGIN
+	main.tx_t.enable
+	main.vn_t.enable
+	main.ck_id.enable
+	program check_id
+	main.gb_fail.enable
+	main.tx_fail.enable
+	main.vn_fail.enable
+	main.tx_fail2.enable
+	main.ed_fail.enable
+	opt.tx_scale.enable
+	opt.en_scale.enable
+	main.ck_noshow.enable
+	program enable_sub
+	program enable_weights
+	opt.gb_origin.enable
+	opt.gb_enter.enable
+	opt.gb_exit.enable
+	adv.tx_if.enable
+	adv.ed_if.enable
+	adv.tx_time0.enable
+	adv.vn_time0.enable
+END
+
+DIALOG if, tabtitle("if")
+BEGIN
+  TEXT     tx_warn	_lft	_top	_iwd	.,		///
+	label(`"The "If criterion" in Advanced is recommended instead of the following."')
+  GROUPBOX gb_if	_lft	_ls	_iwd	_ht4h,		///
+	label("Restrict observations")
+  TEXT     tx_if	_ilft	_ss	_ibwd	.,		///
+	label("If: (expression)")
+  EXP      ex_if	@	_ss	_ibwd	.,		///
+	label("Create...")
+END
+
+INCLUDE weights_fpi
+
+DIALOG opt, tabtitle("Options")
+BEGIN
+  GROUPBOX gb_origin         _lft      _top      _iwd      _ht9,	///
+		label("Specify when subject becomes at risk")
+  TEXT     tx_origin _ilft   _ss       _cwd3_2   .,			///
+		label("Origin variable:")
+  DEFINE y @y
+  VARNAME  vn_origin         @         _ss       _vnwd     .,		///
+		label("Origin variable")				///
+		default(char _dta[st_orvn])
+  TEXT     tx_ornl           _ilft3_2  y         _cwd3_2   .,		///
+		label("Origin values:")
+  EDIT     ed_ornl           @         _ss       _vnwd     .,		///
+		label("Origin values")					///
+		default(char _dta[st_ornl])
+
+  TEXT     tx_orexp          _ilft3_3  y         _cwd3_2   .,		///
+		label("Origin time expression:")
+  EDIT     ed_orexp          @         _ss       _vnwd     .,		///
+		label("Origin time expression")				///
+		default(char _dta[st_orexp])
+
+  CHECKBOX ck_ormin          _ilft     +45       _comb3_1  .,		///
+		onclickon(program check_ormin)				///
+		onclickoff(program check_ormin)				///
+		option(origin(min))					///
+		label("Set origin to earliest time observed minus 1 (rare)")
+  TEXT     tx_scale          _ilft3_3  -20       _cwd3_2   .,		///
+		label("Rescale time value:")
+  EDIT     en_scale          @         _ss       _en14wd   .,		///
+		label("Time scale:")					///
+		numonly							///
+		option(scale)						///
+		default(char _dta[st_bs])				///
+		nomemory
+
+  GROUPBOX gb_enter          _lft      +45       _iwd      _ht4h,	///
+		label("Specify when subject first enters study")
+  TEXT     tx_enter          _ilft     _ss       _cwd3_2   .,		///
+		label("Enter variable:")
+  DEFINE y @y
+  VARNAME  vn_enter          @         _ss       _vnwd     .,		///
+		label("Enter variable")					///
+		default(char _dta[st_envn])
+  TEXT     tx_ennl           _ilft3_2  y         _cwd3_2   .,		///
+		label("Enter values:")
+  EDIT     ed_ennl           @         _ss       _vnwd     .,		///
+		label("Enter values")					///
+		default(char _dta[st_ennl])
+  TEXT     tx_enexp          _ilft3_3  y         _cwd3_2   .,		///
+		label("Enter time expression:")
+  EDIT     ed_enexp          @         _ss       _vnwd     .,		///
+		label("Enter time expression")				///
+		default(char _dta[st_enexp])
+
+  GROUPBOX gb_exit           _lft      +45       _iwd      _ht4h,	///
+		label("Specify when subject exits study (default is exit at failure)")
+  TEXT     tx_exit           _ilft     _ss       _cwd3_2   .,		///
+		label("Exit variable:")
+  DEFINE y @y
+  VARNAME  vn_exit           @         _ss       _vnwd     .,		///
+		label("Exit variable")					///
+		default(char _dta[st_exvn])
+  TEXT     tx_exnl           _ilft3_2  y         _cwd3_2   .,		///
+		label("Exit values:")
+  EDIT     ed_exnl           @         _ss       _vnwd     .,		///
+		label("Exit values")					///
+		default(char _dta[st_exnl])
+  TEXT     tx_exexp          _ilft3_3  y         _cwd3_2   .,		///
+		label("Exit time expression:")
+  EDIT     ed_exexp          @         _ss       _vnwd     .,		///
+		label("Exit time expression")				///
+		default(char _dta[st_exexp])
+END
+
+SCRIPT ormin_on
+BEGIN
+	opt.tx_origin.disable
+	opt.vn_origin.disable
+	opt.tx_ornl.disable
+	opt.ed_ornl.disable
+	opt.tx_orexp.disable
+	opt.ed_orexp.disable
+END
+
+SCRIPT ormin_off
+BEGIN
+	opt.tx_origin.enable
+	opt.vn_origin.enable
+	opt.tx_ornl.enable
+	opt.ed_ornl.enable
+	opt.tx_orexp.enable
+	opt.ed_orexp.enable
+END
+
+DIALOG adv, label("") tabtitle("Advanced")
+BEGIN
+  /*--+----1----+----2----+----3----+----4----+----5----+----6----+----7----+*/
+  TEXT     tx_if     _lft      _top      _cwd1     .,			/*
+		*/ label("If criterion:")				/*
+		*/
+  EDIT     ed_if     @         _ss       _cwd1     .,			/*
+		*/ label("If criterion")				/*
+		*/ option("if")						/*
+		*/ default(char _dta[st_if])				/*
+		*/
+
+  TEXT     tx_time0  _lft2     _top      _cwd1     .,			/*
+		*/ label("Beginning time variable: [time0()]")		/*
+		*/
+  VARNAME  vn_time0  @         _ss       _vnwd     .,			/*
+		*/ label("Beginning time variable:")			/*
+		*/ option("time0")					/*
+		*/ default(char _dta[st_bt0])				/*
+		*/
+
+  TEXT     tx_ever   _lft      _ls       _iwd      .,			/*
+		*/ label("Ever criterion:")				/*
+		*/
+  EDIT     ed_ever   @         _ss       _cwd1     .,			/*
+		*/ label("Ever criterion")				/*
+		*/ option("ever")					/*
+		*/ default(char _dta[st_ever])				/*
+		*/
+
+  TEXT     tx_never  _lft      _ls       _iwd      .,			/*
+		*/ label("Never criterion:")				/*
+		*/
+  EDIT     ed_never  @         _ss       _cwd1     .,			/*
+		*/ label("Never criterion")				/*
+		*/ option("never")					/*
+		*/ default(char _dta[st_never])				/*
+		*/
+
+  TEXT     tx_after  _lft      _ls       _iwd      .,			/*
+		*/ label("After criterion:")				/*
+		*/
+  EDIT     ed_after  @         _ss       _cwd1     .,			/*
+		*/ label("After criterion")				/*
+		*/ option("after")					/*
+		*/ default(char _dta[st_after])				/*
+		*/
+
+  TEXT     tx_before _lft      _ls       _iwd      .,			/*
+		*/ label("Before criterion:")				/*
+		*/
+  EDIT     ed_before @         _ss       _cwd1     .,			/*
+		*/ label("Before criterion")				/*
+		*/ option("before")					/*
+		*/ default(char _dta[st_befor])				/*
+		*/
+
+END
+
+PROGRAM command
+BEGIN
+	if isMI {
+		put "mi "
+	}
+	put "stset "
+	if main.ck_clear {
+		beginoptions
+			option main.ck_clear
+		endoptions
+	}
+	if !main.ck_clear {
+		varlist main.vn_t
+		ifexp if.ex_if
+		INCLUDE _weights_pr
+		beginoptions
+			optionarg main.vn_id
+			if main.ck_id {
+				require main.vn_id
+				require main.vn_fail
+			}
+			if main.vn_fail | main.ed_fail {
+				put "failure(" main.vn_fail
+				if main.ed_fail {
+					require main.vn_fail
+					put "==" main.ed_fail
+				}
+				put ") "
+			}
+			optionarg adv.vn_time0
+			if opt.vn_enter | opt.ed_ennl | opt.ed_enexp {
+				put "enter("
+				if opt.vn_enter | opt.ed_ennl {
+					require opt.vn_enter
+					require opt.ed_ennl
+					put opt.vn_enter "==" opt.ed_ennl
+				}
+				if opt.vn_enter & opt.ed_enexp {
+					put " "
+				}
+				if opt.ed_enexp {
+					put "time " opt.ed_enexp
+				}
+				put ") "
+			}
+			if opt.vn_exit | opt.ed_exnl | opt.ed_exexp {
+				put "exit("
+				if opt.vn_exit | opt.ed_exnl {
+					require opt.vn_exit
+					require opt.ed_exnl
+					put opt.vn_exit "==" opt.ed_exnl
+				}
+				if opt.vn_exit & opt.ed_exexp {
+					put " "
+				}
+				if opt.ed_exexp {
+					put "time " opt.ed_exexp
+				}
+				put ") "
+			}
+			option opt.ck_ormin
+			if !opt.ck_ormin & /*
+			*/ (opt.vn_origin | opt.ed_ornl | opt.ed_orexp) {
+				put "origin("
+				if opt.vn_origin | opt.ed_ornl {
+					require opt.vn_origin
+					require opt.ed_ornl
+					put opt.vn_origin "==" opt.ed_ornl
+				}
+				if opt.vn_origin & opt.ed_orexp {
+					put " "
+				}
+				if opt.ed_orexp {
+					put "time " opt.ed_orexp
+				}
+				put ") "
+			}
+			optionarg opt.en_scale
+			optionarg adv.ed_if
+			optionarg adv.ed_ever
+			optionarg adv.ed_never
+			optionarg adv.ed_after
+			optionarg adv.ed_before
+			option main.ck_noshow
+		endoptions
+	}
+END

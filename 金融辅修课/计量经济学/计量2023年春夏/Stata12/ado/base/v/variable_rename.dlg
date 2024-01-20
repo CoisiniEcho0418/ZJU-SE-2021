@@ -1,0 +1,52 @@
+/*
+	rename variable using the review window.
+
+*!  VERSION 1.0.0  15mar2007
+
+	which label = built-in command:  rename
+*/
+
+VERSION 10.0
+MODAL
+
+INCLUDE _std_vsmall
+POSITION . . _dlgwd 100
+
+OK ok1, label("OK")
+CANCEL can1, label("Cancel")
+
+SCRIPT PREINIT
+BEGIN
+	create ARRAY ARGS
+	create STRING variable
+	create STRING title
+END
+
+PROGRAM POSTINIT_PROGRAM
+BEGIN
+	if __MESSAGE {
+		call __MESSAGE.tokenize ARGS
+		call variable.setvalue class ARGS[1]
+		if variable {
+			call variable.withvalue title.setvalue	///
+				"Rename variable '@'"
+			call title.withvalue settitle "@"
+		}
+	}
+END
+
+DIALOG main
+BEGIN
+  TEXT     tx_name  _lft      20        _iwd      .,		///
+	label("New name: (may be up to 32 characters)")
+  EDIT     ed_name  @         _ss       @         .,		///
+	label("New name") nomemory
+END
+
+PROGRAM command
+BEGIN
+	put "rename "
+	put variable " "
+	require main.ed_name
+	put main.ed_name
+END

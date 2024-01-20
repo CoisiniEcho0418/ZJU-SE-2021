@@ -1,0 +1,254 @@
+/*
+    gr_by.idlg
+
+*!  VERSION 1.0.0  20nov2006
+
+	// SCRIPTS and PROGRAMS for external use
+	   * SCRIPT gr_by_setAxesOptionsOff
+	   * SCRIPT gr_by_setMissingOff
+	   * SCRIPT gr_by_setTotalOff
+	   * SCRIPT gr_by_enable
+	   * SCRIPT gr_by_disable
+*/
+
+SCRIPT gr_by_setAxesOptionsOff
+BEGIN
+	by.bu_axes_adv.hide
+END
+
+SCRIPT gr_by_disable
+BEGIN
+	by.ck_by.disable
+	script by_off
+END
+
+SCRIPT gr_by_enable
+BEGIN
+	program gr_by_enable_wrk
+END
+PROGRAM gr_by_enable_wrk
+BEGIN
+	call by.ck_by.enable
+	if by.ck_by {
+		call program by_on
+	}
+END
+
+SCRIPT gr_by_setMissingOff
+BEGIN
+	by.ck_missing.hide
+END
+
+SCRIPT gr_by_setTotalOff
+BEGIN
+	by.ck_total.hide
+END
+
+SCRIPT by_PREINIT
+BEGIN
+	create STRING byResults
+	create STRING byTitleResults
+	create STRING byAxesResults
+	create STRING byRegionResults
+END
+
+PROGRAM by_POSTINIT_PROGRAM
+BEGIN
+	call program by_checkByResults
+	call program by_checkByTitleResults
+	call program by_checkAxesResults
+	call program by_checkByRegionResults
+END
+
+DIALOG by, tabtitle("By")
+BEGIN
+  CHECKBOX ck_by	_lft	_top	_iwd	230,		///
+	groupbox						///
+	onclickon(program by_on) onclickoff(script by_off)	///
+	label("Draw subgraphs for unique values of variables")
+
+  TEXT     tx_vars	_ilft	_ss	_ibwd	.,		///
+	label("Variables:")
+  VARLIST  vl_vars	@	_ss	@	.,		///
+	label("Variables")
+	
+  CHECKBOX ck_total	@	_ls	220	.,		///
+	label("Add a graph with totals")			///
+	option(total)
+  DEFINE y @y
+  CHECKBOX ck_missing	@	_ms	@	.,		///
+	label("Add graphs for missing values")			///
+	option(missing)
+	
+  BUTTON   bu_opts	@	_ms	160	.,		///
+	label("Subgraph organization  ")			///
+	onpush(program get_by_options)				///
+	tooltip("Affect how subgraphs are arranged")
+	
+  BUTTON   bu_title	@	_ms	@	.,		///
+	label("Subgraph title properties  ")			///
+	onpush(script get_by_title_options)			///
+	tooltip("Properties that affect the title of each subgraph")
+  BUTTON   bu_region	@	_ms	@	.,		///
+	label("Subgraph region properties  ")			///
+	onpush(script get_by_region_options)			///
+	tooltip("Properties that affect both the graph and plot regions of individual subgraphs")
+  BUTTON   bu_axes_adv	@	_ms	@	.,		///
+	label("Subgraph axes  ")				///
+	onpush(script get_by_axes_adv)				///
+	tooltip("Affect how axes relate to individual subgraphs")
+END
+
+PROGRAM by_on
+BEGIN
+	if by.ck_by.isenabled() & by.ck_by {
+		call by.tx_vars.enable
+		call by.vl_vars.enable
+		call by.ck_total.enable
+		call by.ck_missing.enable
+		call by.bu_opts.enable
+		call by.bu_title.enable
+		call script by_setByContext_on
+		call by.bu_axes_adv.enable
+		call by.bu_region.enable
+	}
+END
+
+SCRIPT by_setByContext_on
+BEGIN
+	// not guaranteed to exist
+	script gr_legend_setByOutput_on
+	script gr_titles_setByOutput_on
+	script gr_overall_setByOutput_on
+END
+
+SCRIPT by_off
+BEGIN
+	by.tx_vars.disable
+	by.vl_vars.disable
+	by.ck_total.disable
+	by.ck_missing.disable
+	by.bu_opts.disable
+	by.bu_title.disable
+	script gr_legend_setByOutput_off
+	script gr_titles_setByOutput_off
+	script gr_overall_setByOutput_off
+	by.bu_axes_adv.disable
+	by.bu_region.disable
+END
+
+PROGRAM get_by_options
+BEGIN
+	call create CHILD gr_by_options AS byOpts, allowsubmit
+	call byOpts.setExitString byResults
+	call byOpts.settitle "Subgraph organization"
+	call byOpts.setExitAction "program by_checkByResults"
+	call byOpts.setSubmitAction "program by_bySubmit"
+END
+PROGRAM by_checkByResults
+BEGIN
+	if byResults {
+		call by.bu_opts.setlabel "Subgraph organization *"
+	}
+	else {
+		call by.bu_opts.setlabel "Subgraph organization  "
+	}
+END
+PROGRAM by_bySubmit
+BEGIN
+	call program by_checkByResults
+	call Submit
+END
+
+SCRIPT get_by_title_options
+BEGIN
+	create CHILD gr_title_options AS by_stitle, allowsubmit
+	by_stitle.setExitString byTitleResults
+	by_stitle.settitle `"Subgraph title properties"'
+	by_stitle.setExitAction "program by_checkByTitleResults"
+	by_stitle.setSubmitAction "program by_titlesSubmit"
+END
+PROGRAM by_checkByTitleResults
+BEGIN
+	if byTitleResults {
+		call by.bu_title.setlabel "Subgraph titles *"
+	}
+	else {
+		call by.bu_title.setlabel "Subgraph titles  "
+	}
+END
+PROGRAM by_titlesSubmit
+BEGIN
+	call program by_checkByTitleResults
+	call Submit
+END
+
+SCRIPT get_by_axes_adv
+BEGIN
+	create CHILD gr_by_axis_options AS byAxes, allowsubmit
+	byAxes.settitle "Subgraph axes"
+	byAxes.setExitString byAxesResults
+	byAxes.setExitAction "program by_checkAxesResults"
+	byAxes.setSubmitAction "program by_axesSubmit"
+END
+PROGRAM by_checkAxesResults
+BEGIN
+	if byAxesResults {
+		call by.bu_axes_adv.setlabel "Subgraph axes *"
+	}
+	else {
+		call by.bu_axes_adv.setlabel "Subgraph axes  "
+	}
+END
+PROGRAM by_axesSubmit
+BEGIN
+	call program by_checkAxesResults
+	call Submit
+END
+
+SCRIPT get_by_region_options
+BEGIN
+	create CHILD gr_region_options AS byRegion, allowsubmit
+	byRegion.setExitString byRegionResults
+	byRegion.settitle "Subgraph region properties"
+	byRegion.setExitAction "program by_checkByRegionResults"
+	byRegion.setSubmitAction "program by_regionSubmit"
+END
+PROGRAM by_checkByRegionResults
+BEGIN
+	if byRegionResults.iseq("") {
+		call by.bu_region.setlabel "Subgraph regions  "
+	}
+	else {
+		call by.bu_region.setlabel "Subgraph regions *"
+	}
+END
+PROGRAM by_regionSubmit
+BEGIN
+	call program by_checkByRegionResults
+	call Submit
+END
+
+PROGRAM by_output_wrk
+BEGIN
+	varlist by.vl_vars
+	beginoptions
+		option by.ck_total
+		option by.ck_missing
+		put " " byResults
+		put " " byAxesResults
+	endoptions
+END
+
+PROGRAM gr_by_output
+BEGIN
+	if by.ck_by.isenabled() & by.ck_by {
+		put " by("
+		put /program by_output_wrk
+		put ") "
+		if !H(by.bu_title) & byTitleResults {
+			put " subtitle(, " byTitleResults ") "
+		}
+		put " " byRegionResults
+	}
+END

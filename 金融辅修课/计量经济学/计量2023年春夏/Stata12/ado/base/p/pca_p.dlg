@@ -1,0 +1,98 @@
+/*
+	predict (after pca)
+
+*!  VERSION 1.2.0  30may2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_large
+INCLUDE _ht340
+INCLUDE header
+
+HELP hlp1, view("help pca postestimation")
+RESET res1
+
+DIALOG main, label("predict - Prediction after estimation") tabtitle("Main")
+BEGIN
+INCLUDE  _p_gentype
+
+  GROUPBOX gb_produce		_lft	_ls	_iwd	_ht8,		///
+	label("Produce:")
+  RADIO    rb_score		_indent	_ss	_ibwd	.,	first	///
+	option(score) label("Scores based on the components (default)")	///
+	onclickon(script _p_gentype_multiple)
+  RADIO    rb_fit		@	_ss	@	.,		///
+	option(fit) 							///
+	label("Fitted values using the retained components")		///
+	onclickon(script _p_gentype_multiple)
+  RADIO    rb_residual		@	_ss	@	.,		///
+  	onclickon(script _p_gentype_multiple)				///
+	option(residual) label("Raw residuals from the fit using the retained components")
+  RADIO    rb_q			@	_ss	@	.,	last	///
+	option(q) label("Residual sum of squares")			///
+	onclickon(script _p_gentype_single)
+
+  GROUPBOX gb_opts		_lft	_xls	_iwd	_ht12,		///
+	label("Options")
+  CHECKBOX ck_norotated		_ilft	_ss	_ibwd	.,		///
+	option(norotated) label("Use unrotated results, even when rotated results are available")
+  CHECKBOX ck_center		@	_ms	@	.,		///
+	option(center) label("Base scores on centered variables")
+  CHECKBOX ck_notable		@	_ms	@	.,		///
+	option(notable) label("Suppress table of scoring coefficients")
+
+  CHECKBOX ck_format    	@	_ms	@	.,		///
+	onclickon(script format_on)					///
+	onclickoff(script format_off)					///
+	label("Overide display format for displaying the scoring coefficients")
+  EDIT     en_format		+20	_ss	200	.,		///
+	option(format)							///
+	label("Display format")
+  BUTTON   bu_format		+205	@	80	.,		///
+	label("Create...")						///
+	onpush(script showFormatDialog)					///
+	tooltip("Create display format")
+END
+
+SCRIPT showFormatDialog
+BEGIN
+	create STRING formatString
+	create CHILD format_chooser
+	format_chooser.setExitString formatString
+	format_chooser.setExitAction "main.en_format.setvalue class formatString.value"
+END
+
+SCRIPT format_on
+BEGIN
+  	main.en_format.enable
+  	main.bu_format.enable
+END
+
+SCRIPT format_off
+BEGIN
+  	main.en_format.disable
+	main.bu_format.disable
+END
+
+INCLUDE _p_gentype_sc
+INCLUDE ifin
+INCLUDE _type_list_fd
+
+PROGRAM command
+BEGIN
+	put "predict "
+	put " " /program _p_gentype_output
+	INCLUDE _ifin_pr
+	beginoptions
+		option main.rb_score
+		option main.rb_fit
+		option main.rb_residual
+		option main.rb_q
+		option main.ck_norotated
+		option main.ck_center
+		option main.ck_notable
+		optionarg main.en_format
+	endoptions
+END

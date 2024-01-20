@@ -1,0 +1,6 @@
+*! version 1.0.0  22dec2002
+sequence 5420
+label "elightblue"
+
+* 2905 C
+set rgb "130 192 233"

@@ -1,0 +1,6 @@
+*! version 1.0.1  05dec2003
+sequence 4101
+
+set width    scheme p#bar
+set color    scheme p#barline
+set pattern  scheme p#bar

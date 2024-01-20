@@ -1,0 +1,64 @@
+/*
+   _clusmat_hier2.idlg  include file for advanced tab for hier. -clustermat-
+			also includes common scripts and scripts for handling
+			if/in on the main tab
+
+*! VERSION 1.1.0  19jul2006
+
+*/
+
+SCRIPT PREINIT
+BEGIN
+	create STRING matrixResult
+END
+
+INCLUDE ifin
+
+DIALOG adv, tabtitle("Advanced")
+BEGIN
+  CHECKBOX ck_force  _lft   _top   _iwd   .,		///
+	option(force)					///
+	label("Perform clustering after fixing matrix problems")
+
+  TEXT     tx_gen    @      _ls    @      .,		///
+	label("Prefix for generated variables: (leave empty for default)")
+  EDIT     ed_gen    @      _ss    _vnwd  ., max(28)	///
+	option(generate)				///
+	label("Prefix for generated variables")
+END
+
+
+// common scripts
+
+PROGRAM show_matrix_input
+BEGIN
+	call create CHILD matrix_input
+	if ! _rc {
+		call matrix_input.setExitString matrixResult
+		call matrix_input.setExitAction "program getMatrixResult"
+		call matrix_input.callthru "isChildContext.settrue"
+	}
+END
+PROGRAM getMatrixResult
+BEGIN
+	call main.cb_mat.repopulate
+	call matrixResult.withvalue main.cb_mat.setvalue "@"
+END
+
+LIST shape_words
+BEGIN
+	Square symmetric matrix
+	Vector of rowwise lower triangle (with diagonal)
+	Vector of rowwise strict lower triangle (no diagonal)
+	Vector of rowwise upper triangle (with diagonal)
+	Vector of rowwise strict upper triangle (no diagonal)
+END
+
+LIST shape_values
+BEGIN
+	full
+	lower
+	llower
+	upper
+	uupper
+END

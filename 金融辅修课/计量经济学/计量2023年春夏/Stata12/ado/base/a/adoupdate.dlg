@@ -1,0 +1,83 @@
+/*
+    adoupdate.dlg
+
+*!  VERSION 1.0.1  12may2011
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+DEFINE _dlght 260
+INCLUDE header
+HELP hlp1, view("help adoupdate")
+RESET res1
+
+DIALOG main,label("adoupdate - Update user-written ado-files")  tabtitle("Main")
+BEGIN
+  GROUPBOX gb_update	_lft  	_top	_iwd	_ht4,			///
+  	label("Action")
+  RADIO    rb_default	_ilft	_ss	_inwd	.,			///
+  	label("List packages, but do not update")			///
+  	onclickon(script main_setlabel_list)				///
+  	first
+  RADIO    rb_update	@	_ss	@	.,			///
+  	label("Apply updates") 						///
+  	onclickon(script main_setlabel_update)				///
+  	last option(update)
+
+  TEXT     tx_pkglist	_lft 	_xls 	_iwd 	.,			///
+  	label("Packages to update or list (default is all):")
+  EDIT	   ed_pkglist	@	_ss	@	.,			///
+  	label("Packages to update or list")
+
+  COMBOBOX cb_dir	_lft	_ls	_vnwd	.,			///
+ 	dropdownlist contents(main_dirlist) values(main_dirlist_values)	///
+ 	option(dir)
+  TEXT	   tx_dir	_vnsep	@	150	.,			///
+  	label("Directory to update")
+  CHECKBOX ck_ssconly	_lft	_ls	_iwd	.,			///
+  	label("Check only packages obtained from SSC")			///
+  	option(ssconly)
+  CHECKBOX ck_all	@	_ms	@	.,			///
+  	label("Include packages where update status is ambiguous")	///
+  	option(all)
+  CHECKBOX ck_verbose	@	_ms	@	.,			///
+  	option(verbose)							///
+  	label("Provide additional output to help in debugging network problems")
+END
+
+SCRIPT main_setlabel_list
+BEGIN
+	main.tx_pkglist.setlabel "Packages to list: (default is all)"
+END
+
+SCRIPT main_setlabel_update
+BEGIN
+	main.tx_pkglist.setlabel "Packages to update: (default is all)"
+END
+
+LIST main_dirlist
+BEGIN
+	PLUS
+	SITE
+END
+
+LIST main_dirlist_values
+BEGIN
+	""
+	SITE
+END
+
+PROGRAM command
+BEGIN
+	put "adoupdate "
+	put main.ed_pkglist
+	beginoptions
+		option main.rb_update
+		optionarg main.cb_dir
+		option main.ck_ssconly
+		option main.ck_all
+		option main.ck_verbose
+	endoptions
+END

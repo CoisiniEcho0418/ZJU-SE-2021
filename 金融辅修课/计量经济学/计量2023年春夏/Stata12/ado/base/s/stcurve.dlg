@@ -1,0 +1,2041 @@
+/*
+	stcurve
+
+*!  VERSION 3.0.1  09oct2009
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_wide
+DEFINE _dlght 370
+INCLUDE header
+
+HELP hlp1, view("help stcurve")
+RESET res1
+
+PROGRAM POSTINIT_PROGRAM
+BEGIN
+        call create STRING isSTCRREG
+        call isSTCRREG.setvalue e(cmd)
+
+	if(isSTCRREG.iseq("stcrreg")) {
+		call main.rb_stcrreg.show
+	}
+	else {
+		call main.rb_stcrreg.hide
+	}
+END
+
+
+DIALOG main, tabtitle("Main")	///
+	title("stcurve - Plot survivor, hazard, cumulative hazard or cumulative incidence function")
+BEGIN
+
+  GROUPBOX gb_graph       _lft      _top      _iwd        _ht2,		///
+		label("Function")
+
+  RADIO    rb_survival    _ilft     _ss       120       .,		///
+		label("Survivor")					///
+		clickon(script rb_hazard_off)				///
+		option(survival) first
+  RADIO    rb_hazard      +130      @         120       .,		///
+		label("Hazard")						///
+		clickon(script rb_hazard_on)				///
+		option(hazard)
+  RADIO    rb_cummu       +130       @        150        .,		///
+		label("Cumulative hazard")				///
+		clickon(script rb_hazard_off)				///
+		option(cumhaz)
+		
+  RADIO    rb_stcrreg      +150       @        @        .,		///
+		label("Cumulative incidence")				///
+		clickon(script rb_hazard_off)				///
+		option(cif)						///
+		last
+
+  GROUPBOX gb_meanat      _lft      _xxls      _iwd        _ht23,	///
+		label("Function evaluation")
+
+  RADIO    rb_mean        _ilft     _ss       _ibwd       .,		///
+		first							///
+		clickon("script mean_on")				///
+		label("Evaluate function at the mean value of the covariates")
+
+  RADIO    rb_mulcurve    @         _ss       _ibwd       .,		///
+		last 							///
+		clickon("script multicurve")				///
+label("Evaluate function at the value of the specified covariates and mean of unspecified covariates")
+
+  TEXT     tx_atcurve     _indent2  _ms       _cwd3     .,		///
+		label("Curves:")
+  DEFINE x @x
+  DEFINE yx @y
+
+  LISTBOX  lb_at          @         _ss       @         _ht12h,		///
+		label("")						///
+		contents(curves)					///
+		onselchangelist(func_change)
+  DEFINE y @y
+
+  /* ------------- first curves  ----------------  */
+  TEXT	   tx_var01       _lft2     yx        _vnwd     .,		///
+		label("Curve 1, Variable 1:")
+  TEXT     tx_val01       +150      @         _en7wd    .,		///
+		label("Value 1:")
+  DEFINE   enx @x
+  VARNAME  vn_atc11       _lft2     _ss       _vnwd     .,		///
+		label("Curve 1, Variable 1")
+  DEFINE	yvar1 @y
+
+  TEXT     tx_eq1	  _vnsep    @         _ckwd     .,		///
+		label("=")						///
+		center
+  EDIT     en_atc11       enx       @         _en7wd    .,		///
+		label("Curve 1, Value 1")				///
+		numonly
+
+  TEXT     tx_var02       _lft2     _ms       _vnwd     .,		///
+		label("Curve 1, Variable 2:")
+
+  TEXT     tx_val02       enx       @         @         .,		///
+		label("Value 2:")
+
+  VARNAME  vn_atc12       _lft2     _ss       _vnwd     .,		///
+		label("Curve 1, Variable 2")
+
+
+  DEFINE  yvar2 @y
+
+  TEXT     tx_eq2	 _vnsep     @         _ckwd     .,		///
+		label("=")						///
+		center
+
+  EDIT     en_atc12       enx       @         _en7wd    .,		///
+		label("Curve 1, Value 2")				///
+		numonly
+
+  TEXT     tx_var03       _lft2     _ms       _vnwd     .,		///
+		label("Curve 1, Variable 3:")
+
+  TEXT     tx_val03       enx       @         @         .,		///
+		label("Value 3:")
+
+  VARNAME  vn_atc13       _lft2     _ss       _vnwd     .,		///
+		label("Curve 1, Variable 3")
+
+  DEFINE  yvar3 @y
+
+  TEXT     tx_eq3	 _vnsep     @         _ckwd     .,		///
+		label("=")						///
+		center
+
+  EDIT     en_atc13       enx       @         _en7wd    .,		///
+		label("Curve 1, Value 3")				///
+		numonly
+
+  TEXT     tx_var04       _lft2     _ms       _vnwd     .,		///
+		label("Curve 1, Variable 4:")
+
+  TEXT     tx_val04       enx       @         @         .,		///
+		label("Value 4:")
+
+  VARNAME  vn_atc14       _lft2     _ss       _vnwd     .,		///
+		label("Curve 1, Variable 4")
+
+  DEFINE  yvar4 @y
+
+  TEXT     tx_eq4        _vnsep     @         _ckwd     .,		///
+		label("=")						///
+		center
+
+  EDIT     en_atc14       enx       @         _en7wd    .,		///
+		label("Curve 1, Value 3")				///
+		numonly
+
+
+
+/* -------------------------- second curve  ----------------------- */
+
+  VARNAME  vn_atc21       _lft2     yvar1     _vnwd     .,		///
+		label("Curve 2, Variable 1")
+
+  EDIT     en_atc21       enx       @         _en7wd    .,		///
+		label("Curve 2, Value 1")				///
+		numonly
+
+  VARNAME  vn_atc22       _lft2     yvar2     _vnwd     .,		///
+		label("Curve 2, Variable 2")
+
+  EDIT     en_atc22       enx       @         _en7wd    .,		///
+		label("Curve 2, Value 2 ")				///
+		numonly
+
+  VARNAME  vn_atc23       _lft2     yvar3     _vnwd     .,		///
+		label("Curve 2, Variable 3")
+
+  EDIT     en_atc23       enx       @         _en7wd    .,		///
+		label("Curve 2, Value 3")				///
+		numonly
+
+  VARNAME  vn_atc24       _lft2     yvar4     _vnwd     .,		///
+		label("Curve 2, Variable 4")
+
+  EDIT     en_atc24       enx       @         _en7wd    .,		///
+		label("Curve 2, Value 4")				///
+		numonly
+
+
+
+  /* ------------- third  curves  ----------------  */
+
+  VARNAME  vn_atc31        _lft2     yvar1     _vnwd    .,		///
+		label("Curve 3, Variable 1")
+
+  EDIT     en_atc31        enx       @         _en7wd   .,		///
+		label("Curve 3, Value 1")				///
+		numonly
+
+  VARNAME  vn_atc32        _lft2     yvar2     _vnwd    .,		///
+		label("Curve 3, Variable 2")
+
+  EDIT     en_atc32        enx       @         _en7wd   .,		///
+		label("Curve 3, Value 2")				///
+		numonly
+
+  VARNAME  vn_atc33        _lft2     yvar3     _vnwd    .,		///
+		label("Curve 3, Variable 3")
+
+  EDIT     en_atc33        enx       @         _en7wd   .,		///
+		label("Curve 3, Value 3")				///
+		numonly
+
+  VARNAME  vn_atc34        _lft2     yvar4     _vnwd    .,		///
+		label("Curve 3, Variable 4")
+
+  EDIT     en_atc34        enx       @         _en7wd   .,		///
+		label("Curve 3, Value 4")				///
+		numonly
+
+
+ /* ------------------- fourth  curve ----------------------- */
+
+  VARNAME  vn_atc41        _lft2     yvar1     _vnwd    .,		///
+		label("Curve 4, Variable 1")
+
+  EDIT     en_atc41        enx       @         _en7wd   .,		///
+		label("Curve 4, Value 1")				///
+		numonly
+
+  VARNAME  vn_atc42        _lft2     yvar2     _vnwd    .,		///
+		label("Curve 4, Variable 2")
+
+  EDIT     en_atc42        enx       @         _en7wd   .,		///
+		label("Curve 4, Value 2")				///
+		numonly
+
+  VARNAME  vn_atc43        _lft2     yvar3     _vnwd    .,		///
+		label("Curve 4, Variable 3")
+
+  EDIT     en_atc43        enx       @         _en7wd   .,		///
+		label("Curve 4, Value 3")				///
+		numonly
+
+  VARNAME  vn_atc44        _lft2     yvar4     _vnwd    .,		///
+		label("Curve 4, Variable 4")
+
+  EDIT     en_atc44        enx       @         _en7wd   .,		///
+		label("Curve 4, Value 4")				///
+		numonly
+
+
+ /* ------------------- 5th curve ------------------- */
+
+  VARNAME  vn_atc51        _lft2     yvar1     _vnwd    .,		///
+		label("Curve 5, Variable 1")
+
+  EDIT     en_atc51        enx       @         _en7wd   .,		///
+		label("Curve 5, Value 1")				///
+		numonly
+
+  VARNAME  vn_atc52        _lft2     yvar2     _vnwd    .,		///
+		label("Curve 5, Variable 2")
+  EDIT     en_atc52        enx       @         _en7wd   .,		///
+		label("Curve 5, Value 2")				///
+		numonly
+
+  VARNAME  vn_atc53        _lft2     yvar3     _vnwd    .,		///
+		label("Curve 5, Variable 3")
+
+  EDIT     en_atc53        enx       @         _en7wd   .,		///
+		label("Curve 5, Value 3")				///
+		numonly
+  VARNAME  vn_atc54        _lft2     yvar4     _vnwd    .,		///
+		label("Curve 5, Variable 4")
+
+  EDIT     en_atc54        enx       @         _en7wd   .,		///
+		label("Curve 5, Value 4")				///
+		numonly
+
+
+
+ /*------------ 6th curve-------------------------------------- */
+
+  VARNAME  vn_atc61        _lft2      yvar1     _vnwd   .,		///
+		label("Curve 6, Variable 1")
+
+  EDIT     en_atc61        enx       @          _en7wd  .,		///
+		label("Curve 6, Value 1")				///
+		numonly
+
+  VARNAME  vn_atc62        _lft2     yvar2      _vnwd   .,		///
+		label("Curve 6, Variable 2")
+
+  EDIT     en_atc62        enx       @          _en7wd  .,		///
+		label("Curve 6, Value 2")				///
+		numonly
+
+  VARNAME  vn_atc63        _lft2     yvar3      _vnwd   .,		///
+		label("Curve 6, Variable 3")
+
+  EDIT     en_atc63        enx       @          _en7wd  .,		///
+		label("Curve 6, Value 3")				///
+		numonly
+
+  VARNAME  vn_atc64        _lft2     yvar4     _vnwd    .,		///
+		label("Curve 6, Variable 4")
+
+  EDIT     en_atc64        enx       @         _en7wd   .,		///
+		label("Curve 6, Value 4")				///
+		numonly
+
+
+ /* ---------------- 7th curve -----------------  */
+
+  VARNAME  vn_atc71        _lft2     yvar1     _vnwd    .,		///
+		label("Curve 7, Variable 1")
+
+  EDIT     en_atc71        enx       @         _en7wd   .,		///
+		label("Curve 7, Value 1")				///
+		numonly
+
+  VARNAME  vn_atc72        _lft2     yvar2     _vnwd    .,		///
+		label("Curve 7, Variable 2")
+
+  EDIT     en_atc72        enx       @         _en7wd   .,		///
+		label("Curve 7, Value 2")				///
+		numonly
+
+  VARNAME  vn_atc73        _lft2     yvar3     _vnwd    .,		///
+		label("Curve 7, Variable 3")
+
+  EDIT     en_atc73        enx       @         _en7wd   .,		///
+		label("Curve 7, Value 3")				///
+		numonly
+  VARNAME  vn_atc74        _lft2     yvar4     _vnwd    .,		///
+		label("Curve 7, Variable 4")
+
+  EDIT     en_atc74        enx       @         _en7wd   .,		///
+		label("Curve 7, Value 4")				///
+		numonly
+
+
+  /*------------------ 8th curve --------------------- */
+
+  VARNAME  vn_atc81        _lft2     yvar1     _vnwd    .,		///
+		label("Curve 8, Variable 1")
+
+  EDIT     en_atc81        enx       @         _en7wd   .,		///
+		label("Curve 8, Value 1")				///
+		numonly
+
+  VARNAME  vn_atc82        _lft2     yvar2     _vnwd    .,		///
+		label("Curve 8, Variable 2")
+
+  EDIT     en_atc82        enx       @         _en7wd   .,		///
+		label("Curve 8, Value 2")				///
+		numonly
+
+  VARNAME  vn_atc83        _lft2     yvar3     _vnwd    .,		///
+		label("Curve 8, Variable 3")
+
+  EDIT     en_atc83        enx       @         _en7wd   .,		///
+		label("Curve 8, Value 3")				///
+		numonly
+
+  VARNAME  vn_atc84        _lft2     yvar4     _vnwd    .,		///
+		label("Curve 8, Variable 4")
+
+  EDIT     en_atc84        enx       @         _en7wd   .,		///
+		label("Curve 8, Value 4")				///
+		numonly
+
+
+ /* ------------------- 9th curve ------------- */
+
+  VARNAME  vn_atc91        _lft2     yvar1     _vnwd    .,		///
+		label("Curve 9, Variable 1")
+
+  EDIT     en_atc91        enx       @         _en7wd   .,		///
+		label("Curve 9, Value 1")				///
+		numonly
+
+  VARNAME  vn_atc92        _lft2     yvar2     _vnwd    .,		///
+		label("Curve 9, Variable 2")
+
+  EDIT     en_atc92        enx       @         _en7wd   .,		///
+		label("Curve 9, Value 2")				///
+		numonly
+
+  VARNAME  vn_atc93        _lft2     yvar3     _vnwd    .,		///
+		label("Curve 9, Variable 3")
+
+  EDIT     en_atc93        enx       @         _en7wd   .,		///
+		label("Curve 9, Value 3")				///
+		numonly
+  VARNAME  vn_atc94        _lft2     yvar4     _vnwd    .,		///
+		label("Curve 9, Variable 4")
+
+  EDIT     en_atc94        enx       @         _en7wd   .,		///
+		label("Curve 9, Value 4")				///
+		numonly
+
+
+  /* ---------------- 10th curve ----------------- */
+
+  VARNAME  vn_atc101       _lft2     yvar1     _vnwd    .,		///
+		label("Curve 10, Variable 1")
+
+  EDIT     en_atc101       enx       @         _en7wd   .,		///
+		label("Curve 10, Value 1")				///
+		numonly
+
+  VARNAME  vn_atc102       _lft2     yvar2     _vnwd    .,		///
+		label("Curve 10, Variable 2")
+
+  EDIT     en_atc102       enx       @         _en7wd   .,		///
+		label("Curve 10, Value 2")				///
+		numonly
+
+  VARNAME  vn_atc103       _lft2     yvar3     _vnwd    .,		///
+		label("Curve 10, Variable 3")
+
+  EDIT     en_atc103       enx       @         _en7wd   .,		///
+		label("Curve 10, Value3")				///
+		numonly
+  VARNAME  vn_atc104       _lft2     yvar4     _vnwd    .,		///
+		label("Curve 10, Variable 4")
+
+  EDIT     en_atc104       enx       @         _en7wd   .,		///
+		label("Curve 10, Value 4")				///
+		numonly
+
+END
+
+SCRIPT rb_hazard_on
+BEGIN
+	opt.gb_meth.show
+	opt.ck_width.show
+	opt.en_width.show
+	opt.tx_width.show
+	program kdenopts_width_check
+	opt.tx_kernel.show
+	opt.cb_kernel.show
+	opt.ck_noboundary.show
+
+	opt.ck_outfile.setposition . 285
+	opt.tx_file.setposition . 310
+	opt.fi_fn.setposition . 330
+END
+
+SCRIPT rb_hazard_off
+BEGIN
+	opt.gb_meth.hide
+	opt.ck_width.hide
+	opt.en_width.hide
+	opt.tx_width.hide
+	opt.tx_kernel.hide
+	opt.cb_kernel.hide
+	opt.ck_noboundary.hide
+
+	opt.ck_outfile.setposition . 180
+	opt.tx_file.setposition . 205
+	opt.fi_fn.setposition . 225
+END
+
+DIALOG opt, tabtitle("Options")
+BEGIN
+  GROUPBOX gb_frailty     _lft       _top      430      _ht2,		///
+		label("Frailty model")
+DEFINE boxwd @cx
+  RADIO    rb_defaul      _ilft      _ss       _cwd4_2  .,		///
+		label("Default")					///
+		option(NONE)						///
+		first
+
+  RADIO    rb_alpha1      _lft4_2    @         @        .,		///
+		label("Conditional")					///
+		option(alpha1)
+
+  RADIO    rb_uncondi     _lft4_3    @         @        .,		///
+		label("Unconditional")					///
+		option(unconditional)					///
+		last
+
+  GROUPBOX gb_range       _lft       _xls      boxwd    _ht7,		///
+		label("Range of analysis time")
+  DEFINE y @y
+  RADIO    rb_norange     _ilft      _ss       _inwd    .,		///
+	label("Interval expanding from earliest to the latest time")	///
+		option(NONE)						///
+		first							///
+		clickon("script start_off")
+DEFINE inbox @cx
+  RADIO    rb_range       @          _ss       @        .,		///
+		label("User specified:")				///
+		option(range)						///
+		last							///
+		clickon("script start_on")
+
+  EDIT     en_start       _indent2   _ms       _en7wd   .,		///
+		label("Start") numonly
+  DEFINE   x @x
+
+  TEXT     tx_start       _spsep     @         _en7wd   .,		///
+		label("Start")
+
+  EDIT     en_end         _lft3_2    @         _en7wd   .,		///
+		label("End") numonly
+
+  TEXT     tx_end         _spsep     @         30       .,		///
+		label("End")
+
+
+  GROUPBOX gb_meth        _lft       +45      boxwd     _ht6h,		///
+		label("Smoothing options")
+
+  CHECKBOX ck_width       _indent    _ss       200       .,		///
+	label("Override optimal width")					///
+	onclickon(program kdenopts_width_check)				///
+	onclickoff(program kdenopts_width_check)
+DEFINE y @y
+  EDIT     en_width  	  _indent2   _ss       _en7wd    .,		///
+	label("Halfwidth of kernel")					///
+	numonly								///
+	option(width)
+  TEXT     tx_width       _en7sep    @         150       .,		///
+	label("Halfwidth of kernel")
+
+  TEXT     tx_kernel      +155       y         120       .,		///
+	label("Kernel function:")
+  COMBOBOX cb_kernel      @          _ss       @         .,		///
+	label("Kernel function")					///
+	dropdownlist							///
+	contents(kernel_function)					///
+	values(kernel_function_val)					///
+	option(kernel)
+
+  CHECKBOX ck_noboundary  _ilft     _ms        inbox     .,		///
+	label("No boundary correction")					///
+	option(noboundary)
+
+
+  CHECKBOX ck_outfile     _lft       +40       boxwd    _ht5,		///
+		label("Save values used to plot the curve(s)")		///
+		groupbox						///
+		clickon("script save_on")				///
+		clickoff("script save_off")
+  TEXT     tx_file        _ilft      _ms       _inwd    .,		///
+		label("Filename:")
+  FILE     fi_fn          @          _ss       @        .,		///
+		label("Browse...")					///
+		defext(dta)						///
+		error("Filename")					///
+		save							///
+		filter("Stata Dataset (*.dta)|*.dta|All Files (*.*)|*.*")
+END
+
+INCLUDE _kernel_function_list
+
+PROGRAM kdenopts_width_check
+BEGIN
+	if !H(opt.ck_width) & opt.ck_width {
+		call gaction opt.en_width.enable
+		call gaction opt.tx_width.enable
+	}
+	if H(opt.ck_width) | ! opt.ck_width {
+		call gaction opt.en_width.disable
+		call gaction opt.tx_width.disable
+	}
+END
+
+SCRIPT save_on
+BEGIN
+	opt.tx_file.enable
+	opt.fi_fn.enable
+END
+
+SCRIPT save_off
+BEGIN
+	opt.tx_file.disable
+	opt.fi_fn.disable
+END
+
+SCRIPT start_on
+BEGIN
+	opt.en_start.enable
+	opt.tx_start.enable
+	opt.en_end.enable
+	opt.tx_end.enable
+END
+
+SCRIPT start_off
+BEGIN
+	opt.en_start.disable
+	opt.tx_start.disable
+	opt.en_end.disable
+	opt.tx_end.disable
+END
+
+LIST curves
+BEGIN
+Curve 1 (required)
+Curve 2
+Curve 3
+Curve 4
+Curve 5
+Curve 6
+Curve 7
+Curve 8
+Curve 9
+Curve 10
+END
+
+LIST func_change
+BEGIN
+	script curve_1
+	script curve_2
+	script curve_3
+	script curve_4
+	script curve_5
+	script curve_6
+	script curve_7
+	script curve_8
+	script curve_9
+	script curve_10
+END
+
+SCRIPT curve_1
+BEGIN
+	script curve_1_on
+	script curve_2_off
+	script curve_3_off
+        script curve_4_off
+        script curve_5_off
+        script curve_6_off
+        script curve_7_off
+        script curve_8_off
+        script curve_9_off
+        script curve_10_off
+        script curve_1_label
+END
+
+SCRIPT curve_2
+BEGIN
+	script curve_1_off
+	script curve_2_on
+	script curve_3_off
+        script curve_4_off
+        script curve_5_off
+        script curve_6_off
+        script curve_7_off
+        script curve_8_off
+        script curve_9_off
+        script curve_10_off
+      	script curve_2_label
+END
+
+SCRIPT curve_3
+BEGIN
+	script curve_1_off
+	script curve_2_off
+	script curve_3_on
+        script curve_4_off
+        script curve_5_off
+        script curve_6_off
+        script curve_7_off
+        script curve_8_off
+        script curve_10_off
+        script curve_3_label
+END
+
+SCRIPT curve_4
+BEGIN
+        script curve_1_off
+        script curve_2_off
+        script curve_3_off
+        script curve_4_on
+        script curve_5_off
+        script curve_6_off
+        script curve_7_off
+        script curve_8_off
+        script curve_9_off
+        script curve_10_off
+        script curve_4_label
+END
+
+SCRIPT curve_5
+BEGIN
+        script curve_1_off
+        script curve_2_off
+        script curve_3_off
+        script curve_4_off
+        script curve_5_on
+        script curve_6_off
+        script curve_7_off
+        script curve_8_off
+        script curve_9_off
+        script curve_10_off
+        script curve_5_label
+END
+
+SCRIPT curve_6
+BEGIN
+        script curve_1_off
+        script curve_2_off
+        script curve_3_off
+        script curve_4_off
+        script curve_5_off
+        script curve_6_on
+        script curve_7_off
+        script curve_8_off
+        script curve_9_off
+        script curve_10_off
+        script curve_6_label
+END
+
+SCRIPT curve_7
+BEGIN
+        script curve_1_off
+        script curve_2_off
+        script curve_3_off
+        script curve_4_off
+        script curve_5_off
+        script curve_6_off
+        script curve_7_on
+        script curve_8_off
+        script curve_9_off
+        script curve_10_off
+        script curve_7_label
+END
+
+SCRIPT curve_8
+BEGIN
+        script curve_1_off
+        script curve_2_off
+        script curve_3_off
+        script curve_4_off
+        script curve_5_off
+        script curve_6_off
+        script curve_7_off
+        script curve_8_on
+        script curve_9_off
+        script curve_10_off
+        script curve_8_label
+END
+
+SCRIPT curve_9
+BEGIN
+        script curve_1_off
+        script curve_2_off
+        script curve_3_off
+        script curve_4_off
+        script curve_5_off
+        script curve_6_off
+        script curve_7_off
+        script curve_8_off
+        script curve_9_on
+        script curve_10_off
+        script curve_9_label
+END
+
+SCRIPT curve_10
+BEGIN
+        script curve_1_off
+        script curve_2_off
+        script curve_3_off
+        script curve_4_off
+        script curve_5_off
+        script curve_6_off
+        script curve_7_off
+        script curve_8_off
+        script curve_9_off
+        script curve_10_on
+        script curve_10_label
+END
+
+SCRIPT curve_1_label
+BEGIN
+	main.tx_var01.setlabel "Curve 1, Variable 1:"
+	main.tx_var02.setlabel "Curve 1, Variable 2:"
+	main.tx_var03.setlabel "Curve 1, Variable 3:"
+	main.tx_var04.setlabel "Curve 1, Variable 4:"
+END
+
+SCRIPT curve_2_label
+BEGIN
+	main.tx_var01.setlabel "Curve 2, Variable 1:"
+	main.tx_var02.setlabel "Curve 2, Variable 2:"
+	main.tx_var03.setlabel "Curve 2, Variable 3:"
+	main.tx_var04.setlabel "Curve 2, Variable 4:"
+END
+
+SCRIPT curve_3_label
+BEGIN
+	main.tx_var01.setlabel "Curve 3, Variable 1:"
+	main.tx_var02.setlabel "Curve 3, Variable 2:"
+	main.tx_var03.setlabel "Curve 3, Variable 3:"
+	main.tx_var04.setlabel "Curve 3, Variable 4:"
+END
+
+SCRIPT curve_4_label
+BEGIN
+	main.tx_var01.setlabel "Curve 4, Variable 1:"
+	main.tx_var02.setlabel "Curve 4, Variable 2:"
+	main.tx_var03.setlabel "Curve 4, Variable 3:"
+	main.tx_var04.setlabel "Curve 4, Variable 4:"
+END
+
+SCRIPT curve_5_label
+BEGIN
+	main.tx_var01.setlabel "Curve 5, Variable 1:"
+	main.tx_var02.setlabel "Curve 5, Variable 2:"
+	main.tx_var03.setlabel "Curve 5, Variable 3:"
+	main.tx_var04.setlabel "Curve 5, Variable 4:"
+END
+
+SCRIPT curve_6_label
+BEGIN
+	main.tx_var01.setlabel "Curve 6, Variable 1:"
+	main.tx_var02.setlabel "Curve 6, Variable 2:"
+	main.tx_var03.setlabel "Curve 6, Variable 3:"
+	main.tx_var04.setlabel "Curve 6, Variable 4:"
+END
+
+SCRIPT curve_7_label
+BEGIN
+	main.tx_var01.setlabel "Curve 7, Variable 1:"
+	main.tx_var02.setlabel "Curve 7, Variable 2:"
+	main.tx_var03.setlabel "Curve 7, Variable 3:"
+	main.tx_var04.setlabel "Curve 7, Variable 4:"
+END
+
+SCRIPT curve_8_label
+BEGIN
+	main.tx_var01.setlabel "Curve 8, Variable 1:"
+	main.tx_var02.setlabel "Curve 8, Variable 2:"
+	main.tx_var03.setlabel "Curve 8, Variable 3:"
+	main.tx_var04.setlabel "Curve 8, Variable 4:"
+END
+
+SCRIPT curve_9_label
+BEGIN
+	main.tx_var01.setlabel "Curve 9, Variable 1:"
+	main.tx_var02.setlabel "Curve 9, Variable 2:"
+	main.tx_var03.setlabel "Curve 9, Variable 3:"
+	main.tx_var04.setlabel "Curve 9, Variable 4:"
+END
+
+SCRIPT curve_10_label
+BEGIN
+	main.tx_var01.setlabel "Curve 10, Variable 1:"
+	main.tx_var02.setlabel "Curve 10, Variable 2:"
+	main.tx_var03.setlabel "Curve 10, Variable 3:"
+	main.tx_var04.setlabel "Curve 10, Variable 4:"
+END
+
+SCRIPT curve_0_on
+BEGIN
+	main.vn_atc01.show
+	main.en_atc01.show
+	main.vn_atc02.show
+	main.en_atc02.show
+	main.vn_atc03.show
+	main.en_atc03.show
+	main.vn_atc04.show
+	main.en_atc04.show
+END
+
+SCRIPT curve_0_off
+BEGIN
+        main.vn_atc01.hide
+        main.en_atc01.hide
+        main.vn_atc02.hide
+        main.en_atc02.hide
+        main.vn_atc03.hide
+        main.en_atc03.hide
+        main.vn_atc04.hide
+        main.en_atc04.hide
+END
+
+SCRIPT curve_1_on
+BEGIN
+	main.vn_atc11.show
+	main.en_atc11.show
+	main.vn_atc12.show
+	main.en_atc12.show
+	main.vn_atc13.show
+	main.en_atc13.show
+	main.vn_atc14.show
+	main.en_atc14.show
+END
+
+SCRIPT curve_1_off
+BEGIN
+        main.vn_atc11.hide
+        main.en_atc11.hide
+        main.vn_atc12.hide
+        main.en_atc12.hide
+        main.vn_atc13.hide
+        main.en_atc13.hide
+        main.vn_atc14.hide
+        main.en_atc14.hide
+END
+
+SCRIPT curve_2_on
+BEGIN
+	main.vn_atc21.show
+	main.en_atc21.show
+	main.vn_atc22.show
+	main.en_atc22.show
+	main.vn_atc23.show
+	main.en_atc23.show
+	main.vn_atc24.show
+	main.en_atc24.show
+END
+
+SCRIPT curve_2_off
+BEGIN
+	main.vn_atc21.hide
+	main.en_atc21.hide
+	main.vn_atc22.hide
+	main.en_atc22.hide
+	main.vn_atc23.hide
+	main.en_atc23.hide
+	main.vn_atc24.hide
+	main.en_atc24.hide
+END
+
+SCRIPT curve_3_on
+BEGIN
+	main.vn_atc31.show
+	main.en_atc31.show
+	main.vn_atc32.show
+	main.en_atc32.show
+	main.vn_atc33.show
+	main.en_atc33.show
+	main.vn_atc34.show
+	main.en_atc34.show
+END
+
+SCRIPT curve_3_off
+BEGIN
+	main.vn_atc31.hide
+	main.en_atc31.hide
+	main.vn_atc32.hide
+	main.en_atc32.hide
+	main.vn_atc33.hide
+	main.en_atc33.hide
+	main.vn_atc34.hide
+	main.en_atc34.hide
+END
+
+SCRIPT curve_4_on
+BEGIN
+        main.vn_atc41.show
+        main.en_atc41.show
+        main.vn_atc42.show
+        main.en_atc42.show
+        main.vn_atc43.show
+        main.en_atc43.show
+        main.vn_atc44.show
+        main.en_atc44.show
+END
+
+SCRIPT curve_4_off
+BEGIN
+        main.vn_atc41.hide
+        main.en_atc41.hide
+        main.vn_atc42.hide
+        main.en_atc42.hide
+        main.vn_atc43.hide
+        main.en_atc43.hide
+        main.vn_atc44.hide
+        main.en_atc44.hide
+END
+
+SCRIPT curve_5_on
+BEGIN
+        main.vn_atc51.show
+        main.en_atc51.show
+        main.vn_atc52.show
+        main.en_atc52.show
+        main.vn_atc53.show
+        main.en_atc53.show
+        main.vn_atc54.show
+        main.en_atc54.show
+END
+
+SCRIPT curve_5_off
+BEGIN
+        main.vn_atc51.hide
+        main.en_atc51.hide
+        main.vn_atc52.hide
+        main.en_atc52.hide
+        main.vn_atc53.hide
+        main.en_atc53.hide
+        main.vn_atc54.hide
+        main.en_atc54.hide
+END
+
+SCRIPT curve_6_on
+BEGIN
+        main.vn_atc61.show
+        main.en_atc61.show
+        main.vn_atc62.show
+        main.en_atc62.show
+        main.vn_atc63.show
+        main.en_atc63.show
+        main.vn_atc64.show
+        main.en_atc64.show
+END
+
+SCRIPT curve_6_off
+BEGIN
+        main.vn_atc61.hide
+        main.en_atc61.hide
+        main.vn_atc62.hide
+        main.en_atc62.hide
+        main.vn_atc63.hide
+        main.en_atc63.hide
+        main.vn_atc64.hide
+        main.en_atc64.hide
+END
+
+SCRIPT curve_7_on
+BEGIN
+        main.vn_atc71.show
+        main.en_atc71.show
+        main.vn_atc72.show
+        main.en_atc72.show
+        main.vn_atc73.show
+        main.en_atc73.show
+        main.vn_atc74.show
+        main.en_atc74.show
+END
+
+SCRIPT curve_7_off
+BEGIN
+        main.vn_atc71.hide
+        main.en_atc71.hide
+        main.vn_atc72.hide
+        main.en_atc72.hide
+        main.vn_atc73.hide
+        main.en_atc73.hide
+        main.vn_atc74.hide
+        main.en_atc74.hide
+END
+
+SCRIPT curve_8_on
+BEGIN
+        main.vn_atc81.show
+        main.en_atc81.show
+        main.vn_atc82.show
+        main.en_atc82.show
+        main.vn_atc83.show
+        main.en_atc83.show
+        main.vn_atc84.show
+        main.en_atc84.show
+END
+
+SCRIPT curve_8_off
+BEGIN
+        main.vn_atc81.hide
+        main.en_atc81.hide
+        main.vn_atc82.hide
+        main.en_atc82.hide
+        main.vn_atc83.hide
+        main.en_atc83.hide
+        main.vn_atc84.hide
+        main.en_atc84.hide
+END
+
+SCRIPT curve_9_on
+BEGIN
+        main.vn_atc91.show
+        main.en_atc91.show
+        main.vn_atc92.show
+        main.en_atc92.show
+        main.vn_atc93.show
+        main.en_atc93.show
+        main.vn_atc94.show
+        main.en_atc94.show
+END
+
+SCRIPT curve_9_off
+BEGIN
+        main.vn_atc91.hide
+        main.en_atc91.hide
+        main.vn_atc92.hide
+        main.en_atc92.hide
+        main.vn_atc93.hide
+        main.en_atc93.hide
+        main.vn_atc94.hide
+        main.en_atc94.hide
+END
+
+SCRIPT curve_10_on
+BEGIN
+        main.vn_atc101.show
+        main.en_atc101.show
+        main.vn_atc102.show
+        main.en_atc102.show
+        main.vn_atc103.show
+        main.en_atc103.show
+        main.vn_atc104.show
+        main.en_atc104.show
+END
+
+SCRIPT curve_10_off
+BEGIN
+        main.vn_atc101.hide
+        main.en_atc101.hide
+        main.vn_atc102.hide
+        main.en_atc102.hide
+        main.vn_atc103.hide
+        main.en_atc103.hide
+        main.vn_atc104.hide
+        main.en_atc104.hide
+END
+
+SCRIPT mean_on
+BEGIN
+	main.lb_at.disable
+	main.lb_at.show
+	script curve_1_disable
+	script curve_2_disable
+	script curve_3_disable
+	script curve_4_disable
+	script curve_5_disable
+	script curve_6_disable
+	script curve_7_disable
+	script curve_8_disable
+	script curve_9_disable
+	script curve_10_disable
+	script curve_text_disable
+
+END
+
+SCRIPT multicurve
+BEGIN
+	main.lb_at.enable
+	script curve_text_enable
+	script curve_1_enable
+	script curve_2_enable
+	script curve_3_enable
+	script curve_4_enable
+	script curve_5_enable
+	script curve_6_enable
+	script curve_7_enable
+	script curve_8_enable
+	script curve_9_enable
+	script curve_10_enable
+END
+
+SCRIPT curve_text_disable
+BEGIN
+ 	main.tx_atcurve.disable
+	main.tx_var01.disable
+	main.tx_val01.disable
+	main.tx_eq1.disable
+	main.tx_var02.disable
+	main.tx_val02.disable
+	main.tx_eq2.disable
+	main.tx_var03.disable
+	main.tx_val03.disable
+	main.tx_eq3.disable
+	main.tx_var04.disable
+	main.tx_val04.disable
+	main.tx_eq4.disable
+END
+
+SCRIPT curve_text_enable
+BEGIN
+ 	main.tx_atcurve.enable
+	main.tx_var01.enable
+	main.tx_val01.enable
+	main.tx_eq1.enable
+	main.tx_var02.enable
+	main.tx_val02.enable
+	main.tx_eq2.enable
+	main.tx_var03.enable
+	main.tx_val03.enable
+	main.tx_eq3.enable
+	main.tx_var04.enable
+	main.tx_val04.enable
+	main.tx_eq4.enable
+END
+
+
+SCRIPT curve_1_disable
+BEGIN
+	main.vn_atc11.disable
+	main.en_atc11.disable
+	main.vn_atc12.disable
+	main.en_atc12.disable
+	main.vn_atc13.disable
+	main.en_atc13.disable
+	main.vn_atc14.disable
+	main.en_atc14.disable
+END
+
+SCRIPT curve_1_enable
+BEGIN
+	main.vn_atc11.enable
+	main.en_atc11.enable
+	main.vn_atc12.enable
+	main.en_atc12.enable
+	main.vn_atc13.enable
+	main.en_atc13.enable
+	main.vn_atc14.enable
+	main.en_atc14.enable
+END
+
+
+SCRIPT curve_2_disable
+BEGIN
+        main.vn_atc21.disable
+        main.en_atc21.disable
+        main.vn_atc22.disable
+        main.en_atc22.disable
+        main.vn_atc23.disable
+        main.en_atc23.disable
+        main.vn_atc24.disable
+        main.en_atc24.disable
+END
+
+SCRIPT curve_2_enable
+BEGIN
+        main.vn_atc21.enable
+        main.en_atc21.enable
+        main.vn_atc22.enable
+        main.en_atc22.enable
+        main.vn_atc23.enable
+        main.en_atc23.enable
+        main.vn_atc24.enable
+        main.en_atc24.enable
+END
+
+SCRIPT curve_3_disable
+BEGIN
+        main.vn_atc31.disable
+        main.en_atc31.disable
+        main.vn_atc32.disable
+        main.en_atc32.disable
+        main.vn_atc33.disable
+        main.en_atc33.disable
+        main.vn_atc34.disable
+        main.en_atc34.disable
+END
+
+SCRIPT curve_3_enable
+BEGIN
+        main.vn_atc31.enable
+        main.en_atc31.enable
+        main.vn_atc32.enable
+        main.en_atc32.enable
+        main.vn_atc33.enable
+        main.en_atc33.enable
+        main.vn_atc34.enable
+        main.en_atc34.enable
+END
+
+SCRIPT curve_4_disable
+BEGIN
+        main.vn_atc41.disable
+        main.en_atc41.disable
+        main.vn_atc42.disable
+        main.en_atc42.disable
+        main.vn_atc43.disable
+        main.en_atc43.disable
+        main.vn_atc44.disable
+        main.en_atc44.disable
+END
+
+SCRIPT curve_4_enable
+BEGIN
+        main.vn_atc41.enable
+        main.en_atc41.enable
+        main.vn_atc42.enable
+        main.en_atc42.enable
+        main.vn_atc43.enable
+        main.en_atc43.enable
+        main.vn_atc44.enable
+        main.en_atc44.enable
+END
+
+SCRIPT curve_5_disable
+BEGIN
+        main.vn_atc51.disable
+        main.en_atc51.disable
+        main.vn_atc52.disable
+        main.en_atc52.disable
+        main.vn_atc53.disable
+        main.en_atc53.disable
+        main.vn_atc54.disable
+        main.en_atc54.disable
+END
+
+SCRIPT curve_5_enable
+BEGIN
+        main.vn_atc51.enable
+        main.en_atc51.enable
+        main.vn_atc52.enable
+        main.en_atc52.enable
+        main.vn_atc53.enable
+        main.en_atc53.enable
+        main.vn_atc54.enable
+        main.en_atc54.enable
+END
+
+SCRIPT curve_6_disable
+BEGIN
+        main.vn_atc61.disable
+        main.en_atc61.disable
+        main.vn_atc62.disable
+        main.en_atc62.disable
+        main.vn_atc63.disable
+        main.en_atc63.disable
+        main.vn_atc64.disable
+        main.en_atc64.disable
+END
+
+SCRIPT curve_6_enable
+BEGIN
+        main.vn_atc61.enable
+        main.en_atc61.enable
+        main.vn_atc62.enable
+        main.en_atc62.enable
+        main.vn_atc63.enable
+        main.en_atc63.enable
+        main.vn_atc64.enable
+        main.en_atc64.enable
+END
+
+SCRIPT curve_7_disable
+BEGIN
+        main.vn_atc71.disable
+        main.en_atc71.disable
+        main.vn_atc72.disable
+        main.en_atc72.disable
+        main.vn_atc73.disable
+        main.en_atc73.disable
+        main.vn_atc74.disable
+        main.en_atc74.disable
+END
+
+SCRIPT curve_7_enable
+BEGIN
+        main.vn_atc71.enable
+        main.en_atc71.enable
+        main.vn_atc72.enable
+        main.en_atc72.enable
+        main.vn_atc73.enable
+        main.en_atc73.enable
+        main.vn_atc74.enable
+        main.en_atc74.enable
+END
+
+SCRIPT curve_8_disable
+BEGIN
+        main.vn_atc81.disable
+        main.en_atc81.disable
+        main.vn_atc82.disable
+        main.en_atc82.disable
+        main.vn_atc83.disable
+        main.en_atc83.disable
+        main.vn_atc84.disable
+        main.en_atc84.disable
+END
+
+SCRIPT curve_8_enable
+BEGIN
+        main.vn_atc81.enable
+        main.en_atc81.enable
+        main.vn_atc82.enable
+        main.en_atc82.enable
+        main.vn_atc83.enable
+        main.en_atc83.enable
+        main.vn_atc84.enable
+        main.en_atc84.enable
+END
+
+SCRIPT curve_9_disable
+BEGIN
+        main.vn_atc91.disable
+        main.en_atc91.disable
+        main.vn_atc92.disable
+        main.en_atc92.disable
+        main.vn_atc93.disable
+        main.en_atc93.disable
+        main.vn_atc94.disable
+        main.en_atc94.disable
+END
+
+SCRIPT curve_9_enable
+BEGIN
+        main.vn_atc91.enable
+        main.en_atc91.enable
+        main.vn_atc92.enable
+        main.en_atc92.enable
+        main.vn_atc93.enable
+        main.en_atc93.enable
+        main.vn_atc94.enable
+        main.en_atc94.enable
+END
+
+
+SCRIPT curve_10_disable
+BEGIN
+	main.vn_atc101.disable
+	main.en_atc101.disable
+	main.vn_atc102.disable
+	main.en_atc102.disable
+	main.vn_atc103.disable
+	main.en_atc103.disable
+	main.vn_atc104.disable
+	main.en_atc104.disable
+END
+
+SCRIPT curve_10_enable
+BEGIN
+	main.vn_atc101.enable
+	main.en_atc101.enable
+	main.vn_atc102.enable
+	main.en_atc102.enable
+	main.vn_atc103.enable
+	main.en_atc103.enable
+	main.vn_atc104.enable
+	main.en_atc104.enable
+END
+
+
+PROGRAM prog_curve_1
+BEGIN
+	if !main.vn_atc11 & !main.vn_atc12 & !main.vn_atc13 & ///
+	   !main.vn_atc14 & !main.en_atc11 & !main.en_atc12 & ///
+	   !main.en_atc13 & !main.en_atc14 {
+		require main.vn_atc11
+	}
+	if main.vn_atc11 | main.vn_atc12 | main.vn_atc13 | main.vn_atc14 | ///
+	   main.en_atc11 | main.en_atc12 | main.en_atc13 | main.en_atc14 {
+		call script curve_1
+        	put  "at1(" " "
+	}
+        if main.vn_atc11 {
+                call script curve_1
+                require main.en_atc11
+                put main.vn_atc11
+        }
+        if main.en_atc11 {
+                call script curve_1
+                require main.vn_atc11
+                put "=" main.en_atc11 " "
+        }
+        if main.vn_atc12 {
+                call script curve_1
+                require main.en_atc12
+                put  main.vn_atc12
+        }
+        if main.en_atc12 {
+                call script curve_1
+                require main.vn_atc12
+                put "=" main.en_atc12 " "
+        }
+        if main.vn_atc13 {
+                call script curve_1
+                require main.en_atc13
+                put  main.vn_atc13
+        }
+        if main.en_atc13 {
+                call script curve_1
+                require main.vn_atc13
+                put "=" main.en_atc13 " "
+        }
+        if main.vn_atc14 {
+                call script curve_1
+                require main.en_atc14
+                put   main.vn_atc14
+        }
+        if main.en_atc14 {
+                call script curve_1
+                require main.vn_atc14
+                put "=" main.en_atc14 " "
+        }
+	if main.vn_atc11 | main.vn_atc12 | main.vn_atc13 | main.vn_atc14 | ///
+	   main.en_atc11 | main.en_atc12 | main.en_atc13 | main.en_atc14 {
+        	put  ")"
+	}
+END
+
+PROGRAM prog_curve_2
+BEGIN
+	if main.vn_atc21 | main.vn_atc22 | main.vn_atc23 | main.vn_atc24 | ///
+	   main.en_atc21 | main.en_atc22 | main.en_atc23 | main.en_atc24 {
+		call script curve_2
+        	put  "at2(" " "
+	}
+        if main.vn_atc21 {
+                call script curve_2
+                require main.en_atc21
+                put main.vn_atc21
+        }
+        if main.en_atc21 {
+                call script curve_2
+                require main.vn_atc21
+                put "=" main.en_atc21 " "
+        }
+        if main.vn_atc22 {
+                call script curve_2
+                require main.en_atc22
+                put  main.vn_atc22
+        }
+        if main.en_atc22 {
+                call script curve_2
+                require main.vn_atc22
+                put "=" main.en_atc22 " "
+        }
+        if main.vn_atc23 {
+                call script curve_2
+                require main.en_atc23
+                put  main.vn_atc23
+        }
+        if main.en_atc23 {
+                call script curve_2
+                require main.vn_atc23
+                put "=" main.en_atc23 " "
+        }
+        if main.vn_atc24 {
+                call script curve_2
+                require main.en_atc24
+                put   main.vn_atc24
+        }
+        if main.en_atc24 {
+                call script curve_2
+                require main.vn_atc24
+                put "=" main.en_atc24 " "
+        }
+	if main.vn_atc21 | main.vn_atc22 | main.vn_atc23 | main.vn_atc24 | ///
+	   main.en_atc21 | main.en_atc22 | main.en_atc23 | main.en_atc24 {
+        	put   ")"
+	}
+END
+
+PROGRAM prog_curve_3
+BEGIN
+	if main.vn_atc31 | main.vn_atc32 | main.vn_atc33 | main.vn_atc34 | ///
+	   main.en_atc31 | main.en_atc32 | main.en_atc33 | main.en_atc34 {
+		call script curve_3
+        	put  "at3(" " "
+	}
+        if main.vn_atc31 {
+                call script curve_3
+                require main.en_atc31
+                put main.vn_atc31
+        }
+        if main.en_atc31 {
+                call script curve_3
+                require main.vn_atc31
+                put "=" main.en_atc31 " "
+        }
+        if main.vn_atc32 {
+                call script curve_3
+                require main.en_atc32
+                put  main.vn_atc32
+        }
+        if main.en_atc32 {
+                call script curve_3
+                require main.vn_atc32
+                put "=" main.en_atc32  " "
+        }
+        if main.vn_atc33 {
+                call script curve_3
+                require main.en_atc33
+                put  main.vn_atc33
+        }
+        if main.en_atc33 {
+                call script curve_3
+                require main.vn_atc33
+                put "=" main.en_atc33 " "
+        }
+        if main.vn_atc34 {
+                call script curve_3
+                require main.en_atc34
+                put   main.vn_atc34
+        }
+        if main.en_atc34 {
+                call script curve_3
+                require main.vn_atc34
+                put "=" main.en_atc34 " "
+        }
+	if main.vn_atc31 | main.vn_atc32 | main.vn_atc33 | main.vn_atc34 | ///
+	   main.en_atc31 | main.en_atc32 | main.en_atc33 | main.en_atc34 {
+        	put  ")"
+
+	}
+END
+
+PROGRAM prog_curve_4
+BEGIN
+	if main.vn_atc41 | main.vn_atc42 | main.vn_atc43 | main.vn_atc44 | ///
+	   main.en_atc41 | main.en_atc42 | main.en_atc43 | main.en_atc44 {
+		call script curve_4
+        	put  "at4(" " "
+	}
+        if main.vn_atc41 {
+                call script curve_4
+                require main.en_atc41
+                put main.vn_atc41
+        }
+        if main.en_atc41 {
+                call script curve_4
+                require main.vn_atc41
+                put "=" main.en_atc41 " "
+        }
+        if main.vn_atc42 {
+                call script curve_4
+                require main.en_atc42
+                put  main.vn_atc42
+        }
+        if main.en_atc42 {
+                call script curve_4
+                require main.vn_atc42
+                put "=" main.en_atc42 " "
+        }
+        if main.vn_atc43 {
+                call script curve_4
+                require main.en_atc43
+                put  main.vn_atc43
+        }
+        if main.en_atc43 {
+                call script curve_4
+                require main.vn_atc43
+                put "=" main.en_atc43 " "
+        }
+        if main.vn_atc44 {
+                call script curve_4
+                require main.en_atc44
+                put   main.vn_atc44
+        }
+        if main.en_atc44 {
+                call script curve_4
+                require main.vn_atc44
+                put "=" main.en_atc44 " "
+        }
+	if main.vn_atc41 | main.vn_atc42 | main.vn_atc43 | main.vn_atc44 | ///
+	   main.en_atc41 | main.en_atc42 | main.en_atc43 | main.en_atc44 {
+		call script curve_4
+        	put  ")"
+	}
+END
+
+
+PROGRAM prog_curve_5
+BEGIN
+	if main.vn_atc51 | main.vn_atc52 | main.vn_atc53 | main.vn_atc54 | ///
+	   main.en_atc51 | main.en_atc52 | main.en_atc53 | main.en_atc54 {
+		call script curve_5
+        	put  "at5(" " "
+	}
+        if main.vn_atc51 {
+                call script curve_5
+                require main.en_atc51
+                put main.vn_atc51
+        }
+        if main.en_atc51 {
+                call script curve_5
+                require main.vn_atc51
+                put "=" main.en_atc51 " "
+        }
+        if main.vn_atc52 {
+                call script curve_5
+                require main.en_atc52
+                put  main.vn_atc52
+        }
+        if main.en_atc52 {
+                call script curve_5
+                require main.vn_atc52
+                put "=" main.en_atc52  " "
+        }
+        if main.vn_atc53 {
+                call script curve_5
+                require main.en_atc53
+                put  main.vn_atc53
+        }
+        if main.en_atc53 {
+                call script curve_5
+                require main.vn_atc53
+                put "=" main.en_atc53 " "
+        }
+        if main.vn_atc54 {
+                call script curve_5
+                require main.en_atc54
+                put  main.vn_atc54
+        }
+        if main.en_atc54 {
+                call script curve_5
+                require main.vn_atc54
+                put "=" main.en_atc54 " "
+        }
+	if main.vn_atc51 | main.vn_atc52 | main.vn_atc53 | main.vn_atc54 | ///
+	   main.en_atc51 | main.en_atc52 | main.en_atc53 | main.en_atc54 {
+        	put  ")"
+	}
+END
+
+
+PROGRAM prog_curve_6
+BEGIN
+	if main.vn_atc61 | main.vn_atc62 | main.vn_atc63 | main.vn_atc64 | ///
+	   main.en_atc61 | main.en_atc62 | main.en_atc63 | main.en_atc64 {
+		call script curve_6
+        	put  "at6(" " "
+	}
+        if main.vn_atc61 {
+                call script curve_6
+                require main.en_atc61
+                put main.vn_atc61
+        }
+        if main.en_atc61 {
+                call script curve_6
+                require main.vn_atc61
+                put "=" main.en_atc61 " "
+        }
+        if main.vn_atc62 {
+                call script curve_6
+                require main.en_atc62
+                put  main.vn_atc62
+        }
+        if main.en_atc62 {
+                call script curve_6
+                require main.vn_atc62
+                put "=" main.en_atc62 " "
+        }
+        if main.vn_atc63 {
+                call script curve_6
+                require main.en_atc63
+                put  main.vn_atc63
+        }
+        if main.en_atc63 {
+                call script curve_6
+                require main.vn_atc63
+                put "=" main.en_atc63 " "
+        }
+        if main.vn_atc64 {
+                call script curve_6
+                require main.en_atc64
+                put   main.vn_atc64
+        }
+        if main.en_atc64 {
+                call script curve_6
+                require main.vn_atc64
+                put "=" main.en_atc64 " "
+        }
+	if main.vn_atc61 | main.vn_atc62 | main.vn_atc63 | main.vn_atc64 | ///
+	   main.en_atc61 | main.en_atc62 | main.en_atc63 | main.en_atc64 {
+        	put   ")"
+	}
+END
+
+PROGRAM prog_curve_7
+BEGIN
+	if main.vn_atc71 | main.vn_atc72 | main.vn_atc73 | main.vn_atc74 | ///
+	   main.en_atc71 | main.en_atc72 | main.en_atc73 | main.en_atc74 {
+	call script curve_7
+        	put "at7(" " "
+	}
+        if main.vn_atc71 {
+                call script curve_7
+                require main.en_atc71
+                put main.vn_atc71
+        }
+        if main.en_atc71 {
+                call script curve_7
+                require main.vn_atc71
+                put "=" main.en_atc71 " "
+        }
+        if main.vn_atc72 {
+                call script curve_7
+                require main.en_atc72
+                put  main.vn_atc72
+        }
+        if main.en_atc72 {
+                call script curve_7
+                require main.vn_atc72
+                put "=" main.en_atc72  " "
+        }
+        if main.vn_atc73 {
+                call script curve_7
+                require main.en_atc73
+                put  main.vn_atc73
+        }
+        if main.en_atc73 {
+                call script curve_7
+                require main.vn_atc73
+                put "=" main.en_atc73 " "
+        }
+        if main.vn_atc74 {
+                call script curve_7
+                require main.en_atc74
+                put   main.vn_atc74
+        }
+        if main.en_atc74 {
+                call script curve_7
+                require main.vn_atc74
+                put "=" main.en_atc74 " "
+        }
+	if main.vn_atc71 | main.vn_atc72 | main.vn_atc73 | main.vn_atc74 | ///
+	   main.en_atc71 | main.en_atc72 | main.en_atc73 | main.en_atc74 {
+        	put   ")"
+	}
+END
+
+PROGRAM prog_curve_8
+BEGIN
+	if main.vn_atc81 | main.vn_atc82 | main.vn_atc83 | main.vn_atc84 | ///
+	   main.en_atc81 | main.en_atc82 | main.en_atc83 | main.en_atc84 {
+		call script curve_8
+        	put  "at8(" " "
+	}
+        if main.vn_atc81 {
+                call script curve_8
+                require main.en_atc81
+                put main.vn_atc81
+        }
+        if main.en_atc81 {
+                call script curve_8
+                require main.vn_atc81
+                put "=" main.en_atc81 " "
+        }
+        if main.vn_atc82 {
+                call script curve_8
+                require main.en_atc82
+                put  main.vn_atc81
+        }
+        if main.en_atc82 {
+                call script curve_8
+                require main.vn_atc82
+                put "=" main.en_atc82 " "
+        }
+        if main.vn_atc83 {
+                call script curve_8
+                require main.en_atc83
+                put  main.vn_atc83
+        }
+        if main.en_atc83 {
+                call script curve_8
+                require main.vn_atc83
+                put "=" main.en_atc83 " "
+        }
+        if main.vn_atc84 {
+                call script curve_8
+                require main.en_atc84
+                put   main.vn_atc84
+        }
+        if main.en_atc84 {
+                call script curve_8
+                require main.vn_atc84
+                put "=" main.en_atc84 " "
+        }
+	if main.vn_atc81 | main.vn_atc82 | main.vn_atc83 | main.vn_atc84 | ///
+	   main.en_atc81 | main.en_atc82 | main.en_atc83 | main.en_atc84 {
+        	put  ")"
+	}
+END
+
+PROGRAM prog_curve_9
+BEGIN
+	if main.vn_atc91 | main.vn_atc92 | main.vn_atc93 | main.vn_atc94 | ///
+	   main.en_atc91 | main.en_atc92 | main.en_atc93 | main.en_atc94 {
+		call script curve_9
+        	put  "at9(" " "
+	}
+        if main.vn_atc91 {
+                call script curve_9
+                require main.en_atc91
+                put main.vn_atc91
+        }
+        if main.en_atc91 {
+                call script curve_9
+                require main.vn_atc91
+                put "=" main.en_atc91 " "
+        }
+        if main.vn_atc92 {
+                call script curve_9
+                require main.en_atc92
+                put  main.vn_atc92
+        }
+        if main.en_atc92 {
+                call script curve_9
+                require main.vn_atc92
+                put "=" main.en_atc92  " "
+        }
+        if main.vn_atc93 {
+                call script curve_9
+                require main.en_atc93
+                put  main.vn_atc93
+        }
+        if main.en_atc93 {
+                call script curve_9
+                require main.vn_atc93
+                put "=" main.en_atc93 " "
+        }
+        if main.vn_atc94 {
+                call script curve_9
+                require main.en_atc94
+                put   main.vn_atc94
+        }
+        if main.en_atc94 {
+                call script curve_9
+                require main.vn_atc94
+                put "=" main.en_atc94 " "
+        }
+	if main.vn_atc91 | main.vn_atc92 | main.vn_atc93 | main.vn_atc94 | ///
+	   main.en_atc91 | main.en_atc92 | main.en_atc93 | main.en_atc94 {
+		call script curve_9
+        	put   ")"
+	}
+END
+
+PROGRAM prog_curve_10
+BEGIN
+	if main.vn_atc101 | main.vn_atc102 | main.vn_atc103 | ///
+	   main.vn_atc104 | ///
+	   main.en_atc101 | main.en_atc102 | main.en_atc103 | main.en_atc104 {
+		call script curve_10
+        	put  "at10(" " "
+	}
+        if main.vn_atc101 {
+                call script curve_10
+                require main.en_atc101
+                put main.vn_atc101
+        }
+        if main.en_atc101 {
+                call script curve_10
+                require main.vn_atc101
+                put "=" main.en_atc101 " "
+        }
+        if main.vn_atc102 {
+                call script curve_10
+                require main.en_atc102
+                put  main.vn_atc102
+        }
+        if main.en_atc102 {
+                call script curve_10
+                require main.vn_atc102
+                put "=" main.en_atc102 " "
+        }
+        if main.vn_atc103 {
+                call script curve_10
+                require main.en_atc103
+                put  main.vn_atc103
+        }
+        if main.en_atc103 {
+                call script curve_10
+                require main.vn_atc103
+                put "=" main.en_atc103 " "
+        }
+        if main.vn_atc104 {
+                call script curve_10
+                require main.en_atc104
+                put   main.vn_atc104
+        }
+        if main.en_atc104 {
+                call script curve_10
+                require main.vn_atc104
+                put "=" main.en_atc104 " "
+        }
+	if main.vn_atc101 | main.vn_atc102 | main.vn_atc103 | ///
+	   main.vn_atc104 | ///
+	   main.en_atc101 | main.en_atc102 | main.en_atc103 | main.en_atc104 {
+		put ")"
+	}
+END
+
+INCLUDE gr_plots
+INCLUDE gr_addplots_2
+INCLUDE gr_yaxis
+INCLUDE gr_xaxis
+INCLUDE gr_titles
+INCLUDE gr_legend
+INCLUDE gr_overall
+
+SCRIPT POSTINIT
+BEGIN
+	script gr_plots_setDefaultLine
+END
+
+SCRIPT reset_listbox
+BEGIN
+	main.lb_at.withvalue main.lb_at.setvalue "@"
+END
+
+PROGRAM command
+BEGIN
+	put "stcurve"
+	beginoptions
+		option radio(main rb_cummu rb_survival rb_hazard rb_stcrreg)
+		option radio(opt rb_defaul rb_alpha1 rb_uncondi)
+		if opt.rb_range {
+			require opt.en_start opt.en_end
+			put "range(" opt.en_start " "  opt.en_end ") "
+		}
+		if  main.rb_mulcurve {
+			put /program prog_curve_1 " "
+			put /program prog_curve_2 " "
+			put /program prog_curve_3 " "
+			put /program prog_curve_4 " "
+			put /program prog_curve_5 " "
+			put /program prog_curve_6 " "
+			put /program prog_curve_7 " "
+			put /program prog_curve_8 " "
+			put /program prog_curve_9 " "
+			put /program prog_curve_10 " "
+		}
+		if main.rb_hazard {
+			if opt.ck_width {
+				require opt.en_width
+				optionarg opt.en_width
+			}
+			optionarg /hidedefault opt.cb_kernel
+			option opt.ck_noboundary
+		}
+		if opt.ck_outfile {
+			require opt.fi_fn
+			repfile opt.fi_fn
+			put " " "outfile("
+			put `"""'
+			put opt.fi_fn
+			put `"""'
+			put " , replace)"
+		}
+		put " " /program gr_plots_output
+		put " " /program gr_addplots_output
+		put " " /program gr_yaxis_output
+		put " " /program gr_xaxis_output
+		put " " /program gr_titles_output
+		put " " /program gr_legend_output
+		put " " /program gr_overall_output
+	endoptions
+	call script reset_listbox
+END

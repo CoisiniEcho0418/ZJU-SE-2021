@@ -1,0 +1,73 @@
+/*
+	icd9[p] lookup
+	
+	VERSION 1.0.0  21dec2002
+
+	which icd9  - *! version 1.0.4  31jul2001
+	which icd9p - *! version 1.0.3  11sep2000
+*/
+
+VERSION 8.0
+
+INCLUDE _std_medium
+INCLUDE _ht210
+INCLUDE header
+HELP hlp1, view("help icd9")
+RESET res1
+
+DIALOG main, label("icd9[p] lookup - Display code descriptions") tabtitle("Main")
+BEGIN
+  /*--+----1----+----2----+----3----+----4----+----5----+----6----+----7----+*/
+  TEXT     tx_vn     _lft      _top      _iwd      .,		/*
+		*/ label("ICD-9 code(s):")
+
+  EDIT     ed_code   @         _ss       @         .,		/*
+		*/ label("ICD-9 code(s)")
+
+  RADIO    rb_diag   _lft      _ls       _cwd1     .,		/*
+		*/ first					/*
+		*/ label("Diagnostic codes")
+
+  RADIO    rb_proc   _lft2     @         @         .,		/*
+		*/ last						/*
+		*/ label("Procedure codes")
+
+  GROUPBOX gb_ex     _lft      _ls       _iwd      _ht8,	/*
+		*/ label("Examples")
+
+  TEXT     tx_ex1    _indent   _ss       _cwd2     .,		/*
+		*/ label("018.02")
+
+  DEFINE holdx @x
+
+  TEXT     tx_ex1a   _lft2     @         @         .,		/*
+		*/ label("(the particular code)")
+
+  TEXT     tx_ex2    holdx     _ss       @         .,		/*
+		*/ label("001*")
+
+  TEXT     tx_ex2a   _lft2     @         @         .,		/*
+		*/ label("(all codes starting with 001)")
+
+  TEXT     tx_ex3    holdx     _ss       @         .,		/*
+		*/ label("018/019")
+
+  TEXT     tx_ex3a   _lft2     @         @         .,		/*
+		*/ label("(code range from 018 to 019)")
+
+  TEXT     tx_ex4    holdx     _ss       @         .,		/*
+		*/ label("001* 018/019 E* 018.02")
+END
+
+PROGRAM command
+BEGIN   
+	if main.rb_diag {
+		put "icd9 lookup "
+	}
+	if main.rb_proc {
+		put "icd9p lookup "
+	}
+	require main.ed_code
+	put main.ed_code
+END
+

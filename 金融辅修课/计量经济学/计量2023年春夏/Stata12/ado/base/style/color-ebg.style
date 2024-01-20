@@ -1,0 +1,6 @@
+*! version 1.0.0  22dec2002
+sequence 5410
+label "ebackground"
+
+* 5445 C
+set rgb "198 211 223"

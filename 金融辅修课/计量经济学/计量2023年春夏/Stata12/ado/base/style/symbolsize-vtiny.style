@@ -1,0 +1,6 @@
+*! version 1.0.0  22dec2002
+sequence 1050
+label "v Tiny"
+
+set val .1
+

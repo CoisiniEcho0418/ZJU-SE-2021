@@ -1,0 +1,113 @@
+/*
+  areg
+
+*!  VERSION 1.2.5  23aug2010
+
+  keyword:  eclass
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_large
+INCLUDE header
+HELP hlp1, view("help areg")
+RESET res1
+
+SCRIPT rpt_POSTINIT
+BEGIN
+	create STRING rpt_bu_fmtcoefResults
+	program rpt_bu_fmtcoef_ckResults
+END
+
+DIALOG main, label("areg - Linear regression with a large dummy-variable set")/*
+		*/ tabtitle("Model")
+BEGIN
+  TEXT tx_dv 		_lft	_top	_vnwd	.,			///
+	label("Dependent variable:")
+  VARNAME vn_dv		@ 	_ss	@	.,			///
+	ts								///
+	label("Dependent variable")
+
+  TEXT tx_iv		_vlx	_top	160	.,			///
+	label("Independent variables:")
+  VARLIST vl_iv		@	_ss	_vlwd	.,			///
+	fv ts								///
+	allowcat							///
+	label("Independent variables")
+
+  TEXT     tx_absorb _lft      _ls       _iwd      .,			/*
+		*/ label("Categorical variable to be absorbed:")	/*
+		*/
+  DEFINE y @y
+  VARNAME  vn_absorb @         _ss       _vnwd     .,			/*
+		*/ label("Categorical variable to be absorbed")		/*
+		*/ option("absorb")					/*
+		*/
+END
+
+INCLUDE byifin
+INCLUDE weights_fpa
+INCLUDE se
+
+SCRIPT PREINIT
+BEGIN
+	program parseMessage
+	script se_createAsOLS
+END
+
+PROGRAM parseMessage
+BEGIN
+	if __MESSAGE.contains("__MI__") {
+		call script byifin_set_by_off
+		call script se_setMI_on
+	}
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr
+  DEFINE _y 20
+  INCLUDE _sp_level
+
+  DEFINE _x _lft
+  DEFINE _y _ls
+  DEFINE _cx _iwd
+  INCLUDE _noomitted
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _vsquish
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _factor_vars_reporting
+
+  DEFINE _x _lft
+  DEFINE _y _xxxls
+  INCLUDE _bu_coef_table_reporting
+END
+
+INCLUDE fmt_coef_table_reporting_pr
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "areg "
+	varlist main.vn_dv [main.vl_iv]
+	INCLUDE _weights_pr
+	INCLUDE _ifin_pr
+	beginoptions
+		require main.vn_absorb
+		optionarg main.vn_absorb
+		put " " /program se_output
+		INCLUDE _noomitted_pr
+		INCLUDE _vsquish_pr
+		INCLUDE _factor_vars_reporting_pr
+		optionarg /hidedefault rpt.sp_level
+		put " " rpt_bu_fmtcoefResults
+	endoptions
+END

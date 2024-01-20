@@ -1,0 +1,535 @@
+/*
+    gr_box_markers.idlg
+
+*!  VERSION 1.0.0  23jan2007
+
+*/
+
+SCRIPT gr_box_mark_PREINIT
+BEGIN
+	create STRING gr_box_mark_result1
+	create STRING gr_box_mark_result2
+	create STRING gr_box_mark_result3
+	create STRING gr_box_mark_result4
+	create STRING gr_box_mark_result5
+	create STRING gr_box_mark_result6
+	create STRING gr_box_mark_result7
+	create STRING gr_box_mark_result8
+	create STRING gr_box_mark_result9
+	create STRING gr_box_mark_result10
+	create STRING gr_box_mark_result11
+	create STRING gr_box_mark_result12
+	create STRING gr_box_mark_result13
+	create STRING gr_box_mark_result14
+	create STRING gr_box_mark_result15
+	create STRING gr_box_mark_result16
+	
+	create STRING gr_box_mark_labelOptResult
+	create STRING dots_dotResult
+	create STRING dots_lineResult
+	create STRING dots_rectResult
+END
+
+SCRIPT gr_box_mark_POSTINIT
+BEGIN
+	program gr_box_mark_rebuild_list
+	program dots_check_dotResult
+	program dots_check_lineResult
+	program dots_check_rectResult
+END
+
+DIALOG gr_box_mark, tabtitle("Markers")
+BEGIN
+  GROUPBOX gb_dots	_lft	_top	_rj210	_ht18h,	///
+	label("Marker properties")
+  TEXT     tx_vars	_ilft	_ss	_inwd	.,	///
+	label("Markers:")
+  DEFINE cx @cx
+  LISTBOX  lb_vars	_ilft	_ss	140	105,	///
+	contents(gr_box_mark_dotList)			///
+	values(gr_box_mark_dotList_values)		///
+	ondblclick(program gr_box_mark_check_selection)
+  BUTTON  bu_edit	+160	@	60	.,	///
+	label("Edit")					///
+	tooltip("Click to edit the properties of the selected item") ///
+	onpush(program gr_box_mark_check_selection)
+
+  TEXTBOX  tb_note1	_ilft	+120	cx	_tb3,		///
+	label("The properties for each marker associated with a" ///
+	"variable can be set." 					///
+	"Markers that are represented in multiple categories"	///
+	"will share properties.")
+END
+
+
+
+LIST gr_box_mark_dotList
+BEGIN
+	Marker for variable 1
+	Marker for variable 2
+	Marker for variable 3
+	Marker for variable 4
+	Marker for variable 5
+	Marker for variable 6
+	Marker for variable 7
+	Marker for variable 8
+	Marker for variable 9
+	Marker for variable 10
+	Marker for variable 11
+	Marker for variable 12
+	Marker for variable 13
+	Marker for variable 14
+	Marker for variable 15
+	Marker for variable 16
+END
+
+LIST gr_box_mark_dotList_values
+BEGIN
+	"Var 1"
+	"Var 2"
+	"Var 3"
+	"Var 4"
+	"Var 5"
+	"Var 6"
+	"Var 7"
+	"Var 8"
+	"Var 9"
+	"Var 10"
+	"Var 11"
+	"Var 12"
+	"Var 13"
+	"Var 14"
+	"Var 15"
+	"Var 16"
+END
+
+PROGRAM gr_box_mark_check_selection
+BEGIN
+	if gr_box_mark.lb_vars.iseq("Var 1") {
+		call script gr_box_mark_edit_Mvar1
+	}
+	if gr_box_mark.lb_vars.iseq("Var 2") {
+		call script gr_box_mark_edit_Mvar2
+	}
+	if gr_box_mark.lb_vars.iseq("Var 3") {
+		call script gr_box_mark_edit_Mvar3
+	}
+	if gr_box_mark.lb_vars.iseq("Var 4") {
+		call script gr_box_mark_edit_Mvar4
+	}
+	if gr_box_mark.lb_vars.iseq("Var 5") {
+		call script gr_box_mark_edit_Mvar5
+	}
+	if gr_box_mark.lb_vars.iseq("Var 6") {
+		call script gr_box_mark_edit_Mvar6
+	}
+	if gr_box_mark.lb_vars.iseq("Var 7") {
+		call script gr_box_mark_edit_Mvar7
+	}
+	if gr_box_mark.lb_vars.iseq("Var 8") {
+		call script gr_box_mark_edit_Mvar8
+	}
+	if gr_box_mark.lb_vars.iseq("Var 9") {
+		call script gr_box_mark_edit_Mvar9
+	}
+	if gr_box_mark.lb_vars.iseq("Var 10") {
+		call script gr_box_mark_edit_Mvar10
+	}
+	if gr_box_mark.lb_vars.iseq("Var 11") {
+		call script gr_box_mark_edit_Mvar11
+	}
+	if gr_box_mark.lb_vars.iseq("Var 12") {
+		call script gr_box_mark_edit_Mvar12
+	}
+	if gr_box_mark.lb_vars.iseq("Var 13") {
+		call script gr_box_mark_edit_Mvar13
+	}
+	if gr_box_mark.lb_vars.iseq("Var 14") {
+		call script gr_box_mark_edit_Mvar14
+	}
+	if gr_box_mark.lb_vars.iseq("Var 15") {
+		call script gr_box_mark_edit_Mvar15
+	}
+	if gr_box_mark.lb_vars.iseq("Var 16") {
+		call script gr_box_mark_edit_Mvar16
+	}
+END
+
+SCRIPT gr_box_mark_edit_Mvar1
+BEGIN
+	create CHILD gr_marker_nolabel_options AS Mvar1, allowsubmit
+	Mvar1.setExitString "gr_box_mark_result1"
+	Mvar1.setExitAction "program gr_box_mark_rebuild_list"
+	Mvar1.setSubmitAction "program Mvar1_submit_done"
+	Mvar1.settitle "Dot for variable 1"
+END
+PROGRAM Mvar1_submit_done
+BEGIN
+	call program gr_box_mark_rebuild_list
+	call Submit
+END
+
+SCRIPT gr_box_mark_edit_Mvar2
+BEGIN
+	create CHILD gr_marker_nolabel_options AS Mvar2, allowsubmit
+	Mvar2.setExitString "gr_box_mark_result2"
+	Mvar2.setExitAction "program gr_box_mark_rebuild_list"
+	Mvar2.setSubmitAction "program Mvar2_submit_done"
+	Mvar2.settitle "Dot for variable 2"
+END
+PROGRAM Mvar2_submit_done
+BEGIN
+	call program gr_box_mark_rebuild_list
+	call Submit
+END
+
+SCRIPT gr_box_mark_edit_Mvar3
+BEGIN
+	create CHILD gr_marker_nolabel_options AS Mvar3, allowsubmit
+	Mvar3.setExitString "gr_box_mark_result3"
+	Mvar3.setExitAction "program gr_box_mark_rebuild_list"
+	Mvar3.setSubmitAction "program Mvar3_submit_done"
+	Mvar3.settitle "Dot for variable 3"
+END
+PROGRAM Mvar3_submit_done
+BEGIN
+	call program gr_box_mark_rebuild_list
+	call Submit
+END
+
+SCRIPT gr_box_mark_edit_Mvar4
+BEGIN
+	create CHILD gr_marker_nolabel_options AS Mvar4, allowsubmit
+	Mvar4.setExitString "gr_box_mark_result4"
+	Mvar4.setExitAction "program gr_box_mark_rebuild_list"
+	Mvar4.setSubmitAction "program Mvar4_submit_done"
+	Mvar4.settitle "Dot for variable 4"
+END
+PROGRAM Mvar4_submit_done
+BEGIN
+	call program gr_box_mark_rebuild_list
+	call Submit
+END
+
+SCRIPT gr_box_mark_edit_Mvar5
+BEGIN
+	create CHILD gr_marker_nolabel_options AS Mvar5, allowsubmit
+	Mvar5.setExitString "gr_box_mark_result5"
+	Mvar5.setExitAction "program gr_box_mark_rebuild_list"
+	Mvar5.setSubmitAction "program Mvar5_submit_done"
+	Mvar5.settitle "Dot for variable 5"
+END
+PROGRAM Mvar5_submit_done
+BEGIN
+	call program gr_box_mark_rebuild_list
+	call Submit
+END
+
+SCRIPT gr_box_mark_edit_Mvar6
+BEGIN
+	create CHILD gr_marker_nolabel_options AS Mvar6, allowsubmit
+	Mvar6.setExitString "gr_box_mark_result6"
+	Mvar6.setExitAction "program gr_box_mark_rebuild_list"
+	Mvar6.setSubmitAction "program Mvar6_submit_done"
+	Mvar6.settitle "Dot for variable 6"
+END
+PROGRAM Mvar6_submit_done
+BEGIN
+	call program gr_box_mark_rebuild_list
+	call Submit
+END
+
+SCRIPT gr_box_mark_edit_Mvar7
+BEGIN
+	create CHILD gr_marker_nolabel_options AS Mvar7, allowsubmit
+	Mvar7.setExitString "gr_box_mark_result7"
+	Mvar7.setExitAction "program gr_box_mark_rebuild_list"
+	Mvar7.setSubmitAction "program Mvar7_submit_done"
+	Mvar7.settitle "Dot for variable 7"
+END
+PROGRAM Mvar7_submit_done
+BEGIN
+	call program gr_box_mark_rebuild_list
+	call Submit
+END
+
+SCRIPT gr_box_mark_edit_Mvar8
+BEGIN
+	create CHILD gr_marker_nolabel_options AS Mvar8, allowsubmit
+	Mvar8.setExitString "gr_box_mark_result8"
+	Mvar8.setExitAction "program gr_box_mark_rebuild_list"
+	Mvar8.setSubmitAction "program Mvar8_submit_done"
+	Mvar8.settitle "Dot for variable 8"
+END
+PROGRAM Mvar8_submit_done
+BEGIN
+	call program gr_box_mark_rebuild_list
+	call Submit
+END
+
+SCRIPT gr_box_mark_edit_Mvar9
+BEGIN
+	create CHILD gr_marker_nolabel_options AS Mvar9, allowsubmit
+	Mvar9.setExitString "gr_box_mark_result9"
+	Mvar9.setExitAction "program gr_box_mark_rebuild_list"
+	Mvar9.setSubmitAction "program Mvar9_submit_done"
+	Mvar9.settitle "Dot for variable 9"
+END
+PROGRAM Mvar9_submit_done
+BEGIN
+	call program gr_box_mark_rebuild_list
+	call Submit
+END
+
+SCRIPT gr_box_mark_edit_Mvar10
+BEGIN
+	create CHILD gr_marker_nolabel_options AS Mvar10, allowsubmit
+	Mvar10.setExitString "gr_box_mark_result10"
+	Mvar10.setExitAction "program gr_box_mark_rebuild_list"
+	Mvar10.setSubmitAction "program Mvar10_submit_done"
+	Mvar10.settitle "Dot for variable 10"
+END
+PROGRAM Mvar10_submit_done
+BEGIN
+	call program gr_box_mark_rebuild_list
+	call Submit
+END
+
+SCRIPT gr_box_mark_edit_Mvar11
+BEGIN
+	create CHILD gr_marker_nolabel_options AS Mvar11, allowsubmit
+	Mvar11.setExitString "gr_box_mark_result11"
+	Mvar11.setExitAction "program gr_box_mark_rebuild_list"
+	Mvar11.setSubmitAction "program Mvar11_submit_done"
+	Mvar11.settitle "Dot for variable 11"
+END
+PROGRAM Mvar11_submit_done
+BEGIN
+	call program gr_box_mark_rebuild_list
+	call Submit
+END
+
+SCRIPT gr_box_mark_edit_Mvar12
+BEGIN
+	create CHILD gr_marker_nolabel_options AS Mvar12, allowsubmit
+	Mvar12.setExitString "gr_box_mark_result12"
+	Mvar12.setExitAction "program gr_box_mark_rebuild_list"
+	Mvar12.setSubmitAction "program Mvar12_submit_done"
+	Mvar12.settitle "Dot for variable 12"
+END
+PROGRAM Mvar12_submit_done
+BEGIN
+	call program gr_box_mark_rebuild_list
+	call Submit
+END
+
+SCRIPT gr_box_mark_edit_Mvar13
+BEGIN
+	create CHILD gr_marker_nolabel_options AS Mvar13, allowsubmit
+	Mvar13.setExitString "gr_box_mark_result13"
+	Mvar13.setExitAction "program gr_box_mark_rebuild_list"
+	Mvar13.setSubmitAction "program Mvar13_submit_done"
+	Mvar13.settitle "Dot for variable 13"
+END
+PROGRAM Mvar13_submit_done
+BEGIN
+	call program gr_box_mark_rebuild_list
+	call Submit
+END
+
+SCRIPT gr_box_mark_edit_Mvar14
+BEGIN
+	create CHILD gr_marker_nolabel_options AS Mvar14, allowsubmit
+	Mvar14.setExitString "gr_box_mark_result14"
+	Mvar14.setExitAction "program gr_box_mark_rebuild_list"
+	Mvar14.setSubmitAction "program Mvar14_submit_done"
+	Mvar14.settitle "Dot for variable 14"
+END
+PROGRAM Mvar14_submit_done
+BEGIN
+	call program gr_box_mark_rebuild_list
+	call Submit
+END
+
+SCRIPT gr_box_mark_edit_Mvar15
+BEGIN
+	create CHILD gr_marker_nolabel_options AS Mvar15, allowsubmit
+	Mvar15.setExitString "gr_box_mark_result15"
+	Mvar15.setExitAction "program gr_box_mark_rebuild_list"
+	Mvar15.setSubmitAction "program Mvar15_submit_done"
+	Mvar15.settitle "Dot for variable 15"
+END
+PROGRAM Mvar15_submit_done
+BEGIN
+	call program gr_box_mark_rebuild_list
+	call Submit
+END
+
+SCRIPT gr_box_mark_edit_Mvar16
+BEGIN
+	create CHILD gr_marker_nolabel_options AS Mvar16, allowsubmit
+	Mvar16.setExitString "gr_box_mark_result16"
+	Mvar16.setExitAction "program gr_box_mark_rebuild_list"
+	Mvar16.setSubmitAction "program Mvar16_submit_done"
+	Mvar16.settitle "Dot for variable 16"
+END
+PROGRAM Mvar16_submit_done
+BEGIN
+	call program gr_box_mark_rebuild_list
+	call Submit
+END
+
+PROGRAM gr_box_mark_rebuild_list
+BEGIN
+	call gr_box_mark_dotList.Arrdropall
+	
+	if gr_box_mark_result1 {
+		call gr_box_mark_dotList.Arrpush "Marker for variable 1 *"
+	}
+	else {
+		call gr_box_mark_dotList.Arrpush "Marker for variable 1  "
+	}
+	if gr_box_mark_result2 {
+		call gr_box_mark_dotList.Arrpush "Marker for variable 2 *"
+	}
+	else {
+		call gr_box_mark_dotList.Arrpush "Marker for variable 2  "
+	}
+	if gr_box_mark_result3 {
+		call gr_box_mark_dotList.Arrpush "Marker for variable 3 *"
+	}
+	else {
+		call gr_box_mark_dotList.Arrpush "Marker for variable 3  "
+	}
+	if gr_box_mark_result4 {
+		call gr_box_mark_dotList.Arrpush "Marker for variable 4 *"
+	}
+	else {
+		call gr_box_mark_dotList.Arrpush "Marker for variable 4  "
+	}
+	if gr_box_mark_result5 {
+		call gr_box_mark_dotList.Arrpush "Marker for variable 5 *"
+	}
+	else {
+		call gr_box_mark_dotList.Arrpush "Marker for variable 5  "
+	}
+	if gr_box_mark_result6 {
+		call gr_box_mark_dotList.Arrpush "Marker for variable 6 *"
+	}
+	else {
+		call gr_box_mark_dotList.Arrpush "Marker for variable 6  "
+	}
+	if gr_box_mark_result7 {
+		call gr_box_mark_dotList.Arrpush "Marker for variable 7 *"
+	}
+	else {
+		call gr_box_mark_dotList.Arrpush "Marker for variable 7  "
+	}
+	if gr_box_mark_result8 {
+		call gr_box_mark_dotList.Arrpush "Marker for variable 8 *"
+	}
+	else {
+		call gr_box_mark_dotList.Arrpush "Marker for variable 8  "
+	}
+	if gr_box_mark_result9 {
+		call gr_box_mark_dotList.Arrpush "Marker for variable 9 *"
+	}
+	else {
+		call gr_box_mark_dotList.Arrpush "Marker for variable 9  "
+	}
+	if gr_box_mark_result10 {
+		call gr_box_mark_dotList.Arrpush "Marker for variable 10 *"
+	}
+	else {
+		call gr_box_mark_dotList.Arrpush "Marker for variable 10  "
+	}
+	if gr_box_mark_result11 {
+		call gr_box_mark_dotList.Arrpush "Marker for variable 11 *"
+	}
+	else {
+		call gr_box_mark_dotList.Arrpush "Marker for variable 11  "
+	}
+	if gr_box_mark_result12 {
+		call gr_box_mark_dotList.Arrpush "Marker for variable 12 *"
+	}
+	else {
+		call gr_box_mark_dotList.Arrpush "Marker for variable 12  "
+	}
+	if gr_box_mark_result13 {
+		call gr_box_mark_dotList.Arrpush "Marker for variable 13 *"
+	}
+	else {
+		call gr_box_mark_dotList.Arrpush "Marker for variable 13  "
+	}
+	if gr_box_mark_result14 {
+		call gr_box_mark_dotList.Arrpush "Marker for variable 14 *"
+	}
+	else {
+		call gr_box_mark_dotList.Arrpush "Marker for variable 14  "
+	}
+	if gr_box_mark_result15 {
+		call gr_box_mark_dotList.Arrpush "Marker for variable 15 *"
+	}
+	else {
+		call gr_box_mark_dotList.Arrpush "Marker for variable 15  "
+	}
+	if gr_box_mark_result16 {
+		call gr_box_mark_dotList.Arrpush "Marker for variable 16 *"
+	}
+	else {
+		call gr_box_mark_dotList.Arrpush "Marker for variable 16  "
+	}
+	call gr_box_mark.lb_vars.repopulate
+END
+
+PROGRAM gr_box_markers_output
+BEGIN
+	if gr_box_mark_result1 {
+		put "marker(1, " gr_box_mark_result1 ") "
+	}
+	if gr_box_mark_result2 {
+		put "marker(2, " gr_box_mark_result2 ") "
+	}
+	if gr_box_mark_result3 {
+		put "marker(3, " gr_box_mark_result3 ") "
+	}
+	if gr_box_mark_result4 {
+		put "marker(4, " gr_box_mark_result4 ") "
+	}
+	if gr_box_mark_result5 {
+		put "marker(5, " gr_box_mark_result5 ") "
+	}
+	if gr_box_mark_result6 {
+		put "marker(6, " gr_box_mark_result6 ") "
+	}
+	if gr_box_mark_result7 {
+		put "marker(7, " gr_box_mark_result7 ") "
+	}
+	if gr_box_mark_result8 {
+		put "marker(8, " gr_box_mark_result8 ") "
+	}
+	if gr_box_mark_result9 {
+		put "marker(9, " gr_box_mark_result9 ") "
+	}
+	if gr_box_mark_result10 {
+		put "marker(10, " gr_box_mark_result10 ") "
+	}
+	if gr_box_mark_result11 {
+		put "marker(11, " gr_box_mark_result11 ") "
+	}
+	if gr_box_mark_result12 {
+		put "marker(12, " gr_box_mark_result12 ") "
+	}
+	if gr_box_mark_result13 {
+		put "marker(13, " gr_box_mark_result13 ") "
+	}
+	if gr_box_mark_result14 {
+		put "marker(14, " gr_box_mark_result14 ") "
+	}
+	if gr_box_mark_result15 {
+		put "marker(15, " gr_box_mark_result15 ") "
+	}
+	if gr_box_mark_result16 {
+		put "marker(16, " gr_box_mark_result16 ") "
+	}
+END

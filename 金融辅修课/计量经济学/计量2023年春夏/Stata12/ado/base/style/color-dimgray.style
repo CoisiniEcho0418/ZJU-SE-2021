@@ -1,0 +1,4 @@
+*! version 1.0.1  25sep2006
+sequence 1105
+label "Dim gray"
+set rgb "232 232 232"

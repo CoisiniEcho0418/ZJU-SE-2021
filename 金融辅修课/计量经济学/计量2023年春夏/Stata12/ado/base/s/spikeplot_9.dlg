@@ -1,0 +1,81 @@
+/*
+  spikeplot_9.dlg
+
+*! VERSION 1.1.1  04oct2006  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+
+HELP hlp1, view("help spikeplot")
+RESET res1
+
+DIALOG	main,label("spikeplot - Spike plots and rootograms")		///
+	tabtitle("Main")
+BEGIN
+  TEXT     tx_var          _lft      _top      _iwd      .,		///
+	label("Variable:")
+  VARNAME  vn_var          @         _ss       _vnwd     .,		///
+	label("Variable")
+
+  GROUPBOX gb_opts         @         _ls       _cwd1     _ht13,		///
+	label("Options")
+
+  EDIT     en_round        _ilft     _ls       _en7wd    .,		///
+	label("Bin width")						///
+	numonly	default(0) option(round)
+  TEXT     tx_round        _en7sep    @        _en7r2b   .,		///
+	label("Bin width")
+
+  GROUPBOX gb_yaxis	   _ilft     _ls       _cwd3     _ht6,		///
+	label("Y-axis")
+
+  RADIO    rb_frequency    _indent   _ss       _inwd     .,		///
+	label("Frequencies")						///
+	first
+  RADIO    rb_frac         @         _ss       @         .,		///
+	label("Fractions") option(frac)
+  RADIO    rb_root         @         _ss       @         .,		///
+	label("Square roots of frequencies") last option(root)
+END
+
+INCLUDE ifin
+INCLUDE weights_fai
+INCLUDE p1_opts
+INCLUDE addplot
+INCLUDE gr_twoway
+INCLUDE gby
+
+SCRIPT PREINIT
+BEGIN
+	script p1_opts_createAsNoRange
+	script p1_opts_setDefaultSpike
+END
+
+SCRIPT POSTINIT
+BEGIN
+	script gby_missing_disable
+	script gby_total_disable
+END
+
+PROGRAM command
+BEGIN
+	put "spikeplot "
+	varlist main.vn_var
+	INCLUDE _ifin_pr
+	INCLUDE _weights_pr
+	beginoptions
+		require main.en_round
+		optionarg /hidedefault main.en_round
+		option main.rb_frac
+		option main.rb_root
+
+		put " " /program p1_opts_output
+		put " " /program addplot_output
+		put " " /program gr_twoway_output
+		put " " /program gby_output
+	endoptions
+END

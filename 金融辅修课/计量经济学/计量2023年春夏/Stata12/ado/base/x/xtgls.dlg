@@ -1,0 +1,270 @@
+/*
+  xtgls
+
+*!  VERSION 1.2.4  23aug2010
+
+  keyword:  eclass
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_large
+DEFINE _dlght 330
+INCLUDE header
+
+HELP hlp1, view("help xtgls")
+RESET res1
+
+SCRIPT show_xtset
+BEGIN
+	create STRING note
+	note.setvalue `"For correlation structures other than"'
+	note.append   `" "independent","'
+	note.append   `" a time variable is required."'
+	note.append   `" A time variable is also required"'
+	note.append   `" if heteroskedastic error structure with"'
+	note.append   `" cross-sectional correlation is specified."'
+	note.withvalue create CHILD xtset, message(`"" " `"@"'"')
+END
+
+
+DIALOG main, label("xtgls - Fit panel-data models using GLS") tabtitle("Model")
+BEGIN
+  BUTTON   bu_xtset	_xsetbu	_top	_setbuwd .,		///
+	onpush(script show_xtset)				///
+	label("Panel settings...")
+
+  TEXT     tx_dv     _lft      _topph    _vnwd     .,			/*
+		*/ label("Dependent variable:")				/*
+		*/
+  VARNAME  vn_dv     @         _ss       @         .,			/*
+		*/ label("Dependent variable")				/*
+		*/ ts
+
+  TEXT     tx_iv     _vlx      _topph    _cwd2     .,			/*
+		*/ label("Independent variables:")			/*
+		*/
+  VARLIST  vl_iv     @         _ss       _vlwd     .,			/*
+		*/ label("Independent variables")			/*
+		*/ allowcat						/*
+		*/ ts fv
+
+  CHECKBOX ck_nocons @         _ms       @         .,			/*
+		*/ label("Suppress constant term")			/*
+		*/ option("noconstant")					/*
+		*/
+
+  GROUPBOX gb_panels _lft      _ls       _cwd1     _ht6,		/*
+		*/ label("Error structure across the panels")		/*
+		*/
+  DEFINE y @y
+  RADIO    rb_iid    _ilft     _ss       _inwd     .,			/*
+		*/ label("IID")	/*
+		*/ clickon(program checktime)				/*
+		*/ first						/*
+		*/ option("panels(iid)")				/*
+		*/
+  RADIO    rb_hetero @         _ss       @         .,			/*
+		*/ label("Heteroskedastic but uncorrelated")		/*
+		*/ clickon(program checktime)				/*
+		*/ option("panels(heteroskedastic)")			/*
+		*/
+  RADIO    rb_corr   @         _ss       @         .,			/*
+		*/ label("Heteroskedastic and correlated")		/*
+		*/ last							/*
+		*/ option("panels(correlated)")				/*
+		*/ clickon(program checktime)				/*
+		*/ clickoff(program checktime)
+
+  GROUPBOX gb_corr   _lft2     y         _cwd1     _ht6,		/*
+		*/ label("Form of autocorrelation")			/*
+		*/
+  RADIO    rb_ind    _indent   _ss       _inwd     .,			/*
+		*/ label("Independent")					/*
+		*/ clickon(program checktime)				/*
+		*/ first						/*
+		*/ option("corr(independent)")				/*
+		*/
+  RADIO    rb_ar1    @         _ss       @         .,			/*
+		*/ label("AR(1)")					/*
+		*/ option("corr(ar1)")					/*
+		*/ clickon(program checktime)				/*
+		*/ clickoff(program checktime)
+  RADIO    rb_psar1  @         _ss       @         .,			/*
+		*/ label("Panel-specific AR(1)")			/*
+		*/ last							/*
+		*/ option("corr(psar1)")				/*
+		*/ clickon(program checktime)				/*
+		*/ clickoff(program checktime)
+
+  GROUPBOX gb_rhotype _lft     _xls      _iwd      _ht6,		/*
+		*/ label("Method to compute autocorrelation")		/*
+		*/
+  RADIO    rb_reg    _indent   _ss       _cwd1     .,			/*
+		*/ label("Single lag OLS of residuals (default)")	/*
+		*/ first						/*
+		*/ option(NONE)						/*
+		*/
+DEFINE y @y
+  RADIO    rb_freg   @         _ss       @         .,			/*
+		*/ label("Single lead OLS of residuals")		/*
+		*/ option("rhotype(freg)")				/*
+		*/
+  RADIO    rb_dw     @         _ss       @         .,			/*
+		*/ label("Based on Durbin-Watson")			/*
+		*/ option("rhotype(dw)")				/*
+		*/
+  RADIO    rb_nagar  _lft2     y         _cwd2     .,			/*
+		*/ label("Adjusted Durbin-Watson")			/*
+		*/ option("rhotype(nagar)")				/*
+		*/
+  RADIO    rb_theil  @         _ss       @         .,			/*
+		*/ label("Adjusted autocorrelation")			/*
+		*/ option("rhotype(theil)")				/*
+		*/
+  RADIO    rb_tscorr @         _ss       @         .,			/*
+		*/ label("Autocorrelation of residuals")		/*
+		*/ last							/*
+		*/ option("rhotype(tscorr)")				/*
+		*/
+
+  CHECKBOX ck_igls   _lft      _xls      _cwd1     .,			/*
+		*/ label("Use iterated GLS")				/*
+		*/ option("igls")					/*
+		*/
+  CHECKBOX ck_force  _lft2     @         @         .,			/*
+		*/ label("Ignore if unequally spaced in time")		/*
+		*/ option("force")					/*
+		*/
+END
+
+PROGRAM checktime
+BEGIN
+	if main.rb_iid | main.rb_hetero | main.rb_ind  {
+		call script time_off
+	}
+	if main.rb_corr | main.rb_ar1 | main.rb_psar1 {
+		call script time_on
+	}
+END
+
+SCRIPT time_on
+BEGIN
+	main.ck_force.enable
+END
+
+SCRIPT time_off
+BEGIN
+	main.ck_force.disable
+END
+
+INCLUDE byifin
+INCLUDE weights_a
+
+DIALOG robust, tabtitle("SE")
+BEGIN
+  GROUPBOX gb_se     _lft      _top       _iwd     _ht4,		/*
+  		*/ label("Standard errors")
+  RADIO    rb_norm   _ilft     _ss        _cwd1    .,			/*
+		*/ label("Normalize by N (default)")			/*
+		*/ first
+
+  RADIO    rb_nmk    @         _ss        @        .,			/*
+		*/ label("Normalize by N-k")				/*
+		*/ option("nmk")					/*
+		*/ last
+END
+
+SCRIPT rpt_POSTINIT
+BEGIN
+	create STRING rpt_bu_fmtcoefResults
+	program rpt_bu_fmtcoef_ckResults
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr
+  DEFINE _y _top
+  INCLUDE _sp_level
+
+  DEFINE _x _lft
+  DEFINE _y _ls
+  DEFINE _cx _iwd
+  INCLUDE _noomitted
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _vsquish
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _factor_vars_reporting
+
+  DEFINE _x _lft
+  DEFINE _y _xxxls
+  INCLUDE _bu_coef_table_reporting
+END
+
+INCLUDE fmt_coef_table_reporting_pr
+
+DIALOG max, tabtitle("Optimization")
+BEGIN
+  SPINNER  sp_iter   _lft      _top      _spwd     .,			/*
+		*/ label("Maximum iterations")				/*
+		*/ min(1)						/*
+		*/ max(5000)						/*
+		*/ default(100)						/*
+		*/ option("iterate")					/*
+		*/
+  TEXT     tx_iter   _spsep    @         _spr      .,			/*
+		*/ label("Maximum iterations")				/*
+		*/
+  EDIT     en_tol    _lft      _ls       _spwd     .,			/*
+		*/ label("Convergence criterion")			/*
+		*/ default(1e-7)					/*
+		*/ option("tolerance")					/*
+		*/
+  TEXT     tx_tol    _spsep    @         _cwd2     .,			/*
+		*/ label("Convergence criterion (default 1e-7)")	/*
+		*/
+  CHECKBOX ck_nolog  _lft      _ls       _cwd1     .,			/*
+		*/ label("Suppress iteration log")			/*
+		*/ option("nolog")					/*
+		*/
+END
+
+PROGRAM command
+BEGIN
+	put /program by_output " "
+	put "xtgls "
+	varlist main.vn_dv [main.vl_iv]
+	if !main.vl_iv & main.ck_nocons {
+	  stopbox stop `""Suppress constant term" is selected without independent variables."'
+	}
+	put " " /program ifin_output
+	put " " /program weights_output
+	beginoptions
+		option main.ck_nocons
+		option radio(main rb_iid rb_hetero rb_corr)
+		option radio(main rb_ind rb_ar1 rb_psar1)
+		option radio(main rb_reg rb_freg rb_dw rb_nagar rb_theil rb_tscorr)
+		option main.ck_igls
+		option main.ck_force
+
+		option robust.rb_nmk
+
+		optionarg /hidedefault rpt.sp_level
+		INCLUDE _noomitted_pr
+		INCLUDE _vsquish_pr
+		INCLUDE _factor_vars_reporting_pr
+		put " " rpt_bu_fmtcoefResults
+
+		optionarg /hidedefault max.sp_iter
+		optionarg /hidedefault max.en_tol
+		option max.ck_nolog
+	endoptions
+END

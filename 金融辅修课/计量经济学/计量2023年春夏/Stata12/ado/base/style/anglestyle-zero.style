@@ -1,0 +1,5 @@
+*! version 1.0.0  19dec2004
+sequence 2000
+label "Zero"
+
+set val 0

@@ -1,0 +1,66 @@
+/*
+	mvencode
+
+*!  VERSION 1.1.0  18nov2004
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help mvencode")
+RESET res1
+
+DEFINE exina   +130
+DEFINE exwd    120
+DEFINE exwda   185
+
+
+DIALOG main, tabtitle("Main")	///
+	label("mvencode - Change missing values to numeric values")
+BEGIN
+  TEXT     tx_var	_lft	_top	_iwd	.,	///
+	label("Variables:")
+  VARLIST  vl_var	@	_ss	@	., 	///
+	label("Variables")
+
+  TEXT     tx_mv	@	_ls	_iwd	.,	///
+	label("Conversion rules:")
+  EDIT     ed_mv	@	_ss	@	., 	///
+	option(mv) label("Conversion rules")
+
+  GROUPBOX gb_examples	@	_ls	_iwd	_ht4h,	///
+	label("Examples")
+  TEXT     tx_examp1	_en7sep	_vss	exwd	.,	///
+	right label("9")
+  DEFINE   holdx @x
+  TEXT     tx_examp1a	exina	@	exwda	.,	///
+	label("all missing values become 9")
+  TEXT     tx_examp2	holdx	_vss	exwd	.,	///
+	right label(".=99 \ .a=98 \ .b=97")
+  TEXT     tx_examp2a	exina	@	exwda	.,	///
+	label("specify series explicitly")
+  TEXT     tx_examp3	holdx	_vss	exwd	.,	///
+	right label(".=99 \ else=98")
+  TEXT     tx_examp3a	exina	@	exwda	.,	///
+	label("two conversion categories")
+  CHECKBOX ck_override	_lft	+45	_iwd	.,	///
+	option(override)				///
+	label("Don't warn if numeric values are already in use")
+END
+
+INCLUDE ifin
+
+PROGRAM command
+BEGIN
+	put "mvencode "
+	varlist main.vl_var
+	INCLUDE _ifin_pr
+	beginoptions
+		require main.ed_mv
+		optionarg main.ed_mv
+		option main.ck_override
+	endoptions
+END

@@ -1,0 +1,101 @@
+/*
+	xcorr_9
+
+*!  VERSION 1.1.1  08aug2006  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+
+HELP hlp1, view("help xcorr")
+RESET res1
+
+DIALOG	main, tabtitle("Main")		///
+	label("xcorr - Cross-correlogram for bivariate time series")
+BEGIN
+  DEFINE _x _xsetbu
+  DEFINE _y _top
+  INCLUDE _bu_tsset
+
+  TEXT     tx_xvar	  _lft	    _top      _vnwd	 .,		///
+	label("X variable:")
+  VARNAME  vn_xvar        @         _ss       _vnwd	 .,		///
+	label("X variable")
+
+  TEXT	   tx_yvar        _lft3_2   _top      _vnwd      .,		///
+	label("Y variable:")
+  VARNAME  vn_yvar        @         _ss	      _vnwd      .,		///
+	label("Y variable")
+
+  GROUPBOX gb_opts        _lft	    _ls       _iwd       _ht12h,	///
+	label("Options")
+  TEXT	   tx_generate    _ilft     _ss       _ibwd      .,		///
+	label("Generate cross-correlation variable:")
+  EDIT	   ed_generate    @         _ss       _vnwd      .,		///
+	label("Generate cross-correlation variable")			///
+	max(32) option(generate)
+
+  CHECKBOX ck_table       @         _ls       _ibwd      .,		///
+	label("Display a table instead of graphical output")		///
+	onclickon(script graph_off) onclickoff(script graph_on)	option(table)
+
+  CHECKBOX ck_noplot	  @         _ms       @	         .,		///
+	label("Do not include character-based plot") option(noplot)
+
+  CHECKBOX ck_lags        @         _ls       _ckwd      .,		///
+	onclickon(main.sp_lags.enable) onclickoff(main.sp_lags.disable)
+  SPINNER  sp_lags        _rbsep    @         _spwd      .,		///
+	min(1) max(10000) default(1) option(lags)
+  TEXT     tx_lags        _spsep    @         _cksprb      .,		///
+	label("Lags and leads (default min([n/2]-2,20))")
+END
+
+SCRIPT graph_off
+BEGIN
+	main.ck_noplot.enable
+	script p1_opts_disable
+	script addplot_disable
+	script gr_twoway_disable
+END
+
+SCRIPT graph_on
+BEGIN
+	main.ck_noplot.disable
+	script p1_opts_enable
+	script addplot_enable
+	script gr_twoway_enable
+END
+
+INCLUDE ifin
+INCLUDE p1_opts
+INCLUDE addplot
+INCLUDE gr_twoway
+
+SCRIPT PREINIT
+BEGIN
+	script p1_opts_createAsNoRange
+	script p1_opts_setDefaultDropline
+END
+
+PROGRAM command
+BEGIN
+	put "xcorr "
+	varlist main.vn_xvar
+	varlist main.vn_yvar
+  	INCLUDE _ifin_pr
+	beginoptions
+		optionarg main.ed_generate
+		option main.ck_table
+		option main.ck_noplot
+		if main.ck_lags{
+			optionarg main.sp_lags
+		}
+		put " " /program p1_opts_output
+		put " " /program addplot_output
+		put " " /program gr_twoway_output
+	endoptions
+END
+/* end */

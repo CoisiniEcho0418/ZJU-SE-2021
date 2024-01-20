@@ -1,0 +1,108 @@
+/*
+  lroc_9
+
+*!  VERSION 1.1.4  20aug2006  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+
+HELP hlp1, view("help lroc")
+RESET res1
+
+DIALOG main, tabtitle("Main")	///
+	label("lroc - Compute area under ROC curve and graph the curve")
+
+BEGIN
+  GROUPBOX gb_test        _lft      _top      _cwd1     _ht4,	///
+	label("ROC curve")
+
+  RADIO    rb_estimate    _ilft     _ss       _inwd     .,	///
+	first onclickon(program enable_sub)			///
+	label("Compute area and graph curve for estimation sample")
+  RADIO    rb_obs         @         _ss       @         @,	///
+	last							///
+	onclickon(program disable_sub)				///
+	option(all)						///
+	label("Compute area and graph curve for all observations")
+
+  CHECKBOX ck_nograph     _lft      _xls      _cwd1     .,	///
+	label("Suppress graph")					///
+	onclickoff(script graph_on)				///
+	onclickon(script graph_off)				///
+	option(nograph)
+END
+
+SCRIPT graph_on
+BEGIN
+	/* turn on all the graphs tabs */
+	script p1_opts_enable
+	script line_opts_enable
+	script gr_twoway_enable
+	script addplot_enable
+END
+
+SCRIPT graph_off
+BEGIN
+	/* turn off all the graphs tabs */
+	script p1_opts_disable
+	script line_opts_disable
+	script gr_twoway_disable
+	script addplot_disable
+END
+
+INCLUDE ifin
+INCLUDE weights_f
+
+DIALOG adv, tabtitle("Advanced")
+BEGIN
+  TEXT     tx_depvar      _ilft     _top      _iwd      .,	///
+	label("Dependent variable:")
+  VARNAME  vn_depvar      @         _ss       _vnwd     .,	///
+	label("Dependent variable")
+  TEXT     tx_beta        @         _ls       _iwd      .,	///
+	label("Vector containing coefficients for the model:")
+  LISTBOX  lb_beta        @         _ss       _cwd1     .,	///
+	label("Vector containing coefficients for the model")	///
+	option(beta)						///
+	contents(row)
+END
+
+INCLUDE p1_opts
+INCLUDE line_opts
+INCLUDE addplot
+INCLUDE gr_twoway
+
+SCRIPT PREINIT
+BEGIN
+	script p1_opts_createAsNoRange
+	script p1_opts_setDefaultConnected
+END
+
+PROGRAM command
+BEGIN
+	if adv.vn_depvar {
+		require adv.lb_beta
+	}
+	put "lroc "
+	varlist [adv.vn_depvar]
+	INCLUDE _weights_pr
+	INCLUDE _ifin_pr
+	beginoptions
+		option main.ck_nograph
+		option main.rb_obs
+		if adv.vn_depvar & adv.lb_beta {
+			optionarg adv.lb_beta
+		}
+
+		if !main.ck_nograph {
+			put " " /program p1_opts_output
+			put " " /program line_opts_rlopts_output
+			put " " /program addplot_output
+			put " " /program gr_twoway_output
+		}
+	endoptions
+END

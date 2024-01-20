@@ -1,0 +1,57 @@
+/*
+    gr_tw_scatteri.dlg
+    
+*!  VERSION 1.0.1  10jun2009
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_medium
+INCLUDE header_gr_child
+
+HELP hlp1, view("help twoway")
+RESET res1
+
+DIALOG main, label("Define immediate plot coordinates and text")
+BEGIN
+  GROUPBOX gb_coord		_lft	_top	_iwd	_ht2,	///
+	label("Coordinate")
+  TEXT     tx_y			_ilft	_ss	30	.,	///
+	right label("Y:")
+  EDIT 	   ed_y			+35	@	70	.,	///
+	label("Y") numonly
+  TEXT     tx_x			+80	@	30	.,	///
+	right label("X:")
+  EDIT 	   ed_x			+35	@	70	.,	///
+	label("X") numonly
+  
+  GROUPBOX gb_options		_lft	+40	_iwd	_ht10,	///
+	label("Marker labels")
+
+  TEXT     tx_label		_ilft	_ss	_ibwd	.,	///
+	label("Label: (Visible when used on a plot with marker symbols)")
+  EDIT     ed_label		@	_ss	@	.,
+  
+  TEXT     tx_clockpos		_ilft	_ls	_vnwd	.,	///
+	label("Clock position:")
+  COMBOBOX cb_clockpos		@	_ss	@	.,	///
+	dropdownlist contents(clockpos) 
+END
+
+PROGRAM command
+BEGIN
+	require main.ed_y
+	put main.ed_y
+	require main.ed_x
+	put " " main.ed_x
+
+	if main.cb_clockpos {
+		put " (" main.cb_clockpos ") "
+	}
+	if main.ed_label {
+		put `" ""' 
+		put main.ed_label
+		put `"""'
+	}
+END

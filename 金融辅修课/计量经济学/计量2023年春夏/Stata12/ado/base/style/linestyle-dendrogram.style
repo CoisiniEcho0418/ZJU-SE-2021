@@ -1,0 +1,6 @@
+*! version 1.0.0  27feb2005
+sequence 9100
+
+set width    scheme dendrogram 
+set color    scheme p1
+set pattern  scheme dendrogram 

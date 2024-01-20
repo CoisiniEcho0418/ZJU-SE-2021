@@ -1,0 +1,242 @@
+/*
+    irf_table.dlg
+
+*!  VERSION 1.2.1  10apr2007
+
+*/
+
+VERSION 10.0
+SYNCHRONOUS_ONLY
+
+INCLUDE glm_header
+INCLUDE header
+
+HELP hlp1, view("help irf_table")
+RESET res1
+
+DIALOG main, tabtitle("Main") ///
+label("irf table - Tables of IRFs, dynamic-multiplier functions, and FEVDs")
+BEGIN
+  // set IRF active file
+  DEFINE _x _xsetbu
+  DEFINE _y _top
+  INCLUDE _bu_irfset
+
+  TEXT     tx_statlist	     _lft      _top      _comb3_1  .,		///
+		label("Statistics to tabulate: (leave empty for all)")
+  COMBOBOX cb_statlist	     @         _ss       @         .,		///
+		append							///
+		dropdown						///
+		contents(irf_stat_contents)				///
+		values(irf_stat_values)					///
+		label("Statistics to tabulate")
+
+  GROUPBOX gb_comb	     _lft      _ls       _iwd      _ht14h,	///
+		label("IRF combinations")
+
+  TEXT     tx_irf	     _indent   _ss       _comb3_2  .,		///
+		label("IRF result sets: (leave empty for all)")
+  COMBOBOX cb_irf	     @         _ss       @         .,		///
+		option(irf)						///
+		dropdown append						///
+		contents(irf_list) onselchange(program main_update_vars)
+DEFINE _y @y
+  TEXT     tx_imp	     @         _ls       @         .,		///
+		label("Impulse variables: (leave empty for all)")
+  COMBOBOX cb_imp	     @         _ss       @         .,		///
+		option(impulse)						///
+		dropdown append contents(impulse_list)
+  TEXT     tx_res	     @         _ls       @         .,		///
+		label("Response variables: (leave empty for all)")
+  COMBOBOX cb_res	     @         _ss       @         .,		///
+		option(response)					///
+		dropdown append contents(response_list)
+
+
+  FRAME    fr_note           _ilft3_3  _y        _cwd3_2   _ht9,
+  TEXTBOX  tb_note1          _indent   _vss      _inwd     _tb4,	///
+  		label(Refresh IRF selections any time the active IRF 	///
+  			file is set or changed while this dialog is open.)
+  BUTTON   bu_refresh        @         _xxxxls   @         ., 		///
+  		label("Refresh") 					///
+  		onpush(program main_get_irf)
+
+  CHECKBOX ck_indiv	     _lft      _xxxls    _comb3_1  .,		///
+		onclickon(program indiv_check)				///
+		onclickoff(program indiv_check)				///
+		option(individual)					///
+		label(`"Make an individual table for each result set"')
+
+  TEXT     tx_title	     _lft      _ms       _iwd      .,		///
+		label("Overall table title:")
+  EDIT     ed_title	     _lft      _ss       _iwd      .,		///
+		option(title)						///
+		label("Overall table title")
+END
+
+SCRIPT main_PREINIT
+BEGIN
+	create LIST irf_list
+	create LIST impulse_list
+	create LIST response_list
+	// a temperory fix for uninitialized comboxes not dropping down.
+	irf_list.Arrpush ""
+	irf_list.Arrpush ""
+	impulse_list.Arrpush ""
+	impulse_list.Arrpush ""
+	response_list.Arrpush ""
+	response_list.Arrpush ""
+
+	create BOOLEAN isGettingIRF
+	create BOOLEAN isGettingIRFVars
+	create BOOLEAN isLoading
+	isLoading.settrue
+END
+
+SCRIPT main_POSTINIT
+BEGIN
+	isLoading.setfalse
+END
+
+SCRIPT POSTINIT
+BEGIN
+	program main_get_irf
+END
+
+PROGRAM main_get_irf
+BEGIN
+	put "_get_irf, "
+	put "dialog(irf_table) "
+	put "control(main.cb_irf) "
+	put "irfvalue(" main.cb_irf ") "
+	put "irfappends "
+	put "busyflag(isGettingIRF)"
+	stata hidden
+	call program main_update_vars  // initialize the sub lists
+END
+
+PROGRAM main_update_vars
+BEGIN
+	if main.cb_irf {
+		if ! isGettingIRF & ! isLoading & ! isGettingIRFVars {
+			put "_set_irf_vars, "
+			put "dialog(irf_table) "
+			put "irfname(" main.cb_irf ") "
+			put "impulsetarget(main.cb_imp) "
+			put "impulsevalue(" main.cb_imp ") "
+			put "responsetarget(main.cb_res) "
+			put "responsevalue(" main.cb_res ") "
+			put "list(main.cb_irf) "
+			put "busyflag(isGettingIRFVars) "
+			stata hidden
+		}
+	}
+	if ! main.cb_irf { // handle the empty case here
+		call impulse_list.Arrdropall
+		call response_list.Arrdropall
+		call main.cb_imp.clearlist
+		call main.cb_res.clearlist
+		call main.cb_imp.setvalue ""
+		call main.cb_res.setvalue ""
+	}
+END
+
+INCLUDE irf_stat_list	// LISTs for statlist
+
+DIALOG opt, tabtitle("Options")
+BEGIN
+  DEFINE   _x _lft
+  DEFINE   _cx _ckspr
+  DEFINE   _y _top
+  INCLUDE  _sp_level
+
+  CHECKBOX ck_noci	     _lft      _ms       _iwd      .,		///
+		onclickon(program noci_check)				///
+		onclickoff(program noci_check)				///
+		option(noci)						///
+		label("Suppress confidence intervals")
+
+  CHECKBOX ck_stderr	     _lft      _ms       _iwd      .,		///
+		option(stderror)					///
+		label("Include standard errors in the tables")
+
+  CHECKBOX ck_nostruc	     _lft      _ms       @         .,		///
+		option(nostructural)					///
+		label("Suppress sirf and sfevd from the default list of statistics")
+
+  CHECKBOX ck_step	     _lft      _ms       @         .,		///
+		onclickon(program step_check)				///
+		onclickoff(program step_check)				///
+		label("Use common maximum step horizon for all tables")
+
+  DEFINE x @x
+  SPINNER  sp_step	     @         _ms       _spwd     .,		///
+		min(1)							///
+		max(500)						///
+		default(10)						///
+		option(step)						///
+		label("Common maximum step")
+  TEXT     tx_step	     _spsep    @         _ckspr    .,		///
+		label("Steps")
+END
+
+PROGRAM noci_check
+BEGIN
+	if opt.ck_noci {
+		call opt.sp_level.disable
+		call opt.tx_level.disable
+	}
+	if !opt.ck_noci {
+		call opt.sp_level.enable
+		call opt.tx_level.enable
+	}
+END
+
+PROGRAM step_check
+BEGIN
+	if opt.ck_step {
+		call opt.sp_step.enable
+		call opt.tx_step.enable
+	}
+	if !opt.ck_step {
+		call opt.sp_step.disable
+		call opt.tx_step.disable
+	}
+END
+
+PROGRAM indiv_check
+BEGIN
+	if main.ck_indiv {
+		call main.tx_title.disable
+		call main.ed_title.disable
+	}
+	if ! main.ck_indiv {
+		call main.tx_title.enable
+		call main.ed_title.enable
+	}
+END
+
+PROGRAM command
+BEGIN
+	put "irf table "
+	put main.cb_statlist
+	beginoptions
+		optionarg main.cb_irf
+		optionarg main.cb_imp
+		optionarg main.cb_res
+
+		option main.ck_indiv
+		if main.ed_title {
+			optionarg /quoted main.ed_title
+		}
+
+		// options
+		option opt.ck_noci
+		INCLUDE _level_opt_pr
+		option opt.ck_stderr
+		option opt.ck_nostruc
+		if opt.ck_step {
+			optionarg opt.sp_step
+		}
+	endoptions
+END

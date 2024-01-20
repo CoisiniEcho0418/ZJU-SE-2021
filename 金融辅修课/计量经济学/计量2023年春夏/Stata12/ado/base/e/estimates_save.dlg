@@ -1,0 +1,43 @@
+/*
+	estimates save
+
+*!  VERSION 1.0.3  25may2009
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_small
+DEFINE _dlght 90
+INCLUDE header
+
+
+HELP hlp1, view("help estimates_save")
+RESET res1
+
+DIALOG main, label("estimates save - Save estimation results") tabtitle("Main")
+BEGIN
+  TEXT tx_fn		_lft	_top	80	.,			///
+	label("Filename:") 
+  FILE fi_fn     	@	_ss	_iwd	.,			///
+	option(using)							///
+	label("Save As...")						///
+	filter("Stata Estimates File (*.ster)|*.ster|All (*.*)|*.*")	///
+	defext(ster)							///
+	error("Filename") save
+  CHECKBOX ck_append	@	_ls	@	.,			///
+	label("Append results to existing file")			///
+	option("append")
+END
+
+PROGRAM command
+BEGIN
+	require main.fi_fn
+        put "estimates save "
+	repfile main.fi_fn
+	put  `"""' main.fi_fn `"""'
+	beginoptions
+		put "replace"
+		option main.ck_append
+	endoptions
+END

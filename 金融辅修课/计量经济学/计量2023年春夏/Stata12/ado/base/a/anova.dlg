@@ -1,0 +1,136 @@
+/*
+    anova.dlg
+
+*!  VERSION 2.0.1  01apr2010
+
+    keyword:  eclass
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_large
+INCLUDE _ht310
+INCLUDE header
+HELP hlp1, view("help anova")
+RESET res1
+
+DIALOG main, tabtitle("Model")						///
+	label("anova - Analysis of variance and covariance")
+BEGIN
+  TEXT tx_dv		_lft	_top	_iwd	.,			///
+	label("Dependent variable:")
+  VARNAME vn_dv		@	_ss	_vnwd	.,			///
+	label("Dependent variable")
+
+  BUTTON bu_examples	_lft4_4	_ms	_cwd4_1	.,			///
+	push("script main_examples")					///
+	label("Examples...")
+  TEXT tx_terms		_lft	+5	_vlwd	.,			///
+	label("Model:")
+  VARLIST vl_terms	@	_ss	_iwd	.,			///
+	fvanova								///
+	label("Model")
+
+  CHECKBOX ck_repeated	@	_ls	@	.,			///
+	onclickon(script rep_on)					///
+	onclickoff(script rep_off)					///
+	label("Repeated-measures variables")
+  VARLIST vl_repeated	_indent2 _ss	_inwd	.,			///
+	option(repeated)						///
+	label("Repeated-measures variables")
+
+  GROUPBOX gb_ss	_lft	_ls	_cwd1	_ht4,			///
+	label("Sums of squares")
+  RADIO rb_partial	_indent	_ss	_inwd	., first		///
+	label("Partial")
+  RADIO rb_seq		@	_ss	@	., last			///
+	option(sequential)						///
+	label("Sequential")
+
+  CHECKBOX ck_noconst	_lft	_xls	_iwd	.,			///
+	option(noconstant)						///
+	label("Suppress constant term")
+  CHECKBOX ck_dropempty	_lft	_ms	@	.,			///
+	option(dropemptycells)						///
+	label("Drop empty cells from design matrix")
+END
+
+DIALOG adv, tabtitle("Adv. model")
+BEGIN
+  GROUPBOX gb_advrep	_lft	_top	_iwd	_ht15,			///
+	label("Advanced repeated-measures options")
+
+  TEXT tx_bse		_ilft	_ss	_ibwd	.,			///
+	label("Between-subjects error term:")
+  VARLIST vl_bse	@	_ss	@	.,			///
+	option(bse)							///
+	label("Between-subjects error term")
+
+  TEXT tx_bseunit	@	_ls	@ 	.,			///
+	label("Variable representing lowest unit in the between-subjects error term:")
+  VARNAME vn_bseunit	@	_ss	_vnwd	.,			///
+	option(bseunit)							///
+	label("Variable representing lowest unit in the between-subjects error term")
+
+  TEXT tx_grouping	@	_ls	_ibwd	.,			///
+	label("Grouping variable for computing pooled covariance matrix:")
+  VARNAME vn_grouping	@	_ss	_vnwd	.,			///
+	option(grouping)						///
+	label("Grouping variable for computing pooled covariance matrix")
+END
+
+
+INCLUDE byifin
+INCLUDE weights_fa
+
+SCRIPT main_examples
+BEGIN
+	view help anova_example##|_new
+END
+
+SCRIPT rep_on
+BEGIN
+	main.vl_repeated.enable
+	adv.gb_advrep.enable
+	adv.tx_bse.enable
+	adv.vl_bse.enable
+	adv.tx_bseunit.enable
+	adv.vn_bseunit.enable
+	adv.tx_grouping.enable
+	adv.vn_grouping.enable
+END
+
+SCRIPT rep_off
+BEGIN
+	main.vl_repeated.disable
+	adv.gb_advrep.disable
+	adv.tx_bse.disable
+	adv.vl_bse.disable
+	adv.tx_bseunit.disable
+	adv.vn_bseunit.disable
+	adv.tx_grouping.disable
+	adv.vn_grouping.disable
+END
+
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "anova "
+	varlist main.vn_dv [main.vl_terms]
+	INCLUDE _weights_pr
+	INCLUDE _ifin_pr
+	beginoptions
+		if main.ck_repeated {
+			require main.vl_repeated
+			optionarg main.vl_repeated
+		}
+		option radio(main rb_seq)
+		option main.ck_noconst
+		option main.ck_dropempty
+		optionarg adv.vl_bse
+		optionarg adv.vn_bseunit
+		optionarg adv.vn_grouping
+	endoptions
+END

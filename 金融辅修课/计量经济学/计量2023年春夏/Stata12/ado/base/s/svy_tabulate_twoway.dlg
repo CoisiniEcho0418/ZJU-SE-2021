@@ -1,0 +1,358 @@
+/*
+  svy: tabulate twoway
+
+*!  VERSION 1.3.2  02jun2010
+
+  keyword:  eclass
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_large
+INCLUDE _ht320
+INCLUDE header
+
+HELP hlp1, view("help svy: tabulate twoway")
+RESET res1
+
+DIALOG main, tabtitle("Model") ///
+	label("svy: tabulate - Two-way tables for survey data")
+BEGIN
+  TEXT     tx_var1     _lft        _top      _cwd3_1     .,		///
+		label("Row variable:")
+  VARNAME  vn_var1     _lft        _ss       _vnwd       .,		///
+		label("Row variable")
+
+  TEXT     tx_var2     _vlx        _top      _cwd3_1     .,		///
+		label("Column variable:")
+  VARNAME  vn_var2     @           _ss       _vnwd       .,		///
+		label("Column variable")
+
+  CHECKBOX ck_stdize _lft          _xls      _iwd        _ht4,		///
+		groupbox						///
+		clickon(script stdize_on)				///
+		clickoff(script stdize_off)				///
+		label("Direct standardization")
+  TEXT     tx_stdize _ilft     _ss       150       .,			///
+		label("Standard strata variable:")
+  TEXT     tx_stdwgt +165      @         @         .,			///
+		label("Standard weight variable:")
+  VARNAME  vn_stdize _ilft     _ss       @         .,			///
+		label("Standard strata variable")			///
+		option(stdize)
+  VARNAME  vn_stdwgt +165      @         @         .,			///
+		label("Standard weight variable")			///
+		option(stdweight)
+
+  GROUPBOX gb_opts     _lft        _xls      _iwd        _ht7h,		///
+  		label("Options")
+  TEXT     tx_tab      _ilft       _ss       _cwd1       .,		///
+		label("Use cell totals/proportions of:")
+
+  VARNAME  vn_tab      @           _ss       _vnwd       .,		///
+		label("Totals/proportions variable")			///
+		option(tab)
+
+  CHECKBOX ck_miss     @           _ls       _ibwd       .,		///
+		label("Treat missing values like other values")		///
+		option(missing)
+
+  DEFINE _x _xsetbu
+  DEFINE _y 290
+  INCLUDE _bu_svyset
+
+END
+
+SCRIPT stdize_on
+BEGIN
+	main.tx_stdize.enable
+	main.tx_stdwgt.enable
+	main.vn_stdize.enable
+	main.vn_stdwgt.enable
+	items.ck_deff.disable
+	items.ck_deft.disable
+	items.ck_srssub.disable
+END
+
+SCRIPT stdize_off
+BEGIN
+	main.tx_stdize.disable
+	main.tx_stdwgt.disable
+	main.vn_stdize.disable
+	main.vn_stdwgt.disable
+	items.ck_deff.enable
+	items.ck_deft.enable
+	items.ck_srssub.enable
+END
+
+PROGRAM stdize_output
+BEGIN
+	if main.ck_stdize {
+		require main.vn_stdize
+		require main.vn_stdwgt
+		optionarg main.vn_stdize
+		optionarg main.vn_stdwgt
+	}
+END
+
+INCLUDE sub_by_ifin_over_subpop
+INCLUDE svy_se
+
+SCRIPT POSTINIT
+BEGIN
+	script sub_set_svy_on
+END
+
+DIALOG items, label("") tabtitle("Table items")
+BEGIN
+  CHECKBOX ck_cell     _lft        _top      _iwd        .,		///
+		label("Cell proportions")				///
+		option(cell)
+
+  CHECKBOX ck_count    @           _ms       @           .,		///
+		label("Weighted cell counts")				///
+		option(count)
+
+  CHECKBOX ck_col      @           _ms       @           .,		///
+		label("Within-column proportions")			///
+		option(column)
+
+  CHECKBOX ck_row      @           _ms       @           .,		///
+		label("Within-row proportions")				///
+		option(row)
+
+  CHECKBOX ck_se       @           _ms       @           .,		///
+		label("Standard errors")				///
+		option(se)
+
+  CHECKBOX ck_ci       @           _ms       @           .,		///
+		label("Confidence intervals")				///
+		option(ci)
+
+  CHECKBOX ck_deff     @           _ms       @           .,		///
+		label("Display the DEFF design effects")		///
+		option(deff)
+
+  CHECKBOX ck_deft     @           _ms       @           .,		///
+		label("Display the DEFT design effects")		///
+		option(deft)
+
+  CHECKBOX ck_cv     @           _ms       @           .,		///
+		label("Display the coefficient of variation")		///
+		option(cv)
+
+  CHECKBOX ck_srssub   @           _ms       @           .,		///
+label("Report design effects assuming SRS within subpopulation")	///
+		option(srssubpop)
+
+  CHECKBOX ck_obs      @           _ms       @           .,		///
+		label("Cell observations")				///
+		option(obs)
+
+END
+
+DIALOG rpt, label("") tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr2
+  DEFINE _y _top
+  INCLUDE _sp_level
+
+  CHECKBOX ck_percent  _lft        _ls       _ibwd       .,		///
+		label("Display percentages instead of proportions")	///
+		option(percent)
+
+  CHECKBOX ck_vert     @           _ms       @           .,		///
+		label("Stack confidence interval endpoints vertically")	///
+		option(vertical)
+
+
+  CHECKBOX ck_nomarg   _lft        _ms       @           .,		///
+		label("Suppress row and column marginals")		///
+		option(nomarginals)
+
+  CHECKBOX ck_nolab    _lft        _ms       @           .,		///
+		label("Suppress displaying value labels")		///
+		option(nolabel)
+
+  CHECKBOX ck_cellw    _lft        _ms       _ckwd       .,		///
+		onclickon(gaction rpt.sp_cellw.enable)			///
+		onclickoff(gaction rpt.sp_cellw.disable)
+  SPINNER  sp_cellw    _cksep      @         _spwd       .,		///
+		label("Cell width")					///
+		min(4)							///
+		max(20)							///
+		default(4)						///
+		option(cellwidth)
+  TEXT     tx_cellw    _spsep      @         _ckspr2b    .,		///
+		label("Cell width")
+
+  CHECKBOX ck_csepw    _lft        _ms       _ckwd       .,		///
+		onclickon(gaction rpt.sp_csepw.enable)			///
+		onclickoff(gaction rpt.sp_csepw.disable)
+  SPINNER  sp_csepw    _cksep      @         _spwd       .,		///
+		label("Column-separation width")			///
+		min(1)							///
+		max(10)							///
+		default(1)						///
+		option(csepwidth)
+  TEXT     tx_csepw    _spsep      @         _ckspr2b    .,		///
+		label("Column-separation width")
+
+  CHECKBOX ck_stubw    _lft        _ms       _ckwd       .,		///
+		onclickon(gaction rpt.sp_stubw.enable)			///
+		onclickoff(gaction rpt.sp_stubw.disable)
+  SPINNER  sp_stubw    _cksep      @         _spwd       .,		///
+		label("Stub width")					///
+		min(4)							///
+		max(40)							///
+		default(4)						///
+		option(stubwidth)
+  TEXT     tx_stubw    _spsep      @         _ckspr2b    .,		///
+		label("Stub width")
+
+  CHECKBOX ck_format   _lft        _ms       _iwd        ., 		///
+  		onclickon(script format_on)				///
+  		onclickoff(script format_off)				///
+  		label("Override display format")
+  EDIT     ed_format   +20         _ss       200         .,		///
+		option(format) 						///
+		label("Display format")
+  BUTTON   bn_format   +205        @         80          .,		///
+	label("Create...") onpush(script rpt_GetFormat)			///
+	tooltip("Create display format")
+END
+
+SCRIPT rpt_GetFormat
+BEGIN
+	create STRING rptFormat
+	create CHILD format_chooser
+	format_chooser.setExitString rptFormat
+	format_chooser.setExitAction "rpt.ed_format.setvalue class rptFormat.value"
+END
+
+SCRIPT format_off
+BEGIN
+	rpt.ed_format.disable
+	rpt.bn_format.disable
+END
+
+SCRIPT format_on
+BEGIN
+	rpt.ed_format.enable
+	rpt.bn_format.enable
+END
+
+DIALOG rpt2, tabtitle("Test statistics")
+BEGIN
+  CHECKBOX ck_pear     _lft        _top      _iwd        .,		///
+		label("Pearson's chi-squared")				///
+		option(pearson)
+
+  CHECKBOX ck_lr       @           _ms       @           .,		///
+		label("Likelihood-ratio")				///
+		option(lr)
+
+  CHECKBOX ck_null     @           _ms       @           .,		///
+		label("Display null based statistics")			///
+		option(null)
+
+  CHECKBOX ck_wald     @           _ms       @           .,		///
+		label("Adjusted Wald")					///
+		onclickon(gaction rpt2.ck_noadj.enable)			///
+		onclickoff(program wald_off)				///
+		option(wald)
+
+  CHECKBOX ck_llwald   @           _ms       @           .,		///
+		label("Adjusted log-linear Wald")			///
+		onclickon(gaction rpt2.ck_noadj.enable)			///
+		onclickoff(program wald_off)				///
+		option(llwald)
+
+  CHECKBOX ck_noadj    @           _ms       @           .,		///
+		label("Report unadjusted Wald statistics")		///
+		option(noadjust)
+
+END
+
+PROGRAM wald_off
+BEGIN
+	if ! rpt2.ck_wald & ! rpt2.ck_llwald {
+		call gaction rpt2.ck_noadj.disable
+	}
+END
+
+PROGRAM items_output
+BEGIN
+	if items.ck_se | items.ck_ci | items.ck_deff ///
+	 | items.ck_deft | items.ck_cv | items.ck_srssub {
+	if (items.ck_cell ///
+	 & (items.ck_count | items.ck_col | items.ck_row) ///
+	 | (items.ck_count & (items.ck_col | items.ck_row)) ///
+	 | (items.ck_col & items.ck_row)) {
+		stopbox stop ///
+		`"Only one of "Cell proportions", "Weighted cell counts","' ///
+		`""Within-column", and "Within-row" may be chosen with"' ///
+		`""Standard errors", "Confidence intervals", "DEFF", "' ///
+		`""DEFT", or "Coefficient of variation""'
+	}
+	}
+	option items.ck_cell
+	option items.ck_count
+	option items.ck_col
+	option items.ck_row
+	option items.ck_se
+	option items.ck_ci
+	option items.ck_deff
+	option items.ck_deft
+	option items.ck_cv
+	if items.ck_srssub & !(sub.vn_subpop | sub.ex_subif) {
+		stopbox stop ///
+`"On the "Table items" tab,"' ///
+`""Report design effects assuming SRS within subpopulation""' ///
+`"requires that a subpopulation be specified in the "if/in" tab"'
+	}
+	option items.ck_srssub
+	option items.ck_obs
+END
+
+PROGRAM rpt_output
+BEGIN
+	optionarg /hidedefault rpt.sp_level
+	option rpt.ck_percent
+	option rpt.ck_vert
+	option rpt.ck_nomarg
+	option rpt.ck_nolab
+	optionarg rpt.ed_format
+	optionarg rpt.sp_cellw
+	optionarg rpt.sp_csepw
+	optionarg rpt.sp_stubw
+
+END
+
+PROGRAM rpt2_output
+BEGIN
+	option rpt2.ck_pear
+	option rpt2.ck_lr
+	option rpt2.ck_null
+	option rpt2.ck_wald
+	option rpt2.ck_llwald
+	option rpt2.ck_noadj
+END
+
+PROGRAM command
+BEGIN
+	put /program svy_prefix_output
+	put " : tabulate "
+	varlist main.vn_var1 main.vn_var2
+	put " " /program ifin_output
+	beginoptions
+		put " " /program stdize_output
+		optionarg main.vn_tab
+		option main.ck_miss
+		put " " /program items_output
+		put " " /program rpt_output
+		put " " /program rpt2_output
+	endoptions
+END

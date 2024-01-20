@@ -1,0 +1,25 @@
+/*
+	sspace_estat
+
+*!  VERSION 1.0.1  23jun2009
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_large
+DEFINE _dlght 385
+INCLUDE header
+
+HELP hlp1, view("help estat")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	create BOOLEAN has_FactorVars
+	has_FactorVars.settrue
+	program sum_bu_facvars_ckResults
+	program vce_bu_facvars_ckResults
+END
+
+INCLUDE estat

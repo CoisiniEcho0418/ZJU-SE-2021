@@ -1,0 +1,64 @@
+/*
+	cf
+
+*!  VERSION 1.2.1  09mar2007
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+INCLUDE header
+HELP hlp1, view("help cf")
+RESET res1
+
+
+DIALOG main, tabtitle("Main") label("cf - Compare two datasets")
+BEGIN
+  TEXT     tx_var       _lft       _top       _iwd 	 .,	///
+	label("Variables to compare:  (leave empty for all variables)")
+
+  VARLIST  vl_var       @          _ss        @          .,	///
+	label("Variables to compare")
+
+  TEXT     tx_using     _lft       _ls        @          .,	///
+	label("Dataset filename to compare against:")
+
+  FILE     fi_using     @          _ss        @          .,	///
+	option(using)						///
+	label("Browse...")					///
+	error("Dataset filename to compare against")		///
+	defext(dta)						///
+	filter("Stata Dataset (*.dta)|*.dta|All Files (*.*)|*.*")
+
+  GROUPBOX gb_verbose   _lft       _xls       _iwd       _ht4,	///
+	label("Results")
+
+  CHECKBOX ck_all       _ilft      _ss        _inwd      .,	///
+	label("Report variables that match")			///
+	option(all)
+
+  CHECKBOX ck_verbose   @          _ss        @          .,	///
+	label("Display detailed listing for each observation that differs") ///
+	option(verbose)
+END
+
+PROGRAM command
+BEGIN
+	put "cf "
+	if main.vl_var {
+		varlist main.vl_var
+	}
+	if !main.vl_var {
+		put "_all "
+	}
+	require main.fi_using
+	put " using "
+	put `"""'
+	put main.fi_using
+	put `"""'
+        beginoptions
+		option main.ck_all
+		option main.ck_verbose
+        endoptions
+END

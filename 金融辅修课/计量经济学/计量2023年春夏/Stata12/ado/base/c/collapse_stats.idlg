@@ -1,0 +1,48 @@
+/*
+  collapse_stats.idlg
+
+*!  VERSION 1.0.1  10jun2008
+
+*/
+
+LIST statistic_labels
+BEGIN
+        Mean
+        Median
+        Percentile
+        Standard deviation
+        Std error of mean
+	Std error of mean (binomial)
+	Std error of mean (poisson)
+	Sum
+        Raw sum (ignores weight)
+        Count nonmissing
+        Maximum
+        Minimum
+        Interquartile range
+        First value
+        Last value
+        First nonmissing value
+        Last nonmissing value
+END
+
+LIST statistic_values
+BEGIN
+        mean
+        median
+        p
+        sd
+	semean
+	sebinomial
+	sepoisson
+        sum
+        rawsum
+        count
+        max
+        min
+        iqr
+        first
+        last
+        firstnm
+        lastnm
+END

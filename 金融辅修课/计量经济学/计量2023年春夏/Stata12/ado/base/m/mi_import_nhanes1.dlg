@@ -1,0 +1,205 @@
+/*
+  mi_import_nhanes1
+
+*! VERSION 1.0.4  23may2011
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_large
+DEFINE _dlght 300
+INCLUDE header
+
+HELP hlp1, view("help mi_import_nhanes1")
+RESET res1
+
+DIALOG main, label("mi import nhanes1 - Import NHANES-format data into mi") ///
+		tabtitle("Main")
+BEGIN
+  TEXT tx_file		_lft	_top	_vnwd	.,			///
+	label("New name:")
+  EDIT ed_file		@	_ss	@	.,			///
+	label("New name")
+
+  TEXT tx_using		_lft	_ls	_iwd	.,			///
+	label("Using datasets on disk:")
+  FILE fi_using		@	_ss	@	.,			///
+	filter("Stata Dataset (*.dta)|*.dta|All (*.*)|*.*")		///
+	defext(dta)							///
+	option(using)							///
+	multiselect							///
+	error("Using datasets on disk")					///
+	label("Browse...")
+
+  TEXT tx_id		@	_ls	@	.,			///
+	label("Variables to match observations on:")
+  VARLIST vl_id		@	_ss	@	.,			///
+	option(id)							///
+	label("Variables to match observations on")
+
+  CHECKBOX ck_clear	_lft	_ls	_iwd	.,			///
+	option(clear)							///
+	label("Replace data in memory")
+  CHECKBOX ck_uppercase	@	_ms	@	.,			///
+	option(uppercase)						///
+	label("SEQN variable and variable suffixes IF and MI are to be uppercase")
+END
+
+DIALOG adv, tabtitle("Advanced")
+BEGIN
+  CHECKBOX ck_code	_lft	_top	_iwd	_ht3,			///
+	groupbox							///
+	onclickon(script adv_ck_code_on)				///
+	onclickoff(script adv_ck_code_off)				///
+	label("Flag code")
+  SPINNER sp_na		_indent	_ms	_spwd	.,			///
+	min(-9999)							///
+	max(9999)							///
+	default(0)							///
+	option(nacode)							///
+	label("Applicable")
+  TEXT tx_na		_spsep	@	90	.,			///
+	label("Not applicable")
+  SPINNER sp_obs	+95	@	_spwd	.,			///
+	min(-9999)							///
+	max(9)								///
+	default(1)							///
+	option(obscode)							///
+	label("Observed")
+  TEXT tx_obs		_spsep	@	70	.,			///
+	label("Observed")
+  SPINNER sp_imp	+75	@	_spwd	.,			///
+	min(-9999)							///
+	max(9999)							///
+	default(2)							///
+	option(impcode)							///
+	label("Imputed")
+  TEXT tx_imp		_spsep	@	60	.,			///
+	label("Imputed")
+
+  GROUPBOX gb_naming	_lft	_xxls	_iwd	_ht17,			///
+	label("Variable naming convention")
+
+  CHECKBOX ck_prefix	_indent	_ss	_inwd	_ht4h,			///
+	groupbox							///
+	onclickon(script adv_ck_prefix_on)				///
+	onclickoff(script adv_ck_prefix_off)				///
+	label("Prefix")
+  TEXT tx_prefix_1	_indent	_ss	_vnwd	.,			///
+	label("Imputation flag")
+  DEFINE holdy @y
+  EDIT ed_prefix_1	@	_ss	@	.,			///
+	label("Imputation flag")
+  TEXT tx_prefix_2	_ilft2	holdy	@	.,			///
+	label("Imputation")
+  EDIT ed_prefix_2	@	_ss	@	.,			///
+	label("Imputation")
+
+  CHECKBOX ck_suffix	_ilft	_xxls	_ibwd	_ht4h,			///
+	groupbox							///
+	onclickon(script adv_ck_suffix_on)				///
+	onclickoff(script adv_ck_suffix_off)				///
+	label("Suffix")
+  TEXT tx_suffix_1	_indent	_ss	_vnwd	.,			///
+	label("Imputation flag")
+  DEFINE holdy @y
+  EDIT ed_suffix_1	@	_ss	@	.,			///
+	default("if")							///
+	label("Imputation flag")
+  TEXT tx_suffix_2	_ilft2	holdy	@	.,			///
+	label("Imputation")
+  EDIT ed_suffix_2	@	_ss	@	.,			///
+	default("mi")							///
+	label("Imputation")
+END
+
+SCRIPT adv_ck_code_on
+BEGIN
+	adv.sp_na.enable
+	adv.tx_na.enable
+	adv.sp_obs.enable
+	adv.tx_obs.enable
+	adv.sp_imp.enable
+	adv.tx_imp.enable
+END
+
+SCRIPT adv_ck_code_off
+BEGIN
+	adv.sp_na.disable
+	adv.tx_na.disable
+	adv.sp_obs.disable
+	adv.tx_obs.disable
+	adv.sp_imp.disable
+	adv.tx_imp.disable
+END
+
+SCRIPT adv_ck_prefix_on
+BEGIN
+	adv.tx_prefix_1.enable
+	adv.ed_prefix_1.enable
+	adv.tx_prefix_2.enable
+	adv.ed_prefix_2.enable
+END
+
+SCRIPT adv_ck_prefix_off
+BEGIN
+	adv.tx_prefix_1.disable
+	adv.ed_prefix_1.disable
+	adv.tx_prefix_2.disable
+	adv.ed_prefix_2.disable
+END
+
+SCRIPT adv_ck_suffix_on
+BEGIN
+	adv.tx_suffix_1.enable
+	adv.ed_suffix_1.enable
+	adv.tx_suffix_2.enable
+	adv.ed_suffix_2.enable
+END
+
+SCRIPT adv_ck_suffix_off
+BEGIN
+	adv.tx_suffix_1.disable
+	adv.ed_suffix_1.disable
+	adv.tx_suffix_2.disable
+	adv.ed_suffix_2.disable
+END
+
+PROGRAM command
+BEGIN
+	require main.ed_file
+	require main.fi_using
+	require main.vl_id
+	put "mi import nhanes1 "
+	put main.ed_file
+
+	beginoptions
+		optionarg main.fi_using
+		optionarg main.vl_id
+		option main.ck_clear
+		option main.ck_uppercase
+		if adv.ck_code {
+			optionarg /hidedefault adv.sp_na
+			optionarg /hidedefault adv.sp_obs
+			optionarg /hidedefault adv.sp_imp
+		}
+		if adv.ck_prefix {
+			require adv.ed_prefix_1
+			require adv.ed_prefix_2
+			put `" impprefix(""'
+			put adv.ed_prefix_1 `"" ""'
+			put adv.ed_prefix_2 `"""'
+			put `")"'
+		}
+		if adv.ck_suffix {
+			require adv.ed_suffix_1
+			require adv.ed_suffix_2
+			put `" impsuffix(""'
+			put adv.ed_suffix_1 `"" ""'
+			put adv.ed_suffix_2 `"""'
+			put `")"'
+		}
+	endoptions
+END
+

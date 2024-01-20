@@ -1,0 +1,286 @@
+/*
+    loadingplot_9.dlg
+
+*!  VERSION 1.0.1  28sep2006 (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+
+HELP hlp1, view("help loadingplot")
+RESET res1
+
+DIALOG main, tabtitle("Main")	///
+	label("loadingplot - Loading plots after factor and pca")
+BEGIN
+  TEXT     tx_factors  _lft      _top        _cwd1         .,		///
+  	label("Plot all combinations of the following:")
+  SPINNER  sp_factors  @         _ss         _spwd         .,		///
+  	default(2) min(2) max(e(f)) option(factors)			///
+  	onchange(program check_factors)
+  TEXT     tx_factors2 _spsep    @           _spr2b        .,
+
+  CHECKBOX ck_rotated  _lft      +35         _gwd4_1       .,		///
+	label("Suppress rotated results")				///
+	option(norotated)
+
+  CHECKBOX ck_half     _gft4_2   @           _gwd4_1       .,		///
+	label("Graph lower half only") option(half)
+
+/**** BEGIN -- Scatter options ****/
+  GROUPBOX gb_marker   _lft        _xls      _gwd1         _ht15,	///
+	label("Markers (Scatter options)")
+
+  TEXT     tx_msymbol  _igft       _ss       _txwd         .,		///
+	label("Symbol:") right
+  COMBOBOX cb_msymbol  _txsep      @         _txr4gi       .,		///
+	option(msymbol)							///
+	dropdownlist							///
+	contents(symbols)
+
+  TEXT     tx_mcolor   _igft       _ls       _txwd         .,		///
+	label("Color:") right
+  COMBOBOX cb_mcolor   _txsep      @         _tcr4gi       .,		///
+	option(mcolor)							///
+	dropdownlist							///
+	contents(colors)						///
+	onselchangelist(main_color_mcolor)
+  COLOR    cl_mcolor   _tcr4gisep  @         _btwd         .,		///
+	option(mcolor)
+
+  TEXT     tx_msize    _lft4_2gi   @         _txwd         .,		///
+	label("Size:") right
+  COMBOBOX cb_msize    _txsep      @         _txr4gi       .,		///
+	option(msize)							///
+	dropdownlist 							///
+	contents(symbolsizes)
+
+  GROUPBOX gb_mlabel   _igft       +35       _gwd2	   85,		///
+	label("Marker labels")
+
+  TEXT     tx_mlabel   _iigft      _ss       _txswd        .,		///
+	label("Max char:") right
+  SPINNER  sp_maxlen   _txssep     @         _tcr4gi       .,		///
+  	min(5) max(100) default(12) option(maxlength)
+
+  TEXT     tx_mlcolor  _lft4_2gi   @         _txswd	   .,		///
+	label("Color:") right
+  COMBOBOX cb_mlcolor  _txssep     @         _tcr4gi       .,		///
+	option(mlabcolor)						///
+	dropdownlist							///
+	contents(colors)						///
+	onselchangelist(main_color_mlcolor)
+  COLOR    cl_mlcolor  _tcr4gisep  @         _btwd         .,		///
+	option(mlabcolor)
+
+  TEXT     tx_mlsize   _iigft      _ls       _txswd        .,		///
+	label("Size:") right
+  COMBOBOX cb_mlsize   _txssep     @         _txr4gi       .,		///
+	option(mlabsize) 						///
+	dropdownlist							///
+	contents(textsizes)
+
+  TEXT     tx_mlposition _lft4_2gi @         _txswd        .,		///
+	label("Position:") right
+  COMBOBOX cb_mlposition _txssep   @         _txr4gi       .,		///
+	option(mlabposition) 						///
+	dropdownlist							///
+	contents(clockpos)
+/**** END   -- Scatter options  ****/
+
+  CHECKBOX ck_matrix   _gft2       _top      _gwd1         .,		///
+  	option(matrix)							///
+  	onclickon(program main_set_matrix_on)				///
+  	onclickoff(program main_set_matrix_off)				///
+  	label("Graph as a matrix plot (the current default is scatter plot)")
+  CHECKBOX ck_combined @           @         @             .,		///
+  	option(combined)						///
+  	onclickon(program main_set_combined_on)				///
+  	onclickoff(program main_set_combined_off)			///
+	label("Graph as a combined plot (the current default is matrix plot)")
+
+  DEFINE y _ls
+  INCLUDE cgraph_opts
+
+  DEFINE y 40
+  INCLUDE gmatrix_opts_ctrl
+
+  EDIT     ed_cmd 0 0 0 0, default(e(cmd)) 	///
+  	// hidden control
+END
+
+SCRIPT PREINIT
+BEGIN
+	main.ed_cmd.hide
+END
+
+PROGRAM POSTINIT_PROGRAM
+BEGIN
+	if main.ed_cmd.equals("factor") {
+		call main.tx_factors2.setlabel "Factors"
+		call main.sp_factors.enable
+	}
+	if main.ed_cmd.equals("pca") {
+		call main.tx_factors2.setlabel "Components"
+		call main.sp_factors.enable
+	}
+
+	if ! (main.ed_cmd.equals("pca") | main.ed_cmd.equals("factor")) {
+		stopbox note `"This dialog requires that either "Principal Component Analysis" (pca) or "Factor analysis" (factor)"' ///
+		    "be performed prior to starting." " "		///
+		    `"Use the "Reset" (R) button on this dialog once that has been done."'
+
+		call main.sp_factors.disable
+	}
+	call program check_factors
+END
+
+PROGRAM check_factors
+BEGIN
+	if main.sp_factors.equals(2) {
+		call main.ck_combined.hide
+		call main.ck_matrix.show
+		call script cgraph_opts_hide
+		if ! main.ck_matrix {
+			call script gmatrix_opts_hide
+			call script gyaxis_enable
+			call script gxaxis_enable
+			call main.ck_half.hide
+		}
+		if main.ck_matrix {
+			call script gmatrix_opts_show
+			call script gyaxis_disable
+			call script gxaxis_disable
+			call main.ck_half.show
+		}
+	}
+
+	if ! main.sp_factors.equals(2) {
+		call main.ck_matrix.hide
+		call main.ck_combined.show
+		if main.ck_combined {
+			call script cgraph_opts_show
+			call script gmatrix_opts_hide
+			call script gyaxis_enable
+			call script gxaxis_enable
+		}
+		if ! main.ck_combined {
+			call script gmatrix_opts_show
+			call script gyaxis_disable
+			call script gxaxis_disable
+			call main.ck_half.show
+			call script cgraph_opts_hide
+		}
+	}
+END
+
+PROGRAM main_set_combined_off
+BEGIN
+	call script cgraph_opts_hide
+	if ! main.sp_factors.equals(2) {
+		call script gmatrix_opts_show
+		call script gyaxis_disable
+		call script gxaxis_disable
+		call main.ck_half.show
+	}
+END
+
+PROGRAM main_set_combined_on
+BEGIN
+	call script cgraph_opts_show
+	call script gmatrix_opts_hide
+	call script gyaxis_enable
+	call script gxaxis_enable
+	call main.ck_half.hide
+END
+
+PROGRAM main_set_matrix_off
+BEGIN
+	call script cgraph_opts_hide
+	call script gmatrix_opts_hide
+	call script gyaxis_enable
+	call script gxaxis_enable
+	call main.ck_half.hide
+END
+
+PROGRAM main_set_matrix_on
+BEGIN
+	call script gmatrix_opts_show
+	call script gyaxis_disable
+	call script gxaxis_disable
+	call main.ck_half.show
+END
+
+INCLUDE cgraph_opts_pr
+INCLUDE gmatrix_opts_pr
+
+INCLUDE gyaxis
+INCLUDE gxaxis
+INCLUDE gtitle
+INCLUDE gcaption
+INCLUDE gregion
+
+LIST main_color_mcolor
+BEGIN
+	main.cl_mcolor.hide
+	main.cl_mcolor.show
+	main.cl_mcolor.hide
+END
+
+LIST main_color_mlcolor
+BEGIN
+	main.cl_mlcolor.hide
+	main.cl_mlcolor.show
+	main.cl_mlcolor.hide
+END
+
+PROGRAM command
+BEGIN
+	put "loadingplot "
+	beginoptions
+		if ! main.sp_factors.equals(2) {
+			if main.ed_cmd.equals("factor") {
+				put " " "factors("
+			}
+			if ! main.ed_cmd.equals("factor") {
+				put " " "components("
+			}
+			put main.sp_factors
+			put ") "
+		}
+		option main.ck_rotated
+		option main.ck_half
+
+		optionarg main.cb_msymbol
+		if !Hcc(main.cb_mcolor) {
+			optionarg /hidedefault main.cb_mcolor
+		}
+		if Hcc(main.cb_mcolor) {
+			optionarg /quoted main.cl_mcolor
+		}
+		optionarg main.cb_msize
+		optionarg /hidedefault main.sp_maxlen
+		optionarg main.cb_mlsize
+		if !Hcc(main.cb_mlcolor) {
+			optionarg /hidedefault main.cb_mlcolor
+		}
+		if Hcc(main.cb_mlcolor) {
+			optionarg /quoted main.cl_mlcolor
+		}
+		optionarg main.cb_mlposition
+
+		option main.ck_combined
+		option main.ck_matrix
+		put " " /program cgraph_opts_output
+		put " " /program main_diaglab_pr
+
+		put " " /program gyaxis_output
+		put " " /program gxaxis_output
+		put " " /program gtitle_output
+		put " " /program gcaption_output
+		put " " /program gregion_output
+	endoptions
+END

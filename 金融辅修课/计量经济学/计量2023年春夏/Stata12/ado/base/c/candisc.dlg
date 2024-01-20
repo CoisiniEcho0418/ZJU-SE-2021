@@ -1,0 +1,173 @@
+/*
+	candisc
+
+*! VERSION 1.0.3  14oct2010
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_mlarge
+DEFINE _dlght 380
+INCLUDE header
+
+HELP hlp1, view("help candisc")
+RESET res1
+
+DIALOG main, label("candisc - Canonical linear discriminant analysis")	///
+	tabtitle("Model")
+BEGIN
+  TEXT tx_var		_lft	_top	_vlwd	.,		///
+	label("Variables:")
+  VARLIST vl_var	@	_ss	_vlwd	.,		///
+	allowcat label("Variables")
+
+  TEXT     tx_group	_vnx	_top	_vnwd	.,		///
+	label("Group variable:")
+  VARLIST vl_group	@	_ss	_vnwd	.,		///
+	option(group)						///
+	label("Group variable")
+
+  GROUPBOX gb_priors	_lft	_ls	_iwd	_ht17,		///
+	label("Group prior probabilities")
+
+  RADIO rb_equal	_indent	_ss	_ibwd	.,		///
+	first							///
+	onclickon(script main_rb_equal_on)			///
+	label("Equal prior probabilities")
+
+  RADIO rb_proportional	@	_ss	@	.,		///
+	onclickon(script main_rb_proportional_on)		///
+	label("Group-size-proportional prior probabilities")
+
+  RADIO rb_matname	@	_ss	@	.,		///
+	onclickon(script main_rb_matname_on)			///
+	label("Group prior probabilities are contained in matrix")
+  LISTBOX lb_matname	_rbsep	_ss	200	60,		///
+	label("Vector containing coefficients for the model")   ///
+	contents(vector)
+
+  RADIO rb_matexp	_ilft	+65	_ibwd	.,		///
+	last							///
+	onclickon(script main_rb_matexp_on)			///
+	label("Matrix expression providing the group prior probabilities")
+  EDIT ed_matexp	_rbsep	_ss	200	.,		///
+	label("Matrix expression providing the group prior probabilities")
+
+  GROUPBOX gb_ties	_lft	+45	_iwd	_ht6,		///
+	label("Ties in group classification:")
+
+  RADIO rb_missing	_indent	_ss	_ibwd	.,		///
+	first							///
+	label("Produce a missing value")
+
+  RADIO rb_random	@	_ss	@	.,		///
+	label("Are broken randomly")
+
+  RADIO rb_first	@	_ss	@	.,		///
+	last							///
+	label("Are set to the first tied group")
+END
+
+SCRIPT main_rb_equal_on
+BEGIN
+	main.ed_matexp.disable
+	main.lb_matname.disable
+END
+
+SCRIPT main_rb_proportional_on
+BEGIN
+	main.ed_matexp.disable
+	main.lb_matname.disable
+END
+
+SCRIPT main_rb_matname_on
+BEGIN
+	main.lb_matname.enable
+	main.ed_matexp.disable
+END
+
+SCRIPT main_rb_matexp_on
+BEGIN
+	main.ed_matexp.enable
+	main.lb_matname.disable
+END
+
+PROGRAM main_priors_output
+BEGIN
+	if main.rb_proportional {
+		put "priors(proportional)"
+	}
+	if main.rb_matname {
+		put "priors("
+		put main.lb_matname
+		put ")"
+	}
+	if main.rb_matexp {
+		put "priors("
+		put main.ed_matexp
+		put ")"
+	}
+END
+
+PROGRAM main_ties_output
+BEGIN
+	if main.rb_random {
+		put "ties(random)"
+	}
+	if main.rb_first {
+		put "ties(first)"
+	}
+END
+
+INCLUDE ifin
+INCLUDE weights_f
+
+DIALOG rpt, label("") tabtitle("Reporting")
+BEGIN
+  CHECKBOX ck_notable	_lft	_top	_iwd	.,		///
+	option(notable)						///
+	label("Suppress resubstitution classification table")
+
+  CHECKBOX ck_lootable	@	_ms	@	.,		///
+	option(lootable)					///
+	label("Show leave-one-out classification table")
+
+  CHECKBOX ck_nostats	@	_ms	@	.,		///
+	option(nostats)						///
+	label("Suppress display of canonical statistics")
+
+  CHECKBOX ck_nocoef	@	_ms	+5	.,		///
+	option(nocoef)						///
+	label("Suppress display of standardized canonical discriminant function coefficients")
+
+  CHECKBOX ck_nostruct	@	_ms	@	.,		///
+	option(nostruct)					///
+	label("Suppress display of canonical structure matrix")
+
+  CHECKBOX ck_nomeans	@	_ms	@	.,		///
+	option(nomeans)						///
+	label("Suppress display of group means on canonical variables")
+
+END
+
+PROGRAM command
+BEGIN
+	allowxi
+	put "candisc "
+	varlist [main.vl_var]
+	INCLUDE _ifin_pr
+	put " " /program weights_output
+	beginoptions
+		require main.vl_group
+		optionarg main.vl_group
+		put " " /program main_priors_output
+		put " " /program main_ties_output
+		option rpt.ck_notable
+		option rpt.ck_lootable
+		option rpt.ck_nostats
+		option rpt.ck_nocoef
+		option rpt.ck_nostruct
+		option rpt.ck_nomeans
+	endoptions
+END

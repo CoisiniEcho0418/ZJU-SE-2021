@@ -1,0 +1,28 @@
+/*
+	cluster centroidlinkage
+
+*!  VERSION 1.1.2  14mar2011
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_large
+INCLUDE header
+HELP hlp1, view("help cluster_linkage")
+RESET res1
+
+DIALOG main, label("cluster centroidlinkage - Centroid-linkage clustering") /*
+		*/ tabtitle("Main")
+BEGIN
+  INCLUDE _clus_hier
+END
+
+INCLUDE _clus_hier2
+
+PROGRAM command
+BEGIN
+	allowxi
+	put "cluster centroidlinkage "
+	INCLUDE _clus_hier_pr
+END

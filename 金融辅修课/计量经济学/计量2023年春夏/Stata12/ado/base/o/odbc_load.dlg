@@ -1,0 +1,216 @@
+/*
+  odbc_load.dlg
+
+*! VERSION 2.0.3  03mar2010
+
+*/
+
+VERSION 10.0
+SYNCHRONOUS_ONLY
+MODAL
+
+INCLUDE _std_large
+DEFINE _dlght 450
+INCLUDE header
+
+RESET res1
+
+PROGRAM PREINIT_PROGRAM
+BEGIN
+	call create BOOLEAN isLoading
+	call create STRING odbc_err_msg
+	call create DOUBLE command_flag
+	call isLoading.settrue
+	put "capture odbc list"
+	stata hidden immediate
+	call command_flag.setvalue 0
+END
+
+SCRIPT POSTINIT
+BEGIN
+	isLoading.setfalse
+END
+
+DIALOG main, tabtitle("Main") 				///
+	title("Import data from an ODBC data source")
+BEGIN
+  BUTTON   bu_set_auth	_rj100	_top	100	.,	///
+	label("Authentication")				///
+	onpush(program main_set_auth)			///
+	tooltip("Click to set your database user ID and password")
+  TEXT     tx_dsn	_lft	_topph	_cwd1	.,	///
+	label("ODBC data sources:")
+  LISTBOX  lb_dsn	_lft	_ss	_iwd	80,	///
+	nomemory					///
+	onselchange(program ds_selected)		///
+	option(dsn)					///
+	contents(.__ODBC_INFO.DSLABEL) values(.__ODBC_INFO.DS)
+
+  TEXT     tx_tables	_lft	+95	_cwd1	.,	///
+	label("Tables:")
+  LISTBOX  lb_tables	_lft	_ss	@	200,	///
+	nomemory					///
+	option(table)					///
+	onselchange(program table_selected)		///
+	contents(.__ODBC_INFO.TABLE)
+
+  TEXT     tx_vars	_lft2	-20	95	.,	///
+	label("Columns:")
+  CHECKBOX ck_all	+100	@	120	.,	///
+	label("Use all") default(1)			///
+	onclickon(main.lb_vars.disable)			///
+	onclickoff(main.lb_vars.enable)
+  LISTBOX  lb_vars	_lft2	_ss	_cwd1	200,	///
+	nomemory					///
+	multiselect					///
+	contents(.__ODBC_INFO.VARIABLES)		///
+	values(.__ODBC_INFO.VARLABELS)			///
+	label("Columns")
+  
+  CHECKBOX ck_clear	_lft	+210	_cwd1	.,	///
+	label("Overwrite dataset in memory")		///
+	option(clear)
+  DEFINE y @y
+  CHECKBOX ck_lowercase	@	_ms	@	.,	///
+	option(lowercase)				///
+	label("Read variable names as lowercase")
+  CHECKBOX ck_noquote	_lft	_ms	_iwd	.,	///
+	option(noquote)					///
+	label("Do not quote SQL table name.")
+  CHECKBOX ck_allstr	_lft2	y	@	.,	///
+	option(allstring)				///
+	label("Read all variables as strings")
+  CHECKBOX ck_datestr	@	_ms	@	.,	///
+	option(datestring)				///
+	label("Read date variables as strings")
+ 
+  CHECKBOX ck_verbose	@ 	_ms	@	.,	///
+	option(verbose)					///
+	label("Display all table types for data source")
+END
+
+PROGRAM ds_selected
+BEGIN
+	call .__ODBC_INFO.TABLE.Arrdropall
+	call .__ODBC_INFO.VARIABLES.Arrdropall
+
+	if isLoading {
+		exit
+	}
+
+	if main.lb_dsn {
+		put "capture odbc query "
+		put `"""'
+		put main.lb_dsn
+		put `"""'
+		beginoptions
+		if main.ck_verbose {
+			put "verbose "
+		}
+		if main.lb_dsn.iseq("Excel Files") | 			///
+			main.lb_dsn.iseq("MS Access Database") {
+			put "dialog(complete) "
+		}
+		put "schema "
+		endoptions
+		stata hidden immediate
+
+		call odbc_err_msg.setvalue class .__ODBC_INFO.ODBC_ERR_MSG
+
+		if (odbc_err_msg) {
+			call command_flag.setvalue 1
+			call create CHILD odbc_error
+			call main.lb_tables.repopulate
+			call main.lb_vars.repopulate
+		}
+		else {
+			call main.lb_tables.repopulate
+			call main.lb_vars.repopulate
+		}
+	}
+END
+
+PROGRAM table_selected
+BEGIN
+	if isLoading {
+		exit
+	}
+	call .__ODBC_INFO.VARIABLES.Arrdropall
+	call main.lb_vars.setvalue ""
+
+	if main.lb_dsn  & main.lb_tables {
+		put "capture odbc describe "
+		put `"""'
+			put main.lb_tables
+		put `"""'
+		beginoptions
+			optionarg /quoted main.lb_dsn
+			if main.lb_dsn.iseq("Excel Files") | 		///
+				main.lb_dsn.iseq("MS Access Database") {
+				put "dialog(complete) "
+			}
+		endoptions
+
+		stata hidden immediate
+
+		call odbc_err_msg.setvalue class .__ODBC_INFO.ODBC_ERR_MSG
+
+		if (odbc_err_msg) {
+			call command_flag.setvalue 2
+			call create CHILD odbc_error
+			call main.lb_vars.repopulate
+		}
+		else {
+			call main.lb_vars.repopulate
+		}
+	}
+END
+
+PROGRAM main_set_auth
+BEGIN
+	call create STRING odbc_load_result // Not used
+	call create CHILD odbc_setauth
+	call odbc_setauth.setExitString "odbc_load_result"
+	call odbc_setauth.setExitAction "program process_setauth"
+END
+
+PROGRAM process_setauth
+BEGIN
+	if(command_flag.iseq(1)) {
+		call program ds_selected
+	}
+	if(command_flag.iseq(2)){
+		call program table_selected
+	}
+END
+
+PROGRAM command
+BEGIN
+	if ! main.lb_dsn | ! main.lb_tables {
+		stopbox stop `"On the "Main" tab,"'		///
+			"A data source and table have not been selected."
+	}
+	put "odbc load "
+	if ! main.ck_all {
+		if ! main.lb_vars {
+			stopbox stop `"On the "Main" tab,"'	///
+				`""Columns" have not been selected."'
+		}
+		put main.lb_vars
+	}
+
+	beginoptions
+		optionarg /quoted main.lb_dsn
+		optionarg /quoted main.lb_tables
+		option main.ck_clear
+		option main.ck_lowercase
+		option main.ck_allstr
+		option main.ck_datestr
+		option main.ck_noquote
+		if main.lb_dsn.iseq("Excel Files") | 		///
+			main.lb_dsn.iseq("MS Access Database") {
+			put "dialog(complete) "
+		}
+
+	endoptions
+END

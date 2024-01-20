@@ -1,0 +1,198 @@
+/*
+  gr_ed_axis_rule.dlg
+
+*!  VERSION 1.0.0  04dec2006
+
+*/
+
+VERSION 10.0
+MODAL
+
+INCLUDE _std_msmall
+DEFINE _dlght 190
+INCLUDE header_gr_ed
+
+DEFINE _clwd	15
+DEFINE _wd	140
+DEFINE _sep	+145
+DEFINE _cbwd	130
+DEFINE _cbsep	+135
+
+SCRIPT PREINIT
+BEGIN
+	create STRING G
+	program setupGOBJECT
+	create STRING tmajor
+
+	major.tb_rule.setlabel			///
+		"The axis rule determines the number of ticks and their relative positions."
+END
+
+PROGRAM POSTINIT_PROGRAM
+BEGIN
+	// dereference dlg_major
+	call G.withvalue tmajor.setvalue class @.dlg_major 	// -> major | majornl
+	if ! tmajor { // should not happen
+		stopbox stop "An unexpected error has occurred"	///
+			"(tmajor is not defined)"
+	}
+END
+
+PROGRAM setupGOBJECT
+BEGIN
+	if ! __MESSAGE {
+		stopbox stop 	///
+			"An unexpected error has occurred." "Object not found."
+		exit 198
+	}
+	call G.setvalue class __MESSAGE.value
+END
+
+DIALOG major, title("Axis rule") tabtitle("Major")
+BEGIN
+  GROUPBOX gb_rule	_lft	_top	_iwd	_ht13h,		///
+	label("Axis rule")
+  RADIO    rb_default	_ilft	_ss	180	.,		///
+	first							///
+	label("Use existing rule")				///
+	onclickon(program check_rule_type)			///
+	nomemory
+  RADIO    rb_suggest	@	_ss	@	.,		///
+	label("Suggest # of ticks")				///
+	onclickon(program check_rule_type)			///
+	nomemory
+  DEFINE y @y
+  RADIO    rb_delta	@	_ss	@	.,		///
+	label("Range/Delta")					///
+	onclickon(program check_rule_type)			///
+	nomemory
+  RADIO    rb_minmax	@	_ss	@	.,		///
+	label("Min Max")					///
+	onclickon(program check_rule_type)			///
+	nomemory
+  RADIO    rb_norule	@	_ss	@	.,		///
+	last							///
+	label("None")						///
+	onclickon(program check_rule_type)			///
+	nomemory
+
+  SPINNER  sp_suggest	200	y	_en7wd	.,		///
+	min(1) default(5) max(10000)
+  TEXT     tx_suggest	_en7sep @	100	.,		///
+	label("Ticks")
+
+  EDIT     ed_min	200	y	_en7wd	.,		///
+	label("Minimum value") numonly
+  TEXT     tx_min	_en7sep @	100	.,		///
+	label("Minimum value")
+  EDIT     ed_max	200	_ms	_en7wd	.,		///
+	label("Maximum value") numonly
+  TEXT     tx_max	_en7sep @	100	.,		///
+	label("Maximum value")
+  EDIT     ed_delta	200	_ms	_en7wd	.,		///
+	numonly							///
+	label("Delta")
+  TEXT     tx_delta	_en7sep @	100	.,		///
+	label("Delta")
+
+  TEXTBOX  tb_rule	_ilft	+35	_ibwd	_tb2,
+END
+
+PROGRAM check_rule_type
+BEGIN
+	if major.rb_default {
+		call major.sp_suggest.hide
+		call major.tx_suggest.hide
+		call major.ed_min.hide
+		call major.tx_min.hide
+		call major.ed_max.hide
+		call major.tx_max.hide
+		call major.ed_delta.hide
+		call major.tx_delta.hide
+	}
+	if major.rb_suggest {
+		call major.sp_suggest.show
+		call major.tx_suggest.show
+
+		call major.ed_min.hide
+		call major.tx_min.hide
+		call major.ed_max.hide
+		call major.tx_max.hide
+		call major.ed_delta.hide
+		call major.tx_delta.hide
+	}
+	if major.rb_delta {
+		call major.sp_suggest.hide
+		call major.tx_suggest.hide
+
+		call major.ed_min.show
+		call major.tx_min.show
+		call major.ed_max.show
+		call major.tx_max.show
+		call major.ed_delta.show
+		call major.tx_delta.show
+	}
+	if major.rb_minmax {
+		call major.sp_suggest.hide
+		call major.tx_suggest.hide
+		call major.ed_delta.hide
+		call major.tx_delta.hide
+
+		call major.ed_min.hide
+		call major.tx_min.hide
+		call major.ed_max.hide
+		call major.tx_max.hide
+	}
+	if major.rb_norule {
+		call major.sp_suggest.hide
+		call major.tx_suggest.hide
+		call major.ed_min.hide
+		call major.tx_min.hide
+		call major.ed_max.hide
+		call major.tx_max.hide
+		call major.ed_delta.hide
+		call major.tx_delta.hide
+	}
+END
+
+PROGRAM major_output
+BEGIN
+	put "cmd( _gm_edit ." G ".reset_rule "
+	if major.rb_suggest {
+		put major.sp_suggest
+		put ", "
+		put "tickset(" tmajor ") "
+		put "ruletype(suggest) "
+	}
+	if major.rb_delta {
+		require major.ed_min
+		require major.ed_max
+		require major.ed_delta
+		put major.ed_min " " major.ed_max " " major.ed_delta " "
+		put ", "
+		put "tickset(" tmajor ") "
+		put "ruletype(range) "
+	}
+	if major.rb_minmax {
+		put ", "
+		put "tickset(" tmajor ") "
+		put "ruletype(minmax) "
+	}
+	if major.rb_norule {
+		put ", "
+		put "tickset(" tmajor ") "
+		put "ruletype(none) "
+	}
+	put ") "
+END
+
+PROGRAM command
+BEGIN
+	if ! major.rb_default {
+		put "_gm_dlg_edits"
+		beginoptions
+			put " object(" G ") "
+			put " " /program major_output
+		endoptions
+	}
+END

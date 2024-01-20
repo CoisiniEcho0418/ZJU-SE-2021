@@ -1,0 +1,14 @@
+*! version 1.1.0  12jan2007
+sequence 5010
+
+set symbol     circle
+set size       medium
+set fillcolor  black
+set linestyle  scheme editor
+set angle      stdarrow
+
+set backsymbol  none
+set backsize    zero
+set backcolor   black
+set backline    scheme editor
+set backangle   stdarrow

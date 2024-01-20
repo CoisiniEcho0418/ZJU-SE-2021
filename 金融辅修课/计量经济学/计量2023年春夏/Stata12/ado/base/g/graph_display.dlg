@@ -1,0 +1,130 @@
+/*
+	graph display
+
+*!  VERSION 1.2.2  07feb2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_msmall
+INCLUDE _ht290
+INCLUDE header
+HELP hlp1, view("help graph_display")
+RESET res1
+
+DEFINE _txwd 65
+DEFINE _txsep +70
+DEFINE _clwd 15
+
+SCRIPT PREINIT
+BEGIN
+	create ARRAY tmpArray
+	create STRING tmp
+	create STRING main_marginResult
+END
+
+SCRIPT POSTINIT
+BEGIN
+	program main_checkMarginResult
+END
+
+DIALOG main, title("graph display - Display graph stored in memory")
+BEGIN
+  TEXT     tx_memgr	_lft	_top	_vnwd	.,		///
+	label("Graph to display:")
+  COMBOBOX cb_memgr	@	_ss	@	.,		///
+	label("Graph to display")				///
+	dropdown contents(graphs)
+
+  GROUPBOX gb_opt	_lft	+35	_iwd	_ht18,		///
+	label("Graph properties")
+
+  TEXT     tx_scheme	_ilft	_ss	_vnwd	.,		///
+	label("Scheme:")
+  COMBOBOX cb_scheme	@	_ss	@	.,		///
+	option(scheme) dropdownlist				///
+	contents(schemes)
+	
+  TEXT     tx_margin	@	_ls	_ibwd	.,		///
+	label("Margin: (between outer and inner graph regions)")
+  COMBOBOX cb_margin	@	_ss	_vnwd	.,		///
+	contents(margin) option(margin) dropdownlist		///
+	onselchange(program main_cb_margin_check)
+  BUTTON   bu_margin	_vnsep	@	_clwd	.,		///
+	label("..") tooltip("Custom margin")			///
+	onpush(script main_show_margin_dialog)
+
+  TEXT     tx_height	_iilft	_xls	45	.,		///
+	label("Height:") right
+  DEFINE holdx @x
+  EDIT     en_height	+50	@	60	.,		///
+	label("Height") numonly option(ysize)
+
+  TEXT     tx_width	holdx	_ms	45	.,		///
+	label("Width:") right
+  EDIT     en_width	+50	@	60	.,		///
+	label("Width") numonly option(xsize)
+  TEXT     tx_note	_ilft	_ms	_ibwd	.,		///
+	label("Height and width are in inches.")
+END
+
+PROGRAM main_cb_margin_check
+BEGIN
+	if main.cb_margin.iseq("custom") {
+		call main.bu_margin.show
+	}
+	else {
+		call main.bu_margin.hide
+	}
+END
+SCRIPT main_show_margin_dialog
+BEGIN
+	create CHILD gr_margin_create AS main_margin_dlg
+	main_margin_dlg.setExitString main_marginResult
+	main_margin_dlg.setExitAction "program main_checkMarginResult"
+END	
+PROGRAM main_checkMarginResult
+BEGIN
+	if main_marginResult {
+		call main_marginResult.tokenize tmpArray
+		call tmp.setvalue "Custom margin "
+		call tmp.append "(Left:"
+		call tmp.append class tmpArray[1]
+		call tmp.append " Right:"
+		call tmp.append class tmpArray[2]
+		call tmp.append " Bottom:"
+		call tmp.append class tmpArray[3]
+		call tmp.append " Top:"
+		call tmp.append class tmpArray[4]
+		call tmp.append ")"
+		call tmp.withvalue main.bu_margin.settooltip "@"
+	}
+	else {
+		call main.bu_margin.settooltip "Custom margin (not defined)"
+	}
+END
+
+
+PROGRAM command
+BEGIN
+	put "graph display "
+	require main.cb_memgr
+	put main.cb_memgr
+
+	beginoptions
+		optionarg main.en_height
+		optionarg main.en_width
+		if main.cb_margin.isneq("custom") {
+			optionarg /hidedefault main.cb_margin
+		}
+		else {
+			if main_marginResult {
+				put " margin("
+				put main_marginResult
+				put ") "
+			}
+		}
+		optionarg main.cb_scheme
+	endoptions
+END

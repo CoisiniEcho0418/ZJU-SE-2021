@@ -1,0 +1,120 @@
+/*
+	predict (after xtmixed)
+
+*!  VERSION 1.1.4  07jun2011
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_large
+DEFINE _dlght 300
+INCLUDE header
+
+HELP hlp1, view("help xtmixed postestimation")
+RESET res1
+
+DIALOG main, label("predict - Prediction after estimation") tabtitle("Main")
+BEGIN
+  INCLUDE  _p_gentype
+
+  GROUPBOX gb_opts		_lft	_ls	_iwd	_ht16,		///
+	label("Produce:")
+  RADIO rb_xb			_ilft	_ss	_ibwd	., first	///
+	option(xb) 							///
+	onclickon(script main_xb_on)					///
+	label("Linear prediction for the fixed portion of the model (xb)")
+  RADIO rb_stdp			@	_ss	@	.,		///
+	option(stdp) 							///
+	onclickon(script main_stdp_on)					///
+	label("Standard error of the linear prediction")
+  RADIO rb_blups		@	_ss	@	.,		///
+	option(reffects) 						///
+	onclickon(script main_blups_on)					///
+	label("Linear unbiased predictions")
+  RADIO rb_reses		@	_ss	@	.,		///
+	option(reses) 							///
+	onclickon(script main_reses_on)					///
+	label("Standard errors of linear unbiased predictions")
+  RADIO rb_fitted		@	_ss	@	.,		///
+	option(fitted) 							///
+	onclickon(script main_others_on)				///
+	label("Fitted values")
+  RADIO rb_residuals		@	_ss	@	.,		///
+	option(residuals) 						///
+	onclickon(script main_others_on)				///
+	label("Residuals, response minus fitted values")
+  RADIO rb_rstandard		@	_ss	@	.,		///
+	option(rstandard) 						///
+	onclickon(script main_scores_on) 				///
+	label("Standardized residuals")
+  RADIO rb_scores		@	_ss	@	., last		///
+	option(scores) 							///
+	onclickon(script main_scores_on) 				///
+	label("Equation-level scores")
+  COMBOBOX cb_level		_lft	+45	_vnwd	.,		///
+	dropdown							///
+	contents(e(ivars))						///
+	option(level)							///
+	label("Random-effects level for predictions")
+  TEXT tx_level			_vnsep	@	_vnrb	.,		///
+	label("Random-effects level for predictions")
+
+END
+
+INCLUDE _p_gentype_sc
+INCLUDE ifin
+INCLUDE _type_list_fd
+
+SCRIPT main_xb_on
+BEGIN
+	script _p_gentype_single
+	main.cb_level.disable
+	main.tx_level.disable
+END
+
+SCRIPT main_stdp_on
+BEGIN
+	script _p_gentype_single
+	main.cb_level.disable
+	main.tx_level.disable
+END
+
+SCRIPT main_blups_on
+BEGIN
+	main.tx_level.enable
+	main.cb_level.enable
+	script _p_gentype_multiple
+END
+
+SCRIPT main_reses_on
+BEGIN
+	main.tx_level.enable
+	main.cb_level.enable
+	script _p_gentype_multiple
+END
+
+SCRIPT main_others_on
+BEGIN
+	main.tx_level.enable
+	main.cb_level.enable
+	script _p_gentype_single
+END
+
+SCRIPT main_scores_on
+BEGIN
+	main.tx_level.disable
+	main.cb_level.disable
+	script _p_gentype_multiple
+END
+
+PROGRAM command
+BEGIN
+	put "predict "
+	put " " /program _p_gentype_output
+	INCLUDE _ifin_pr
+	beginoptions
+		option radio(main rb_blups rb_reses rb_xb rb_stdp rb_fitted rb_residuals rb_rstandard rb_scores)
+		optionarg main.cb_level
+	endoptions
+END

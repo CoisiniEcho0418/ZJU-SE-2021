@@ -1,0 +1,118 @@
+/*
+	predict (after xtmelogit)
+
+*!  VERSION 1.0.3  27may2010
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_large
+DEFINE _dlght 360
+INCLUDE header
+
+HELP hlp1, view("help xtmelogit postestimation")
+RESET res1
+
+DIALOG main, label("predict - Prediction after estimation") tabtitle("Main")
+BEGIN
+  INCLUDE  _p_gentype
+
+  GROUPBOX gb_opts		_lft	_ls	_iwd	_ht16,	///
+	label("Produce:")
+  RADIO    rb_mu		_ilft	_ss	_ibwd	.,	///
+	first							///
+	option(mu) 						///
+	onclickon(script others)				///
+	label("Probability, or mean for binomial data")
+  RADIO    rb_xb		@	_ss	@	.,	///
+	option(xb) 						///
+	onclickon(script others)				///
+	label("Linear prediction for the fixed portion of the model")
+  RADIO    rb_stdp		@	_ss	@	.,	///
+	option(stdp) 						///
+	onclickon(script others)				///
+	label("Standard error of the linear prediction of the fixed portion")
+  RADIO    rb_reffects		@	_ss	@	.,	///
+	option(reffects) 					///
+	onclickon(script reffects)				///
+	label("Estimates of the random effects")
+  RADIO    rb_reses		@	_ss	@	.,	///
+	option(reses) 						///
+	onclickon(script reses)					///
+	label("Standard errors for the random-effects estimates")	
+  RADIO    rb_pearson		@	_ss	@	.,	///
+	option(pearson) 					///
+	onclickon(script others)				///
+	label("Pearson residuals")
+  RADIO    rb_deviance		@	_ss	@	.,	///
+	option(deviance) 					///
+	onclickon(script others)				///
+	label("Deviance residuals")
+  RADIO    rb_anscombe		@	_ss	@	.,	///
+	last							///
+	option(anscombe) 					///
+	onclickon(script others)				///
+	label("Anscombe residuals")
+	
+  COMBOBOX cb_level		_lft	+45	_vnwd	.,	///
+	dropdown						///
+	contents(e(ivars))					///
+	option(level)						///
+	label("Random-effects level for predictions")
+  TEXT     tx_level		_vnsep	@	_vnrb	.,	///
+	label("Random-effects level for predictions")
+	
+  CHECKBOX ck_fonly		_lft	_ls	@	.,	///
+	option(fixedonly)					///
+	label("Predictions made after setting all random effects to zero")
+	
+  CHECKBOX ck_nooffset		@	_ms	@	.,	///
+	option(nooffset)					///
+	label("Ignore offset")
+END
+
+INCLUDE _p_gentype_sc
+INCLUDE ifin
+INCLUDE _type_list_fd
+
+SCRIPT reffects
+BEGIN
+	main.tx_level.enable
+	main.cb_level.enable
+	main.ck_nooffset.disable
+	main.ck_fonly.disable
+	script _p_gentype_multiple
+END
+
+SCRIPT reses
+BEGIN
+	main.tx_level.enable
+	main.cb_level.enable
+	main.ck_nooffset.disable
+	main.ck_fonly.disable
+	script _p_gentype_multiple
+END
+
+SCRIPT others
+BEGIN
+	main.tx_level.disable
+	main.cb_level.disable
+	main.ck_nooffset.enable
+	main.ck_fonly.enable
+	script _p_gentype_single
+END
+
+PROGRAM command
+BEGIN
+	put "predict "
+	put " " /program _p_gentype_output
+	INCLUDE _ifin_pr
+	beginoptions
+		option radio(main rb_mu rb_xb rb_stdp rb_pearson 	///
+			rb_deviance rb_anscombe rb_reffects rb_reses)
+		optionarg main.cb_level
+		option main.ck_fonly
+		option main.ck_nooffset
+	endoptions
+END

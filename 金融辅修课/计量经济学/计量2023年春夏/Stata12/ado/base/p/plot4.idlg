@@ -1,0 +1,2626 @@
+/*
+    plot4.idlg
+
+*!  VERSION 1.0.7  07jun2011
+
+	// SCRIPTS and PROGRAMS for external use
+
+	* SCRIPT  plot4_disable
+	* SCRIPT  plot4_enable
+	* PROGRAM plot4_output
+
+	******
+		The following tabs are identical. Changes made to one
+		must be	made to ALL
+
+		 plot1.idlg
+		 plot2.idlg
+		 plot3.idlg
+		 plot4.idlg
+		 addplot.idlg  ** the POSTINIT SCRIPT for this tab is different
+	------
+*/
+
+SCRIPT plot4_PREINIT
+BEGIN
+	create BOOLEAN plot4_is_pc_type
+	create BOOLEAN plot4_is_weights
+	create BOOLEAN plot4_uses_scatter_weights
+END
+
+SCRIPT plot4_POSTINIT
+BEGIN
+	plot4.cb_type.withvalue plot4.cb_type.setvalue "@"
+	plot4.cb_msize_wgt.additem "Weighted"
+END
+
+DEFINE vnwd  130
+DEFINE vnsep +150
+
+DIALOG plot4, tabtitle("Plot 4")
+BEGIN
+  TEXT     tx_type		_lft	_top	180	.,	///
+	label("Plot type to add:")
+  LISTBOX  cb_type		@	_ss	@	315,	///
+	contents(plot4_graph_type)				///
+	values(plot4_graph_type_val)				///
+	onselchangelist(plot4_change)
+
+  TEXT     tx_x			200	_top	vnwd	.,	///
+	label("X variable:")
+  VARNAME  vn_x			@	_ss	@	.,	///
+	label("X variable")
+  TEXT     tx_y			vnsep	_top	vnwd	.,
+
+  VARNAME  vn_y			@	_ss	@	.,	///
+	label("Y variable")
+  TEXT     tx_if		vnsep	_top	vnwd	.,	///
+	label("If: (expression)")
+  EXP      ex_if		@	_ss	249	.,	///
+	label("Create...")
+  CHECKBOX ck_sort		200	_ms	vnwd	.,	///
+	label("Sort on X") option(sort)
+
+  CHECKBOX ck_yaxis2		350	55	vnwd	.,	///
+	label("Second Y axis") option(yaxis(2))
+  TEXT     tx_x2		200	55	vnwd	.,	///
+  	label("X-2 variable:")
+  VARNAME  vn_x2		200	75	vnwd	.,	///
+  	label("X-2 variable:")
+  TEXT     tx_y2		350	55	vnwd	.,	///
+	label("Y variable: (lower)")
+DEFINE y @y
+  VARNAME  vn_y2		350	75	@	.,	///
+	label("Y variable (lower)")
+
+  CHECKBOX ck_inrange		500	55	249	.,	///
+	onclickon(script plot4_inrange_on)			///
+	onclickoff(script plot4_inrange_off)			///
+  	label("Use a range of observations")
+  TEXT     tx_from		500	75	30	.,	///
+	label("From:")
+  SPINNER  sp_from		+32  	@	_spwd	.,	///
+	min(1) default(1) max(c(N))
+  TEXT     tx_to		_spsep	@	14	.,	///
+  		label("to:")
+  SPINNER  sp_to		+16	@	_spwd	.,	///
+	min(1) default(c(N)) max(c(N))
+
+  GROUPBOX gb_generic		200	100	550	70,	///
+	label("Median-band")
+
+  CHECKBOX ck_mband		210	120	vnwd	.,	///
+	label("Number of bands") 				///
+	onclickon(plot4.sp_mband.enable)			///
+	onclickoff(plot4.sp_mband.disable)
+  SPINNER  sp_mband		230	140	_spwd	.,	///
+	default(10) min(1) max(10000000) option(bands)
+
+  CHECKBOX ck_mpoints		350	120	300	.,	///
+	label("Number of points between knots")			///
+	onclickon(plot4.sp_mpoints.enable)			///
+	onclickoff(plot4.sp_mpoints.disable)
+  SPINNER  sp_mpoints		370	140	_spwd	.,	///
+	default(10) min(1) max(10000000) option(n)
+
+/**** BEGIN -- lowess options ****/
+  // share gb_generic here
+  CHECKBOX ck_mean		210	120	530	.,	///
+	label("Running-mean smoothing") option(mean)
+  CHECKBOX ck_noweight		210	140	530	.,	///
+  	option(noweight)					///
+	label("Prevents use of Cleveland's tricube weighting function")
+  CHECKBOX ck_logit		210	160	530	.,	///
+  	option(logit) label("Transform smoothed yvar into logit")
+  CHECKBOX ck_noadjust		210	180	530	.,	///
+  	option(noadjust)					///
+	label("Adjust mean of the smoothed yvar to equal the mean of yvar")
+  EDIT     ed_bandwidth		210	210	_en7wd	.,	///
+	default(0.8) numonly option(bwidth)
+  TEXT     tx_bandwidth		_en7sep	210	vnwd	.,	///
+	label("Bandwidth")
+/**** END   -- lowess options ****/
+
+/**** BEGIN -- kdensity options ****/
+  // share gb_generic here
+  TEXT     tx_function		210	120	530	.,	///
+	label("Kernel function:")
+  COMBOBOX cb_function		210	140	_vnwd	.,	///
+	dropdownlist						///
+	contents(kernel_function)				///
+	values(kernel_function_val)
+  CHECKBOX ck_kernelwidth	210	170	530	.,	///
+	label("Override optimal width (smoothing parameter)")	///
+	onclickon(script plot4_kernelwidth_on)			///
+	onclickoff(script plot4_kernelwidth_off)
+  EDIT     ed_kernelwidth	210	190	_en7wd	.,	///
+  	option(width)
+  TEXT     tx_kernelwidth	_en7sep	190	200	.,	///
+	label("Halfwidth of the kernel")
+
+  SPINNER  sp_kerneleval	210	220	_en7wd	.,	///
+	default(300) min(1) max(10000000) option(n)
+  TEXT     tx_kerneleval	_en7sep	220	400	.,	///
+	label("Number of points at which the estimate is evaluated")
+/**** END   -- kernel options ****/
+
+/**** BEGIN -- Fit/fitci options ****/
+  GROUPBOX gb_fit		200	100	550	115,	///
+	label("Quadratic prediction w/CI")
+
+  CHECKBOX ck_fitrange		215	125	60  	.,	///
+	onclickon(script plot4_fitrange_on)			///
+	onclickoff(script plot4_fitrange_off)			///
+	label("Range")
+
+  EDIT     ed_fitfrom		+65	125	_spwd	., default(.)
+  TEXT     tx_fitto		_spsep	125	14	., label("to:")
+  EDIT     ed_fitto		+16	125	_spwd	., default(.)
+
+  RADIO    rb_predpoints	490	118	20	., 	///
+  	first onclickon(program plot4_predpoints_on)
+  RADIO    rb_predx		490	138	249	.,	///
+  	onclickon(script plot4_predx_on)			///
+	label("Predict at X values") last option(atobs)
+
+  SPINNER  sp_predpoints	510	118	_spwd	.,	///
+	default(100) min(1) max(10000000) option(n)
+  TEXT     tx_predpoints	_spsep	118	150	.,	///
+	label("Prediction points")
+
+  TEXT     tx_ci_src		210	163	65	.,	///
+	label("CI source:") right
+
+  COMBOBOX cb_ci_src		+70	163	99	.,	///
+	dropdownlist 						///
+	contents(plot4_ci_source) values(plot4_ci_source_values)
+
+  TEXT     tx_fitplot		379	163	65	.,	///
+	label("Fit plot:") right
+  COMBOBOX cb_fitplot		+70	163	99	.,	///
+	option(fitplot)						///
+	dropdownlist						///
+	onselchangelist(plot4_fitplots_change)			///
+	contents(plot4_fitplots) values(plot4_fitplots_values)
+
+  TEXT     tx_regress_opt	560	163	75	.,	///
+	label("Regress opts:") right
+  EDIT     ed_regress_opt	+80	163	99	.,	///
+	label("Regress options") option(estopts)
+
+  TEXT     tx_level		210	188	65	.,	///
+	label("CI level:") right
+  SPINNER  sp_level		+70	188	99	.,	///
+	default(95) min(10) max(99) option(level)
+
+  TEXT     tx_ciplot		379	188	65	.,	///
+	label("CI plot:") right
+  COMBOBOX cb_ciplot		+70	188	99	.,	///
+	option(ciplot)						///
+	dropdownlist 						///
+	onselchangelist(plot4_ciplots_change)			///
+	contents(plot4_ciplots) values(plot4_ciplots_values)
+
+  TEXT     tx_pred_opt		560	188	75	.,	///
+	label("Predict opts:") right
+  EDIT     ed_pred_opt		+80	188	99	.,	///
+	label("Predict optins") option(predopts)
+
+  TEXT     tx_ecommand		203	125	75	.,	///
+  	label("Estimation:") right
+  COMBOBOX cb_ecommand		280	125	99	.,	///
+  	dropdownlist contents(plot4_estimation_command_list) 	///
+  	option(estcmd) default(regress)
+/**** END   -- fit & fit with ci options ****/
+
+/**** BEGIN -- Scatter options ****/
+  GROUPBOX gb_marker		200	120	550	_ht11,	///
+	label("Markers")
+
+  TEXT     tx_msymbol		210	140	65	.,	///
+	label("Symbol:") right
+  COMBOBOX cb_msymbol		280	140	99	.,	///
+	option(msymbol)						///
+	dropdownlist						///
+	contents(symbols)
+
+  TEXT     tx_msize		392	140	65	.,	///
+	label("Size:") right
+  COMBOBOX cb_msize_wgt		+70	140	99	.,	///
+	option(msize)						///
+	dropdownlist 						///
+	contents(symbolsizes) onselchange(program plot4_weight_check)
+  COMBOBOX cb_msize		@	@	@	.,	///
+	option(msize)						///
+	dropdownlist 						///
+	contents(symbolsizes)
+  TEXT     tx_mcolor		570	140	65	.,	///
+	label("Color:") right
+  COMBOBOX cb_mcolor		+70	140	82	.,	///
+	option(mcolor)						///
+	dropdownlist						///
+	contents(colors) onselchangelist(plot4_color_mcolor)
+  COLOR    cl_mcolor		+85	140	_btwd	.,	///
+	option(mcolor)
+
+  CHECKBOX ck_mlabel		210	170	530	85,	///
+	label("Marker labels") groupbox				///
+	onclickon(script plot4_mlabel_1_enable)			///
+	onclickoff(script plot4_mlabel_1_disable)
+
+  TEXT     tx_mlabel		220	195	58	.,	///
+	label("Variable:") right
+
+  VARNAME  vn_mlabel		+63	195	99	.,	///
+	label("Marker labels variable") option(mlabel)
+
+  TEXT     tx_mlsize		220	225	58	.,	///
+	label("Size:") right
+  COMBOBOX cb_mlsize		+63	225	99	.,	///
+	option(mlabsize) 					///
+	dropdownlist						///
+	contents(textsizes)
+
+  TEXT     tx_mlcolor		399	195	58	.,	///
+	label("Color:") right
+  COMBOBOX cb_mlcolor		+63	195	82	.,	///
+	option(mlabcolor)					///
+	dropdownlist						///
+	contents(colors) onselchangelist(plot4_color_mlcolor)
+  COLOR    cl_mlcolor		+85	195	_btwd	.,	///
+	option(mlabcolor)
+
+  TEXT     tx_mlposition	399	225	58	.,	///
+	label("Position:") right
+  COMBOBOX cb_mlposition	+63	225	99	.,	///
+	option(mlabposition) 					///
+	dropdownlist						///
+	contents(clockpos)
+
+  TEXT     tx_weightvar		362	170	95	.,	///
+	label("Weight variable:") right
+  VARNAME  vn_weightvar		+100	170	99	.,	///
+	label("Weight variable")
+
+  TEXT     tx_orientation	570	170	65	.,	///
+	label("Orientation:") right
+  COMBOBOX cb_orientation	+70	170	99	.,	///
+	contents(plot4_orientation_contents)			///
+	values(plot4_orientation_values)			///
+	dropdownlist
+/**** END   -- Scatter options  ****/
+
+/**** BEGIN -- Line options  ****/
+  GROUPBOX gb_line		200	120	550	80,	///
+  		label("Lines")
+  TEXT     tx_clcolor		210	140	65	.,	///
+	label("Line color:") 					///
+	right
+  COMBOBOX cb_clcolor		+70	140	82	.,	///
+	dropdownlist option(lcolor)				///
+	contents(colors) onselchangelist(plot4_color_clcolor)
+  COLOR    cl_clcolor		+85	140	_btwd	.,	///
+	option(lcolor)
+
+  TEXT     tx_connect		210	170	65	.,	///
+	label("Type:") right
+  COMBOBOX cb_connect		+70	170	99	.,	///
+	option(connect)						///
+	dropdownlist 						///
+	contents(connecttypes)
+
+  TEXT     tx_clwidth		392	140	65	.,	///
+  		label("Width:") right
+  COMBOBOX cb_clwidth		+70	140	99	.,	///
+	dropdownlist						///
+	contents(linewidths) option(lwidth)
+
+  TEXT     tx_clpattern		392	170	65	.,	///
+	label("Pattern:") right
+  COMBOBOX cb_clpattern		+70	170	99	.,	///
+	dropdownlist 						///
+ 	contents(linepatterns) option(lpattern)
+/**** END   -- Line options ****/
+
+/**** BEGIN -- Area options ****/
+  GROUPBOX gb_common		200	120	550	80,	///
+	label("Area")
+
+  TEXT     tx_blcolor		210	140	65	.,	///
+	label("Line color:") 					///
+	right
+
+  COMBOBOX cb_blcolor		+70	140	82	.,	///
+	option(lcolor)						///
+	dropdownlist						///
+	contents(colors) onselchangelist(plot4_color_blcolor)
+  COLOR    cl_blcolor		+85	140	_btwd	.,	///
+	option(lcolor)
+
+  TEXT     tx_bfcolor		210	170	65	.,	///
+	label("Fill color:") 					///
+	right
+  COMBOBOX cb_bfcolor		+70 	170	82	.,	///
+	option(fcolor)						///
+	dropdownlist						///
+	contents(colors) onselchangelist(plot4_color_bfcolor)
+  COLOR    cl_bfcolor		+85	170	_btwd	.,	///
+	option(fcolor)
+
+  TEXT     tx_blwidth		392	140	65	.,	///
+	label("Line width:") right
+  COMBOBOX cb_blwidth		+70	140	99	.,	///
+	dropdownlist						///
+	contents(linewidths) option(lwidth)
+
+  TEXT     tx_blpattern		392	170	65	.,	///
+	label("Ln. pattern:") right
+  TEXT     tx_barwidth		392	170	65	.,	///
+	label("Bar width:") right
+  COMBOBOX cb_blpattern		+70	170	99	.,	///
+	dropdownlist 						///
+	contents(linepatterns) option(lpattern)
+  EDIT     en_barwidth		@	170	99	.,	///
+	default(1) numonly option(barwidth)
+
+  TEXT     tx_base		570	140	65	.,	///
+	label("Baseline:") right
+  EDIT     en_base		+70	140	99	.,	///
+	default(0) numonly option(base)
+/**** END   -- Area options ****/
+
+/**** BEGIN -- pcarrow options ****/
+  TEXT     tx_barbsize		210	225	65	.,	///
+  	label("Barbsize:") right
+  COMBOBOX cb_barbsize		280	225	99	.,	///
+  	option(barbsize) dropdownlist contents(symbolsizes)
+
+  CHECKBOX ck_headlabel		590	310	139	.,	///
+  	label("Label head of arrow") option(headlabel)
+/**** END   -- pcarrow options ****/
+
+/**** BEGIN -- Histogram options ****/
+  TEXT     tx_histtype		210	120	140	.,	///
+  	label("Histogram type:")
+  COMBOBOX cb_histtype		210	140	140	.,	///
+  	dropdownlist						///
+  	contents(plot4_histogram_list) values(plot4_histogram_list_values)
+  GROUPBOX gb_datatype		210	175	140	70,	///
+  	label("Type of data")
+  RADIO    rb_continuous	220	195	120	.,	///
+  	first label("Continuous data")				///
+  	onclickon(program plot4_datatype_ckeck)
+  RADIO    rb_discrete		220	215	120	.,	///
+  	last label("Discrete data") option(discrete)		///
+  	onclickon(program plot4_datatype_ckeck)
+
+  SPINNER  sp_gap		386	125	_spwd	.,	///
+  	default(0) min(0) max(100) option(gap)
+  TEXT     tx_gap		_spsep  125	100	.,	///
+  	label("Gap")
+
+  EDIT     ed_datamin		500	125	_en7wd	.,	///
+  	option(start)
+  TEXT     tx_datamin		_en7sep 125	150	.,	///
+  	label("Theoretical data minimum")
+
+  CHECKBOX ck_num_of_bins	386	205	350	.,	///
+    	onclickon(script plot4_num_of_bins_on)			///
+  	onclickoff(script plot4_num_of_bins_off)		///
+  	label("Override number of bins used with continuous data")
+  SPINNER  sp_num_of_bins	386	225	_spwd	.,	///
+  	default(10) min(1) max(1000) option(bin)
+
+  CHECKBOX ck_width_of_bins	386	155	350	.,	///
+  	onclickon(script plot4_width_of_bins_on)		///
+  	onclickoff(script plot4_width_of_bins_off)		///
+	label("Override width of bins")
+  EDIT     ed_width_of_bins	386	175	_en7wd	.,	///
+  	option(width)
+/**** END   -- Histogram options ****/
+END
+
+PROGRAM plot4_weight_check
+BEGIN
+	if plot4_uses_scatter_weights {
+		if plot4.cb_msize_wgt.iseq("weight") {
+			call plot4_is_weights.settrue
+			call plot4.ck_mlabel.hide
+			call plot4.tx_mlabel.hide
+			call plot4.vn_mlabel.hide
+			call plot4.tx_mlsize.hide
+			call plot4.cb_mlsize.hide
+			call plot4.tx_mlcolor.hide
+			call plot4.cb_mlcolor.hide
+			call plot4.cl_mlcolor.hide
+			call plot4.tx_mlposition.hide
+			call plot4.cb_mlposition.hide
+			call plot4.gb_marker.setposition . . . 80
+			call plot4.tx_weightvar.show
+			call plot4.vn_weightvar.show
+			exit
+		}
+		call script plot4_scatter_show_options
+		call plot4.cb_msize.hide
+		call plot4.cb_msize_wgt.show
+		call plot4_is_weights.setfalse
+		if plot4.cb_type.iseq("rscatter") {
+			call plot4.gb_marker.setposition . . . 170
+		}
+		if ! plot4.cb_type.iseq("rscatter") {
+			call plot4.gb_marker.setposition . . . 140
+		}
+		call plot4.tx_weightvar.hide
+		call plot4.vn_weightvar.hide
+	}
+END
+
+SCRIPT plot4_set_scatter_weights_on
+BEGIN
+	plot4_uses_scatter_weights.settrue
+	plot4.cb_msize.hide
+	plot4.cb_msize_wgt.show
+	plot4.cb_msize_wgt.withvalue plot4.cb_msize_wgt.setvalue "@"
+END
+
+PROGRAM plot4_datatype_ckeck
+BEGIN
+	if plot4.rb_discrete {
+		call plot4.ck_num_of_bins.hide
+		call plot4.sp_num_of_bins.hide
+		call plot4.ck_width_of_bins.enable
+		if plot4.ck_width_of_bins {
+			call plot4.ed_width_of_bins.enable
+		}
+	}
+	if plot4.rb_continuous {
+		call plot4.ck_num_of_bins.show
+		call plot4.sp_num_of_bins.show
+		if plot4.ck_num_of_bins {
+			call plot4.ck_width_of_bins.disable
+		}
+		if plot4.ck_width_of_bins {
+			call plot4.ck_num_of_bins.setoff
+		}
+	}
+END
+
+SCRIPT plot4_num_of_bins_on
+BEGIN
+	plot4.sp_num_of_bins.enable
+	plot4.ck_width_of_bins.disable
+	plot4.ed_width_of_bins.disable
+END
+
+SCRIPT plot4_num_of_bins_off
+BEGIN
+	plot4.sp_num_of_bins.disable
+	plot4.ck_width_of_bins.enable
+END
+
+SCRIPT plot4_width_of_bins_on
+BEGIN
+	plot4.ed_width_of_bins.enable
+	plot4.ck_num_of_bins.disable
+	plot4.sp_num_of_bins.disable
+END
+
+SCRIPT plot4_width_of_bins_off
+BEGIN
+	plot4.ed_width_of_bins.disable
+	plot4.ck_num_of_bins.enable
+END
+
+SCRIPT plot4_kernelwidth_on
+BEGIN
+	plot4.ed_kernelwidth.enable
+	plot4.tx_kernelwidth.enable
+END
+
+SCRIPT plot4_kernelwidth_off
+BEGIN
+	plot4.ed_kernelwidth.disable
+	plot4.tx_kernelwidth.disable
+END
+
+SCRIPT plot4_inrange_on
+BEGIN
+	plot4.tx_from.enable
+	plot4.sp_from.enable
+	plot4.tx_to.enable
+	plot4.sp_to.enable
+END
+
+SCRIPT plot4_inrange_off
+BEGIN
+	plot4.tx_from.disable
+	plot4.sp_from.disable
+	plot4.tx_to.disable
+	plot4.sp_to.disable
+END
+
+SCRIPT plot4_y2_show
+BEGIN
+	plot4.tx_y2.show
+	plot4.vn_y2.show
+	plot4.tx_y.setlabel "Y variable: (upper)"
+	plot4.vn_y.setlabel "Y variable: (upper)"
+	plot4.tx_y2.setlabel "Y variable: (lower)"
+	plot4.vn_y2.setlabel "Y variable: (lower)"
+END
+
+SCRIPT plot4_xypaired_show
+BEGIN
+	plot4.tx_y2.show
+	plot4.vn_y2.show
+	plot4.tx_y.setlabel "Y-1 variable:"
+	plot4.vn_y.setlabel "Y-1 variable:"
+	plot4.tx_y2.setlabel "Y-2 variable:"
+	plot4.vn_y2.setlabel "Y-2 variable:"
+	plot4.ck_yaxis2.setposition . 100 . .
+
+	plot4.tx_x2.show
+	plot4.vn_x2.show
+	plot4.tx_x2.setlabel "X-2 variable:"
+	plot4.vn_x2.setlabel "X-2 variable"
+	plot4.tx_x.setlabel "X-1 variable:"
+	plot4.vn_x.setlabel "X-1 variable"
+	plot4.ck_sort.hide
+END
+
+SCRIPT plot4_x2_hide
+BEGIN
+	plot4.tx_x2.hide
+	plot4.vn_x2.hide
+	plot4.tx_x.setlabel "X variable:"
+	plot4.vn_x.setlabel "X variable"
+END
+
+SCRIPT plot4_y2_hide
+BEGIN
+	plot4.tx_y2.hide
+	plot4.vn_y2.hide
+	plot4.tx_y.setlabel "Y variable:"
+	plot4.vn_y.setlabel "Y variable"
+END
+
+SCRIPT plot4_common_show
+BEGIN
+	plot4.tx_x.show
+	plot4.vn_x.show
+	plot4.tx_y.show
+	plot4.vn_y.show
+	plot4.tx_if.show
+	plot4.ex_if.show
+	plot4.ck_sort.show
+	plot4.ck_yaxis2.setposition . 55 . .
+	script plot4_set_second_y_to_middle
+	plot4.ck_yaxis2.show
+	plot4.ck_inrange.show
+	plot4.tx_from.show
+	plot4.sp_from.show
+	plot4.tx_to.show
+	plot4.sp_to.show
+END
+
+SCRIPT plot4_common_hide
+BEGIN
+	plot4.tx_x.hide
+	plot4.vn_x.hide
+	plot4.tx_y.hide
+	plot4.vn_y.hide
+	plot4.tx_if.hide
+	plot4.ex_if.hide
+	plot4.ck_sort.hide
+	plot4.ck_yaxis2.hide
+	plot4.ck_inrange.hide
+	plot4.tx_from.hide
+	plot4.sp_from.hide
+	plot4.tx_to.hide
+	plot4.sp_to.hide
+END
+
+LIST plot4_orientation_contents
+BEGIN
+	Default
+	Horizontal
+	Vertical
+END
+
+LIST plot4_orientation_values
+BEGIN
+	""
+	horizontal
+	vertical
+END
+
+LIST plot4_color_mcolor
+BEGIN
+	plot4.cl_mcolor.hide
+	plot4.cl_mcolor.show
+	plot4.cl_mcolor.hide
+END
+
+LIST plot4_color_mlcolor
+BEGIN
+	plot4.cl_mlcolor.hide
+	plot4.cl_mlcolor.show
+	plot4.cl_mlcolor.hide
+END
+
+LIST plot4_color_clcolor
+BEGIN
+	plot4.cl_clcolor.hide
+	plot4.cl_clcolor.show
+	plot4.cl_clcolor.hide
+END
+
+LIST plot4_color_bfcolor
+BEGIN
+	plot4.cl_bfcolor.hide
+	plot4.cl_bfcolor.show
+	plot4.cl_bfcolor.hide
+END
+
+LIST plot4_color_blcolor
+BEGIN
+	plot4.cl_blcolor.hide
+	plot4.cl_blcolor.show
+	plot4.cl_blcolor.hide
+END
+
+LIST plot4_graph_type
+BEGIN
+	<None>
+	Scatter
+	Line
+	Connected
+	Area
+	Bar
+	Spike
+	Dropline
+	Range area
+	Range bar
+	Range spike
+	Range spike w/cap
+	Range spike w/symbol
+	Range scatter
+	Range line
+	Range connected
+	Paired coordinate spikes
+	Paired coordinate spikes w/sym.
+	Paired coordinate arrows
+	Paired coordinate double arrows
+	Paired coordinate scatter
+	Time-series line
+	Time-series range line
+	Median-band
+	Median-spline
+	Lowess
+	Kernel density
+	Linear prediction
+	Quadratic prediction
+	Fractional polynomial
+	Linear prediction w/CI
+	Quadratic prediction w/CI
+	Fractional polynomial w/CI
+	Histogram
+END
+
+LIST plot4_graph_type_val
+BEGIN
+	""
+	scatter
+	line
+	connected
+	area
+	bar
+	spike
+	dropline
+	rarea
+	rbar
+	rspike
+	rcap
+	rcapsym
+	rscatter
+	rline
+	rconnected
+	pcspike
+	pccapsym
+	pcarrow
+	pcbarrow
+	pcscatter
+	tsline
+	tsrline
+	mband
+	mspline
+	lowess
+	kdensity
+	lfit
+	qfit
+	fpfit
+	lfitci
+	qfitci
+	fpfitci
+	histogram
+END
+
+LIST plot4_change
+BEGIN
+	script plot4_do_none
+	script plot4_do_scatter
+	script plot4_do_line
+	script plot4_do_connected
+	script plot4_do_area
+	script plot4_do_bar
+	script plot4_do_spike
+	script plot4_do_dropline
+	script plot4_do_rarea
+	script plot4_do_rbar
+	script plot4_do_rspike
+	script plot4_do_rspike_cap
+	script plot4_do_rspike_capsym
+	script plot4_do_rscatter
+	script plot4_do_rline
+	script plot4_do_rconnected
+	script plot4_do_pcspike
+	script plot4_do_pccapsym
+	script plot4_do_pcarrow
+	script plot4_do_pcbarrow
+	script plot4_do_pcscatter
+	script plot4_do_tsline
+	script plot4_do_tsrline
+	script plot4_do_mband
+	script plot4_do_mspline
+	script plot4_do_lowess
+	script plot4_do_kdensity
+	script plot4_do_lfit
+	script plot4_do_qfit
+	script plot4_do_fpfit
+	script plot4_do_lfitci
+	script plot4_do_qfitci
+	script plot4_do_fpfitci
+	script plot4_do_histogram
+END
+
+LIST plot4_ciplots
+BEGIN
+	Range area
+	Range bar
+	Range spike
+	Range spike w/cap
+	Range line
+END
+
+LIST plot4_ciplots_values
+BEGIN
+	""
+	rbar
+	rspike
+	rcap
+	rline
+END
+
+LIST plot4_fitplots
+BEGIN
+	Line
+	Scatter
+	Connected
+END
+
+LIST plot4_fitplots_values
+BEGIN
+	""
+	scatter
+	connected
+END
+
+LIST plot4_fitplots_change
+BEGIN
+	script plot4_fitplot_line_show
+	script plot4_fitplot_scatter_show
+	script plot4_fitplot_connected_show
+END
+
+LIST plot4_ciplots_change
+BEGIN
+	program plot4_ciplot_rarea_on
+	program plot4_ciplot_rbar_on
+	program plot4_ciplot_rspike_on
+	program plot4_ciplot_rcap_on
+	program plot4_ciplot_rline_on
+END
+
+LIST plot4_estimation_command_list
+BEGIN
+	regress
+	clogit
+	glm
+	logit
+	logistic
+	poisson
+	probit
+	stcox
+	streg
+END
+
+LIST plot4_histogram_list
+BEGIN
+	Density
+	Fraction
+	Frequency
+	Percent
+END
+
+LIST plot4_histogram_list_values
+BEGIN
+	""
+	fraction
+	frequency
+	percent
+END
+
+LIST plot4_ci_source
+BEGIN
+	Prediction
+	Forecast
+	Residual
+END
+
+LIST plot4_ci_source_values
+BEGIN
+	""
+	stdf
+	stdr
+END
+
+SCRIPT plot4_set_second_y_to_left
+BEGIN
+	plot4.ck_yaxis2.setposition 200 75 . .
+END
+
+SCRIPT plot4_set_second_y_to_middle
+BEGIN
+	plot4.ck_yaxis2.setposition 350 55 . .
+END
+
+///***** Scatter 1
+SCRIPT plot4_scatter_setLayout_1
+BEGIN
+	plot4.gb_marker.setposition		200 120 550 140
+	plot4.tx_msymbol.setposition		210 140 65  .
+	plot4.cb_msymbol.setposition		280 140 99  .
+	plot4.tx_msize.setposition		392 140 65  .
+	plot4.cb_msize.setposition		462 140 99  .
+	plot4.cb_msize_wgt.setposition		462 140 99  .
+	plot4.tx_mcolor.setposition		570 140 65  .
+	plot4.cb_mcolor.setposition		640 140 82  .
+	plot4.cl_mcolor.setposition		725 140 .   .
+
+	plot4.ck_mlabel.setposition		210 170 530 85
+	plot4.tx_mlabel.setposition		220 195 58  .
+	plot4.vn_mlabel.setposition		283 195 99  .
+	plot4.tx_mlsize.setposition		220 225 58  .
+	plot4.cb_mlsize.setposition		283 225 99  .
+	plot4.tx_mlcolor.setposition		399 195 58  .
+	plot4.cb_mlcolor.setposition		462 195 82  .
+	plot4.cl_mlcolor.setposition		547 195 .   .
+	plot4.tx_mlposition.setposition		399 225 58  .
+	plot4.cb_mlposition.setposition		462 225 99  .
+	plot4.tx_weightvar.setposition		362 170 95  .
+	plot4.vn_weightvar.setposition		462 170 99  .
+	plot4.tx_weightvar.setlabel "Weight variable:"
+END
+
+///***** Scatter 2
+SCRIPT plot4_scatter_setLayout_2
+BEGIN
+	plot4.gb_marker.setposition		200 205 550 140
+	plot4.tx_msymbol.setposition		210 225 65  .
+	plot4.cb_msymbol.setposition		280 225 99  .
+	plot4.tx_msize.setposition		392 225 65  .
+	plot4.cb_msize.setposition		462 225 99  .
+	plot4.cb_msize_wgt.setposition		462 225 99  .
+	plot4.tx_mcolor.setposition		570 225 65  .
+	plot4.cb_mcolor.setposition		640 225 82  .
+	plot4.cl_mcolor.setposition		725 225 .   .
+
+	plot4.ck_mlabel.setposition		210 255 530 85
+	plot4.tx_mlabel.setposition		220 280 58  .
+	plot4.vn_mlabel.setposition		283 280 99  .
+	plot4.tx_mlsize.setposition		220 310 58  .
+	plot4.cb_mlsize.setposition		283 310 99  .
+	plot4.tx_mlcolor.setposition		399 280 58  .
+	plot4.cb_mlcolor.setposition		462 280 82  .
+	plot4.cl_mlcolor.setposition		547 280 .   .
+	plot4.tx_mlposition.setposition		399 310 58  .
+	plot4.cb_mlposition.setposition		462 310 99  .
+	plot4.tx_weightvar.setposition		362 255 95  .
+	plot4.vn_weightvar.setposition		462 255 99  .
+	plot4.tx_weightvar.setlabel "Weight variable:"
+END
+
+///***** Scatter 3
+SCRIPT plot4_scatter_setLayout_3
+BEGIN
+	plot4.gb_marker.setposition		200 120 550 165
+	plot4.tx_msymbol.setposition		210 140 65  .
+	plot4.cb_msymbol.setposition		280 140 99  .
+	plot4.tx_msize.setposition		392 140 65  .
+	plot4.cb_msize.setposition		462 140 99  .
+	plot4.cb_msize_wgt.setposition		462 140 99  .
+	plot4.tx_mcolor.setposition		570 140 65  .
+	plot4.cb_mcolor.setposition		640 140 82  .
+	plot4.cl_mcolor.setposition		725 140 .   .
+	plot4.tx_orientation.setposition	570 170 65  .
+	plot4.cb_orientation.setposition	640 170 99  .
+	plot4.ck_mlabel.setposition		210 195 530 85
+	plot4.tx_mlabel.setposition		220 220 58  .
+	plot4.vn_mlabel.setposition		283 220 99  .
+	plot4.tx_mlsize.setposition		220 250 58  .
+	plot4.cb_mlsize.setposition		283 250 99  .
+	plot4.tx_mlcolor.setposition		399 220 58  .
+	plot4.cb_mlcolor.setposition		462 220 82  .
+	plot4.cl_mlcolor.setposition		547 220 .   .
+	plot4.tx_mlposition.setposition		399 250 58  .
+	plot4.cb_mlposition.setposition		462 250 99  .
+	plot4.tx_weightvar.setposition		362 170 95  .
+	plot4.vn_weightvar.setposition		462 170 99  .
+	plot4.tx_weightvar.setlabel "Weight variable:"
+END
+
+///***** Scatter 4
+SCRIPT plot4_scatter_setLayout_4
+BEGIN
+	plot4.gb_marker.setposition		200 220 179 125
+	plot4.tx_mcolor.setposition		210 240 58  .
+	plot4.cb_mcolor.setposition		273 240 82  .
+	plot4.cl_mcolor.setposition		358 240 .   .
+	plot4.tx_msymbol.setposition		210 265 58  .
+	plot4.cb_msymbol.setposition		273 265 99  .
+	plot4.tx_msize.setposition		210 290 58  .
+	plot4.cb_msize.setposition		273 290 99  .
+	plot4.cb_msize_wgt.setposition		273 290 99  .
+	plot4.ck_mlabel.setposition		386 220 179 125
+	plot4.tx_mlabel.setposition		396 240 58  .
+	plot4.vn_mlabel.setposition		459 240 99  .
+	plot4.tx_mlsize.setposition		396 265 58  .
+	plot4.cb_mlsize.setposition		459 265 99  .
+	plot4.tx_mlcolor.setposition		396 290 58  .
+	plot4.cb_mlcolor.setposition		459 290 82  .
+	plot4.cl_mlcolor.setposition		544 290 .   .
+	plot4.tx_mlposition.setposition		396 315 58  .
+	plot4.cb_mlposition.setposition		459 315 99  .
+	plot4.tx_weightvar.setposition		210 315 58  .
+	plot4.vn_weightvar.setposition		273 315 99  .
+	plot4.tx_weightvar.setlabel "Weight:"
+END
+
+///***** Scatter 5
+SCRIPT plot4_scatter_setLayout_5
+BEGIN
+	plot4.gb_marker.setposition		386 220 179 125
+	plot4.tx_mcolor.setposition		396 240 58  .
+	plot4.cb_mcolor.setposition		459 240 82  .
+	plot4.cl_mcolor.setposition		544 240 .   .
+	plot4.tx_msymbol.setposition		396 265 58  .
+	plot4.cb_msymbol.setposition		459 265 99  .
+	plot4.tx_msize.setposition		396 290 58  .
+	plot4.cb_msize.setposition		459 290 99  .
+	plot4.cb_msize_wgt.setposition		459 290 99  .
+	plot4.tx_weightvar.setposition		396 315 58  .
+	plot4.vn_weightvar.setposition		459 315 99  .
+	plot4.tx_weightvar.setlabel "Weight:"
+END
+
+SCRIPT plot4_scatter_show
+BEGIN
+	plot4_uses_scatter_weights.setfalse
+	/*
+		Use script plot4_set_scatter_weights_on after calling
+		this script to enable scatter weights
+	*/
+	script plot4_scatter_show_options
+END
+
+SCRIPT plot4_scatter_show_options
+BEGIN
+	plot4.gb_marker.show
+	plot4.tx_msymbol.show
+	plot4.cb_msymbol.show
+	plot4.tx_mcolor.show
+	plot4.cb_mcolor.show
+	plot4.cb_mcolor.withvalue plot4.cb_mcolor.setvalue "@"
+	plot4.tx_msize.show
+	plot4.cb_msize.show
+	plot4.ck_mlabel.show
+	plot4.tx_mlabel.show
+	plot4.vn_mlabel.show
+	plot4.tx_mlsize.show
+	plot4.cb_mlsize.show
+	plot4.tx_mlcolor.show
+	plot4.cb_mlcolor.show
+	plot4.cb_mlcolor.withvalue plot4.cb_mlcolor.setvalue "@"
+	plot4.tx_mlposition.show
+	plot4.cb_mlposition.show
+END
+
+SCRIPT plot4_mlabel_1_enable
+BEGIN
+	plot4.tx_mlabel.enable
+	plot4.vn_mlabel.enable
+	plot4.tx_mlsize.enable
+	plot4.cb_mlsize.enable
+	plot4.tx_mlcolor.enable
+	plot4.cb_mlcolor.enable
+	plot4.cl_mlcolor.enable
+	plot4.tx_mlposition.enable
+	plot4.cb_mlposition.enable
+	plot4.ck_headlabel.enable
+END
+
+SCRIPT plot4_mlabel_1_disable
+BEGIN
+	plot4.tx_mlabel.disable
+	plot4.vn_mlabel.disable
+	plot4.tx_mlsize.disable
+	plot4.cb_mlsize.disable
+	plot4.tx_mlcolor.disable
+	plot4.cb_mlcolor.disable
+	plot4.cl_mlcolor.disable
+	plot4.tx_mlposition.disable
+	plot4.cb_mlposition.disable
+	plot4.ck_headlabel.disable
+END
+
+///** Lines
+SCRIPT plot4_line_setLayout_1
+BEGIN
+	plot4.gb_line.setposition		200 120 550 80
+	plot4.tx_clcolor.setposition		210 140 65  .
+	plot4.cb_clcolor.setposition		280 140 82  .
+	plot4.cl_clcolor.setposition		365 140 .   .
+	plot4.tx_connect.setposition		210 170 65  .
+	plot4.cb_connect.setposition		280 170 99  .
+	plot4.tx_clwidth.setposition		392 140 65  .
+	plot4.cb_clwidth.setposition		462 140 99  .
+	plot4.tx_clpattern.setposition		392 170 65  .
+	plot4.cb_clpattern.setposition    	462 170 99  .
+END
+
+///** Lines 2
+SCRIPT plot4_line_setLayout_2
+BEGIN
+	plot4.gb_line.setposition		200 180 550 80
+
+	plot4.tx_clcolor.setposition		210 200 65  .
+	plot4.cb_clcolor.setposition		280 200 82  .
+	plot4.cl_clcolor.setposition		365 200 .   .
+	plot4.tx_connect.setposition		210 230 65  .
+	plot4.cb_connect.setposition		280 230 99  .
+	plot4.tx_clwidth.setposition		392 200 65  .
+	plot4.cb_clwidth.setposition		462 200 99  .
+	plot4.tx_clpattern.setposition		392 230 65  .
+	plot4.cb_clpattern.setposition    	462 230 99  .
+END
+
+///** Lines 3
+SCRIPT plot4_line_setLayout_3
+BEGIN
+	plot4.gb_line.setposition		200 265 550 80
+	plot4.tx_clcolor.setposition		210 285 65  .
+	plot4.cb_clcolor.setposition		280 285 82  .
+	plot4.cl_clcolor.setposition		365 285 .   .
+	plot4.tx_connect.setposition		210 315 65  .
+	plot4.cb_connect.setposition		280 315 99  .
+	plot4.tx_clwidth.setposition		392 285 65  .
+	plot4.cb_clwidth.setposition		462 285 99  .
+	plot4.tx_clpattern.setposition		392 315 65  .
+	plot4.cb_clpattern.setposition    	462 315 99  .
+END
+
+///** Lines 4
+SCRIPT plot4_line_setLayout_4
+BEGIN
+	plot4.gb_line.setposition		200 225 550 80
+	plot4.tx_clcolor.setposition		210 245 65  .
+	plot4.cb_clcolor.setposition		280 245 82  .
+	plot4.cl_clcolor.setposition		365 245 .   .
+	plot4.tx_connect.setposition		210 275 65  .
+	plot4.cb_connect.setposition		280 275 99  .
+	plot4.tx_clwidth.setposition		392 245 65  .
+	plot4.cb_clwidth.setposition		462 245 99  .
+	plot4.tx_clpattern.setposition		392 275 65  .
+	plot4.cb_clpattern.setposition    	462 275 99  .
+END
+
+///** Lines 5
+SCRIPT plot4_line_setLayout_5
+BEGIN
+	plot4.gb_line.setposition		200 220 179 125
+	plot4.tx_clcolor.setposition		210 240 58  .
+	plot4.cb_clcolor.setposition		273 240 82  .
+	plot4.cl_clcolor.setposition		358 240 .   .
+	plot4.tx_clwidth.setposition		210 265 58  .
+	plot4.cb_clwidth.setposition		273 265 99  .
+	plot4.tx_clpattern.setposition		210 290 58  .
+	plot4.cb_clpattern.setposition    	273 290 99  .
+	plot4.tx_connect.setposition		210 315 58  .
+	plot4.cb_connect.setposition		273 315 99  .
+END
+
+SCRIPT plot4_line_show
+BEGIN
+	plot4.gb_line.show
+	plot4.tx_clcolor.show
+	plot4.cb_clcolor.show
+	plot4.cb_clcolor.withvalue plot4.cb_clcolor.setvalue "@"
+	plot4.tx_clpattern.show
+	plot4.cb_clpattern.show
+	plot4.tx_clwidth.show
+	plot4.cb_clwidth.show
+	plot4.tx_connect.show
+	plot4.cb_connect.show
+	plot4.gb_line.setlabel "Lines"
+END
+
+
+SCRIPT plot4_orientation_show
+BEGIN
+	plot4.tx_orientation.show
+	plot4.cb_orientation.show
+END
+
+SCRIPT plot4_orientation_hide
+BEGIN
+	plot4.tx_orientation.hide
+	plot4.cb_orientation.hide
+END
+
+/* Common opts for area, bar, spike, and dropline */
+SCRIPT plot4_common_area_opts_setpos
+BEGIN
+	plot4.gb_common.setposition		200 120 550 80
+	plot4.tx_blcolor.setposition		210 140  65 .
+	plot4.cb_blcolor.setposition		280 140  82 .
+	plot4.cl_blcolor.setposition		365 140  .  .
+
+	plot4.tx_bfcolor.setposition		210 170  65 .
+	plot4.cb_bfcolor.setposition		280 170  82 .
+	plot4.cl_bfcolor.setposition		365 170  .  .
+	plot4.tx_blwidth.setposition		392 140  65 .
+	plot4.cb_blwidth.setposition		462 140  99 .
+	plot4.tx_blpattern.setposition		392 170  65 .
+	plot4.tx_barwidth.setposition		392 170  65 .
+	plot4.cb_blpattern.setposition		462 170  99 .
+	plot4.en_barwidth.setposition		462 170  99 .
+	plot4.tx_base.setposition		570 140  65 .
+	plot4.en_base.setposition     		640 140  99 .
+	plot4.tx_orientation.setposition	570 170  65 .
+	plot4.cb_orientation.setposition	640 170  99 .
+END
+
+/* Common opts for area, bar, spike, and dropline */
+SCRIPT plot4_common_area_opts_show
+BEGIN
+	plot4.gb_common.show
+	plot4.tx_blcolor.show
+	plot4.cb_blcolor.show
+	plot4.cb_blcolor.withvalue plot4.cb_blcolor.setvalue "@"
+	plot4.tx_blwidth.show
+	plot4.cb_blwidth.show
+	script plot4_orientation_show
+END
+
+/* Common opts for area, bar, spike, and dropline */
+SCRIPT plot4_area_opts_show
+BEGIN
+	script plot4_common_area_opts_show
+	script plot4_common_area_opts_setpos
+	plot4.tx_base.show
+	plot4.en_base.show
+	plot4.tx_blpattern.show
+	plot4.cb_blpattern.show
+	plot4.tx_bfcolor.show
+	plot4.cb_bfcolor.show
+	plot4.cb_bfcolor.withvalue plot4.cb_bfcolor.setvalue "@"
+END
+
+SCRIPT plot4_bar_opts_show
+BEGIN
+	script plot4_common_area_opts_show
+	script plot4_common_area_opts_setpos
+	plot4.tx_base.show
+	plot4.en_base.show
+	plot4.tx_bfcolor.show
+	plot4.cb_bfcolor.show
+	plot4.cb_bfcolor.withvalue plot4.cb_bfcolor.setvalue "@"
+	plot4.tx_barwidth.show
+	plot4.en_barwidth.show
+END
+
+SCRIPT plot4_spike_drop_opts_show
+BEGIN
+	script plot4_common_area_opts_show
+	script plot4_common_area_opts_setpos
+	plot4.tx_base.show
+	plot4.en_base.show
+	plot4.tx_blpattern.show
+	plot4.cb_blpattern.show
+END
+
+SCRIPT plot4_range_area_opts_show
+BEGIN
+	script plot4_common_area_opts_show
+	script plot4_common_area_opts_setpos
+	plot4.tx_blpattern.show
+	plot4.cb_blpattern.show
+	plot4.tx_bfcolor.show
+	plot4.cb_bfcolor.show
+	plot4.cb_bfcolor.withvalue plot4.cb_bfcolor.setvalue "@"
+END
+
+SCRIPT plot4_range_bar_opts_show
+BEGIN
+	script plot4_common_area_opts_show
+	script plot4_common_area_opts_setpos
+	plot4.tx_bfcolor.show
+	plot4.cb_bfcolor.show
+	plot4.cb_bfcolor.withvalue plot4.cb_bfcolor.setvalue "@"
+	plot4.tx_barwidth.show
+	plot4.en_barwidth.show
+END
+
+SCRIPT plot4_rng_spike_drop_opts_show
+BEGIN
+	script plot4_common_area_opts_show
+	script plot4_common_area_opts_setpos
+	plot4.tx_blpattern.show
+	plot4.cb_blpattern.show
+END
+
+SCRIPT plot4_rng_cap_show
+BEGIN
+	script plot4_common_area_opts_show
+	script plot4_common_area_opts_setpos
+	plot4.tx_msize.setposition	570 140 65  .
+	plot4.cb_msize.setposition	640 140 99  .
+
+	plot4.tx_msize.show
+	plot4.cb_msize.show
+END
+
+SCRIPT plot4_range_line_opts_show
+BEGIN
+	script plot4_common_area_opts_show
+	script plot4_common_area_opts_setpos
+	plot4.tx_connect.setposition	210 170 65  .
+	plot4.cb_connect.setposition	280 170 99  .
+	plot4.tx_blpattern.show
+	plot4.cb_blpattern.show
+	plot4.tx_connect.show
+	plot4.cb_connect.show
+	script plot4_orientation_show
+END
+
+SCRIPT plot4_mbands_show
+BEGIN
+	plot4.gb_generic.setposition 	200 100 550  70
+	plot4.gb_generic.show
+	plot4.ck_mband.show
+	plot4.sp_mband.show
+END
+
+SCRIPT plot4_mpoints_show
+BEGIN
+	plot4.gb_generic.setposition 	200 100 550  70
+	plot4.gb_generic.show
+	plot4.ck_mpoints.show
+	plot4.sp_mpoints.show
+END
+
+SCRIPT plot4_lowess_show
+BEGIN
+	plot4.gb_generic.setposition	200 100 550 155
+	plot4.gb_generic.show
+	plot4.ck_mean.show
+	plot4.ck_noweight.show
+	plot4.ck_logit.show
+	plot4.ck_noadjust.show
+	plot4.ed_bandwidth.show
+	plot4.tx_bandwidth.show
+END
+
+SCRIPT plot4_kdensity_show
+BEGIN
+	plot4.gb_generic.setposition	200 100 550 155
+	plot4.gb_generic.show
+	plot4.tx_function.show
+	plot4.cb_function.show
+	plot4.ck_kernelwidth.show
+	plot4.ed_kernelwidth.show
+	plot4.tx_kernelwidth.show
+	plot4.sp_kerneleval.show
+	plot4.tx_kerneleval.show
+END
+
+SCRIPT plot4_fitrange_on
+BEGIN
+	plot4.ed_fitfrom.enable
+	plot4.tx_fitto.enable
+	plot4.ed_fitto.enable
+END
+
+SCRIPT plot4_fitrange_off
+BEGIN
+	plot4.ed_fitfrom.disable
+	plot4.tx_fitto.disable
+	plot4.ed_fitto.disable
+END
+
+SCRIPT plot4_set_predpoints_lfit
+BEGIN
+	plot4.sp_predpoints.setdefault 3
+	plot4.sp_predpoints.setvalue 3
+END
+
+SCRIPT plot4_set_predpoints_lfitci
+BEGIN
+	plot4.sp_predpoints.setdefault 100
+	plot4.sp_predpoints.setvalue 100
+END
+
+
+SCRIPT plot4_set_predpoints_qfit
+BEGIN
+	plot4.sp_predpoints.setdefault 100
+	plot4.sp_predpoints.setvalue 100
+END
+
+SCRIPT plot4_predx_on
+BEGIN
+	plot4.sp_predpoints.disable
+	plot4.ck_fitrange.disable
+	script plot4_fitrange_off
+END
+
+PROGRAM plot4_predpoints_on
+BEGIN
+	call plot4.sp_predpoints.enable
+	call plot4.ck_fitrange.enable
+	if plot4.ck_fitrange {
+		call script plot4_fitrange_on
+	}
+END
+
+SCRIPT plot4_fit_setpos
+BEGIN
+	plot4.tx_regress_opt.setposition	203 160 75  .
+	plot4.ed_regress_opt.setposition	280 160 140 .
+	plot4.tx_pred_opt.setposition		203 185 75  .
+	plot4.ed_pred_opt.setposition		280 185 140 .
+END
+
+SCRIPT plot4_fit_show
+BEGIN
+	plot4.gb_fit.show
+	plot4.ck_fitrange.show
+	plot4.ed_fitfrom.show
+	plot4.tx_fitto.show
+	plot4.ed_fitto.show
+	plot4.rb_predpoints.show
+	plot4.sp_predpoints.show
+	plot4.tx_predpoints.show
+	plot4.rb_predx.show
+	plot4.tx_ci_src.hide
+	plot4.cb_ci_src.hide
+	plot4.tx_fitplot.hide
+	plot4.cb_fitplot.hide
+	plot4.tx_ciplot.hide
+	plot4.cb_ciplot.hide
+	plot4.tx_level.hide
+	plot4.sp_level.hide
+	plot4.tx_regress_opt.show
+	plot4.ed_regress_opt.show
+	plot4.tx_pred_opt.show
+	plot4.ed_pred_opt.show
+END
+
+SCRIPT plot4_fit_ci_setpos
+BEGIN
+	plot4.tx_regress_opt.setposition	560 163 75 .
+	plot4.ed_regress_opt.setposition	640 163 99 .
+	plot4.tx_pred_opt.setposition		560 188 75 .
+	plot4.ed_pred_opt.setposition		640 188 99 .
+	plot4.tx_level.setposition 		210 188 65 .
+	plot4.sp_level.setposition 		280 188 99 .
+END
+
+SCRIPT plot4_fit_ci_show
+BEGIN
+	plot4.gb_fit.show
+	plot4.ck_fitrange.show
+	plot4.ed_fitfrom.show
+	plot4.tx_fitto.show
+	plot4.ed_fitto.show
+	plot4.rb_predpoints.show
+	plot4.sp_predpoints.show
+	plot4.tx_predpoints.show
+	plot4.rb_predx.show
+	plot4.tx_ci_src.show
+	plot4.cb_ci_src.show
+	plot4.tx_fitplot.show
+	plot4.cb_fitplot.show
+	plot4.tx_ciplot.show
+	plot4.cb_ciplot.show
+	plot4.tx_level.show
+	plot4.sp_level.show
+	plot4.tx_regress_opt.show
+	plot4.ed_regress_opt.show
+	plot4.tx_pred_opt.show
+	plot4.ed_pred_opt.show
+END
+
+SCRIPT plot4_ciplot_rarea_show
+BEGIN
+	plot4.tx_blpattern.hide
+	plot4.cb_blpattern.hide
+	plot4.tx_connect.hide
+	plot4.cb_connect.hide
+
+	plot4.gb_common.show
+	plot4.tx_blcolor.show
+	plot4.cb_blcolor.show
+	plot4.cb_blcolor.withvalue plot4.cb_blcolor.setvalue "@"
+	plot4.tx_bfcolor.show
+	plot4.cb_bfcolor.show
+	plot4.cb_bfcolor.withvalue plot4.cb_bfcolor.setvalue "@"
+	plot4.tx_blwidth.show
+	plot4.cb_blwidth.show
+END
+
+SCRIPT plot4_ciplot_rspike_show
+BEGIN
+	plot4.tx_bfcolor.hide
+	plot4.cb_bfcolor.hide
+	plot4.cb_bfcolor.hide
+	plot4.tx_connect.hide
+	plot4.cb_connect.hide
+
+	plot4.gb_common.show
+	plot4.tx_blcolor.show
+	plot4.cb_blcolor.show
+	plot4.cb_blcolor.withvalue plot4.cb_blcolor.setvalue "@"
+	plot4.tx_blwidth.show
+	plot4.cb_blwidth.show
+	plot4.tx_blpattern.show
+	plot4.cb_blpattern.show
+END
+
+SCRIPT plot4_ciplot_rline_show
+BEGIN
+	plot4.tx_bfcolor.hide
+	plot4.cb_bfcolor.hide
+	plot4.cb_bfcolor.hide
+
+	plot4.gb_common.show
+	plot4.tx_blcolor.show
+	plot4.cb_blcolor.show
+	plot4.cb_blcolor.withvalue plot4.cb_blcolor.setvalue "@"
+	plot4.tx_blwidth.show
+	plot4.cb_blwidth.show
+	plot4.tx_blpattern.show
+	plot4.cb_blpattern.show
+	plot4.tx_connect.show
+	plot4.cb_connect.show
+END
+
+SCRIPT plot4_common_ci_opts_setpos
+BEGIN
+	plot4.gb_common.setposition		572 220 179 125
+	plot4.tx_blcolor.setposition		582 240  58 .
+	plot4.cb_blcolor.setposition		645 240  82 .
+	plot4.cl_blcolor.setposition		730 240  .  .
+	plot4.tx_bfcolor.setposition		582 265  58 .
+	plot4.cb_bfcolor.setposition		645 265  82 .
+	plot4.cl_bfcolor.setposition		730 265  .  .
+	plot4.tx_blwidth.setposition		580 290  60 .
+	plot4.cb_blwidth.setposition		645 290  99 .
+
+	plot4.tx_blpattern.setposition		582 265  58 .
+	plot4.cb_blpattern.setposition		645 265  99 .
+	plot4.tx_connect.setposition		582 315  58 .
+	plot4.cb_connect.setposition		645 315  99 .
+END
+
+SCRIPT plot4_scatter_opts_hide
+BEGIN
+	plot4.gb_marker.hide
+	plot4.tx_msymbol.hide
+	plot4.cb_msymbol.hide
+	plot4.tx_mcolor.hide
+	plot4.cb_mcolor.hide
+	plot4.cl_mcolor.hide
+	plot4.tx_msize.hide
+	plot4.cb_msize_wgt.hide
+	plot4.cb_msize.hide
+	plot4.ck_mlabel.hide
+	plot4.tx_mlabel.hide
+	plot4.vn_mlabel.hide
+	plot4.tx_mlsize.hide
+	plot4.cb_mlsize.hide
+	plot4.tx_mlcolor.hide
+	plot4.cb_mlcolor.hide
+	plot4.cl_mlcolor.hide
+	plot4.tx_mlposition.hide
+	plot4.cb_mlposition.hide
+	plot4.tx_orientation.hide
+	plot4.cb_orientation.hide
+	plot4.tx_weightvar.hide
+	plot4.vn_weightvar.hide
+END
+
+SCRIPT plot4_line_opts_hide
+BEGIN
+	plot4.gb_line.hide
+	plot4.tx_clcolor.hide
+	plot4.cb_clcolor.hide
+	plot4.cl_clcolor.hide
+	plot4.tx_clpattern.hide
+	plot4.cb_clpattern.hide
+	plot4.tx_clwidth.hide
+	plot4.cb_clwidth.hide
+	plot4.tx_connect.hide
+	plot4.cb_connect.hide
+END
+
+SCRIPT plot4_fit_range_hide
+BEGIN
+	plot4.ck_fitrange.hide
+	plot4.ed_fitfrom.hide
+	plot4.tx_fitto.hide
+	plot4.ed_fitto.hide
+END
+
+SCRIPT plot4_fit_pred_hide
+BEGIN
+	plot4.rb_predpoints.hide
+	plot4.sp_predpoints.hide
+	plot4.tx_predpoints.hide
+	plot4.rb_predx.hide
+END
+
+SCRIPT plot4_hide_all
+BEGIN
+	plot4.gb_generic.hide
+	plot4.ck_mband.hide
+	plot4.sp_mband.hide
+	plot4.ck_mpoints.hide
+	plot4.sp_mpoints.hide
+	plot4.ck_mean.hide
+	plot4.ck_noweight.hide
+	plot4.ck_logit.hide
+	plot4.ck_noadjust.hide
+	plot4.ed_bandwidth.hide
+	plot4.tx_bandwidth.hide
+	plot4.tx_function.hide
+	plot4.cb_function.hide
+	plot4.ck_kernelwidth.hide
+	plot4.ed_kernelwidth.hide
+	plot4.tx_kernelwidth.hide
+	plot4.sp_kerneleval.hide
+	plot4.tx_kerneleval.hide
+	plot4.gb_fit.hide
+	script plot4_fit_range_hide
+	script plot4_fit_pred_hide
+	plot4.tx_ci_src.hide
+	plot4.cb_ci_src.hide
+	plot4.tx_fitplot.hide
+	plot4.cb_fitplot.hide
+	plot4.tx_ciplot.hide
+	plot4.cb_ciplot.hide
+	plot4.tx_level.hide
+	plot4.sp_level.hide
+	plot4.tx_regress_opt.hide
+	plot4.ed_regress_opt.hide
+	plot4.tx_pred_opt.hide
+	plot4.ed_pred_opt.hide
+	plot4.tx_ecommand.hide
+	plot4.cb_ecommand.hide
+	script plot4_scatter_opts_hide
+	script plot4_line_opts_hide
+	plot4.tx_barbsize.hide
+	plot4.cb_barbsize.hide
+	plot4.ck_headlabel.hide
+	plot4.tx_clwidth.hide
+	plot4.cb_clwidth.hide
+	plot4.tx_clpattern.hide
+	plot4.cb_clpattern.hide
+	plot4.gb_common.hide
+	plot4.tx_blcolor.hide
+	plot4.cb_blcolor.hide
+	plot4.cl_blcolor.hide
+	plot4.tx_blwidth.hide
+	plot4.cb_blwidth.hide
+	plot4.tx_blpattern.hide
+	plot4.cb_blpattern.hide
+	plot4.tx_bfcolor.hide
+	plot4.cb_bfcolor.hide
+	plot4.cl_bfcolor.hide
+	plot4.tx_barwidth.hide
+	plot4.en_barwidth.hide
+	plot4.tx_base.hide
+	plot4.en_base.hide
+	plot4.tx_histtype.hide
+	plot4.cb_histtype.hide
+	plot4.gb_datatype.hide
+	plot4.rb_continuous.hide
+	plot4.rb_discrete.hide
+	plot4.sp_gap.hide
+	plot4.tx_gap.hide
+	plot4.ed_datamin.hide
+	plot4.tx_datamin.hide
+	plot4.ck_num_of_bins.hide
+	plot4.sp_num_of_bins.hide
+	plot4.ck_width_of_bins.hide
+	plot4.ed_width_of_bins.hide
+END
+
+SCRIPT plot4_do_none
+BEGIN
+	plot4_is_pc_type.setfalse
+	script plot4_common_hide
+	script plot4_x2_hide
+	script plot4_y2_hide
+	script plot4_hide_all
+	plot4.tx_type.setlabel "Plot type: (None)"
+END
+
+SCRIPT plot4_do_line
+BEGIN
+	plot4_is_pc_type.setfalse
+	plot4.tx_type.setlabel "Plot type: (Line)"
+	script plot4_common_show
+	script plot4_x2_hide
+	script plot4_y2_hide
+	script plot4_hide_all
+
+	script plot4_line_setLayout_1
+	script plot4_line_show
+END
+
+SCRIPT plot4_do_scatter
+BEGIN
+	plot4_is_pc_type.setfalse
+	plot4.tx_type.setlabel "Plot type: (Scatter)"
+	script plot4_common_show
+	script plot4_x2_hide
+	script plot4_y2_hide
+	script plot4_hide_all
+
+	script plot4_scatter_setLayout_1
+	script plot4_scatter_show
+	script plot4_set_scatter_weights_on
+	plot4.gb_marker.setlabel "Markers"
+END
+
+SCRIPT plot4_do_connected
+BEGIN
+	plot4_is_pc_type.setfalse
+	plot4.tx_type.setlabel "Plot type: (Connected)"
+	script plot4_common_show
+	script plot4_x2_hide
+	script plot4_y2_hide
+	script plot4_hide_all
+
+	script plot4_line_setLayout_1
+	script plot4_line_show
+	script plot4_scatter_setLayout_2
+	script plot4_scatter_show
+	script plot4_set_scatter_weights_on
+	plot4.gb_marker.setlabel "Markers"
+END
+
+SCRIPT plot4_do_area
+BEGIN
+	plot4_is_pc_type.setfalse
+	plot4.tx_type.setlabel "Plot type: (Area)"
+	script plot4_common_show
+	script plot4_x2_hide
+	script plot4_y2_hide
+	script plot4_hide_all
+
+	script plot4_area_opts_show
+	plot4.gb_common.setlabel "Area"
+END
+
+SCRIPT plot4_do_bar
+BEGIN
+	plot4_is_pc_type.setfalse
+	plot4.tx_type.setlabel "Plot type: (Bar)"
+	script plot4_common_show
+	script plot4_x2_hide
+	script plot4_y2_hide
+	script plot4_hide_all
+	script plot4_bar_opts_show
+	plot4.gb_common.setlabel "Bars"
+END
+
+SCRIPT plot4_do_spike
+BEGIN
+	plot4_is_pc_type.setfalse
+	plot4.tx_type.setlabel "Plot type: (Spike)"
+	script plot4_common_show
+	script plot4_x2_hide
+	script plot4_y2_hide
+	script plot4_hide_all
+
+	script plot4_spike_drop_opts_show
+	plot4.gb_common.setlabel "Spikes"
+END
+
+SCRIPT plot4_do_dropline
+BEGIN
+	plot4_is_pc_type.setfalse
+	plot4.tx_type.setlabel "Plot type: (Dropline)"
+	script plot4_common_show
+	script plot4_x2_hide
+	script plot4_y2_hide
+	script plot4_hide_all
+
+	script plot4_scatter_setLayout_2
+	script plot4_scatter_show
+	script plot4_set_scatter_weights_on
+	script plot4_spike_drop_opts_show
+	plot4.gb_common.setlabel "Droplines"
+	plot4.gb_marker.setlabel "Markers"
+END
+
+SCRIPT plot4_do_rarea
+BEGIN
+	plot4_is_pc_type.setfalse
+	plot4.tx_type.setlabel "Plot type: (Range area)"
+	script plot4_common_show
+	script plot4_y2_show
+	script plot4_set_second_y_to_left
+
+	script plot4_x2_hide
+	script plot4_hide_all
+
+	script plot4_range_area_opts_show
+	plot4.gb_common.setlabel "Range area"
+END
+
+SCRIPT plot4_do_rbar
+BEGIN
+	plot4_is_pc_type.setfalse
+	plot4.tx_type.setlabel "Plot type: (Range bar)"
+	script plot4_common_show
+	script plot4_y2_show
+	script plot4_set_second_y_to_left
+
+	script plot4_x2_hide
+	script plot4_hide_all
+
+	script plot4_range_bar_opts_show
+	plot4.gb_common.setlabel "Range bars"
+END
+
+SCRIPT plot4_do_rspike
+BEGIN
+	plot4_is_pc_type.setfalse
+	plot4.tx_type.setlabel "Plot type: (Range spike)"
+	script plot4_common_show
+	script plot4_y2_show
+	script plot4_set_second_y_to_left
+
+	script plot4_x2_hide
+	script plot4_hide_all
+
+	script plot4_rng_spike_drop_opts_show
+	plot4.gb_common.setlabel "Range spikes"
+END
+
+SCRIPT plot4_do_rspike_cap
+BEGIN
+	plot4_is_pc_type.setfalse
+	plot4.tx_type.setlabel "Plot type: (Range spike w/cap)"
+	script plot4_common_show
+	script plot4_y2_show
+	script plot4_set_second_y_to_left
+
+	script plot4_x2_hide
+	script plot4_hide_all
+
+	script plot4_rng_spike_drop_opts_show
+	script plot4_rng_cap_show
+	plot4.gb_common.setlabel "Range spike with caps"
+END
+
+SCRIPT plot4_do_rspike_capsym
+BEGIN
+	plot4_is_pc_type.setfalse
+	plot4.tx_type.setlabel "Plot type: (Range spike w/sym.)"
+	script plot4_common_show
+	script plot4_y2_show
+	script plot4_set_second_y_to_left
+
+	script plot4_x2_hide
+	script plot4_hide_all
+
+	script plot4_rng_spike_drop_opts_show
+	script plot4_scatter_setLayout_2
+	script plot4_scatter_show
+	script plot4_set_scatter_weights_on
+	plot4.gb_common.setlabel "Range spikes"
+	plot4.gb_marker.setlabel "Markers"
+END
+
+SCRIPT plot4_do_rscatter
+BEGIN
+	plot4_is_pc_type.setfalse
+	plot4.tx_type.setlabel "Plot type: (Range scatter)"
+	script plot4_common_show
+	script plot4_y2_show
+	script plot4_set_second_y_to_left
+
+	script plot4_x2_hide
+	script plot4_hide_all
+
+	script plot4_scatter_setLayout_3
+	script plot4_scatter_show
+	script plot4_set_scatter_weights_on
+	script plot4_orientation_show
+	plot4.gb_marker.setlabel "Range scatter (markers)"
+END
+
+SCRIPT plot4_do_rline
+BEGIN
+	plot4_is_pc_type.setfalse
+	plot4.tx_type.setlabel "Plot type: (Range line)"
+	script plot4_common_show
+	script plot4_y2_show
+	script plot4_set_second_y_to_left
+
+	script plot4_x2_hide
+	script plot4_hide_all
+
+	script plot4_range_line_opts_show
+	plot4.gb_common.setlabel "Range lines"
+END
+
+SCRIPT plot4_do_rconnected
+BEGIN
+	plot4_is_pc_type.setfalse
+	plot4.tx_type.setlabel "Plot type: (Range connected)"
+	script plot4_common_show
+	script plot4_y2_show
+	script plot4_set_second_y_to_left
+
+	script plot4_x2_hide
+	script plot4_hide_all
+
+	script plot4_range_line_opts_show
+	script plot4_scatter_setLayout_2
+	script plot4_scatter_show
+	script plot4_set_scatter_weights_on
+	plot4.gb_common.setlabel "Range lines"
+END
+
+SCRIPT plot4_do_pcspike
+BEGIN
+	plot4_is_pc_type.settrue
+	plot4.tx_type.setlabel "Plot type: (PC spike)"
+	script plot4_common_show
+	script plot4_xypaired_show
+
+	script plot4_hide_all
+
+	script plot4_range_line_opts_show
+	plot4.gb_common.setlabel "Paired coordinate spikes"
+END
+
+SCRIPT plot4_do_pccapsym
+BEGIN
+	plot4_is_pc_type.settrue
+	plot4.tx_type.setlabel "Plot type: (PC spike w/cap)"
+	script plot4_common_show
+	script plot4_xypaired_show
+
+	script plot4_hide_all
+
+	script plot4_range_line_opts_show
+	script plot4_scatter_setLayout_2
+	script plot4_scatter_show
+	script plot4_set_scatter_weights_on
+	plot4.gb_common.setlabel "Paired coordinate spikes"
+	plot4.gb_marker.setlabel "Markers"
+END
+
+SCRIPT plot4_do_pcarrow
+BEGIN
+	plot4_is_pc_type.settrue
+	plot4.tx_type.setlabel "Plot type: (PC arrow)"
+	script plot4_common_show
+	script plot4_xypaired_show
+
+	script plot4_hide_all
+
+	script plot4_range_line_opts_show
+	script plot4_scatter_setLayout_2
+	script plot4_scatter_show
+	plot4.ck_headlabel.show
+	plot4.tx_msymbol.hide
+	plot4.cb_msymbol.hide
+	plot4.gb_common.setlabel "Paired coordinate arrow shafts"
+	plot4.gb_marker.setlabel "Arrow heads"
+	plot4.tx_barbsize.show
+	plot4.cb_barbsize.show
+END
+
+SCRIPT plot4_do_pcbarrow
+BEGIN
+	plot4_is_pc_type.settrue
+	plot4.tx_type.setlabel "Plot type: (PC double arrow)"
+	script plot4_common_show
+	script plot4_xypaired_show
+
+	script plot4_hide_all
+
+	script plot4_range_line_opts_show
+	script plot4_scatter_setLayout_2
+	script plot4_scatter_show
+	plot4.ck_headlabel.show
+	plot4.tx_msymbol.hide
+	plot4.cb_msymbol.hide
+	plot4.gb_common.setlabel "Paired coordinate arrow shafts"
+	plot4.gb_marker.setlabel "Arrow heads"
+	plot4.tx_barbsize.show
+	plot4.cb_barbsize.show
+END
+
+SCRIPT plot4_do_pcscatter
+BEGIN
+	plot4_is_pc_type.settrue
+	plot4.tx_type.setlabel "Plot type: (PC scatter)"
+	script plot4_common_show
+	script plot4_xypaired_show
+
+	script plot4_hide_all
+
+	script plot4_scatter_setLayout_3
+	script plot4_scatter_show
+	script plot4_orientation_show
+	plot4.gb_marker.setlabel "Markers"
+END
+
+SCRIPT plot4_do_tsline
+BEGIN
+	plot4_is_pc_type.setfalse
+	plot4.tx_type.setlabel "Plot type: (TS line)"
+	script plot4_common_show
+
+	script plot4_x2_hide
+	script plot4_y2_hide
+	script plot4_hide_all
+	plot4.tx_x.hide
+	plot4.vn_x.hide
+	plot4.ck_sort.hide
+	plot4.ck_yaxis2.setposition 350 55 . .
+
+	script plot4_line_setLayout_1
+	script plot4_line_show
+	plot4.gb_common.setlabel "Lines"
+END
+
+SCRIPT plot4_do_tsrline
+BEGIN
+	plot4_is_pc_type.setfalse
+	plot4.tx_type.setlabel "Plot type: (TS range line)"
+	script plot4_common_show
+	script plot4_y2_show
+	plot4.ck_yaxis2.setposition 350 100 . .
+
+	script plot4_x2_hide
+	script plot4_hide_all
+	plot4.tx_x.hide
+	plot4.vn_x.hide
+	plot4.ck_sort.hide
+
+	script plot4_line_setLayout_1
+	script plot4_line_show
+	plot4.gb_common.setlabel "Lines"
+END
+
+SCRIPT plot4_do_mband
+BEGIN
+	plot4_is_pc_type.setfalse
+	plot4.tx_type.setlabel "Plot type: (Median-band)"
+	script plot4_common_show
+
+	script plot4_x2_hide
+	script plot4_y2_hide
+	script plot4_hide_all
+
+	script plot4_mbands_show
+	script plot4_line_setLayout_2
+	script plot4_line_show
+	script plot4_set_second_y_to_middle
+	plot4.gb_generic.setlabel "Median-band"
+END
+
+SCRIPT plot4_do_mspline
+BEGIN
+	plot4_is_pc_type.setfalse
+	plot4.tx_type.setlabel "Plot type: (Median-spline)"
+	script plot4_common_show
+
+	script plot4_x2_hide
+	script plot4_y2_hide
+	script plot4_hide_all
+
+	script plot4_mbands_show
+	script plot4_mpoints_show
+	script plot4_line_setLayout_2
+	script plot4_line_show
+	script plot4_set_second_y_to_middle
+	plot4.gb_generic.setlabel "Median-spline"
+END
+
+SCRIPT plot4_do_lowess
+BEGIN
+	plot4_is_pc_type.setfalse
+	plot4.tx_type.setlabel "Plot type: (Lowess)"
+	script plot4_common_show
+
+	script plot4_x2_hide
+	script plot4_y2_hide
+	script plot4_hide_all
+
+	script plot4_line_setLayout_3
+	script plot4_line_show
+	script plot4_lowess_show
+	script plot4_set_second_y_to_middle
+	plot4.gb_generic.setlabel "Lowess"
+END
+
+SCRIPT plot4_do_kdensity
+BEGIN
+	plot4_is_pc_type.setfalse
+	plot4.tx_type.setlabel "Plot type: (Kernel density)"
+	script plot4_common_show
+	script plot4_x2_hide
+	script plot4_y2_hide
+	script plot4_hide_all
+
+	plot4.ck_yaxis2.hide
+	plot4.tx_y.hide
+	plot4.vn_y.hide
+
+	script plot4_line_setLayout_3
+	script plot4_line_show
+	script plot4_kdensity_show
+	script plot4_set_second_y_to_middle
+	plot4.gb_generic.setlabel "Kernel density"
+END
+
+SCRIPT plot4_do_lfit
+BEGIN
+	plot4_is_pc_type.setfalse
+	plot4.tx_type.setlabel "Plot type: (Linear prediction)"
+	script plot4_common_show
+	script plot4_x2_hide
+	script plot4_y2_hide
+	script plot4_hide_all
+
+	script plot4_fit_setpos
+	script plot4_fit_show
+	script plot4_set_predpoints_lfit
+	script plot4_line_setLayout_4
+	script plot4_line_show
+	plot4.gb_line.setlabel "Lines (fit plot)"
+	script plot4_set_second_y_to_middle
+	plot4.gb_fit.setlabel "Linear prediction"
+END
+
+SCRIPT plot4_do_qfit
+BEGIN
+	plot4_is_pc_type.setfalse
+	plot4.tx_type.setlabel "Plot type: (Quadratic pred.)"
+	script plot4_common_show
+	script plot4_x2_hide
+	script plot4_y2_hide
+	script plot4_hide_all
+
+	script plot4_fit_setpos
+	script plot4_fit_show
+	script plot4_set_predpoints_qfit
+	script plot4_line_setLayout_4
+	script plot4_line_show
+	plot4.gb_line.setlabel "Lines (fit plot)"
+	script plot4_set_second_y_to_middle
+	plot4.gb_fit.setlabel "Quadratic prediction"
+END
+
+SCRIPT plot4_do_fpfit
+BEGIN
+	plot4_is_pc_type.setfalse
+	plot4.tx_type.setlabel "Plot type: (Fractional poly.)"
+	script plot4_common_show
+	script plot4_x2_hide
+	script plot4_y2_hide
+	script plot4_hide_all
+
+	script plot4_fit_setpos
+	plot4.gb_fit.show
+	plot4.tx_ecommand.show
+	plot4.cb_ecommand.show
+	plot4.tx_regress_opt.show
+	plot4.ed_regress_opt.show
+	plot4.tx_pred_opt.show
+	plot4.ed_pred_opt.show
+
+	script plot4_line_setLayout_4
+	script plot4_line_show
+	plot4.gb_line.setlabel "Lines (fit plot)"
+	script plot4_set_second_y_to_middle
+	plot4.gb_fit.setlabel "Fractional polynomial"
+END
+
+SCRIPT plot4_do_lfitci
+BEGIN
+	plot4_is_pc_type.setfalse
+	plot4.tx_type.setlabel "Plot type: (Linear pred. w/CI)"
+	script plot4_common_show
+
+	script plot4_x2_hide
+	script plot4_y2_hide
+	script plot4_hide_all
+
+	script plot4_fit_ci_setpos
+	script plot4_fit_ci_show
+	script plot4_set_predpoints_lfitci
+	script plot4_cb_fitplot_checkvalue
+	script plot4_set_second_y_to_middle
+	plot4.gb_fit.setlabel "Linear prediction w/CI"
+END
+
+SCRIPT plot4_do_qfitci
+BEGIN
+	plot4_is_pc_type.setfalse
+	plot4.tx_type.setlabel "Plot type: (Quadratic pred. w/CI)"
+	script plot4_common_show
+
+	script plot4_x2_hide
+	script plot4_y2_hide
+	script plot4_hide_all
+
+	script plot4_fit_ci_setpos
+	script plot4_fit_ci_show
+	script plot4_set_predpoints_qfit
+	script plot4_cb_fitplot_checkvalue
+	script plot4_set_second_y_to_middle
+	plot4.gb_fit.setlabel "Quadratic prediction w/CI"
+END
+
+SCRIPT plot4_do_fpfitci
+BEGIN
+	plot4_is_pc_type.setfalse
+	plot4.tx_type.setlabel "Plot type: (Fractional poly. w/CI)"
+	script plot4_common_show
+	script plot4_x2_hide
+	script plot4_y2_hide
+	script plot4_hide_all
+
+	//---
+	script plot4_fit_ci_setpos
+	script plot4_fit_ci_show
+	// override some of the settings used in the scripts above
+	script plot4_fit_range_hide
+	script plot4_fit_pred_hide
+	plot4.tx_ci_src.hide
+	plot4.cb_ci_src.hide
+	plot4.tx_ecommand.show
+	plot4.cb_ecommand.show
+	plot4.tx_level.setposition 210 163 65 .
+	plot4.sp_level.setposition 280 163 99 .
+	//---
+
+	script plot4_cb_fitplot_checkvalue
+
+	script plot4_cb_fitplot_checkvalue
+	plot4.gb_line.setlabel "Lines (fit plot)"
+	script plot4_set_second_y_to_middle
+	plot4.gb_fit.setlabel "Fractional polynomial w/CI"
+END
+
+SCRIPT plot4_do_histogram
+BEGIN
+	plot4_is_pc_type.setfalse
+	plot4.tx_type.setlabel "Plot type: (Histogram)"
+	script plot4_common_show
+	script plot4_x2_hide
+	script plot4_y2_hide
+	script plot4_hide_all
+
+	plot4.ck_yaxis2.hide
+	plot4.tx_y.hide
+	plot4.vn_y.hide
+
+	// set locations
+	plot4.gb_generic.setposition		200 100 550 155
+	plot4.gb_common.setposition		200 265 550 80
+	plot4.tx_blcolor.setposition		210 285  65 .
+	plot4.cb_blcolor.setposition		280 285  82 .
+	plot4.cl_blcolor.setposition		365 285  .  .
+	plot4.tx_bfcolor.setposition		210 315  65 .
+	plot4.cb_bfcolor.setposition		280 315  82 .
+	plot4.cl_bfcolor.setposition		365 315  .  .
+	plot4.tx_blwidth.setposition		392 285  65 .
+	plot4.cb_blwidth.setposition		462 285  99 .
+	plot4.tx_orientation.setposition	392 315  65 .
+	plot4.cb_orientation.setposition	462 315  99 .
+
+	// show controls
+	plot4.gb_generic.show
+	plot4.tx_histtype.show
+	plot4.cb_histtype.show
+	plot4.gb_datatype.show
+	plot4.rb_continuous.show
+	plot4.rb_discrete.show
+	plot4.sp_gap.show
+	plot4.tx_gap.show
+	plot4.ed_datamin.show
+	plot4.tx_datamin.show
+	program plot4_datatype_ckeck
+	plot4.ck_width_of_bins.show
+	plot4.ed_width_of_bins.show
+	script plot4_common_area_opts_show
+	plot4.tx_bfcolor.show
+	plot4.cb_bfcolor.show
+	plot4.cb_bfcolor.withvalue plot4.cb_bfcolor.setvalue "@"
+	plot4.gb_common.setlabel "Bars"
+
+	script plot4_set_second_y_to_middle
+	plot4.gb_generic.setlabel "Histogram"
+END
+
+SCRIPT plot4_cb_fitplot_checkvalue
+BEGIN
+	plot4.cb_fitplot.withvalue plot4.cb_fitplot.setvalue "@"
+END
+
+SCRIPT plot4_cb_ciplot_checkvalue
+BEGIN
+	plot4.cb_ciplot.withvalue plot4.cb_ciplot.setvalue "@"
+END
+
+SCRIPT plot4_fitplot_line_show
+BEGIN
+	script plot4_scatter_opts_hide
+	script plot4_line_setLayout_5
+	script plot4_line_show
+	plot4.gb_line.setlabel "Lines (fit plot)"
+	script plot4_cb_ciplot_checkvalue
+END
+
+SCRIPT plot4_fitplot_scatter_show
+BEGIN
+	script plot4_line_opts_hide
+	script plot4_scatter_setLayout_4
+	script plot4_scatter_show
+	plot4.gb_marker.setlabel "Markers (fit plot)"
+	script plot4_cb_ciplot_checkvalue
+END
+
+SCRIPT plot4_fitplot_connected_show
+BEGIN
+	script plot4_scatter_opts_hide
+	script plot4_line_opts_hide
+	script plot4_line_setLayout_5
+	script plot4_line_show
+	plot4.gb_line.setlabel "Lines (fit plot)"
+	script plot4_scatter_setLayout_5
+	plot4.gb_marker.setlabel "Markers (fit plot)"
+	plot4.gb_marker.show
+	plot4.tx_msymbol.show
+	plot4.cb_msymbol.show
+	plot4.tx_mcolor.show
+	plot4.cb_mcolor.show
+	plot4.cb_mcolor.withvalue plot4.cb_mcolor.setvalue "@"
+	plot4.tx_msize.show
+	plot4.cb_msize.show
+	script plot4_cb_ciplot_checkvalue
+END
+
+PROGRAM plot4_ciplot_rarea_on
+BEGIN
+	if !H(plot4.cb_ciplot) {
+		call plot4.gb_common.setlabel "CI options (Range area)"
+		call script plot4_common_ci_opts_setpos
+		call script plot4_ciplot_rarea_show
+	}
+END
+PROGRAM plot4_ciplot_rbar_on
+BEGIN
+	if !H(plot4.cb_ciplot) {
+		call plot4.gb_common.setlabel "CI options (Range bar)"
+		call script plot4_common_ci_opts_setpos
+		call script plot4_ciplot_rarea_show
+
+	}
+END
+PROGRAM plot4_ciplot_rspike_on
+BEGIN
+	if !H(plot4.cb_ciplot) {
+		call plot4.gb_common.setlabel "CI options (Range spike)"
+		call script plot4_common_ci_opts_setpos
+		call script plot4_ciplot_rspike_show
+	}
+END
+PROGRAM plot4_ciplot_rcap_on
+BEGIN
+	if !H(plot4.cb_ciplot) {
+		call plot4.gb_common.setlabel "CI options (Range cap)"
+		call script plot4_common_ci_opts_setpos
+		call script plot4_ciplot_rspike_show
+	}
+END
+PROGRAM plot4_ciplot_rline_on
+BEGIN
+	if !H(plot4.cb_ciplot) {
+		call plot4.gb_common.setlabel "CI options (Range line)"
+		call script plot4_common_ci_opts_setpos
+		call script plot4_ciplot_rline_show
+	}
+END
+
+SCRIPT plot4_disable
+BEGIN
+	script plot4_do_none
+	plot4.tx_type.disable
+	plot4.cb_type.disable
+END
+
+SCRIPT plot4_enable
+BEGIN
+	plot4.tx_type.enable
+	plot4.cb_type.enable
+	plot4.cb_type.withvalue plot4.cb_type.setvalue "@"
+END
+
+PROGRAM plot4_line_opts
+BEGIN
+	if plot4.cb_type.iseq("lfitci")				///
+		| plot4.cb_type.iseq("qfitci")			///
+		| plot4.cb_type.iseq("fpfitci")			///
+	{
+		if plot4.cl_clcolor.isvisible() {
+			put " clcolor("
+			put `"""'
+			put plot4.cl_clcolor
+			put `"""'
+			put ") "
+		}
+		if ((! plot4.cl_clcolor.isvisible())		///
+			& plot4.cb_clcolor.isneq(""))		///
+		{
+			put " clcolor("
+			put plot4.cb_clcolor
+			put ") "
+		}
+		if plot4.cb_clpattern.isvisible() 		///
+			& plot4.cb_clpattern.isneq("") 		///
+		{
+			put " clpattern("
+			put plot4.cb_clpattern
+			put ") "
+		}
+		if plot4.cb_clwidth.isvisible() 		///
+			& plot4.cb_clwidth.isneq("") 		///
+		{
+			put " clwidth("
+			put plot4.cb_clwidth
+			put ") "
+		}
+	}
+	if plot4.cb_type.isneq("lfitci")			///
+		& plot4.cb_type.isneq("qfitci")			///
+		& plot4.cb_type.isneq("fpfitci")		///
+	{
+		if !Hcc(plot4.cb_clcolor) {
+			optionarg /hidedefault plot4.cb_clcolor
+		}
+		if Hcc(plot4.cb_clcolor) {
+			optionarg /quoted plot4.cl_clcolor
+		}
+		optionarg plot4.cb_clpattern
+		optionarg plot4.cb_clwidth
+	}
+	optionarg plot4.cb_connect
+END
+
+PROGRAM plot4_scatter_opts
+BEGIN
+	optionarg plot4.cb_msymbol
+	if !Hcc(plot4.cb_mcolor) {
+		optionarg /hidedefault plot4.cb_mcolor
+	}
+	if Hcc(plot4.cb_mcolor) {
+		optionarg /quoted plot4.cl_mcolor
+	}
+	if ! plot4_is_weights | ! plot4_uses_scatter_weights {
+		optionarg plot4.cb_msize_wgt
+		optionarg plot4.cb_msize
+
+		if plot4.ck_mlabel {
+			require plot4.vn_mlabel
+			optionarg plot4.vn_mlabel
+			optionarg plot4.cb_mlsize
+			if !Hcc(plot4.cb_mlcolor) {
+				optionarg /hidedefault plot4.cb_mlcolor
+			}
+			if Hcc(plot4.cb_mlcolor) {
+				optionarg /quoted plot4.cl_mlcolor
+			}
+			optionarg plot4.cb_mlposition
+		}
+	}
+END
+
+/* Common opts for area, bar, spike, and dropline */
+PROGRAM plot4_common_area_opts
+BEGIN
+	if plot4.cb_type.iseq("lfitci")				///
+		| plot4.cb_type.iseq("qfitci")			///
+		| plot4.cb_type.iseq("fpfitci")			///
+	{
+		if plot4.cl_blcolor.isvisible() {
+			put " blcolor("
+			put `"""'
+			put plot4.cl_blcolor
+			put `"""'
+			put ") "
+		}
+		if ((! plot4.cl_blcolor.isvisible())		///
+			& plot4.cb_blcolor.isneq(""))		///
+		{
+			put "blcolor("
+			put plot4.cb_blcolor
+			put ") "
+		}
+		if plot4.cb_blpattern.isvisible()		///
+			& plot4.cb_blpattern.isneq("") 		///
+		{
+			put " blpattern("
+			put plot4.cb_blpattern
+			put ") "
+		}
+		if plot4.cb_blwidth.isvisible()			///
+			& plot4.cb_blwidth.isneq("") 		///
+		{
+			put " blwidth("
+			put plot4.cb_blwidth
+			put ") "
+		}
+	}
+	if plot4.cb_type.isneq("lfitci")			///
+		& plot4.cb_type.isneq("qfitci")			///
+		& plot4.cb_type.isneq("fpfitci")		///
+	{
+		if !Hcc(plot4.cb_blcolor) {
+			optionarg /hidedefault plot4.cb_blcolor
+		}
+		if Hcc(plot4.cb_blcolor) {
+			optionarg /quoted plot4.cl_blcolor
+		}
+		// blpattern is used with area
+		optionarg plot4.cb_blpattern
+		optionarg plot4.cb_blwidth
+	}
+  	optionarg /hidedefault plot4.en_base
+
+	put plot4.cb_orientation " "
+
+	// bfcolor is used with area and bar
+	if !Hcc(plot4.cb_bfcolor) {
+		optionarg /hidedefault plot4.cb_bfcolor
+	}
+	if Hcc(plot4.cb_bfcolor) {
+		optionarg /quoted plot4.cl_bfcolor
+	}
+
+	// barwidth is used with bar
+	optionarg /hidedefault plot4.en_barwidth
+END
+
+PROGRAM plot4_plotoptions
+BEGIN
+	option plot4.ck_yaxis2
+	option plot4.ck_sort
+	optionarg plot4.sp_mband
+	optionarg plot4.sp_mpoints
+
+  	option plot4.ck_mean
+  	option plot4.ck_noweight
+  	option plot4.ck_logit
+  	option plot4.ck_noadjust
+  	optionarg /hidedefault plot4.ed_bandwidth
+
+  	put plot4.cb_function " "
+  	optionarg plot4.ed_kernelwidth
+  	optionarg /hidedefault plot4.sp_kerneleval
+
+	optionarg /hidedefault plot4.cb_ecommand
+  	if plot4.ck_fitrange 	///
+  		& ! ( D(plot4.ck_fitrange) | H(plot4.ck_fitrange) ) {
+		put "range("
+		put plot4.ed_fitfrom " "
+		put plot4.ed_fitto
+		put ") "
+	}
+	optionarg /hidedefault plot4.sp_predpoints
+	option plot4.rb_predx
+	put plot4.cb_ci_src " "
+	optionarg /hidedefault plot4.sp_level
+	optionarg plot4.ed_regress_opt
+	optionarg plot4.ed_pred_opt
+	optionarg /hidedefault plot4.cb_fitplot
+	optionarg /hidedefault plot4.cb_ciplot
+
+	put plot4.cb_histtype " "
+	option plot4.rb_discrete
+	optionarg /hidedefault plot4.sp_gap
+	optionarg plot4.ed_datamin
+	optionarg plot4.sp_num_of_bins
+	optionarg plot4.ed_width_of_bins
+
+	put /program plot4_line_opts " "
+	put /program plot4_common_area_opts " "
+	optionarg /hidedefault plot4.cb_barbsize
+	put /program plot4_scatter_opts " "
+	option plot4.ck_headlabel
+END
+
+PROGRAM plot4_common_output
+BEGIN
+	put plot4.cb_type " "
+	if ! plot4_is_pc_type {
+		require plot4.vn_x
+		if plot4.vn_y.isvisible() {
+			varlist plot4.vn_y
+		}
+		if plot4.vn_y2.isvisible() {
+			varlist plot4.vn_y2
+		}
+		put plot4.vn_x " "
+	}
+	if plot4_is_pc_type {
+		require plot4.vn_x
+		varlist plot4.vn_y
+		put " " plot4.vn_x
+		require plot4.vn_x2
+		varlist plot4.vn_y2
+		put " " plot4.vn_x2
+	}
+	ifexp plot4.ex_if
+	inrange plot4.sp_from plot4.sp_to
+	if plot4_is_weights & plot4_uses_scatter_weights {
+		require plot4.vn_weightvar
+		put " " "[" plot4.cb_msize_wgt "="
+		put plot4.vn_weightvar
+		put "] "
+	}
+	beginoptions
+		put /program plot4_plotoptions
+	endoptions
+END
+
+PROGRAM plot4_output
+BEGIN
+	if plot4.cb_type & plot4.cb_type.isenabled() {
+		put "("
+		put /program plot4_common_output
+		put ") "
+	}
+END

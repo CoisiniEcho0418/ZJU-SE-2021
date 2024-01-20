@@ -1,0 +1,114 @@
+/*
+ 	sort	
+
+	VERSION 1.1.2  08nov2008
+	
+** This dialog box may be called internally by the Data Editor
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help sort")
+RESET res1
+
+DEFINE fromwd 50
+DEFINE fromsep +55
+DEFINE towd 35
+DEFINE tosep +45
+
+SCRIPT PREINIT
+BEGIN
+	create ARRAY  ARGS
+	create STRING VARS
+	create DOUBLE INFROM
+	create DOUBLE INTO
+END
+
+PROGRAM POSTINIT_PROGRAM
+BEGIN
+	if __MESSAGE {
+		call main.ck_in.setoff
+
+		call __MESSAGE.tokenize ARGS
+		call VARS.setvalue class ARGS[1]
+		call INFROM.setvalue class ARGS[2]
+		call INTO.setvalue class ARGS[3]
+		
+		call main.vl_vars.setvalue class VARS.value
+		
+		if (INFROM) {
+			call main.sp_from.setvalue class INFROM.value
+			call main.ck_in.seton
+			if (INTO) {
+				call main.sp_to.setvalue class INTO.value
+			}
+		}
+		else {
+			call main.sp_from.setvalue 1
+			call main.sp_to.setvalue c(N)
+		}
+	}
+END
+
+DIALOG main, label("sort - Sort data") tabtitle("Main")
+BEGIN
+  TEXT     tx_vars        _lft        _top       _iwd       .,		/*
+		*/ label("Variables:")
+  VARLIST  vl_vars        _lft         _ss       _iwd       .,		/*
+		*/ label("Variables")
+  CHECKBOX ck_stable      _lft         _ls       _iwd       .,		/*
+		*/ option("stable")					/*
+	*/ label("Perform stable sort (equal items keep relative order)")
+
+  GROUPBOX gb_sub    _lft      _xls      _iwd      _ht2,		/*
+		*/ label("Restrict sort of observations")		/*
+		*/
+  CHECKBOX ck_in     _ilft     _ss       fromwd    .,			/*
+		*/ label("from:")					/*
+		*/ clickon("script sub_on")				/*
+		*/ clickoff("script sub_off")				/*
+		*/
+  SPINNER  sp_from   fromsep   @         _spwd     .,			/*
+		*/ min(1)						/*
+		*/ max(c(N))						/*
+		*/ default(1)						/*
+		*/
+  TEXT     tx_to     _spsep    @         towd      .,			/*
+		*/ label("to:")						/*
+		*/ right						/*
+		*/
+  SPINNER  sp_to     tosep     @         _spwd     .,			/*
+		*/ min(1)						/*
+		*/ max(c(N))						/*
+		*/ default(c(N))					/*
+		*/
+END
+
+SCRIPT sub_on
+BEGIN
+	main.sp_from.enable
+	main.sp_to.enable
+END
+
+SCRIPT sub_off
+BEGIN
+	main.sp_from.disable
+	main.sp_to.disable
+END
+
+PROGRAM command
+BEGIN
+	put "sort"
+	varlist main.vl_vars
+	if main.ck_in {
+		inrange main.sp_from main.sp_to
+	}
+	beginoptions
+		option main.ck_stable
+	endoptions
+END
+

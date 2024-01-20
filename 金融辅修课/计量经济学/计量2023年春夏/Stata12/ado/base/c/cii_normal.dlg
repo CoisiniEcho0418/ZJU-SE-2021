@@ -1,0 +1,58 @@
+/*
+  cii_normal
+
+  VERSION 1.0.0  21dec2002
+
+*/
+
+VERSION 8.0
+
+INCLUDE _std_small
+INCLUDE _ht150
+INCLUDE header
+HELP hlp1, view("help cii")
+RESET res1
+
+DIALOG main, label("cii - Normal confidence intervals and standard errors") /*
+		*/ tabtitle("Main")
+BEGIN
+  /*--+----1----+----2----+----3----+----4----+----5----+----6----+----7----+*/ 
+  SPINNER  sp_obs          _lft      _top      _spwd     .,             /*
+  		*/ label("Sample size")                                 /*
+  		*/ min(1)						/*
+		*/ max(1000000000)					/*	
+		*/ default(100)						
+  TEXT     tx_obs          _en7sep   @         _spr      .,		/*
+		*/label("Sample size")  
+  EDIT     en_mean         _lft      _ls       _en7wd    .,             /*
+  		*/label("Sample mean")					/*
+  		*/numonly
+  TEXT     tx_mean         _en7sep   @         _en7r     .,		/*
+		*/label("Sample mean")
+  EDIT     en_sd           _lft      _ls       _en7wd    .,             /*
+  		*/label("Sample standard deviation")     		/*
+  		*/numonly
+  TEXT     tx_sd           _en7sep   @         _en7r     .,		/*
+		*/label("Sample standard deviation")
+
+  DEFINE _x _lft 		
+  DEFINE _y _ls
+  DEFINE _cx _sprb
+  INCLUDE _sp_level
+END
+
+PROGRAM command
+BEGIN
+	put "cii "
+	put main.sp_obs
+	put " "
+	require main.en_mean
+	put main.en_mean
+	put " "
+	require main.en_sd
+	put main.en_sd
+	beginoptions
+		INCLUDE _level_main_pr
+	endoptions
+END
+

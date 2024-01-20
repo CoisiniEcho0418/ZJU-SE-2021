@@ -1,0 +1,118 @@
+/*
+  cluster list
+
+*!  VERSION 1.2.0  28mar2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_medium
+INCLUDE header
+HELP hlp1, view("help cluster_utility")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	create STRING oldCluster // < stata 10 cluster results
+	create STRING newCluster
+	create LIST  clusters
+	program getClusters
+END
+
+PROGRAM getClusters
+BEGIN
+	call oldCluster.setvalue char _dta[_cl]
+	call newCluster.setvalue char _dta[_cluster_objects]
+	if newCluster {
+		call newCluster.tokenize clusters
+	}
+	else {
+		call oldCluster.tokenize clusters
+	}
+	call main.cb_clnames.repopulate
+END
+
+DIALOG main, label("cluster list - Detailed listing of clusters") /*
+		*/ tabtitle("Main")
+BEGIN
+  TEXT     tx_clnames   _lft      _top      _iwd      .,		/*
+		*/ label("Cluster analyses:  (leave empty for all)")
+  COMBOBOX cb_clnames   @         _ss       @         _ht18, append	/*
+		*/ contents(clusters)					/*
+		*/ label("Cluster list")
+END
+
+
+DIALOG opt, tabtitle("Options")
+BEGIN
+  CHECKBOX ck_limit     _lft      _top      _iwd      _ht20, groupbox	/*
+		*/ clickon("script checks_on")				/*
+		*/ clickoff("script checks_off")			/*
+		*/ label("Customize listing")
+
+  CHECKBOX ck_notes     _ilft     _ms       _ibwd     .,		/*
+		*/ option(notes)					/*
+		*/ label("List cluster notes")
+  CHECKBOX ck_type      @         _ms       @         .,		/*
+		*/ option(type)						/*
+		*/ label("List cluster analysis type")
+  CHECKBOX ck_method    @         _ms       @         .,		/*
+		*/ option(method)					/*
+		*/ label("List cluster analysis method")
+  CHECKBOX ck_dissim    @         _ms       @         .,		/*
+		*/ option(dissimilarity)				/*
+		*/ label("List cluster analysis dissimilarity measure")
+  CHECKBOX ck_sim       @         _ms       @         .,		/*
+		*/ option(similarity)					/*
+		*/ label("List cluster analysis similarity measure")
+  CHECKBOX ck_vars      @         _ms       @         .,		/*
+		*/ option(vars)						/*
+		*/ label("List variable names attached to the cluster analysis")
+  CHECKBOX ck_chars     @         _ms       @         .,		/*
+		*/ option(chars)					/*
+	*/ label("List any characteristics attached to the cluster analysis")
+  CHECKBOX ck_other     @         _ms       @         .,		/*
+		*/ option(other)					/*
+		*/ label(`"List any "other" information"')
+END
+
+SCRIPT checks_on
+BEGIN
+  opt.ck_notes.enable
+  opt.ck_type.enable
+  opt.ck_method.enable
+  opt.ck_dissim.enable
+  opt.ck_sim.enable
+  opt.ck_vars.enable
+  opt.ck_chars.enable
+  opt.ck_other.enable
+END
+
+SCRIPT checks_off
+BEGIN
+  opt.ck_notes.disable
+  opt.ck_type.disable
+  opt.ck_method.disable
+  opt.ck_dissim.disable
+  opt.ck_sim.disable
+  opt.ck_vars.disable
+  opt.ck_chars.disable
+  opt.ck_other.disable
+END
+
+
+PROGRAM command
+BEGIN
+	put "cluster list " main.cb_clnames
+	beginoptions
+		option opt.ck_notes
+		option opt.ck_type
+		option opt.ck_method
+		option opt.ck_dissim
+		option opt.ck_sim
+		option opt.ck_vars
+		option opt.ck_chars
+		option opt.ck_other
+	endoptions
+END

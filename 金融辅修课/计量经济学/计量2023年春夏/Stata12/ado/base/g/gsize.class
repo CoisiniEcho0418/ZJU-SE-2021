@@ -1,0 +1,10 @@
+*! version 1.0.0  01nov2002
+version 8
+
+class {
+}, inherit(numstyle)
+
+
+program gmval
+	class exit = 0`.val' * 0`._Gr_Cglobal.gmetric_mult'
+end

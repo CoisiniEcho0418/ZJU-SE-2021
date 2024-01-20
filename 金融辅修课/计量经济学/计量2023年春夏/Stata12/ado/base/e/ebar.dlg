@@ -1,0 +1,40 @@
+/*
+  easy graph bar - Bar chart
+
+
+*!  VERSION 1.1.1  03aug2006  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE egraph_header
+INCLUDE header
+HELP hlp1, view("help graph_bar")
+RESET res1
+
+DIALOG main, label("graph bar - Bar chart (summary statistics)") tabtitle("Main")
+BEGIN
+  INCLUDE ebar_ctrl
+END
+
+INCLUDE ebar_sc
+INCLUDE eover
+INCLUDE ifin
+INCLUDE etitle
+INCLUDE eyaxis
+INCLUDE ebaropts
+
+PROGRAM command
+BEGIN
+	put "graph "
+	put /program ebar_output
+	INCLUDE _ifin_pr
+	beginoptions
+		put " "  /program eover_output
+		put " "  /program etitle_output
+		put " "  /program eyaxis_output
+		put " "  /program ebaropts_output
+		put " "  /program ebar_mainopts_output
+	endoptions
+END

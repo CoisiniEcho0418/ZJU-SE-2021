@@ -1,0 +1,6 @@
+*! version 1.0.0  08nov2004
+sequence 3671
+
+set width    scheme minortick
+set color    scheme minortick
+set pattern  scheme minortick

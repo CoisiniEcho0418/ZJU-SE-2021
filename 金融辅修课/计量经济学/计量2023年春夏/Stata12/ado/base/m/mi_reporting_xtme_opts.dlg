@@ -1,0 +1,68 @@
+/*
+  mi_xtme_reporting_opts
+
+*!  VERSION 1.0.0  14may2010
+
+  keyword:  eclass
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_medium
+DEFINE _dlght 220
+INCLUDE header
+
+RESET res1
+
+DIALOG main, tabtitle("Main") title("Panel data mixed-effects options")
+BEGIN
+
+  GROUPBOX gb_main_method	_lft	_top	_iwd	_ht4,		///
+  	label("Reporting method for variance components")
+  RADIO    rb_stddev		_ilft	_ss	_inwd	., first	///
+	onclickon(program main_check_options)				///
+	label("Report as standard deviations and correlations")
+  RADIO    rb_variance		@	_ss	@	., last		///
+	option(variance)  						///
+	onclickon(program main_check_options)				///
+	label("Report as variances and covariances")
+
+  GROUPBOX gb_fe_re		_lft	_xls	_iwd	_ht6,		///
+  	label("Fixed-effects and random-effects estimates")
+  RADIO    rb_both		_ilft	_ss	_inwd	., first	///
+	onclickon(program main_check_options)				///
+	label("Report both fixed effects and random effects")
+  RADIO    rb_fixed		@	_ss	@	.,		///
+	option(noretable)						///
+	onclickon(program main_check_options)				///
+	label("Report only fixed effects")
+  RADIO    rb_random		@	_ss	@	., last		///
+	option(nofetable)						///
+	onclickon(program main_check_options)				///
+	label("Report only random effects")
+
+  CHECKBOX ck_estmetric		_lft	_xls	_iwd	.,		///
+	option(estmetric)						///
+	label("Report parameter estimates in the estimation metric")
+
+END
+
+PROGRAM main_check_options
+BEGIN
+	if main.rb_variance | main.rb_fixed | main.rb_random {
+		call main.ck_estmetric.disable
+	}
+	else {
+		call main.ck_estmetric.enable
+	}
+END
+
+
+PROGRAM command
+BEGIN
+	option main.rb_fixed
+	option main.rb_random
+	option main.rb_variance
+	option main.ck_estmetric
+END

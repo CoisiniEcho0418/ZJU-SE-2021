@@ -1,0 +1,122 @@
+/*
+  sureg.dlg
+
+*! VERSION 1.1.5  23aug2010
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_large
+DEFINE _dlght 380
+INCLUDE header
+
+HELP hlp1, view("help sureg")
+RESET res1
+
+DIALOG main, label("sureg - Zellner's seemingly unrelated regression") 	///
+		tabtitle("Model")
+BEGIN
+  DEFINE _y _top
+  INCLUDE _equations
+
+  RADIO    rb_1step    _lft2       -15       _cwd2       .,		///
+  		label("Two-step estimator") first 			///
+  		onclickon(script max_disable)
+  RADIO    rb_iterate  @           _ss       _cwd2       .,		///
+  		label("Iterated two-step estimator")			///
+  		last							///
+  		onclickon(script max_enable) option(isure)
+
+  DEFINE _x _ilft
+  DEFINE _y _ms
+  DEFINE _cx _ilw80
+  DEFINE _bux _islw80
+  INCLUDE _constraints
+
+  // -noheader-, -notable- programmer options not implemented */
+END
+
+INCLUDE _constraints_sc 
+
+SCRIPT POSTINIT
+BEGIN
+	script max_setLTolNotAllowed
+END
+
+INCLUDE _equations_sc
+
+INCLUDE byifin
+INCLUDE weights_fa
+
+INCLUDE df_adj
+
+SCRIPT rpt_POSTINIT
+BEGIN
+	create STRING rpt_bu_fmtcoefResults
+	program rpt_bu_fmtcoef_ckResults
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr2
+  DEFINE _y _top
+  INCLUDE _sp_level
+
+  GROUPBOX gb_tests    _lft        _xls      _iwd        _ht2,		///
+  		label("Additional test statistics")
+  CHECKBOX ck_corr     _ilft       _ss       _cwd2       .,		///
+		label("Perform Breusch-Pagan test")			///
+		option("corr")
+
+  DEFINE _x _lft
+  DEFINE _y _ls
+  DEFINE _cx _iwd
+  INCLUDE _nocnsreport
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _noomitted
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _vsquish
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _factor_vars_reporting
+
+  DEFINE _x _lft
+  DEFINE _y _xxxls
+  INCLUDE _bu_coef_table_reporting
+END
+
+INCLUDE fmt_coef_table_reporting_pr
+
+INCLUDE max_internal
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "sureg "
+	put /program _equations_output
+	INCLUDE _weights_pr
+	INCLUDE _ifin_pr
+	beginoptions
+		INCLUDE _constraints_main_pr
+		option main.rb_iterate
+		put " " /program df_adj_output
+		optionarg /hidedefault rpt.sp_level
+		option rpt.ck_corr
+		INCLUDE _nocnsreport_pr
+		INCLUDE _noomitted_pr
+		INCLUDE _vsquish_pr
+		INCLUDE _factor_vars_reporting_pr
+		put " " rpt_bu_fmtcoefResults
+		put " " /program max_output
+	endoptions
+END

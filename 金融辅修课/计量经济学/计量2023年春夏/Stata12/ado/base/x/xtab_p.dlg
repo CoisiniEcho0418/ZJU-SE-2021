@@ -1,0 +1,44 @@
+/*
+	predict (after xtabond)
+
+*!  VERSION 1.1.1  28mar2005
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help xtabond postestimation")
+RESET res1
+
+DIALOG main, label("predict - Prediction after estimation") tabtitle("Main")
+BEGIN
+  INCLUDE _p_gentype
+
+  GROUPBOX gb_opts       _lft      _ls     _iwd     _ht6,	/*
+		*/ label("Produce:")
+  RADIO    rb_xb      _indent      _ss    _inwd        ., first /*
+		*/ option(xb)					/*
+	*/ label("Linear prediction from the first-differenced equation")
+  RADIO    rb_e             @      _ms        @        ., last	/*
+		*/ option(e)					/*
+		*/ label("Residual error of the differenced dependent variable")
+  TEXT     tx_e      _indent2     _vss    _inwd        .,	/*
+		*/ label("from the linear prediction")
+END
+
+INCLUDE _p_gentype_sc
+INCLUDE ifin
+INCLUDE _type_list_fd
+
+PROGRAM command
+BEGIN
+	put "predict "
+	put " " /program _p_gentype_output
+	INCLUDE _ifin_pr
+	beginoptions
+		option radio(main rb_xb rb_e)
+	endoptions
+END

@@ -1,0 +1,12 @@
+/*
+	predict (after gamma with no het.)
+
+	VERSION 1.0.0  21dec2002
+*/
+
+VERSION 8.0
+
+INCLUDE _nohet2		/* this does all the work */
+HELP hlp1, view("help gamma")
+RESET res1
+

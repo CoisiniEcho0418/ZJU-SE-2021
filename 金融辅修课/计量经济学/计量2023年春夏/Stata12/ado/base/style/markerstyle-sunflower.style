@@ -1,0 +1,14 @@
+*! version 1.0.4  19dec2004
+sequence 5010
+
+set symbol     scheme sunflower
+set size       scheme sunflower
+set fillcolor  scheme sunflower
+set linestyle  scheme sunflower
+set angle      scheme
+
+set backsymbol  scheme p1back
+set backsize    scheme p1back
+set backcolor   scheme p1markbkfill
+set backline    scheme p1markback
+set backangle   scheme

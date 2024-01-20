@@ -1,0 +1,206 @@
+/*
+  xtregar
+
+*!  VERSION 1.0.9  23aug2010
+
+  keyword:  eclass
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_large
+DEFINE _dlght 355
+INCLUDE header
+
+HELP hlp1, view("help xtregar")
+RESET res1
+
+SCRIPT show_xtset
+BEGIN
+	create STRING note
+	note.setvalue `"A time variable is required for this command."'
+	note.withvalue create CHILD xtset, message(`""-timeRequired-" `"@"'"')
+END
+
+DIALOG main, tabtitle("Model")						///
+	label("xtregar - Fixed- and random-effects linear models with an AR(1) disturbance")
+BEGIN
+  BUTTON   bu_xtset	_xsetbu	_top	_setbuwd .,			///
+	onpush(script show_xtset)					///
+	label("Panel settings...")
+
+  TEXT tx_dv 		_lft	_topph	_vnwd	.,			///
+	label("Dependent variable:")
+  VARNAME vn_dv		@ 	_ss	@	.,			///
+	ts								///
+	label("Dependent variable")
+
+  TEXT tx_iv		_vlx	_topph	160	.,			///
+	label("Independent variables:")
+  VARLIST vl_iv		@	_ss	_vlwd	.,			///
+	fv ts								///
+	allowcat							///
+	label("Independent variables")
+
+  GROUPBOX gb_model  _lft      _ls       _iwd      _ht2,		/*
+		*/ label("Model type")					/*
+		*/
+  RADIO    rb_re     _indent   _ss       _cwd2       .,			/*
+		*/ label("Random-effects")				/*
+		*/ first						/*
+		*/ option("re")						/*
+		*/ onclickon(script weights_disable)
+  RADIO    rb_fe     _lft2     @         @           .,			/*
+		*/ label("Fixed-effects")				/*
+		*/ last							/*
+		*/ option("fe")						/*
+		*/ onclickon(script weights_enable)
+
+  GROUPBOX gb_rhotype _lft     _xls      _iwd      _ht8h,		/*
+		*/ label("Method to compute autocorrelation")		/*
+		*/
+  RADIO    rb_dw     _indent   _ss       _cwd2     .,			/*
+		*/ label("Based on Durbin-Watson")			/*
+		*/ clickon("script rhotypeon")				/*
+		*/ first						/*
+		*/ option("rhotype(dw)")				/*
+		*/
+  DEFINE y @y
+  RADIO    rb_reg    @         _ss       @         .,			/*
+		*/ label("Single lag OLS of residuals")			/*
+		*/ clickon("script rhotypeon")				/*
+		*/ option("rhotype(regress)")				/*
+		*/
+  RADIO    rb_freg   @         _ss       @         .,			/*
+		*/ label("Single lead OLS of residuals")		/*
+		*/ clickon("script rhotypeon")				/*
+		*/ option("rhotype(freg)")				/*
+		*/
+  RADIO    rb_tscorr @         _ss       @         .,			/*
+		*/ label("Autocorrelation of residuals")		/*
+		*/ clickon("script rhotypeon")				/*
+		*/ option("rhotype(tscorr)")				/*
+		*/
+  RADIO    rb_theil  _lft2     y         @         .,			/*
+		*/ label("Adjusted autocorrelation")			/*
+		*/ clickon("script rhotypeon")				/*
+		*/ option("rhotype(theil)")				/*
+		*/
+  RADIO    rb_nagar  @         _ss       @         .,			/*
+		*/ label("Adjusted Durbin-Watson")			/*
+		*/ clickon("script rhotypeon")				/*
+		*/ option("rhotype(nagar)")				/*
+		*/
+  RADIO    rb_onestep @        _ss       @         .,			/*
+		*/ label("One-step")					/*
+		*/ clickon("program rhofon")				/*
+		*/ option("rhotype(onestep)")				/*
+		*/
+  RADIO    rb_rhof    @        _ss       _rbwd     .,			/*
+		*/ label("")						/*
+		*/ clickon("program rhofon")				/*
+		*/ last							/*
+		*/ option(NONE)						/*
+		*/
+  EDIT     en_rhof   _rbsep    @         _en7wd    .,			/*
+		*/ label("User-supplied")				/*
+		*/ numonly						/*
+		*/ option("rhof")					/*
+		*/
+  TEXT     tx_rhof   _en7sep   @         _rben7r2b .,			/*
+		*/ label("User-supplied")				/*
+		*/
+
+  CHECKBOX ck_twostep _lft     _xxls     _cwd2     .,			/*
+		*/ label("Two-step estimate of correlation")		/*
+		*/ option("twostep")					/*
+		*/
+END
+
+
+SCRIPT rhotypeon
+BEGIN
+	gaction main.ck_twostep.enable
+	gaction main.en_rhof.disable
+END
+
+PROGRAM rhofon
+BEGIN
+	call main.ck_twostep.disable
+	if main.rb_rhof {
+		call main.en_rhof.enable
+		exit
+	}
+	call main.en_rhof.disable
+END
+
+INCLUDE byifin
+INCLUDE weights_fa
+
+SCRIPT rpt_POSTINIT
+BEGIN
+	create STRING rpt_bu_fmtcoefResults
+	program rpt_bu_fmtcoef_ckResults
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr2b
+  DEFINE _y _top
+  INCLUDE _sp_level
+
+  GROUPBOX gb_tests  _lft      _xls     _iwd      _ht2,			/*
+  		*/ label("Additional test statistics")
+  CHECKBOX ck_lbi    _ilft     _ss       _cwd2      .,			/*
+		*/ label("Perform Baltagi-Wu LBI test")			/*
+		*/ option("lbi")					/*
+		*/
+
+  DEFINE _x _lft
+  DEFINE _y _xls
+  DEFINE _cx _iwd
+  INCLUDE _noomitted
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _vsquish
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _factor_vars_reporting
+
+  DEFINE _x _lft
+  DEFINE _y _xxxls
+  INCLUDE _bu_coef_table_reporting
+END
+
+INCLUDE fmt_coef_table_reporting_pr
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "xtregar "
+	varlist main.vn_dv [main.vl_iv]
+	INCLUDE _ifin_pr
+	INCLUDE _weights_pr
+	beginoptions
+		option radio(main rb_re rb_fe)
+		option radio(main rb_dw rb_reg rb_freg rb_tscorr rb_theil /*
+		*/ rb_nagar rb_onestep rb_rhof)
+		option main.ck_twostep
+		if main.rb_rhof {
+			require main.en_rhof
+			optionarg main.en_rhof
+		}
+		optionarg /hidedefault rpt.sp_level
+		option rpt.ck_lbi
+		INCLUDE _noomitted_pr
+		INCLUDE _vsquish_pr
+		INCLUDE _factor_vars_reporting_pr
+		put " " rpt_bu_fmtcoefResults
+	endoptions
+END

@@ -1,0 +1,6 @@
+*! version 1.0.0  22dec2002
+sequence 3555
+
+set width    scheme refline 
+set color    scheme refline 
+set pattern  scheme refline 

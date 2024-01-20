@@ -1,0 +1,213 @@
+/*
+	ivprobit estat
+
+*!  VERSION 1.0.3  01jun2009
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_large
+DEFINE _dlght 400	//dialog length for bootstrap options
+INCLUDE header
+
+HELP hlp1, view("help ivprobit postestimation")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	create BOOLEAN has_FactorVars
+	has_FactorVars.settrue
+	program sum_bu_facvars_ckResults
+	program vce_bu_facvars_ckResults
+END
+
+PROGRAM main_PREINIT_PROGRAM
+BEGIN
+	call create STRING emethod
+	call emethod.setstring e(method)
+END
+
+DIALOG main, label("estat - Postestimation tools for ivprobit") tabtitle("Main")
+BEGIN
+  TEXT     tx_subcmd		_lft	_top	_iwd	.,		///
+  	label("Reports and statistics: (subcommand)")
+  LISTBOX  lb_subcmd		@	_ss	@	70,		///
+  	contents(main_subcommand_contents)				///
+  	values(main_subcommand_values)					///
+  	onselchangelist(main_subcommand_scripts)
+
+  DEFINE holdy 110
+
+  // classification
+  TEXT 	   tx_noclass		_lft	holdy	_iwd	.,
+  TEXT 	   tx_noclass2		_lft	_vss	_iwd	.,
+  GROUPBOX gb_sample		_lft	holdy	_iwd	_ht4,		///
+  	label("Test sample")
+  RADIO    rb_sample		_ilft	_ss	_ibwd	.,		///
+	label("Use estimation sample") first
+  RADIO    rb_all		@	_ss	@	.,		///
+	label("Use all observations in the data")			///
+	last option(all)
+  EDIT     ed_cutoff		_lft	+45	_en7wd	.,		///
+  	option(cutoff) default(0.5)
+  TEXT     tx_cutoff		_en7sep	@	_en7r	.,		///
+  	label("Positive outcome threshold; default 0.5")
+
+  // Information criteria
+  TEXT 	   tx_noic		_lft	holdy	_iwd	.,
+  CHECKBOX ck_n			_lft	holdy	_iwd	.,		///
+	onclickon(main.sp_n.enable)					///
+	onclickoff(main.sp_n.disable)					///
+	label("Number of observations for calculating BIC")
+  SPINNER sp_n			_indent2 _ss	_spwd	.,		///
+	default(e(N)) min(1) max(e(N))					///
+	option(n)
+  
+  INCLUDE estat_sum
+  INCLUDE estat_vce
+  INCLUDE _estat_bootstrap
+END
+
+INCLUDE estat_sum_pr
+INCLUDE _estat_bootstrap_pr
+INCLUDE estat_vce_pr
+
+LIST main_subcommand_contents
+BEGIN
+	"Report various summary stats. including the classification table (classification)"
+	"Display information criteria (ic)"
+	"Summarize estimation sample (summarize)"
+	"Covariance matrix estimates (vce)"
+END
+
+LIST main_subcommand_values
+BEGIN
+	classification
+	ic
+	summarize
+	vce
+END
+
+LIST main_subcommand_scripts
+BEGIN
+	program sel_classification
+	program sel_ic
+	script sel_summarize
+	script sel_vce
+END
+
+PROGRAM sel_classification
+BEGIN
+	if ! emethod.iseq("twostep") {
+		call script main_hide_all
+		call main.gb_sample.show
+		call main.rb_sample.show
+		call main.rb_all.show
+		call main.gb_sample.setposition . 110
+		call main.rb_sample.setposition . 130
+		call main.rb_all.setposition . 150
+		call main.ed_cutoff.show
+		call main.tx_cutoff.show
+		call script ifin_enable
+		call script weights_enable
+	}
+	if emethod.iseq("twostep") {
+		call script main_hide_all
+		call main.tx_noclass.show
+		call main.tx_noclass2.show
+		call main.tx_noclass.setlabel "Various summary statistics, including the classification table (classification),"
+		call main.tx_noclass2.setlabel "are not available with Newey's two-step estimator."
+	}
+END
+
+PROGRAM sel_ic
+BEGIN
+	if ! emethod.iseq("twostep") {
+		call script main_hide_all
+		call main.ck_n.show
+		call main.sp_n.show
+	}
+	if emethod.iseq("twostep") {
+		call script main_hide_all
+		call main.tx_noic.show
+		call main.tx_noic.setlabel "Information criteria (ic) is not available with Newey's two-step estimator."
+	}
+END
+
+SCRIPT sel_summarize
+BEGIN
+	script main_hide_all
+	program main_summ_on
+END
+
+SCRIPT sel_vce
+BEGIN
+	script main_hide_all
+	program vce_on
+END
+
+SCRIPT main_hide_all  // MUST BE IMPLEMENTED FOR BOOTSTRAP
+BEGIN
+	main.gb_sample.hide
+	main.rb_sample.hide
+	main.rb_all.hide
+	main.ed_cutoff.hide
+	main.tx_cutoff.hide
+	main.tx_noclass hide
+	main.tx_noclass2.hide
+	script ifin_disable
+	script weights_disable
+	main.ck_n.hide
+	main.sp_n.hide
+	main.tx_noic.hide
+	script main_summ_off
+	program vce_off
+	script main_bootstrap_hide
+END
+
+PROGRAM vl_output
+BEGIN
+	put main.vl_spec
+END
+
+PROGRAM vl_eq_output
+BEGIN
+	put main.vl_eq
+END
+
+INCLUDE ifin
+INCLUDE weights_f
+
+PROGRAM command
+BEGIN
+	put "estat "
+	if main.lb_subcmd.iseq("classification") & emethod.iseq("twostep") {
+		stopbox stop "Various summary statistics, including the classification table (classification)," ///
+			"are not available with Newey's two-step estimator."
+	}	
+	if main.lb_subcmd.iseq("ic") & emethod.iseq("twostep") {
+		stopbox stop "Information criteria (ic) is not available with Newey's two-step estimator."
+	}
+	put main.lb_subcmd
+	put " " /program summarize_output
+	INCLUDE _ifin_pr
+	INCLUDE _weights_pr
+
+	beginoptions
+		// classification
+		option main.rb_all
+		optionarg /hidedefault main.ed_cutoff
+
+		// ic options
+		optionarg main.sp_n
+
+		// Summarize options
+		put " " /program summarize_opts_output
+
+		put " " /program vce_output
+		put " " /program bootstrap_output
+	endoptions
+
+END
+

@@ -1,0 +1,30 @@
+/*
+  stjoin INCLUDE file
+
+*!  VERSION 1.0.1  12jun2009
+
+*/
+
+  DEFINE   _x _xsetbu
+  DEFINE   _y _top
+  INCLUDE _bu_stset
+
+  CHECKBOX ck_censored    _lft      _ls        _iwd     .,		/*
+		*/ clickon("gaction main.ed_censored.enable")		/*
+		*/ clickoff("gaction main.ed_censored.disable")		/*
+		*/ label(`"Specify failure variable's "no event" values:"')
+  EDIT     ed_censored    _indent2  _ss        _en14wd  .,		/*
+		*/ option(censored)					/*
+		*/ label(`"Specify failure variable's "no event" values"')
+END
+
+PROGRAM command
+BEGIN
+	if isMI {
+		put "mi "
+	}
+	put "stjoin "
+	beginoptions
+		optionarg main.ed_censored
+	endoptions
+END

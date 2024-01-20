@@ -1,0 +1,54 @@
+/*
+  easy graph box - Box plot
+
+*!  VERSION 1.1.2  23jan2007  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE egraph_header
+INCLUDE header
+HELP hlp1, view("help graph_box")
+RESET res1
+
+DIALOG main, label("graph box - Box plot") tabtitle("Main")
+BEGIN
+  TEXT     tx_var      _lft        _top      _iwd        .,	///
+  	label("Variables:")
+  VARLIST  vl_var      @           _ss	     @           .,	///
+  	label("Variables")
+
+  GROUPBOX gb_orientation	_lft	+35	_iwd	_ht4,	///
+  	label("Orientation")
+  RADIO    rb_vertical		_ilft	_ss	_inwd	.,	///
+  	first label("Vertical")
+  RADIO    rb_horizontal	@	_ss	@	.,	///
+  	last label("Horizontal")
+END
+
+INCLUDE eover
+INCLUDE ifin
+INCLUDE etitle
+INCLUDE eyaxis_box
+INCLUDE eboxopts
+
+PROGRAM command
+BEGIN
+	put "graph "
+	if main.rb_vertical {
+		put "box "
+	}
+	if main.rb_horizontal {
+		put "hbox "
+	}
+        require main.vl_var
+	put main.vl_var " "
+	INCLUDE _ifin_pr
+	beginoptions
+		put " "  /program eover_output
+		put " "  /program etitle_output
+		put " "  /program eyaxis_box_output
+		put " "  /program eboxopts_output
+	endoptions
+END

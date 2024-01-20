@@ -1,0 +1,68 @@
+/*
+  sspace_new_oceq.dlg
+
+*!  VERSION 1.0.2  30jun2009
+
+  keyword:  eclass
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_large
+DEFINE _dlght 200
+INCLUDE header
+
+RESET res1
+
+DIALOG main, tabtitle("Main")
+BEGIN
+  TEXT tx_depvar	_lft	_top	_iwd	.,			///
+	label("Dependent variable:")
+  VARNAME vn_depvar	@	_ss	_vnwd	.,			///
+	ts								///
+	label("Dependent variable")
+
+  TEXT tx_statevars	_lft	_ls	_iwd	.,			///
+	label("State names: (optional)")
+  EDIT ed_statevars	@	_ss	@	.,			///
+	label("State names")
+
+  TEXT tx_indepvars	_lft	_ls	_iwd	.,			///
+	label("Independent variables: (optional)")
+  VARLIST vl_indepvars	@	_ss	@	.,			///
+	ts fv								///
+	label("Independent variables")
+
+  CHECKBOX ck_noerror	_lft	_ls	_cwd1	.,			///
+	option(noerror)							///
+	label("No error term in the equation")
+  CHECKBOX ck_nocons	_lft2	@	_cwd1	.,			///
+	option(noconstant)						///
+	label("Suppress the constant term")
+END
+
+PROGRAM main_output
+BEGIN
+	put main.vn_depvar
+	if main.ed_statevars {
+		put " " main.ed_statevars
+	}
+	if main.vl_indepvars {
+		put " " main.vl_indepvars
+	}
+	beginoptions
+		option main.ck_noerror
+		option main.ck_nocons
+	endoptions
+
+	if main.ck_noerror {
+		call PARENT.callthru "main_oceq_has_noerror.settrue"
+	}
+END
+
+PROGRAM command
+BEGIN
+	require main.vn_depvar
+	put "(" /program main_output ")"
+END

@@ -1,0 +1,76 @@
+/*
+	stcoxkm_9
+
+*!  VERSION 1.1.3  03aug2006  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+
+HELP hlp1, view("help stcoxkm")
+RESET res1
+
+DIALOG main,label("stcoxkm - Plot Kaplan-Meier survival curves") 	/*
+		*/ tabtitle("Main")
+BEGIN
+  TEXT     tx_var      _lft         _top    _cwd1         .,            /*
+                */ label("Independent variable:")
+  DEFINE _x _vlcsep
+  DEFINE _y @y
+  INCLUDE _bu_stset
+  VARNAME  vn_var      _lft         _ss     _vnwd         .,            /*
+                */ label("Independent variable")                        /*
+                */ option(by)
+
+  GROUPBOX gb_tied     @            _ls     _iwd          _ht8,         /*
+                */ label("Method to handle tied failures:")             /*
+                */
+  RADIO    rb_breslow  _indent      _ss     _ibwd         .,            /*
+                */ label("Breslow")                                     /*
+                */ first                                                /*
+                */ option(NONE)	                                        /*
+                */
+  RADIO    rb_efron     @           _ss      @            .,            /*
+                */ label("Efron")                                       /*
+                */ option("ties(efron)")                                /*
+                */
+  RADIO    rb_exactm    _ilft       _ss      @            .,            /*
+                */ label("Exact marginal likelihood")                   /*
+                */ option("ties(exactm)")                               /*
+                */
+  RADIO    rb_exactp    @           _ss      @            .,            /*
+                */ label("Exact partial likelihood")                    /*
+                */ last                                                 /*
+                */ option("ties(exactp)")                               /*
+                */
+  CHECKBOX ck_separate  _lft        _xls     _iwd         .,            /*
+                */ label("Separate plot for predicted/observed curves") /*
+		*/ option(separate)
+  CHECKBOX ck_noshow    @           _ms      @            .,            /*
+                */ label("Do not show st setting information")          /*
+                */ option(noshow)
+END
+
+INCLUDE if
+INCLUDE	addplot
+INCLUDE gr_twoway
+
+PROGRAM command
+BEGIN
+	require main.vn_var
+	put "stcoxkm "
+	INCLUDE _if_pr
+	beginoptions
+		optionarg main.vn_var
+		option main.ck_separate
+        	option radio (main rb_breslow rb_efron rb_exactm rb_exactp)
+		option main.ck_noshow
+
+		put " " /program addplot_output
+		put " " /program gr_twoway_output
+	endoptions
+END
+/* end */

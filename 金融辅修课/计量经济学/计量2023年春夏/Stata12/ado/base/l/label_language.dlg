@@ -1,0 +1,201 @@
+/*
+  label language
+
+*! VERSION 1.1.0  22oct2004
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+INCLUDE _ht220
+INCLUDE header
+HELP hlp1, view("help label_language")
+RESET res1
+
+DIALOG main, label("label language - Labels for multiple languages")	///
+		tabtitle("Main")
+BEGIN
+  RADIO    rb_list     _lft        _top      _iwd       .,		///
+  		label("List defined languages")				///
+  		onclickon(script hide_all) 				///
+  		first
+  RADIO    rb_set      @           _ss       @          .,		///
+  		label("Change labels to specified language name")	///
+  		onclickon(script _lang_show)
+  RADIO    rb_create   @           _ss       @          .,		///
+  		onclickon(script _create_show)				///
+  		label("Create new set of labels with specified language name")
+  RADIO    rb_rename   @           _ss       @          .,		///
+  		label("Rename current label set")			///
+  		onclickon(script _rename_show)
+  RADIO    rb_delete   @           _ss       @          .,		///
+  		label("Delete specified label set")			///
+  		onclickon(script _lang_show)				///
+  		last
+
+  TEXT     tx_lang     @           _ls       @          .,		///
+  		label("Language name:")
+  TEXT     tx_create   @           @         @          .,              ///
+  		label("New language name:")
+  TEXT     tx_rename   @           @         @          .,              ///
+  		label("New language name:")
+  COMBOBOX cb_lang     @           _ss       140        .,		///
+  		contents(char _dta[_lang_list])				///
+  		default("default")					///
+  		dropdownlist
+  COMBOBOX cb_create   @           @         @          .,              ///
+  		label("New language name")				///
+  		dropdown contents(language) values(language_values)
+  COMBOBOX cb_rename   @           @         @          .,              ///
+  		label("New language name")				///
+  		dropdown contents(language) values(language_values)
+  CHECKBOX ck_copy     @           _ms       _iwd       .,		///
+  		label("Copy labels from current language set")		///
+  		option(copy)
+END
+
+SCRIPT _lang_show
+BEGIN
+	script _create_hide
+	script _rename_hide
+	main.tx_lang.show
+	main.cb_lang.show
+END
+
+SCRIPT _lang_hide
+BEGIN
+	main.tx_lang.hide
+	main.cb_lang.hide
+END
+
+SCRIPT _create_show
+BEGIN
+	script _lang_hide
+	script _rename_hide
+	main.tx_create.show
+	main.cb_create.show
+	main.ck_copy.show
+END
+
+SCRIPT _create_hide
+BEGIN
+	main.tx_create.hide
+	main.cb_create.hide
+	main.ck_copy.hide
+END
+
+SCRIPT _rename_show
+BEGIN
+	script _lang_hide
+	script _create_hide
+	main.tx_rename.show
+	main.cb_rename.show
+END
+
+SCRIPT _rename_hide
+BEGIN
+	main.tx_rename.hide
+	main.cb_rename.hide
+END
+
+SCRIPT hide_all
+BEGIN
+	script _lang_hide
+	script _create_hide
+	script _rename_hide
+END
+
+LIST language
+BEGIN
+	Arabic
+	Czech
+	Welsh
+	German
+	Greek
+	English
+	Spanish; Castillian
+	Persian
+	Finnish
+	French
+	Irish
+	Icelandic
+	Hebrew
+	Hindi
+	Italian
+	Japanese
+	Greenlandic; Kalaallisut
+	Lithuanian
+	Latvian
+	Dutch; Flemish
+	Norwegian
+	Polish
+	Portuguese
+	Romanian
+	Russian
+	Slovak
+	Serbian
+	Swedish
+	Turkish
+	Ukrainian
+	Uzbek
+	Chinese
+END
+
+LIST language_values
+BEGIN
+	ar
+	cs
+	cy
+	de
+	el
+	en
+	es
+	fa
+	fi
+	fr
+	ga
+	is
+	he
+	hi
+	it
+	ja
+	kl
+	lt
+	lv
+	nl
+	no
+	pl
+	pt
+	ro
+	ru
+	sk
+	sr
+	sv
+	tr
+	uk
+	uz
+	zh
+END
+
+PROGRAM command
+BEGIN
+	put "label language "
+	if main.rb_create {
+		require main.cb_create
+		put main.cb_create  ", new"
+		option main.ck_copy
+	}
+	if main.rb_set {
+		put main.cb_lang
+	}
+	if main.rb_rename {
+		require main.cb_rename
+		put main.cb_rename ", rename"
+	}
+	if main.rb_delete {
+		put main.cb_lang ", delete"
+	}
+
+END
+/* end */

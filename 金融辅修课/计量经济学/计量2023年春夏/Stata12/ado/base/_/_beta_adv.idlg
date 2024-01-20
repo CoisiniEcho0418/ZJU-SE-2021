@@ -1,0 +1,39 @@
+/*
+	_beta_adv.idlg
+
+	This is an INCLUDE file for the beta() option used with commands
+	such as -lroc- and -lsens-.
+
+*!  VERSION 1.0.0  20mar2007
+
+*/
+
+DIALOG adv, tabtitle("Advanced")
+BEGIN
+  TEXT tx_depvar	_lft	_top	_iwd	.,		///
+	label("Dependent variable:")
+  VARNAME vn_depvar	@	_ss	_vnwd	.,		///
+	label("Dependent variable")
+  TEXT tx_beta		@	_ls	_iwd	.,		///
+	label("Vector containing coefficients for the model:")
+  LISTBOX lb_beta	@	_ss	200	.,		///
+	label("Vector containing coefficients for the model")	///
+	option(beta)						///
+	contents(row)
+END
+
+PROGRAM _beta_adv_depvar_output
+BEGIN
+	if adv.vn_depvar {
+		require adv.lb_beta
+	}
+	varlist [adv.vn_depvar]
+END
+
+PROGRAM _beta_adv_lbbeta_output
+BEGIN
+	if adv.vn_depvar & adv.lb_beta {
+		optionarg adv.lb_beta
+	}
+END
+

@@ -1,0 +1,83 @@
+/*
+    lrtest.dlg
+
+*!  VERSION 1.0.1  29mar2004
+
+*/
+
+VERSION 8.0
+
+INCLUDE _std_large
+INCLUDE header
+
+HELP hlp1, view("help lrtest")
+RESET res1
+
+DIALOG main, label("lrtest - Likelihood-ratio test after estimation")/*
+		*/ tabtitle("Main")
+BEGIN
+  TEXT     tx_modelspec1     _lft      _top      _cwd1     .,		/*
+		*/ label("First set of models:")
+  TEXT     tx_more1          @         _vss      @         .,		/*
+		*/ label("(leave empty for most recent model)")
+  COMBOBOX cb_modelspec1     @         _ss       @         _ht8, append	/*
+		*/ contents(estimates)					/*
+		*/ error("First set of models")
+
+  TEXT     tx_modelspec2     _lft2     _top      _cwd1     .,		/*
+		*/ label("Second set of models:")
+  TEXT     tx_more2          @         _vss      @         .,		/*
+		*/ label("(leave empty for most recent model)")
+  COMBOBOX cb_modelspec2     @         _ss       @         _ht8, append	/*
+		*/ contents(estimates)					/*
+		*/ error("Second set of models")
+
+  GROUPBOX gb_opt            _lft      _vs8      _iwd      _ht9h,	/*
+		*/ label("Options")
+  CHECKBOX ck_stats          _ilft     _ss       _ibwd     .,		/*
+		*/ option(stats)					/*
+		*/ label("Display statistical information about the two models")
+  CHECKBOX ck_dir            @         _ms       @         .,		/*
+		*/ option(dir)						/*
+		*/ label("Display descriptive information about the two models")
+  CHECKBOX ck_df             @         _ms       _ckwd     .,		/*
+		*/ label("")						/*
+		*/ clickon("gaction main.sp_df.enable")			/*
+		*/ clickoff("gaction main.sp_df.disable")
+  SPINNER  sp_df             _cksep    @         _spwd     .,		/*
+		*/ min(1) max(100000000) default(1)			/*
+		*/ option(df)						/*
+		*/ label("Degrees of freedom")
+  TEXT     tx_df             _spsep    @         _cksprb   .,		/*
+		*/ label("Degrees of freedom (overrides default)")
+  CHECKBOX ck_force          _ilft     _ms       _ibwd     .,		/*
+		*/ option(force)					/*
+		*/ label("Force testing even when apparently invalid")
+END
+
+PROGRAM command
+BEGIN
+	put "lrtest "
+	if !main.cb_modelspec1 & !main.cb_modelspec2 {
+		stopbox stop "At least one set of models must be specified"
+	}
+	if !main.cb_modelspec1 {
+		put ". "
+	}
+	if main.cb_modelspec1 {
+		put "(" main.cb_modelspec1 ") "
+	}
+	if !main.cb_modelspec2 {
+		put ". "
+	}
+	if main.cb_modelspec2 {
+		put "(" main.cb_modelspec2 ")"
+	}
+	beginoptions
+		option main.ck_stats
+		option main.ck_dir
+		optionarg main.sp_df
+		option main.ck_force
+	endoptions
+END
+

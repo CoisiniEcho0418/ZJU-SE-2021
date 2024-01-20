@@ -1,0 +1,28 @@
+/*
+   stset.dlg
+
+*!  VERSION 1.1.3  29may2009
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_large
+INCLUDE _ht320
+INCLUDE header
+
+HELP hlp1, view("help stset")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	create BOOLEAN isMI
+	isMI.setfalse
+END
+
+DIALOG main, label("stset - Declare data to be survival-time data") /*
+		*/ tabtitle("Main")
+BEGIN
+
+INCLUDE stset
+

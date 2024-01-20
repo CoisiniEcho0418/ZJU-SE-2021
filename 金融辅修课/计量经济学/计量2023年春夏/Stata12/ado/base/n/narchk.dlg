@@ -1,0 +1,128 @@
+/*
+  arch, narchk() [garch()]
+
+*!  VERSION 1.0.5  16feb2009
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_glm
+INCLUDE header
+
+HELP hlp1, view("help arch")
+RESET res1
+
+SCRIPT main_PREINIT
+BEGIN
+	script _constraints_main_setOptionalOn
+END
+
+DIALOG main, label("arch - Nonlinear ARCH model with one shift")	/*
+	*/tabtitle("Model")
+BEGIN
+  DEFINE _x _xsetbu
+  DEFINE _y _top
+  INCLUDE _bu_tsset
+  INCLUDE _dviv_ts4set
+  
+  CHECKBOX ck_nocons @         _ms       @         .,			/*
+		*/ label("Suppress constant term")			/*
+		*/ option("noconstant")					/*
+		*/    
+
+  GROUPBOX gb_model  _lft      _ms       _iwd      _ht8,		/*
+  		*/ label("Main model specification")			/*
+		*/
+  RADIO    rb_arch1  _ilft     _ss       _cwd2     .,			/*
+		*/ label("Specify maximum lags:")			/*
+		*/ clickon("script archlist_off")			/*
+		*/ first						/*
+		*/
+DEFINE y1 @y		
+  SPINNER  sp_arch1   _indent4  _ms       _spwd     .,			/*
+		*/ label("NARCHK maximum lag")				/*
+		*/ min(1)						/*
+		*/ max(c(N))						/*
+		*/ default("1")						/*
+		*/
+DEFINE y @y		
+
+  CHECKBOX ck_garch1 _nindent2 _ls       _ckwd     .,			/*
+		*/ clickon("script garchon")				/*
+		*/ clickoff("script garchoff")				/*
+		*/
+  SPINNER  sp_garch1 _cksep    @         _spwd     .,			/*
+		*/ label("GARCH maximum lag")				/*
+		*/ min(1)						/*
+		*/ max(c(N))						/*
+		*/ default("1")						/*
+		*/
+  TEXT     tx_arch1  _spsep    y         _rbspr2b  .,			/*
+		*/ label("NARCHK maximum lag")				/*
+		*/		
+  TEXT     tx_garch1 @         _ls       _rbspr2b  .,			/*
+		*/ label("GARCH maximum lag")				/*
+		*/
+  RADIO    rb_arch2  _lft2     y1        _cwd2     .,			/*
+		*/ label(`"Supply list of lags: (e.g. "1 3")"')		/*
+		*/ clickon("script archlist_on")			/*
+		*/ last							/*
+		*/
+
+  EDIT     ed_arch2  _indent2  _ms       _vnwd     .,			/*
+		*/ label("NARCHK lags")					/*
+		*/ option("narchk")					/*
+		*/
+DEFINE x @x		
+  TEXT     tx_arch2  _vnsep    @         100       .,			/*
+		*/ label("NARCHK lags")					/*
+		*/
+		
+  EDIT     ed_garch2 x         _ls       _vnwd     .,			/*
+		*/ label("GARCH lags")					/*
+		*/ option("garch")					/*
+		*/		
+  TEXT     tx_garch2 _vnsep    @         100       .,			/*
+		*/ label("GARCH lags")					/*
+		*/
+
+  DEFINE _x _lft
+  DEFINE _y +45
+  DEFINE _cx _lw80
+  DEFINE _bux _slw80
+  INCLUDE _constraints
+  
+  DEFINE _x _lft
+  DEFINE _xw _iwd
+  INCLUDE _ck_collinear
+END
+
+INCLUDE _constraints_sc 
+INCLUDE _arch_sc
+
+INCLUDE arch_common
+
+PROGRAM command
+BEGIN
+	allowxi
+	put " " /program by_output " "
+	put "arch "
+	varlist main.vn_dv [main.vl_iv]
+	beginoptions
+		option main.ck_nocons
+		if main.rb_arch1 {
+			put "narchk(1/" main.sp_arch1 ") "
+			if main.ck_garch1 {
+				put "garch(1/" main.sp_garch1 ") "
+			}
+		}
+		if main.rb_arch2 {
+			optionarg main.ed_arch2
+			optionarg main.ed_garch2
+		}
+		INCLUDE _constraints_main_pr
+		option main.ck_collinear
+	endoptions
+	INCLUDE _arch_common_pr
+END

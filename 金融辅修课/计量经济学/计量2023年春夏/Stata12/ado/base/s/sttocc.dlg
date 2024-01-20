@@ -1,0 +1,94 @@
+/*
+	sttocc
+	
+	VERSION 1.0.0  21dec2002
+*/
+
+VERSION 8.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help sttocc")
+RESET res1
+
+DIALOG main,label("sttocc - Convert survival-time data to case-control data")/*
+		*/ tabtitle("Main")
+BEGIN
+  
+  DEFINE _x _xsetbu
+  DEFINE _y _top
+  INCLUDE _bu_stset
+  TEXT     tx_var      _lft         _ss     _iwd          .,            /*
+                */ label("Variables: (leave empty for all)")
+  VARLIST  vl_var      @            _ss     @             .,            /*
+                */ label("Variables")                        
+  GROUPBOX gb_match    @            _ls     @             _ht6,         /*
+                */ label("Match cases and controls with:")               
+  RADIO    rb_time     _indent      _ss     _ibwd         .,            /*
+                */ label("Respect to analysis time")                    /*
+                */ first                                                /*
+                */ clickon("gaction main.vl_matchvar.disable")
+  RADIO    rb_matchvar @            _ss     @             .,            /*
+                */ label("Specified categorical variables:")            /*
+                */ last                                                 /*
+                */ clickon("gaction main.vl_matchvar.enable")
+  VARLIST  vl_matchvar  _indent2    _ss     _inwd         .,            /*
+                */ label("Specified categorical variables")             /*
+                */ option(match)
+  SPINNER  sp_number    _lft        _xls    _spwd         .,            /*
+                */ label("Number of controls for each case")            /*
+                */ min(1)                                               /*
+                */ max(100000)                                          /*
+                */ default(1)                                           /*
+                */ option(number)
+  TEXT     tx_number    _spsep      @       _sprb         .,            /*
+                */ label("Number of controls for each case")
+  CHECKBOX ck_nodots    _lft        _ls     _iwd         .,             /*
+   */ label("Suppress dots at the beginning of each case-control group")/*
+                */ option(nodots) 
+END
+
+DIALOG opt,label("") tabtitle("Options")
+BEGIN
+  TEXT     tx_cgen      _lft        _top     _iwd         .,            /*
+               */ label("Generate case-control indicator variable named:")
+  EDIT     ed_cgen      @           _ss      @            .,            /*
+             */ label("Generate case-control indicator variable named") /*
+		*/ default("_case")                                     /*
+                */ max(32)  
+  TEXT     tx_sgen      @           _ms      @            .,            /*
+          */ label("Generate case-control set identifier variable named:")
+  EDIT     ed_sgen      @           _ss      @            .,            /*
+        */ label("Generate case-control set identifier variable named") /*
+                */ default("_set")                                      /*
+                */ max(32)  
+  TEXT     tx_tgen      @           _ms      @            .,            /*
+   */ label("Generate analysis time of the case's failure variable named:")
+  EDIT     ed_tgen      @           _ss      @            .,            /*
+*/ label("Generate analysis time of the case's failure variable named") /*	
+ 		*/ default("_time")                                     /*
+                */ max(32)  
+END
+
+PROGRAM command
+BEGIN
+	if main.rb_matchvar {
+		require main.vl_matchvar
+	}
+	require opt.ed_cgen opt.ed_sgen opt.ed_tgen
+	put "sttocc "
+	varlist [main.vl_var]
+	beginoptions
+		if main.rb_matchvar {
+			optionarg main.vl_matchvar
+		}
+		optionarg main.sp_number
+		if !default(opt.ed_cgen) | !default(opt.ed_sgen) | /*
+			*/ !default(opt.ed_tgen) {
+			put "generate(" opt.ed_cgen  " " opt.ed_sgen /*
+				*/ " " opt.ed_tgen ")"
+		}
+	        option main.ck_nodots  
+	endoptions
+END

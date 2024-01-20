@@ -1,0 +1,56 @@
+/*
+    cgraph_opts.idlg
+
+*!  VERSION 1.0.2  13sep2006 (deprecated)
+
+*/
+
+  GROUPBOX gb_combine        _gft2     y    	 _cwd1     _ht21h,	///
+  		label("Graph combine options")
+
+  CHECKBOX ck_colf           _ilft2    _ss       _cwd3_1   .,		///
+  		label("Display down columns first") option(colfirst)
+  CHECKBOX ck_ycom           @         _ms       @         .,		///
+  		label("Common scale for Y-axes") option(ycommon)
+  CHECKBOX ck_xcom           @         _ms       @         .,		///
+  		label("Common scale for X-axes") option(xcommon)
+
+  TEXT     tx_margin         @         _ms       _txwd     .,		///
+  		label("Margins:")
+DEFINE y @y
+  COMBOBOX cb_margin         @         _ss       _txr4g    .,		///
+  		label("Margins") option(imargin) contents(margin)	///
+  		dropdownlist
+
+  TEXT     tx_holes          _ilft4_4  y         _txwd     .,		///
+  		label("Holes:")
+  EDIT     ed_holes          @         _ss       _tcr4gi    .,		///
+  		label("Holes") option(holes)
+  BUTTON   bu_holes          _tcr4gisep @        _btwd     ., 		///
+  		label("?") onpush(view help numlist##|_new)
+
+
+  TEXT     tx_layout         _ilft2    _ls       _txwd     ., 		///
+  		label("Layout:")
+  TEXT     tx_scale          _ilft4_4  @         _txwd     .,		///
+  		label("Scale text:")
+
+  COMBOBOX cb_layout         _ilft2    _ss       _txr4g    .,		///
+  		label("Layout") contents(main_layout) dropdownlist	///
+  		onselchangelist(main_layout_action)
+  EDIT     en_scale          _ilft4_4  @         _tcr4gi   .,		///
+  		label("Scale text") numonly option(iscale)
+
+
+  TEXT     tx_rows           _ilft2    _ls       _txwd     .,		///
+  		label("Rows:")
+  TEXT     tx_cols           @         @         _txwd     .,		///
+  		label("Columns:")
+
+
+  SPINNER  sp_rows           @         _ss       _spwd     .,		///
+ 		label("Number of rows") default(1) min(1) max(100) 	///
+ 		option(rows)
+  SPINNER  sp_cols           @         @         _spwd     .,		///
+  		label("Number of columns") min(1) default(1) max(100) 	///
+  		option(cols)

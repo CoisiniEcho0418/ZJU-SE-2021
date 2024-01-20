@@ -1,0 +1,134 @@
+/*
+  qreg
+
+*!  VERSION 1.0.7  16may2011
+
+  keyword:  eclass
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help qreg")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	program parseMessage
+END
+
+PROGRAM parseMessage
+BEGIN
+	if __MESSAGE.contains("__MI__") {
+		call script byifin_set_by_off
+	}
+END
+
+DIALOG	 main,	label("qreg - Quantile regression")	 	/*
+		*/	tabtitle("Model")
+BEGIN
+
+  INCLUDE _dviv
+
+  SPINNER  sp_quantile    _lft      _xls      _spwd     .,		/*
+		*/	label("Quantile to estimate")			/*
+		*/	min(1)						/*
+		*/	max(100)					/*
+		*/	default(50)					/*
+		*/	option("quantile")				/*
+		*/
+
+  TEXT     tx_quantile    _spsep    @         _spr      .,		/*
+		*/	label("Quantile to estimate")			/*
+		*/
+END
+
+INCLUDE byifin
+INCLUDE weights_fa
+
+SCRIPT rpt_POSTINIT
+BEGIN
+	create STRING rpt_bu_fmtcoefResults
+	program rpt_bu_fmtcoef_ckResults
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x  _lft
+  DEFINE _cx _sprb
+  DEFINE _y  _top
+  INCLUDE _sp_level
+
+  DEFINE _x _lft
+  DEFINE _y _ls
+  INCLUDE _bu_coef_table_reporting
+END
+
+INCLUDE fmt_coef_table_reporting_pr
+
+DIALOG maxop, tabtitle("Optimization")
+BEGIN
+  SPINNER  sp_iterate     _lft      _top        _spwd     .,		/*
+		*/ label("Maximum iterations")				/*
+		*/ min(1)						/*
+		*/ max(16000)						/*
+		*/ default(c(maxiter))					/*
+		*/ option("iterate")					/*
+		*/
+
+  DEFINE   holdx @x
+
+  TEXT     tx_iterate     _spsep    @         _sprb     .,		/*
+		*/ label("Maximum iterations")				/*
+		*/
+
+  SPINNER  sp_wlsiter     holdx     _ls       _spwd     .,		/*
+		*/ label("Starting weighted least-squares iterations")	/*
+		*/ min(1)						/*
+		*/ max(100)						/*
+		*/ default(1)						/*
+		*/ option("wlsiter")					/*
+		*/
+
+  TEXT     tx_wlsiter     _spsep    @         _spr      .,		/*
+		*/ label("Number of weighted least-squares iterations before linear")
+
+  TEXT     tx_wlster2     @         _vss      @         .,		/*
+  		*/ label("programming iterations begin (wlsiter option)")
+
+  GROUPBOX gb_iterate     _lft      _ls       _iwd      _ht6,		/*
+  		*/ label("Iteration log")
+  RADIO    rb_normal      _ilft     _ss       _inwd     .,		/*
+  		*/ label("Show log")					/*
+		*/ option(NONE) first
+  RADIO    rb_trace       @         _ss       @         .,		/*
+		*/ label("Report coefficients at each iteration")	/*
+		*/ option("trace")					/*
+		*/
+  RADIO    rb_nolog       @         _ss       @         .,		/*
+		*/ label("Suppress the iteration log")			/*
+		*/ option("nolog") last					/*
+		*/
+END
+
+PROGRAM command
+BEGIN
+	allowxi
+	INCLUDE _by_pr
+	put "qreg "
+	varlist main.vn_dv [main.vl_iv]
+	INCLUDE _ifin_pr
+	INCLUDE _weights_pr
+	beginoptions
+		optionarg main.sp_quantile
+		optionarg /hidedefault rpt.sp_level
+		put " " rpt_bu_fmtcoefResults
+		optionarg /hidedefault maxop.sp_iterate
+		optionarg /hidedefault maxop.sp_wlsiter
+		option radio(maxop rb_normal rb_nolog rb_trace)
+	endoptions
+END
+

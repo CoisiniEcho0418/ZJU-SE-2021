@@ -1,0 +1,140 @@
+/*
+    gr_sunflower_bins.dlg
+    
+*!  VERSION 1.0.0  02jan2007
+
+*/
+
+VERSION 10
+
+INCLUDE _std_small
+DEFINE _dlght 260
+INCLUDE header_gr_child
+
+DEFINE _clwd	15
+DEFINE _txwd	170
+DEFINE _txsep	+175
+
+HELP hlp1, view("help sunflower")
+RESET res1
+
+DIALOG main, label("Sunflower bin options") tabtitle("Main")
+BEGIN
+  GROUPBOX gb_light	_lft	_top	_iwd   _ht8h,		///
+	label("Light bins")
+
+  TEXT     tx_lbfclr	_ilft	_ss	_txwd	.,		///
+	label("Fill color:") right
+  COMBOBOX cb_lbfclr	_txsep	@	_vnwd	.,		///
+	contents(colors)  					///
+	option(lbfcolor)					///
+	onselchangelist(lbfclr_change)				///
+	dropdownlist
+  COLOR    cl_lbfclr	_vnsep	@	_clwd	.,		///
+	option(lbfcolor)	
+	
+  TEXT     tx_lblclr	_ilft	_ls	_txwd	.,		///
+	label("Outline color:") right
+  COMBOBOX cb_lblclr	_txsep	@	_vnwd	.,		///
+	contents(colors)  					///
+	option(lblcolor)					///
+	onselchangelist(lblclr_change)				///
+	dropdownlist
+  COLOR    cl_lblclr	_vnsep	@	_clwd	.,		///
+	option(lblcolor)
+
+  TEXT     tx_lblwidth	_ilft	_ls	_txwd	.,		///
+	label("Outline width:") right
+  COMBOBOX cb_lblwidth	_txsep	@	_vnwd   .,		///
+	contents(linewidths) 					///
+	option(lblwidth)					///
+	dropdown
+
+
+  GROUPBOX gb_dark	_lft	_xls	_iwd   _ht8h,		///
+	label("Dark bins")
+
+  TEXT     tx_dbfclr	_ilft	_ss	_txwd	.,		///
+	label("Fill color:") right
+  COMBOBOX cb_dbfclr	_txsep	@	_vnwd	.,		///
+	contents(colors)  					///
+	option(dbfcolor)					///
+	onselchangelist(dbfclr_change)				///
+	dropdownlist
+  COLOR    cl_dbfclr	_vnsep	@	_clwd	.,		///
+	option(dbfcolor)	
+	
+  TEXT     tx_dblclr	_ilft	_ls	_txwd	.,		///
+	label("Outline color:") right
+  COMBOBOX cb_dblclr	_txsep	@	_vnwd	.,		///
+	contents(colors)  					///
+	option(dblcolor)					///
+	onselchangelist(dblclr_change)				///
+	dropdownlist
+  COLOR    cl_dblclr	_vnsep	@	_clwd	.,		///
+	option(dblcolor)
+
+  TEXT     tx_dblwidth	_ilft	_ls	_txwd	.,		///
+	label("Outline width:") right
+  COMBOBOX cb_dblwidth	_txsep	@	_vnwd   .,		///
+	contents(linewidths) 					///
+	option(dblwidth)					///
+	dropdown
+END
+
+LIST lbfclr_change
+BEGIN
+	main.cl_lbfclr.hide
+	main.cl_lbfclr.show
+	main.cl_lbfclr.hide
+END
+LIST dbfclr_change
+BEGIN
+	main.cl_dbfclr.hide
+	main.cl_dbfclr.show
+	main.cl_dbfclr.hide
+END
+
+LIST lblclr_change
+BEGIN
+	main.cl_lblclr.hide
+	main.cl_lblclr.show
+	main.cl_lblclr.hide
+END
+LIST dblclr_change
+BEGIN
+	main.cl_dblclr.hide
+	main.cl_dblclr.show
+	main.cl_dblclr.hide
+END
+
+PROGRAM command
+BEGIN
+	if ! main.cl_lbfclr.isvisible() {
+		optionarg /hidedefault main.cb_lbfclr
+	}
+	if main.cl_lbfclr.isvisible() {
+		optionarg /quoted main.cl_lbfclr
+	}
+	if ! main.cl_lblclr.isvisible() {
+		optionarg /hidedefault main.cb_lblclr
+	}
+	if main.cl_lblclr.isvisible() {
+		optionarg /quoted main.cl_lblclr
+	}
+	optionarg /hidedefault main.cb_lblwidth
+
+	if ! main.cl_dbfclr.isvisible() {
+		optionarg /hidedefault main.cb_dbfclr
+	}
+	if main.cl_dbfclr.isvisible() {
+		optionarg /quoted main.cl_dbfclr
+	}
+	if ! main.cl_dblclr.isvisible() {
+		optionarg /hidedefault main.cb_dblclr
+	}
+	if main.cl_dblclr.isvisible() {
+		optionarg /quoted main.cl_dblclr
+	}
+	optionarg /hidedefault main.cb_dblwidth
+END

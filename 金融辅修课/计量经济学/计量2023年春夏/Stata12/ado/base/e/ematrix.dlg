@@ -1,0 +1,110 @@
+/*
+  easy graph matrix - Draw scatterplot matrices
+  
+*!  VERSION 1.0.2  03aug2006  (deprecated)
+
+*/
+VERSION 8.0
+
+INCLUDE egraph_header
+INCLUDE header
+HELP hlp1, view("help graph_matrix")
+RESET res1
+
+DIALOG main, label("graph matrix - Draw scatterplot matrices") tabtitle("Main")
+BEGIN
+  TEXT     tx_varlist  _lft        _top      _iwd        .,		///
+  	label("Variables:")
+  VARLIST  vl_varlist  @           _ss       @           .,		///
+  	label("Variables")
+END
+
+INCLUDE ifin
+INCLUDE etitle
+
+DIALOG eopts, label("") tabtitle("Options")
+BEGIN
+  TEXT     tx_scheme   _lft        _top      _txlwd      .,		///
+  	label("Scheme:") right
+  COMBOBOX cb_scheme   _txlsep     @         _cbwd       .,		///
+  	dropdownlist contents(schemes)					///
+  	label("Scheme")							///
+  	option(scheme)
+  TEXT     tx_name     _lft        _ms       _txlwd      .,		///
+  	label("Graph name:") right
+  EDIT 	   ed_name     _txlsep     @         _cbwd       .,     	///
+  	label("Graph name")
+  TEXT     tx_replace  _lft        _ms       _txlwd      .,label("")
+  CHECKBOX ck_replace  _txlsep     @         _vnwd       .,		///
+  	label("Replace name")						///
+  	option(replace)
+  TEXT     tx_ht       _ilft5_4    _top      _txlwd      .,     	///
+  	label("Height ( in ):") right
+  EDIT     ed_ht       _txlsep     @         _en7wd      .,		///
+  	label("Height")							///
+  	option(ysize)
+  TEXT     tx_wd       _ilft5_4    _ms       _txlwd      .,     	///
+  	label("Width ( in ):") right
+  EDIT     ed_wd       _txlsep      @        _en7wd      .,		///
+  	label("Width")  						///
+  	option(xsize)
+END
+
+LIST scheme_list
+BEGIN
+	Default
+	s1rcolor
+	s1color
+	s1mono
+	s1manual
+	s2color 
+	s2mono
+	s2manual 
+	Economist
+	Stata Journal
+END
+
+LIST scheme_list_val
+BEGIN
+	""
+	s1rcolor
+	s1color
+	s1mono
+	s1manual
+	s2color 
+	s2mono
+	s2manual 
+	economist
+	sj
+END
+
+PROGRAM eopts_name_opts
+BEGIN
+	beginoptions
+		option eopts.ck_replace
+	endoptions
+END
+
+PROGRAM eopts_output
+BEGIN
+	optionarg /hidedefault eopts.cb_scheme
+	if eopts.ed_name {
+		put " " "name("
+		put eopts.ed_name
+		put /program eopts_name_opts
+		put ") "
+	}
+	optionarg eopts.ed_ht
+	optionarg eopts.ed_wd
+END
+
+PROGRAM command
+BEGIN
+	put "graph matrix "
+	varlist main.vl_varlist
+	INCLUDE _ifin_pr
+	beginoptions
+		put " " /program etitle_output
+		put " " /program eopts_output
+	endoptions
+END

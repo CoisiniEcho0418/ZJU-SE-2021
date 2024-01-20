@@ -1,0 +1,392 @@
+/*
+	anova_estat
+
+*!  VERSION 2.0.2  01jun2009
+
+	***
+	USE EXTREME CARE WHEN CHANGING CONTROL NAMES. The names used
+	in this file have multiple external dependencies.
+*/
+
+VERSION 11.0
+
+INCLUDE _std_large
+DEFINE _dlght 400	//dialog length for bootstrap options
+INCLUDE header
+
+HELP hlp1, view("help anova postestimation")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	create BOOLEAN has_FactorVars
+	has_FactorVars.settrue
+	program sum_bu_facvars_ckResults
+	program vce_bu_facvars_ckResults
+END
+
+DIALOG main, label("estat - Postestimation statistics for anova")	///
+	tabtitle("Main")
+BEGIN
+  TEXT     tx_subcmd		_lft	_top	_iwd	.,		///
+  	label("Reports and statistics: (subcommand)")
+  LISTBOX  lb_subcmd		@	_ss	@	70,		///
+  	contents(main_subcommand_contents)				///
+  	values(main_subcommand_values)					///
+  	onselchangelist(main_subcommand_scripts)
+
+  DEFINE holdy 110
+
+  // hettest options
+  COMBOBOX cb_test		_lft	holdy	200	.,		///
+	dropdownlist 							///
+	contents(hettest_test)						///
+	values(hettest_test_values)					///
+	onselchangelist(hettest_test_sel)
+  TEXT     tx_test		+205	@	200	.,		///
+	label("Test to compute")
+  GROUPBOX gb_fit		_lft	_ls	_iwd	_ht6h,		///
+  	label("Tests for heteroskedasticity")
+  RADIO    rb_fit		_ilft	_ss	_ibwd	.,		///
+  	first label("Use fitted values of the regression")		///
+  	onclickon(main.vl_var.disable)
+  RADIO    rb_var		@	_ss	@	.,		///
+  	last label("Use the following variables:")			///
+  	onclickon(main.vl_var.enable)
+  VARLIST  vl_var		_indent2 _ss	_inwd	.,		///
+	label("Use the following variables")
+
+  CHECKBOX ck_rhs		_lft	_xxls	_iwd	.,		///
+	option(rhs)							///
+	label("Use right-hand-side variables in the test")
+
+  CHECKBOX ck_mtest    		_lft	_ls	_iwd	_ht4,		///
+	label("Perform multiple testing")  groupbox			///
+	onclickon(script main_adjustment_on)				///
+	onclickoff(script main_adjustment_off)
+  TEXT     tx_adjustment	_ilft	_ss	_inwd	.,		///
+  	label("P-value adjustment:")
+  COMBOBOX cb_adjustment	@	_ss     160	.,		///
+	label("Multiple testing adjustment")				///
+	dropdownlist 							///
+	contents(adjustment_methods)					///
+	values(adjustment_values)
+
+  // imtest options
+  CHECKBOX ck_preserve		_lft	holdy	_ibwd	.,		///
+	option(preserve)						///
+	label("Preserve and restore original data in memory during auxiliary regression")
+  CHECKBOX ck_white		@	_ms	@	.,		///
+	option(white)							///
+	label("Perform White's original heteroskedasticity test")
+
+  // ovtest options - reuse rhs
+
+  // szroeter options - reuse hettest options
+  GROUPBOX gb_mtest    		_lft	_ls	_iwd	_ht4,		///
+	label("Multiple testing")
+
+  // vif
+  CHECKBOX ck_vif_uncentered	_lft	holdy	_iwd	.,		///
+	option(uncentered)						///
+	label("Compute uncentered variance inflation factors")
+
+  // Information criteria
+  CHECKBOX ck_n			_lft	holdy	_iwd	.,		///
+	onclickon(main.sp_n.enable)					///
+	onclickoff(main.sp_n.disable)					///
+	label("Number of observations for calculating BIC")
+  SPINNER sp_n			_indent2 _ss	_spwd	.,		///
+	default(e(N)) min(1) max(e(N))					///
+	option(n)
+
+  INCLUDE estat_sum
+  INCLUDE estat_vce
+  INCLUDE _estat_bootstrap
+END
+
+INCLUDE estat_sum_pr
+INCLUDE _estat_bootstrap_pr
+INCLUDE estat_vce_pr
+
+LIST hettest_test
+BEGIN
+	"Breusch-Pagan/Cook-Weisberg"
+	"N*R2 version of the score test"
+	"F-statistic"	
+END
+LIST hettest_test_values
+BEGIN
+	""
+	"iid"
+	"fstat"	
+END
+LIST hettest_test_sel
+BEGIN
+	program mtest_allowed
+	program mtest_disallowed
+END
+
+PROGRAM mtest_allowed
+BEGIN
+	call main.ck_mtest.enable
+	if main.ck_mtest {
+		call script main_adjustment_on
+	}
+END
+PROGRAM mtest_disallowed
+BEGIN
+	call main.ck_mtest.disable
+	call script main_adjustment_off
+END
+
+SCRIPT main_group_on
+BEGIN
+	main.sp_group.enable
+	main.tx_group.enable
+END
+SCRIPT main_group_off
+BEGIN
+	main.sp_group.disable
+	main.tx_group.disable
+END
+
+LIST adjustment_methods
+BEGIN
+	"None"
+	"Bonferroni's adjustment"
+	"Holm's adjustment"
+	"Sidak's adjustment"
+END
+
+LIST adjustment_values
+BEGIN
+	mtest
+	mtest(bonferroni)
+	mtest(holm)
+	mtest(sidak)
+END
+
+LIST main_subcommand_contents
+BEGIN
+  	"Tests for heteroskedasticity (hettest)"
+  	"Information matrix test (imtest)"
+	"Ramsey regression specification-error test for omitted variables (ovtest)"
+	"Szroeter's rank test for heteroskedasticity (szroeter)"
+	"Variance inflation factors for the independent variables (vif)"
+	"Information criteria (ic)"
+	"Summarize estimation sample (summarize)"
+	"Covariance matrix estimates (vce)"
+END
+
+LIST main_subcommand_values
+BEGIN
+	hettest
+	imtest
+	ovtest
+	szroeter
+	vif
+	ic
+	summarize
+	vce
+END
+
+LIST main_subcommand_scripts
+BEGIN
+	script sel_hettest
+	script sel_imtest
+	script sel_ovtest
+	script sel_szroeter
+	script sel_vif
+	script sel_ic
+	script sel_summarize
+	script sel_vce
+END
+
+SCRIPT sel_hettest
+BEGIN
+	script main_hide_all
+	program hettest_on
+END
+
+SCRIPT sel_imtest
+BEGIN
+	script main_hide_all
+	script imtest_on
+END
+
+SCRIPT sel_ovtest
+BEGIN
+	script main_hide_all
+	script ovtest_on
+END
+
+SCRIPT sel_szroeter
+BEGIN
+	script main_hide_all
+	script szroeter_on
+END
+
+SCRIPT sel_vif
+BEGIN
+	script main_hide_all
+	main.ck_vif_uncentered.show
+END
+
+SCRIPT sel_ic
+BEGIN
+	script main_hide_all
+	main.ck_n.show
+	main.sp_n.show
+END
+
+SCRIPT sel_summarize
+BEGIN
+	script main_hide_all
+	program main_summ_on
+END
+
+SCRIPT sel_vce
+BEGIN
+	script main_hide_all
+	program vce_on
+END
+
+PROGRAM hettest_on
+BEGIN
+	call main.cb_test.show
+	call main.tx_test.show
+	
+	call main.gb_fit.setposition . 140
+	call main.rb_fit.setposition . 160
+	call main.rb_var.setposition . 180
+	call main.vl_var.setposition . 200
+	call main.gb_fit.show
+	call main.rb_fit.show
+	call main.rb_var.show
+	call main.vl_var.show
+	call main.ck_rhs.setposition . 250 . .
+	call main.ck_rhs.show
+	call main.ck_mtest.show
+	call main.tx_adjustment.setposition . 300 
+	call main.cb_adjustment.setposition . 320 
+	call main.tx_adjustment.show
+	call main.cb_adjustment.show
+	if ! main.ck_mtest {
+		call script main_adjustment_off
+	}
+END
+
+SCRIPT imtest_on
+BEGIN
+	main.ck_preserve.show
+	main.ck_white.show
+END
+
+SCRIPT ovtest_on
+BEGIN
+	main.ck_rhs.setposition . 110 . .
+	main.ck_rhs.show
+END
+
+SCRIPT szroeter_on
+BEGIN
+	main.gb_fit.setposition . 110
+	main.rb_fit.setposition . 130
+	main.rb_var.setposition . 150
+	main.vl_var.setposition . 170
+	main.gb_fit.show
+	main.rb_fit.show
+	main.rb_var.show
+	main.vl_var.show
+	main.ck_rhs.setposition . 220 . .
+	main.ck_rhs.show
+	main.gb_mtest.setposition . 250 . .
+	main.gb_mtest.show
+	main.tx_adjustment.setposition . 270 
+	main.cb_adjustment.setposition . 290 
+	main.tx_adjustment.show
+	main.cb_adjustment.show
+	script main_adjustment_on
+END
+
+SCRIPT main_adjustment_on
+BEGIN
+	main.cb_adjustment.enable
+	main.tx_adjustment.enable
+END
+
+SCRIPT main_adjustment_off
+BEGIN
+	main.cb_adjustment.disable
+	main.tx_adjustment.disable
+END
+
+SCRIPT main_hide_all  // MUST BE IMPLEMENTED FOR BOOTSTRAP
+BEGIN
+	main.cb_test.hide
+	main.tx_test.hide
+	main.gb_fit.hide
+	main.rb_fit.hide
+	main.rb_var.hide
+	main.vl_var.hide
+	main.ck_rhs.hide
+	main.ck_mtest.hide
+	main.gb_mtest.hide
+	main.tx_adjustment.hide
+	main.cb_adjustment.hide
+	main.ck_preserve.hide
+	main.ck_white.hide
+	main.ck_vif_uncentered.hide
+	main.ck_n.hide
+	main.sp_n.hide
+	script main_summ_off
+	program vce_off
+	script main_bootstrap_hide
+END
+
+PROGRAM vl_output
+BEGIN
+	put main.vl_spec
+END
+
+PROGRAM vl_eq_output
+BEGIN
+	put main.vl_eq
+END
+
+PROGRAM command
+BEGIN
+	put "estat "
+	put main.lb_subcmd
+	put " " /program summarize_output
+	if main.rb_var & main.rb_var.isvisible() {
+		varlist main.vl_var
+	}
+	beginoptions
+		// non-basic options
+		if main.lb_subcmd.iseq("hettest") {
+			put " " main.cb_test
+		}
+		option main.ck_rhs
+		if main.lb_subcmd.iseq("hettest") 			///
+		   |	( main.lb_subcmd.iseq("szroeter") 		///
+			  & ! main.cb_adjustment.iseq("mtest")		///
+			) 						///
+		{
+			put " " main.cb_adjustment
+		}
+		option main.ck_preserve
+		option main.ck_white
+		option main.ck_vif_uncentered
+
+		// ic options
+		optionarg main.sp_n
+
+		// Summarize options
+		put " " /program summarize_opts_output
+
+		put " " /program vce_output
+		put " " /program bootstrap_output
+	endoptions
+END

@@ -1,0 +1,58 @@
+/*
+	matrix define
+
+*!  VERSION 1.1.1  16aug2006
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_mlarge
+INCLUDE header
+HELP hlp1, view("help matrix_define")
+RESET res1
+
+DIALOG main, label("matrix define - Matrix definition, operators, and functions") /*
+		*/ tabtitle("Main")
+BEGIN
+  TEXT     tx_mat            _lft      _top      _vnwd     .,		/*
+		*/ label("Create matrix named:")
+  EDIT     ed_mat            @         _ss       @         .,		/*
+		*/ label("Create matrix named") max(32)
+  TEXT     tx_matexp         _lft      _ls       _iwd      .,		/*
+		*/ label("Matrix definition:")
+  EDIT     ed_matexp         @         _ss       @         .,		/*
+		*/ label("Matrix definition")
+  TEXT     tx_defmat         _lft      _ls       _cwd3_1   .,		/*
+		*/ label("Defined matrices:")
+  DEFINE holdy @y
+  COMBOBOX cb_matdef         @         _ss       @         _ht7,	/*
+  		*/ label("Defined matrices")				/*
+		*/ contents(matrix) dropdown				/*
+		*/ onselchange(script add_matrix)
+  BUTTON   bu_fcnhlp         _lft4_3   @         120       .,		/*
+  		*/ label("Help functions") 				/*
+  		*/ tooltip("Help for matrix functions")			/*
+  		*/ onpush(view help matfcns##|_new)
+  BUTTON   bu_operhlp        _lft4_3   _xls      @         .,		/*
+  		*/ label("Help operators") 				/*
+  		*/ tooltip("Help for matrix operators")			/*
+  		*/ onpush(view help matoper##|_new)
+END
+
+SCRIPT add_matrix
+BEGIN
+  action withvalue main.ed_matexp.insert `"@"'
+END
+
+PROGRAM command
+BEGIN
+	require main.ed_mat
+	require main.ed_matexp
+	put "matrix define "
+	put main.ed_mat
+	put " "
+	put "="
+	put " "
+	put main.ed_matexp
+END

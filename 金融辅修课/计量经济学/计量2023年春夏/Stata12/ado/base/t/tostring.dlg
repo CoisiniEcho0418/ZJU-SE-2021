@@ -1,0 +1,101 @@
+/*
+  tostring
+
+*!  VERSION 1.2.0  07feb2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_large
+INCLUDE _ht320
+INCLUDE header
+HELP hlp1, view("help destring")
+RESET res1
+
+DIALOG main, tabtitle("Main")	///
+	label("tostring - Convert numeric variables to string variables")
+	 
+BEGIN
+  TEXT     tx_var      _lft        _top      _iwd        .,		///
+	label("Numeric variables to convert:")
+  VARLIST  vl_var      @           _ss       _iwd        .,		///
+	label("Numeric variables to convert")
+
+  GROUPBOX gb_action   @           _ls       @           _ht7,
+  RADIO    rb_gener    _indent     _ss       _inwd       .,		///
+	label("Create new string variables named:")			///
+	onclickon(main.ed_gener.enable)					///
+	first
+  RADIO    rb_repl     @           +50       @           .,		///
+	onclickon(main.ed_gener.disable)				///
+	option(replace) last nomemory					///
+	label("Convert specified variables to string (original numeric variables will be lost)")
+  EDIT     ed_gener    _indent2    -30       _inwd       .,		///
+	label("Names of new string variables") 				///
+	option(generate)
+
+  GROUPBOX gb_opt      _lft        _xxxxls   _iwd        _ht10h, 	///
+	label("Options")
+  CHECKBOX ck_force    _ilft       _ms       _ibwd       .,		///
+	label("Force conversion ignoring information loss")		///
+	option(force)
+
+  CHECKBOX ck_format   @           _ms       @           .,		///
+ 	label("Convert using specified format")				///
+	onclickon(script format_on)					///
+	onclickoff(script format_off)
+  EDIT     ed_format   +20         _ss       200         .,		///
+	label("Format")							///
+	option(format)
+  BUTTON   bn_format   +205        @         80          .,		///
+	label("Create...") onpush(script main_GetFormat)		///
+	tooltip("Create display format")
+
+  CHECKBOX ck_dispfmt  _ilft	   _ls	     _ibwd       .,		///
+	label("Convert using display format")				///
+	option(usedisplayformat)  					///
+ 	onclickon(main.ck_format.disable)				///
+ 	onclickoff(main.ck_format.enable)
+END
+
+SCRIPT main_GetFormat
+BEGIN
+	create STRING mainFormat
+	create CHILD format_chooser
+	format_chooser.setExitString mainFormat
+	format_chooser.setExitAction "main.ed_format.setvalue class mainFormat.value"
+END
+
+SCRIPT format_on
+BEGIN
+	main.ed_format.enable
+	main.bn_format.enable
+	main.ck_dispfmt.disable
+END
+
+SCRIPT format_off
+BEGIN
+	main.ed_format.disable
+	main.bn_format.disable
+	main.ck_dispfmt.enable
+END
+
+PROGRAM command
+BEGIN
+	put "tostring "
+	varlist main.vl_var
+	beginoptions
+		if main.rb_gener {
+			require main.ed_gener
+			optionarg main.ed_gener
+		}
+		option main.rb_repl
+		option main.ck_force
+		if main.ck_format {
+			require main.ed_format
+			optionarg main.ed_format
+		}
+		option main.ck_dispfmt
+	endoptions
+END

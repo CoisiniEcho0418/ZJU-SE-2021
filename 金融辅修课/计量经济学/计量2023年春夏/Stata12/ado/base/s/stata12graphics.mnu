@@ -1,0 +1,161 @@
+*! version 1.3.2  06jul2011
+*! Stata 12 Graphics menu
+
+"Graphics" stGraphics {
+	"Twoway graph (scatter, line, etc.)"	"DB twoway"
+	--------
+	"Bar chart"	"DB graph_bar"
+	"Dot chart"	"DB graph_dot"
+	"Pie chart"	"DB graph_pie"
+	--------
+	"Histogram"		"DB histogram"
+	"Box plot"		"DB graph_box"
+	--------
+	"Contour plot"		"help contour_dlg"
+	--------
+	"Scatterplot matrix"	"DB graph_matrix"
+	--------
+	"Distributional graphs" tag1 {
+		"Symmetry plot"					"DB symplot"
+		"Quantiles plot"				"DB quantile"
+		"Normal quantile plot"				"DB qnorm"
+		"Normal probability plot"			"DB pnorm"
+		"Chi-squared quantile plot"			"DB qchi"
+		"Chi-squared probability plot"			"DB pchi"
+		"Quantile-quantile plot"			"DB qqplot"
+		--------
+		"Ladder-of-powers histograms"			"DB gladder"
+		"Ladder-of-powers quantile-normal plot"		"DB qladder"
+		--------
+		"Histogram"					"DB histogram"
+		"Box plot"					"DB graph_box"
+		"Distribution dotplot"				"DB dotplot"
+		"Spike plot and rootogram"			"DB spikeplot"
+	}
+	"Smoothing and densities" tag1 {
+		"Kernel density estimation"			"DB kdensity"
+		--------
+		"Lowess smoothing"				"DB lowess"
+		"Local polynomial smoothing"			"DB lpoly"
+		--------
+		"Density-distribution sunflower plot"		"DB sunflower"
+	}
+	"Regression diagnostic plots" tag1 {
+		"Added-variable"				"DB avplot"
+		"Component-plus-residual"			"DB cprplot"
+		"Augmented component-plus-residual"		"DB acprplot"
+		"Leverage-versus-squared residual"		"DB lvr2plot"
+		"Residual-versus-fitted"			"DB rvfplot"
+		"Residual-versus-predictor"			"DB rvpplot"
+	}
+	"Time-series graphs" tag1 {
+		"Line plots"						"DB tsline"
+		"Correlogram (ac)"					"DB ac"
+		"Partial correlogram (pac)"				"DB pac"
+		"Periodogram"						"DB pergram"
+		"Cumulative spectral distribution"			"DB cumsp"
+		"Bivariate cross-correlogram"				"DB xcorr"
+		"Bartlett's white-noise test"				"DB wntestb"
+		--------
+		"Multivariate time-series graphs" tag1 {
+			"Dynamic forecasts after fcast compute"		"DB fcast_graph"
+			"IRF and FEVD after irf create"			"DB irf_graph"
+			"Overlaid IRFs and FEVDs after irf create"	"DB irf_ograph"
+			"Combined IRFs and FEVDs after irf create"	"DB irf_cgraph"
+		}
+	}
+	"Panel-data line plots"					"DB xtline"
+	"Survival analysis graphs" tag1 {
+		"Failure rates and rate ratios"			"DB strate"
+		--------
+		"Kaplan-Meier survivor function"	"DB sts_graph, __MESSAGE(-survivor-) __NAME(sts_graph_survivor)"
+		"Kaplan-Meier failure function"	 	"DB sts_graph, __MESSAGE(-failure-) __NAME(sts_graph_failure)"
+		"Nelson-Aalen cumulative hazard function"	"DB sts_graph, __MESSAGE(-cumhaz-) __NAME(sts_graph_cumhaz)"
+		"Smoothed hazard estimate"		"DB sts_graph, __MESSAGE(-hazard-) __NAME(sts_graph_hazard)"
+		"Survivor and cumulative hazard functions"	"DB sts_graph"
+		--------
+		"Life tables for survival data"			"DB ltable"
+		"CIs for means and percentiles of survival time"	"DB stci"
+		--------
+		"Test proportional-hazards assumption after stcox"	"DB stcox_estat"
+		"Assess proportional-hazards assumption"		"DB stphplot"
+		"Compare Kaplan-Meier and Cox survival curves"	"DB stcoxkm"
+		--------
+		"Survivor, hazard, cumulative hazard, or cumulative incidence function"	"DB stcurve"
+	}
+	"ROC analysis" tag1 {
+		"Nonparametric ROC curve"				"DB roctab"
+		"Parametric ROC curve after rocfit"			"DB rocplot"
+		"ROC curves after rocreg"				"DB rocregplot"
+		"Compare ROC curves"					"DB roccomp"
+		"Compare ROC curves against a gold standard"		"DB rocgold"
+		--------
+		"ROC curve after logistic/logit/probit/ivprobit"	"DB lroc"
+		"Sensitivity/specificity plot"				"DB lsens"
+	}
+	"Multivariate analysis graphs" tag1 {
+		"Biplot"				"DB biplot"
+		"Scree plot"				"DB screeplot"
+		--------
+		"After factor, discriminant, and PCA" tag1 {
+			"Loading plot"			"DB loadingplot"
+			"Score variables plot"		"DB scoreplot"
+			--------
+			"Scree plot of eigenvalues"	"DB screeplot"
+		}
+		"After correspondence analysis" tag1 {
+			"Biplot of row and column points"  "DB cabiplot"
+			"Dimension projection plot"	   "DB caprojection"
+			--------
+			"Loading plot"			"DB loadingplot"
+			"Score variables plot"		"DB scoreplot"
+			--------
+			"Scree plot of eigenvalues"	"DB screeplot"
+		}
+		"After MCA or JCA" tag1 {
+			"Plot of category coordinates"	"DB mcaplot"
+			"Dimension projection plot"	"DB mcaprojection"
+			--------
+			"Scree plot of eigenvalues"	"DB screeplot"
+		}
+		"After multidimensional scaling" tag1 {
+			"Approximating configuration plot"	"DB mdsconfig"
+			"Shepard diagram"			"DB mdsshepard"
+		}
+		--------
+		"Dendrogram after hierarchical cluster analysis"	"DB cluster_dendrogram"
+		"Overlay graph after procrustes"	"DB procoverlay"
+	}
+	"Quality control" tag1 {
+		"Cumulative sum (cusum)"			"DB cusum"
+		"C chart"					"DB cchart"
+		"P chart"					"DB pchart"
+		"R chart"					"DB rchart"
+		"X-bar chart"					"DB xchart"
+		"Vertically aligned X-bar and R chart"		"DB shewhart"
+		"Standard error bar chart"			"DB serrbar"
+	}
+	"More statistical graphs" tag1 {
+		"Fractional polynomial regression plot"		"DB fracplot"
+		--------
+		"Odds of failure by category"			"DB tabodds"
+		--------
+		"Pharmacokinetic measures"			"DB pkexamine"
+		"Pharmacokinetic data summary"			"DB pksumm"
+		--------
+		"Means/medians by group"			"DB grmeanby"
+	}
+	--------
+	"Table of graphs"	"DB graph_combine"
+	--------
+	"Manage graphs" tag1 {
+		"Rename graph in memory"	"DB graph_rename"
+		"Copy graph in memory"		"DB graph_copy"
+		"Drop graphs"			"DB graph_drop"
+		"Describe graph"		"DB graph_describe"
+		"Make memory graph current"	"DB graph_display"
+		--------
+		"Query styles and schemes"	"DB graph_query"
+	}
+	"Change scheme/size"		"DB graph_display"
+}

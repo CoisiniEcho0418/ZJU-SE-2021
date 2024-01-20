@@ -1,0 +1,208 @@
+/*
+	mca_estat
+
+*!  VERSION 1.0.1  21may2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_large
+DEFINE _dlght 310
+INCLUDE header
+
+HELP hlp1, view("help mca postestimation")
+RESET res1
+
+DIALOG main, label("estat - Postestimation tools for mca") tabtitle("Main")
+BEGIN
+  TEXT     tx_subcmd		_lft	_top	_cwd1	.,	///
+  	label("Reports and statistics: (subcommand)")
+  LISTBOX  lb_subcmd		@	_ss	_iwd	70,	///
+  	contents(main_subcommand_contents)			///
+  	values(main_subcommand_values)				///
+  	onselchangelist(main_subcommand_scripts)
+
+  DEFINE holdy 110
+
+  // coordinates options
+  // with which options
+
+  CHECKBOX    ck_varlist	_lft    holdy   _iwd	.,	///
+	label("Display coordinates for only these -mca- variables") ///
+	onclickon(main.cb_varlist.enable) onclickoff(main.cb_varlist.disable)
+  COMBOBOX    cb_varlist	_ilft	 _ss	_inwd	.,	///
+	label("Display coordinates for only these -mca- variables") ///
+	contents(e(names)) dropdown append
+  RADIO    rb_normalize		_lft	_ls     _iwd    .,	///
+	first label("Use default normalization (from -mca- estimation)")
+  RADIO    rb_norms		_lft	_ss	_iwd	.,	///
+	label("Use standard normalization") option(normalize(standard))
+  RADIO    rb_normp		_lft	_ss	_iwd	.,	///
+	last label("Use principal normalization") option(normalize(principal))
+
+  CHECKBOX ck_stats		_lft	_ls	_iwd	.,	///
+	label("Include mass, distance, and inertia") option(stats)
+
+  CHECKBOX ck_format		_lft	_ms	_iwd	.,	///
+  	onclickon(script main_format_on)			///
+  	onclickoff(script main_format_off)			///
+	label("Specify the display format:")
+  EDIT     ed_format    	_indent2 _ss	200	.,	///
+	option(format) label("Display format") 
+  BUTTON   bn_format      	+205     @     80 	.,	///
+	label("Create...")	onpush(script get_format)	///
+ 	tooltip("Create display format")
+  CHECKBOX ck_crossed	        _lft    holdy   _iwd    .,	///
+	label("Summarize the variables as used") option(crossed)
+  CHECKBOX ck_labels		_lft	_ms     _iwd    .,	///
+	label("Display variable labels") option(labels)
+  CHECKBOX ck_noheader		@	_ms	@	.,	///
+	option(noheader)					///
+	label("Suppress the header")
+  CHECKBOX ck_noweights		@	_ms	@	.,	///
+	option(noweights)					///
+	label("Ignore weights")
+  TEXT	   tx_subinertia	@       holdy   @       .,	///
+	label("Subinertia valid only after -mca, method(joint)-")
+END
+
+LIST main_subcommand_contents
+BEGIN
+	"Coordinates"
+	"Subinertia"
+ 	"Summarize estimation sample (summarize)"
+END
+
+LIST main_subcommand_values
+BEGIN
+	coordinates
+	subinertia
+	summarize
+END
+
+LIST main_subcommand_scripts
+BEGIN
+	script sel_coordinates
+	script sel_subinertia
+	script sel_summarize
+END
+
+SCRIPT main_format_on
+BEGIN
+	main.ed_format.enable
+	main.bn_format.enable
+END
+
+SCRIPT main_format_off
+BEGIN
+	main.ed_format.disable
+	main.bn_format.disable
+END
+
+SCRIPT get_format
+BEGIN
+	create STRING formatresult
+	create CHILD format_chooser
+	format_chooser.setExitString formatresult
+	format_chooser.setExitAction			///
+		"main.ed_format.setvalue class formatresult.value"
+END
+
+SCRIPT sel_coordinates
+BEGIN
+	script coords_show
+	script subiner_hide
+	script summ_hide
+END
+
+SCRIPT sel_subinertia
+BEGIN
+	script coords_hide
+	script subiner_show
+	script summ_hide
+END
+
+SCRIPT sel_summarize
+BEGIN
+	script coords_hide
+	script subiner_hide
+	script summ_show
+END
+
+SCRIPT coords_show
+BEGIN
+	main.ck_varlist.show
+	main.cb_varlist.show
+	main.rb_normalize.show
+	main.rb_norms.show
+	main.rb_normp.show
+	main.ck_stats.show
+	main.ck_format.show
+	main.ed_format.show
+	main.bn_format.show
+END
+
+SCRIPT coords_hide
+BEGIN
+	main.ck_varlist.hide
+	main.cb_varlist.hide
+	main.rb_normalize.hide
+	main.rb_norms.hide
+	main.rb_normp.hide
+	main.ck_stats.hide
+	main.ck_format.hide
+	main.ed_format.hide
+	main.bn_format.hide
+END
+
+SCRIPT summ_show
+BEGIN
+	main.ck_crossed.show
+	main.ck_noheader.show
+	main.ck_labels.show
+	main.ck_noweights.show
+END
+
+SCRIPT summ_hide
+BEGIN
+	main.ck_crossed.hide
+	main.ck_noheader.hide
+	main.ck_labels.hide
+	main.ck_noweights.hide
+END
+
+SCRIPT subiner_show
+BEGIN
+	main.tx_subinertia.show
+END
+
+SCRIPT subiner_hide
+BEGIN
+	main.tx_subinertia.hide
+END
+
+PROGRAM command
+
+BEGIN
+	put "estat "
+	put main.lb_subcmd
+	if main.ck_varlist {
+		put " " main.cb_varlist
+	}
+	beginoptions
+		// coordinates options
+		option main.rb_norms
+		option main.rb_normp
+		option main.ck_stats
+		if main.ck_format {
+			optionarg main.ed_format
+		}
+
+		// Summarize options
+		option main.ck_crossed
+		option main.ck_labels
+		option main.ck_noheader
+		option main.ck_noweights
+	endoptions
+END

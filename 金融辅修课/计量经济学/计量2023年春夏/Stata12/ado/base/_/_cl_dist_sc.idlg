@@ -1,0 +1,44 @@
+/*
+	_cl_dist_sc.idlg -- cluster analysis distances script include file
+
+*!  VERSION 1.1.1  20dec2005
+
+*/
+
+INCLUDE _cl_dist_list
+
+SCRIPT d_binary_on
+BEGIN
+  main.lb_distb.show
+  main.lb_distc.hide
+  main.lb_distm.hide
+  script power_off
+END
+
+SCRIPT d_continuous_on
+BEGIN
+  main.lb_distb.hide
+  main.lb_distc.show
+  main.lb_distm.hide
+  main.lb_distc.withvalue main.lb_distc.setvalue "@"
+END
+
+SCRIPT d_mixed_on
+BEGIN
+  main.lb_distb.hide
+  main.lb_distc.hide
+  main.lb_distm.show
+  script power_off
+END
+
+SCRIPT power_on
+BEGIN
+  main.tx_power.enable
+  main.en_power.enable
+END
+
+SCRIPT power_off
+BEGIN
+  main.tx_power.disable
+  main.en_power.disable
+END

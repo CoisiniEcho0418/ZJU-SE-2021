@@ -1,0 +1,55 @@
+/*
+	qqplot
+
+*!  VERSION 1.1.3  03aug2006  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+
+HELP hlp1, view("help qqplot")
+RESET res1
+
+DIALOG main, label("qqplot - Quantiles-quantiles plot")			///
+	tabtitle("Main")
+BEGIN
+  TEXT     tx_var1       _lft       _top       _iwd	 .,		///
+	label("Quantiles variable1:")
+  VARNAME  vn_var1       @          _ss       _vnwd      .,		///
+	label("Quantiles variable1")
+
+  TEXT     tx_var2       _lft       _ls       _iwd       .,		///
+	label("Quantiles variable2:")
+  VARNAME  vn_var2       @          _ss       _vnwd      .,		///
+	label("Quantiles variable2")
+END
+
+INCLUDE ifin
+INCLUDE p1_opts
+INCLUDE line_opts
+INCLUDE addplot
+INCLUDE gr_twoway
+
+SCRIPT PREINIT
+BEGIN
+	script p1_opts_createAsNoRange
+	script p1_opts_setDefaultScatter
+END
+
+
+PROGRAM command
+BEGIN
+        put "qqplot "
+        varlist main.vn_var1
+        varlist main.vn_var2
+        INCLUDE _ifin_pr
+	beginoptions
+		put " " /program p1_opts_recast_output
+		put " " /program line_opts_rlopts_output
+		put " " /program addplot_output
+		put " " /program gr_twoway_output
+	endoptions
+END

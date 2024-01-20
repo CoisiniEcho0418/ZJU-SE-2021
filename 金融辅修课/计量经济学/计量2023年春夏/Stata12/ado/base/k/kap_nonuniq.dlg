@@ -1,0 +1,43 @@
+/*
+	kap (two or more (nonunique) raters, two or more ratings)
+
+	VERSION 1.0.0  21dec2002
+*/
+
+VERSION 8.0
+
+INCLUDE _std_small
+INCLUDE header
+HELP hlp1, view("help kap")
+RESET res1
+
+DIALOG main, label("kap - Interrater agreement") tabtitle("Main")
+BEGIN
+  TEXT     tx_var1           _lft      _top      _cwd1     .,		/*
+		*/ label("Rater 1 variable:")
+  VARNAME  vn_var1           @         _ss       @         .,		/*
+		*/ label("Rater 1 variable")
+
+  TEXT     tx_var2           _lft2     _top      _cwd1     .,		/*
+		*/ label("Rater 2 variable:")
+  VARNAME  vn_var2           @         _ss       @         .,		/*
+		*/ label("Rater 2 variable")
+
+  TEXT     tx_var            _lft      _ls       _iwd      .,		/*
+		*/ label("Additional rater variables:")
+  VARLIST  vl_var            @         _ss       @         .,		/*
+		*/ label("Additional rater variables")
+END
+
+
+INCLUDE ifin
+INCLUDE weights_f
+
+
+PROGRAM command
+BEGIN
+	put "kap "
+	varlist main.vn_var1 main.vn_var2 [main.vl_var]
+	INCLUDE _weights_pr
+	INCLUDE _ifin_pr
+END

@@ -1,0 +1,71 @@
+/*
+	label values
+
+*!  VERSION 1.2.2  10apr2009
+
+	which label - built-in command:  label
+*/
+
+VERSION 10.0
+
+INCLUDE _std_msmall
+INCLUDE header
+
+HELP hlp1, view("help label")
+RESET res1
+
+DIALOG main, label("label values - Assign value label to variables")	///
+	tabtitle("Main")
+BEGIN
+  GROUPBOX gb_action		_lft	_top	_iwd	_ht4,	///
+  	label("Add or remove value label")
+  RADIO    rb_attach		_ilft	_ss	_inwd	.,	///
+	label("Attach a value label to variables")		///
+	first onclickon(script main_new_on)
+  RADIO    rb_remove		@	_ss	@	.,	///
+	label("Remove a value label from variables") last 	///
+	onclickon(script main_new_off)
+
+  TEXT     tx_var		_lft	+40	_iwd	.,	///
+	label("Variables:")
+  VARLIST  vl_var		_lft	_ss	@	.,	///
+	label("Variables")
+  TEXT     tx_label		_lft	_ls	@	.,	///
+  	label("Value label:")
+  COMBOBOX lb_label		_lft	_ss	_vnwd	.,	///
+	contents(valuelabels) label("Value label") dropdownlist
+
+  CHECKBOX ck_nofix		_lft	_ls	_iwd	.,	///
+	option(nofix) label("Do not automatically widen display formats")
+END
+
+SCRIPT main_new_on
+BEGIN
+	main.tx_label.show
+	main.lb_label.show
+	main.ck_nofix.show
+END
+
+SCRIPT main_new_off
+BEGIN
+	main.tx_label.hide
+	main.lb_label.hide
+	main.ck_nofix.hide
+END
+
+PROGRAM command
+BEGIN
+	put "label values "
+	varlist main.vl_var
+	if main.rb_attach {
+		put main.lb_label
+	}
+	else {
+		put "."
+	}
+	beginoptions
+		if main.rb_attach {
+			option main.ck_nofix
+		}
+	endoptions
+END

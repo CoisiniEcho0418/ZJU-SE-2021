@@ -1,0 +1,81 @@
+/*
+	avplot
+
+*!  VERSION 2.0.1  11mar2011
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_large
+DEFINE _dlght 300
+INCLUDE header
+
+HELP hlp1, view("help avplot")
+RESET res1
+
+SCRIPT POSTINIT
+BEGIN
+	gr_line_options.settabtitle "Reference line"
+	gr_line_options_optionName.setstring "rlopts"
+END
+
+DIALOG main,label("avplot/avplots - Graph added-variable plots") 	///
+	tabtitle("Main")
+BEGIN
+  GROUPBOX gb_var       _lft       _top       _cwd1	 _ht6h,		///
+		label("Variables")
+
+  RADIO    rb_all       _ilft      _ss        _inwd      .,		///
+		label("All variables")              			///
+		first                                     		///
+		onclickon(script main_all_on)   			///
+		option(avplots)
+
+  RADIO    rb_invar     @          _ss        @          .,		///
+		label("One independent variable:")      		///
+		last onclickon(script main_indvar_on)			///
+		option(avplot)
+
+  VARNAME  vn_invar     _indent2   _ss        _vnwd      .,		///
+		label("Independent variable")
+END
+
+SCRIPT main_all_on
+BEGIN
+	main.vn_invar.disable
+	script gr_addplots_disable
+END
+
+SCRIPT main_indvar_on
+BEGIN
+	main.vn_invar.enable
+	script gr_addplots_enable
+END
+
+INCLUDE gr_plots
+INCLUDE gr_line_options
+INCLUDE gr_addplots
+INCLUDE gr_yaxis
+INCLUDE gr_xaxis
+INCLUDE gr_titles
+INCLUDE gr_legend
+INCLUDE gr_overall
+
+PROGRAM command
+BEGIN
+	option radio(main rb_all rb_invar)
+        if main.rb_invar{
+		varlist main.vn_invar
+ 	}
+	beginoptions
+		put " " /program gr_plots_output
+		put " " /program gr_line_options_output
+		put " " /program gr_addplots_output
+		put " " /program gr_yaxis_output
+		put " " /program gr_xaxis_output
+		put " " /program gr_titles_output
+		put " " /program gr_legend_output
+		put " " /program gr_overall_output
+	endoptions
+END

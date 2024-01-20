@@ -1,0 +1,51 @@
+/*
+	qladder_9
+
+*!  VERSION 1.1.2  08sep2006 (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+
+HELP hlp1, view("help qladder")
+RESET res1
+
+DIALOG main, label("qladder - Ladder-of-powers quantile-normal plots")	///
+	tabtitle("Main")
+BEGIN
+  TEXT     tx_var        _lft        _top    _iwd         .,		///
+	label("Variable:")
+  VARNAME  vn_var        @           _ss     _vnwd        .,		///
+	label("Variable")
+
+  CHECKBOX ck_grid       _lft        _ls     _iwd         .,		///
+	label("Show grid at percentiles: 5, 10, 25, 50, 75, 90, 95")	///
+	option(grid)
+END
+
+INCLUDE ifin
+INCLUDE p1_opts
+INCLUDE line_opts
+INCLUDE gr_twoway
+
+SCRIPT PREINIT
+BEGIN
+	script p1_opts_createAsNoRange
+	script p1_opts_setDefaultScatter
+END
+
+PROGRAM command
+BEGIN
+	put "qladder "
+	varlist main.vn_var
+	INCLUDE _ifin_pr
+	beginoptions
+		option main.ck_grid
+		put " " /program p1_opts_recast_output
+		put " " /program line_opts_rlopts_output
+		put " " /program gr_twoway_output
+	endoptions
+END

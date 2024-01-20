@@ -1,0 +1,55 @@
+/*
+	constraint define
+
+*!  VERSION 1.1.0  16aug2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_msmall
+DEFINE _dlght 240
+INCLUDE header
+HELP hlp1, view("help constraint")
+RESET res1
+
+PROGRAM PREINIT_PROGRAM
+BEGIN
+	if __MESSAGE {
+		call main.sp_number.setvalue class __MESSAGE.value
+	}
+END
+
+DIALOG main, label("constraint define - Define constraints")
+BEGIN
+  SPINNER  sp_number    	_lft	_top	_spwd	.,	///
+	min(1) default(1) max(1999)				///
+	label("Constraint identifying number")
+  TEXT     tx_number		_spsep	@	_ckspr	.,	///
+	label("Constraint identifying number")
+	
+  TEXT     tx_const		_lft	+35	_iwd	.,	///
+	label("Define expression or coefficient list:")
+  VARLIST  vl_const		@	_ss	@	.,	///
+	label("Define expression or coefficient list")
+  
+  TEXT     tx_ex		@	_ms	_inwd	.,	///
+	label("Examples:")
+  TEXT     tx_ex1		+20	_vss	_cwd2   .,	///
+	label("   variable1 = variable2")
+  TEXT     tx_ex2		@	_vss	@	.,	///
+	label("   [Insured]: site2 site3")
+  TEXT     tx_ex3		@	_vss	@	.,	///
+	label("   var1 var2 var3")
+END
+
+PROGRAM command
+BEGIN
+	require main.vl_const
+	put "constraint define " main.sp_number " " main.vl_const
+	stata hidden
+	
+	// echo command
+	put "constraint define " main.sp_number " " main.vl_const
+	stata
+END

@@ -1,0 +1,31 @@
+/*
+  duplicates report
+
+*! VERSION 1.1.1  28mar2005
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_small
+INCLUDE header
+HELP hlp1, view("help duplicates")
+RESET res1
+
+DIALOG main, label("duplicates report - Report duplicates") /*
+		*/ tabtitle("Main")
+BEGIN
+  TEXT     tx_var          _lft      _top       _iwd     .,		/*
+  		*/label("Variables: (leave empty for all)")
+  VARLIST  vl_var          @         _ss        @        .,		/*
+  		*/label("Variables")
+END
+
+INCLUDE ifin
+
+PROGRAM command
+BEGIN
+	put "duplicates report "
+	varlist [main.vl_var]
+	INCLUDE _ifin_pr
+END

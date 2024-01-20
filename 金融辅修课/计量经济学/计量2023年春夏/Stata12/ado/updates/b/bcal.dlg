@@ -1,0 +1,115 @@
+/*
+	bcal
+
+*!  VERSION 1.0.1  19aug2011
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_medium
+DEFINE _dlght 220
+INCLUDE header
+
+HELP hlp1, view("help bcal")
+RESET res1
+
+DIALOG main, label("bcal - Business calendar file manipulation") tabtitle("Main")
+BEGIN
+  GROUPBOX gb_bcal		_lft	_top	_iwd	_ht8,		///
+	label("Syntax")
+  RADIO rb_check		_ilft	_ss	_inwd	., first	///
+	onclickon(script main_check_on)					///
+	label("List business calendars used by the data currently in memory")
+  RADIO rb_dir			@	_ss	@	.,		///
+	onclickon(script main_dir_on)					///
+	label("List filenames and directories of available business calendars")
+  RADIO rb_describe		@	_ss	@	.,		///
+	onclickon(script main_describe_on)				///
+	label("Describe the specified business calendar")
+  RADIO rb_load			@	_ss	@	., last		///
+	onclickon(script main_load_on)					///
+	label("Load the business calendar")
+
+  TEXT tx_vars			_lft	+45	_iwd	.,		///
+	label("Variables:")
+  DEFINE holdy @y
+  VARLIST vl_vars		@	_ss	@	.,		///
+	label("Variables")
+
+  TEXT tx_calname		@	holdy	@	.,		///
+	label("Business calendar:")
+  COMBOBOX cb_calname		@	_ss	@	.,		///
+	dropdown							///
+	contents(bcal)							///
+	label("Business calendar:")
+  
+  CHECKBOX ck_rc0		@	_ls	@	.,		///
+	option(rc0)							///
+	label("Exit without error")
+END
+
+SCRIPT main_check_on
+BEGIN
+	main.tx_vars.show
+	main.vl_vars.show
+	main.ck_rc0.show
+	main.tx_calname.hide
+	main.cb_calname.hide
+END
+
+SCRIPT main_dir_on
+BEGIN
+	main.tx_vars.hide
+	main.vl_vars.hide
+	main.ck_rc0.hide
+	main.tx_calname.show
+	main.cb_calname.show
+	main.tx_calname.setlabel "Pattern:"
+END
+
+SCRIPT main_describe_on
+BEGIN
+	main.tx_vars.hide
+	main.vl_vars.hide
+	main.ck_rc0.hide
+	main.tx_calname.show
+	main.cb_calname.show
+	main.tx_calname.setlabel "Business calendar:"
+END
+
+SCRIPT main_load_on
+BEGIN
+	main.tx_vars.hide
+	main.vl_vars.hide
+	main.ck_rc0.hide
+	main.tx_calname.show
+	main.cb_calname.show
+	main.tx_calname.setlabel "Business calendar:"
+END
+
+PROGRAM command
+BEGIN
+	put "bcal "
+	if main.rb_check {
+		put "check "
+		put main.vl_vars
+		beginoptions
+			option main.ck_rc0
+		endoptions
+	}
+	if main.rb_dir {
+		put "dir "
+		put main.cb_calname
+	}
+	if main.rb_describe {
+		put "dir "
+		require main.cb_calname
+		put main.cb_calname
+	}
+	if main.rb_load {
+		put "load "
+		require main.cb_calname
+		put main.cb_calname
+	}
+END

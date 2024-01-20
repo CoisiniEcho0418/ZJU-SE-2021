@@ -1,0 +1,210 @@
+/*
+  statsby
+
+*!  VERSION 2.0.3  28sep2010
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_large
+INCLUDE header
+
+HELP hlp1, view("help statsby")
+RESET res1
+
+DIALOG main, tabtitle("Main")	///
+	label("statsby - Collect statistics for a command across a by list")
+BEGIN
+  DEFINE _y _top
+  INCLUDE _cmd_exp_list
+
+  TEXT     tx_byopt	_lft	_xls	_cwd1	.,			///
+	label("Group variables: (required)")
+  VARLIST  vl_byopt	@	_ss	_vlwd	.,			///
+	label("Group variables") option(by)
+  CHECKBOX ck_missing	@	_ls	_iwd	.,			///
+	label("Include missing values in the group variables")		///
+	option(NONE)
+END
+
+DIALOG opt, tabtitle("Options")
+BEGIN
+  RADIO    rb_default	_lft	_top	_iwd	_ht8,			///
+	first label("Replace data if not modified") option(NONE)	///
+	onclickon(script opt_save_off)
+
+  DEFINE holdx @x
+  RADIO    rb_clear	@	_ss	@	., 			///
+	option(clear)							///
+	label("Replace data even if modified")				///
+	onclickon(script opt_save_off)
+
+  RADIO    rb_sav	@	_ss	@ 	.,			///
+	last label("Save results to file")				///
+	onclickon(program opt_save_on)
+
+  GROUPBOX gb_save	_lft	_ms	_iwd	_ht10, label("Save")
+
+  TEXT     tx_sav	_indent	_ss	_ibwd	.,			///
+  	label("Filename:")
+  FILE     fi_sav	@	_ss	@	.,			///
+	label("Browse...")						///
+	option(saving)							///
+	filter("Stata Dataset (*.dta)|*.dta|All (*.*)|*.*")		///
+	defext(dta)							///
+	save								///
+	error("Filename to save")
+  CHECKBOX ck_double	@	_ls	_cwd2	.,			///
+	label("Save statistics in double precision")			///
+	option(double)
+  CHECKBOX ck_every	_ilft	_ms	_ckwd	.,			///
+	onclickon(script opt_every_on)					///
+	onclickoff(script opt_every_off)
+  SPINNER  sp_every	_cksep	@	_spwd	.,			///
+	label("save every #")						///
+	min(1)								///
+	max(10000)							///
+	default(1)							///
+	option(every)
+  TEXT     tx_every	_spsep	@	_cksprb	.,			///
+	label("Save results to file every #th replication")
+
+  CHECKBOX ck_total	_lft	+45	_iwd	.,			///
+	label("Include results for the entire dataset")			///
+	option(total)
+  CHECKBOX ck_subset 	@	_ms	@ 	.,			///
+	label("Include all combinations of subsets of groups")		///
+	option(subset)
+END
+
+PROGRAM opt_save_on
+BEGIN
+	call opt.gb_save.enable
+	call opt.fi_sav.enable
+	call opt.ck_double.enable
+	call opt.ck_every.enable
+	call opt.tx_every.enable
+	call opt.tx_sav.enable
+	if opt.ck_every {
+		call opt.sp_every.enable
+	}
+END
+
+SCRIPT opt_save_off
+BEGIN
+	opt.gb_save.disable
+	opt.fi_sav.disable
+	opt.ck_double.disable
+	opt.sp_every.disable
+	opt.tx_every.disable
+	opt.ck_every.disable
+	opt.tx_sav.disable
+END
+
+SCRIPT opt_every_on
+BEGIN
+	opt.sp_every.enable
+END
+
+SCRIPT opt_every_off
+BEGIN
+	opt.sp_every.disable
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _iwd
+  DEFINE _y _top
+  DEFINE _cy _ht6
+  INCLUDE _output_reps
+
+  CHECKBOX ck_nolegend 	_lft	_xls	_iwd   	.,			///
+	label("Suppress the table legend")				///
+	onclickon(program check_legend)					///
+	onclickoff(program check_legend)				///
+	option(nolegend)
+  CHECKBOX ck_verbose 	@	_ms	@ 	.,			///
+	label("Display the full table legend") option(verbose)
+END
+
+DIALOG adv, tabtitle("Advanced")
+BEGIN
+  TEXT     tx_basepop	_lft	_top	_iwd	.,			///
+  	label("Restrict initializing sample: (expression)")
+  EXP	   ex_basepop	@	_ss	@	.,			///
+  	label("Create") option(basepop)
+
+  CHECKBOX ck_force 	@	_ls	@ 	.,			///
+	label("Do not check for svy commands")				///
+	option(force)
+  CHECKBOX ck_forcedrop	@	_ms	@	.,			///
+  	option(forcedrop)						///
+  	label("Retain only observations in by groups when calling command")
+END
+
+PROGRAM check_legend
+BEGIN
+	if rpt.ck_nolegend {
+		call gaction rpt.ck_verbose.disable
+	}
+	if !rpt.ck_nolegend {
+		call gaction rpt.ck_verbose.enable
+	}
+END
+
+PROGRAM statsby_by_options
+BEGIN
+	varlist main.vl_byopt
+END
+
+PROGRAM statsby_options
+BEGIN
+	put "statsby "
+	option main.ck_b
+	option main.ck_se
+	put " " main.ed_explst
+	beginoptions
+		put "by("
+		put /program statsby_by_options
+		if main.ck_missing {
+			put ", missing"
+		}
+		put ") "
+		option opt.rb_clear
+		if opt.rb_sav {
+			require opt.fi_sav
+			repfile opt.fi_sav
+			put `"saving("'
+			put opt.fi_sav
+			put `", "'
+			optionarg opt.sp_every
+			option opt.ck_double
+			put "replace)"
+		}
+		if opt.rb_default {
+			stopbox rusure "This command will replace your data in memory."	///
+				"Do you wish to continue?"
+			put " clear"
+		}
+		option opt.ck_total
+		option opt.ck_subset
+		option rpt.ck_qui
+		option rpt.ck_noi
+		option rpt.ck_trace
+		option rpt.ck_nolegend
+		option rpt.ck_verbose
+		optionarg adv.ex_basepop
+		option adv.ck_force
+		option adv.ck_forcedrop
+	endoptions
+END
+
+PROGRAM command
+BEGIN
+	require main.vl_cmd
+	put /program statsby_options
+	put " " " : "	/* end of prefix, begin command */
+		put main.vl_cmd
+END

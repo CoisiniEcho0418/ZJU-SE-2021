@@ -1,0 +1,152 @@
+/*
+	sg__opts_newcovs
+
+*!  VERSION 1.0.1  06jul2011
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_medium
+DEFINE _dlght 220
+INCLUDE header
+HELP hlp1, view("help sem option covstructure")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	create STRING main_matrixResult
+END
+
+DIALOG main, label("") tabtitle("Main")
+BEGIN
+  RADIO rb_error		_lft	_top	_iwd	., first	///
+	onclickon(script main_error_on)					///
+	label("Error variables")
+  RADIO rb_exogenous		@	_ss	@	., last		///
+	onclickon(script main_exogenous_on)				///
+	label("Exogenous variables")
+
+  TEXT tx_groupid		_lft	_ls	_vnwd	.,		///
+	label("Group ID (optional):")
+  EDIT ed_groupid		@	_ss	@	.,		///
+	label("Group ID:")
+  TEXT tx_vars			@	_ls	_iwd	.,		///
+	label("Error variables:")
+  COMBOBOX cb_vars		@	_ss	@	.,		///
+	dropdown							///
+	append								///
+	contents(main_exog_vars_list)					///
+	label("Error variables")
+  TEXT tx_structure		@	_ls	_cwd1	.,		///
+	label("Structure:")
+  DEFINE holdy @y
+  COMBOBOX cb_structure		@	_ss	@	.,		///
+	dropdownlist							///
+	contents(main_structure_list)					///
+	values(main_structure_values)					///
+	onselchange("program main_structure_selChange")			/// 
+	label("Structure")
+  TEXT tx_matname		+200	holdy	_vnwd	.,		///
+	label("Matrix name:")
+  COMBOBOX cb_matname		@	_ss	@	.,		///
+	dropdown							///
+	contents(matrix)						///
+	error("Matrix name")
+  BUTTON bu_matinput		+130	@	100	.,		///
+	onpush(program show_matrix_input)				///
+	tooltip("Input matrix by hand")					///
+	label("Input matrix...")
+END
+
+SCRIPT main_error_on
+BEGIN
+	main.tx_vars.setlabel "Error variables:"
+	main.cb_vars.setcontentslist ".__SEMG.dbsettings.errvars" 
+	main.cb_vars.repopulate
+
+END
+
+SCRIPT main_exogenous_on
+BEGIN
+	main.tx_vars.setlabel "Exogenous variables:"
+	main.cb_vars.setcontentslist ".__SEMG.dbsettings.exogvars" 
+	main.cb_vars.repopulate
+END
+
+LIST main_structure_list
+BEGIN
+       Diagonal
+       Unstructured
+       Identity
+       Exchangeable
+       Zero
+       Pattern
+       Fixed
+END
+
+LIST main_structure_values
+BEGIN
+       diagonal
+       unstructured
+       identity
+       exchangeable
+       zero
+       pattern
+       fixed
+END
+
+PROGRAM main_structure_selChange
+BEGIN
+	if main.cb_structure.iseq("pattern") | main.cb_structure.iseq("fixed") {
+		call main.tx_matname.show
+		call main.cb_matname.show
+		call main.bu_matinput.show
+	}
+	else {
+		call main.tx_matname.hide
+		call main.cb_matname.hide
+		call main.bu_matinput.hide
+	}
+END
+
+PROGRAM show_matrix_input
+BEGIN
+	call create CHILD matrix_input
+	if ! _rc {
+		call matrix_input.setExitString main_matrixResult
+		call matrix_input.setExitAction "program getMatrixResult"
+		call matrix_input.callthru "isChildContext.settrue"
+	}
+END
+PROGRAM getMatrixResult
+BEGIN
+	call main.cb_matname.repopulate
+	call main.cb_matname.setvalue class matrixResult.value
+END
+
+PROGRAM main_output
+BEGIN
+	if main.ed_groupid {
+		put  main.ed_groupid ":"
+	}
+	require main.cb_vars
+	put " " main.cb_vars " , "
+	if main.cb_structure.iseq("pattern") {
+		require main.cb_matname
+		put "pattern(" main.cb_matname ")"
+	}
+	if main.cb_structure.iseq("fixed") {
+		require main.cb_matname
+		put "fixed(" main.cb_matname ")"
+	}
+	if !main.cb_structure.iseq("pattern") & 			///
+		!main.cb_structure.iseq("fixed") {
+		put main.cb_structure
+	}
+END
+
+PROGRAM command
+BEGIN
+	put "covstructure(" /program main_output ")"
+END

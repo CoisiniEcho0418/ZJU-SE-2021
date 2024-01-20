@@ -1,0 +1,14 @@
+*! version 1.0.1  19dec2004
+sequence 3030
+
+set symbol     scheme ilabel
+set size       scheme
+set fillcolor  scheme
+set linestyle  scheme
+set angle      scheme
+
+set backsymbol  scheme none
+set backsize    scheme
+set backcolor   scheme
+set backline    scheme
+set backangle   scheme

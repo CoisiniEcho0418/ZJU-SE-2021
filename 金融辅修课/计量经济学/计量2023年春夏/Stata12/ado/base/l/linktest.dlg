@@ -1,0 +1,70 @@
+/*
+  linktest
+
+*! VERSION 1.1.1  13may2011
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help linktest")
+RESET res1
+
+PROGRAM POSTINIT_PROGRAM
+BEGIN
+	call create STRING main_bu_fmtcoefResults
+	call program main_bu_fmtcoef_ckResults
+END
+
+DIALOG main, tabtitle("Main")	///
+	label("linktest - Specification link test for single-equation models")
+BEGIN
+  TEXT     tx_opt	_lft	_top	_iwd	.,	///
+	label("Options for the underlying estimation command:")
+  EDIT     ed_opt	@	_ss	@	.
+  EDIT     ed_opt2	@	_ms	@	.
+  EDIT     ed_opt3	@	_ms	@	.
+  EDIT     ed_opt4	@	_ms	@	.
+  EDIT     ed_opt5	@	_ms	@	.
+
+  BUTTON bu_fmtcoef		_lft	_ls	200	.,		///
+	onpush("program main_bu_fmtcoef_getOpts")			///
+	label("Set table formats  ")
+END
+
+PROGRAM main_bu_fmtcoef_getOpts
+BEGIN
+	call create CHILD fmt_coef_table_reporting AS main_bu_fmtcoef
+	call main_bu_fmtcoef.setExitString main_bu_fmtcoefResults
+	call main_bu_fmtcoef.setExitAction "program main_bu_fmtcoef_ckResults"
+END
+
+PROGRAM main_bu_fmtcoef_ckResults
+BEGIN
+	if main_bu_fmtcoefResults {
+		call main.bu_fmtcoef.setlabel "Set table formats *"
+	}
+	else {
+		call main.bu_fmtcoef.setlabel "Set table formats  "
+	}
+END
+
+
+INCLUDE ifin
+
+PROGRAM command
+BEGIN
+	put "linktest "
+	INCLUDE _ifin_pr
+	beginoptions
+		put main.ed_opt " "
+		put main.ed_opt2 " "
+		put main.ed_opt3 " "
+		put main.ed_opt4 " "
+		put main.ed_opt5
+		put " " main_bu_fmtcoefResults
+	endoptions
+END

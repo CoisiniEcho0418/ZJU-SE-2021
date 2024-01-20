@@ -1,0 +1,995 @@
+/*
+    biplot_9.dlg
+
+*!  VERSION 1.0.4  28sep2006
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+
+HELP hlp1, view("help biplot")
+RESET res1
+
+
+DIALOG main, tabtitle("Main") label("biplot - Biplots")
+BEGIN
+  TEXT     tx_vars         _lft	       _top      _cwd1	   .,		///
+  		label("Variables:")
+  VARLIST  vl_vars         @           _ss       @         .,		///
+  		label("Variables")
+  GROUPBOX gb_options      _lft        +35       _iwd      _ht22,	///
+  		label("Options")
+  RADIO    rb_dim	   _ilft       _ss       _cwd2     .,		///
+  		label("Plot first and second dimensions") first		///
+		onclickon(main.ed_dim.disable)
+  DEFINE y @y
+  RADIO    rb_dim2         _ilft       _ss       _cwd2     .,		///
+  		label("Specify other dimensions to plot") last		///
+		onclickon(main.ed_dim.enable)
+  EDIT     ed_dim          _indent2    _ss       _en7wd    .,		///
+  		label("Two dimensions to plot") default("2  1") option(dim)
+  TEXT     tx_dim          _en7sep     @         200       .,		///
+  		label("Two dimensions to plot")
+  RADIO    rb_center       _ilft       _ls       _cwd2     .,		///
+  		label("Center variables") first
+  RADIO    rb_std          @           _ss       @         .,		///
+  		option(std)						///
+  		label("Standardize variables")  last
+
+  EDIT     ed_alpha        @           _ls       _en7wd    ., 		///
+  		default(0.5) option(alpha) numonly
+  TEXT     tx_alpha        _en7sep     @         200       ., 		///
+  		label("Alpha (row weight)")
+
+  CHECKBOX ck_mahalanobis  _ilft       _ls       _cwd1     .,		///
+  		option(mahalanobis)					///
+  		onclickon(script ck_mahalanobis_on)			///
+		onclickoff(script ck_mahalanobis_off)			///
+		label("Approximate Mahalanobis distance (implies alpha(0))")
+
+  CHECKBOX ck_stretch      @           _ms       @         .,		///
+  		onclickon(script main_stretch_on)			///
+  		onclickoff(script main_stretch_off)			///
+  		label("Stretch column (variable) arrows by some factor")
+  EDIT     ed_stretch      _indent2    _ss       _en7wd    ., 		///
+  		default(1) option(stretch) numonly
+  TEXT     tx_stretch      _en7sep     @         150       ., 		///
+  		label("Factor")
+  CHECKBOX ck_norow        _lft2       y         _cwd2     .,		///
+  		label("Suppress row points") option(norow) 		///
+		onclickon(script norow_on)				///
+		onclickoff(script norow_off)
+  CHECKBOX ck_nocol        _lft2       _ms       _cwd2     .,		///
+  		label("Suppress column arrows") option(nocolumn)	///
+		onclickon(script nocol_on)				///
+		onclickoff(script nocol_off)
+  CHECKBOX ck_negcol       _lft2       _ms       _cwd2     .,		///
+  		label("Include negative column (variable) arrows")	///
+		option(negcol) onclickon(script negcol_on)		///
+		onclickoff(script negcol_off)
+  CHECKBOX ck_xnegate      _lft2       _ms       _cwd2     .,		///
+  		label("Negate data relative to the x-axis")		///
+  		option(xnegate)
+  CHECKBOX ck_ynegate      @           _ms       @         .,		///
+  		label("Negate data relative to the y-axis")		///
+  		option(ynegate)
+  CHECKBOX ck_autoaspect   @           _ms       @         .,		///
+  		option(autoaspect)					///
+  		label("Automatically adjust the aspect ratio based on the data")
+  CHECKBOX ck_separate     @           _ms       @         .,		///
+  		option(separate)					///
+  		label("Produce separate plots for rows and columns")
+  CHECKBOX ck_nograph      @           _ms       @         .,		///
+  		label("Suppress graph")					///
+  		option(nograph) onclickon(script graph_off)		///
+		onclickoff(script graph_on)
+  CHECKBOX ck_table        @           _ms       @         .,		///
+  		label("Display table showing biplot coordinates")	///
+  		option(table)
+END
+
+SCRIPT graph_off
+BEGIN
+	script rplot_disable
+	script cplot_disable
+	script gr_twoway_disable
+END
+
+SCRIPT graph_on
+BEGIN
+	script rplot_enable
+	program cplot_enable
+	script gr_twoway_enable
+END
+
+SCRIPT norow_on
+BEGIN
+	main.ck_nocol.disable
+	script rplot_disable
+END
+
+SCRIPT norow_off
+BEGIN
+	main.ck_nocol.enable
+	script rplot_enable
+END
+ 
+SCRIPT nocol_on
+BEGIN
+	main.ck_negcol.disable
+	main.ck_norow.disable
+	script cplot_disable
+END
+
+SCRIPT nocol_off
+BEGIN
+	main.ck_negcol.enable
+	main.ck_norow.enable
+	program cplot_enable
+END
+
+SCRIPT negcol_on
+BEGIN
+	main.ck_nocol.disable
+	program negcol_enable
+END
+
+SCRIPT negcol_off
+BEGIN
+	main.ck_nocol.enable
+	script negcol_disable
+END
+
+SCRIPT ck_mahalanobis_on
+BEGIN
+	main.ed_alpha.disable
+	main.tx_alpha.disable
+END
+
+SCRIPT ck_mahalanobis_off
+BEGIN
+	main.ed_alpha.enable
+	main.tx_alpha.enable
+END
+
+SCRIPT main_stretch_on
+BEGIN
+	main.ed_stretch.enable
+	main.tx_stretch.enable
+END
+
+SCRIPT main_stretch_off
+BEGIN
+	main.ed_stretch.disable
+	main.tx_stretch.disable
+END
+
+INCLUDE ifin
+
+DIALOG rplot, tabtitle("Rows")
+BEGIN
+  CHECKBOX ck_noLabel      _lft        _top      _gwd1     .,		///
+  		label("Do not show default row (observation) labels")	///
+  		option(nolabel)
+  CHECKBOX ck_name         @           _ms       @         .,		///
+  		onclickon(script rplot_name_on)				///
+  		onclickoff(script rplot_name_off)			///
+  		label("Override the default name given to rows (observations)")
+  EDIT     ed_name        _cksep      _ss       _vnwd     .,		///
+  		label("Name given to rows (observations)")		///
+  		option(name)
+  TEXT     tx_name        _vnsep      @         100       .,		///
+  		label("Name")
+
+/**** BEGIN -- Scatter options ****/
+  GROUPBOX gb_marker   _lft        +35       _gwd1         _ht14,	///
+	label("Markers (Scatter options)")
+
+  TEXT     tx_msymbol  _igft       _ss       _txwd         .,		///
+	label("Symbol:") right
+  COMBOBOX cb_msymbol  _txsep      @         _txr4gi       .,		///
+	option(msymbol)							///
+	dropdownlist							///
+	contents(symbols)
+
+  TEXT     tx_mcolor   _igft       _ls       _txwd         .,		///
+	label("Color:") right
+  COMBOBOX cb_mcolor   _txsep      @         _tcr4gi       .,		///
+	option(mcolor)							///
+	dropdownlist							///
+	contents(colors)						///
+	onselchangelist(rplot_color_mcolor)
+  COLOR    cl_mcolor   _tcr4gisep  @         _btwd         .,		///
+	option(mcolor)
+
+  TEXT     tx_msize    _lft4_2gi   @         _txwd         .,		///
+	label("Size:") right
+  COMBOBOX cb_msize    _txsep      @         _txr4gi       .,		///
+	option(msize)							///
+	dropdownlist 							///
+	contents(symbolsizes)
+
+  GROUPBOX gb_mlabel   _igft       _ls       _gwd2	   85,		///
+	label("Labels")
+
+  TEXT     tx_mlabel   _iigft      _ss       _txswd        .,		///
+	label("Variable:") right
+  VARNAME  vn_mlabel   _txssep     @         _txr4gi       .,		///
+  	option(mlabel)
+
+  TEXT     tx_mlcolor  _lft4_2gi   @         _txswd	   .,		///
+	label("Color:") right
+  COMBOBOX cb_mlcolor  _txssep     @         _tcr4gi       .,		///
+	option(mlabcolor)						///
+	dropdownlist							///
+	contents(colors)						///
+	onselchangelist(rplot_color_mlcolor)
+  COLOR    cl_mlcolor  _tcr4gisep  @         _btwd         .,		///
+	option(mlabcolor)
+
+  TEXT     tx_mlsize   _iigft      _ls       _txswd        .,		///
+	label("Size:") right
+  COMBOBOX cb_mlsize   _txssep     @         _txr4gi       .,		///
+	option(mlabsize) 						///
+	dropdownlist							///
+	contents(textsizes)
+
+  TEXT     tx_mlposition _lft4_2gi @         _txswd        .,		///
+	label("Position:") right
+  COMBOBOX cb_mlposition _txssep   @         _txr4gi       .,		///
+	option(mlabposition) 						///
+	dropdownlist							///
+	contents(clockpos)
+/**** END   -- Scatter options  ****/
+END
+
+SCRIPT rplot_disable
+BEGIN
+	rplot.ck_noLabel.disable
+	rplot.ck_name.disable
+	rplot.ed_name.disable
+	rplot.tx_name.disable
+	rplot.gb_marker.disable
+	rplot.tx_msymbol.disable
+	rplot.cb_msymbol.disable
+	rplot.tx_mcolor.disable
+	rplot.cb_mcolor.disable
+	rplot.cl_mcolor.disable
+	rplot.tx_msize.disable
+	rplot.cb_msize.disable
+	rplot.gb_mlabel.disable
+	rplot.tx_mlabel.disable
+	rplot.vn_mlabel.disable
+	rplot.tx_mlcolor.disable
+	rplot.cb_mlcolor.disable
+	rplot.cl_mlcolor.disable
+	rplot.tx_mlsize.disable
+	rplot.cb_mlsize.disable
+	rplot.tx_mlposition.disable
+	rplot.cb_mlposition.disable
+END
+
+SCRIPT rplot_enable
+BEGIN
+	rplot.ck_noLabel.enable
+	rplot.ck_name.enable
+	program rplot_ck_name
+	rplot.gb_marker.enable
+	rplot.tx_msymbol.enable
+	rplot.cb_msymbol.enable
+	rplot.tx_mcolor.enable
+	rplot.cb_mcolor.enable
+	rplot.cl_mcolor.enable
+	rplot.tx_msize.enable
+	rplot.cb_msize.enable
+	rplot.gb_mlabel.enable
+	rplot.tx_mlabel.enable
+	rplot.vn_mlabel.enable
+	rplot.tx_mlcolor.enable
+	rplot.cb_mlcolor.enable
+	rplot.cl_mlcolor.enable
+	rplot.tx_mlsize.enable
+	rplot.cb_mlsize.enable
+	rplot.tx_mlposition.enable
+	rplot.cb_mlposition.enable
+END
+
+PROGRAM rplot_ck_name
+BEGIN
+	if rplot.ck_name {
+		call gaction rplot.ed_name.enable
+		call gaction rplot.tx_name.enable
+	}
+	if !rplot.ck_name {
+		call gaction rplot.ed_name.disable
+		call gaction rplot.tx_name.disable
+	}
+END
+
+SCRIPT rplot_name_off
+BEGIN
+	rplot.ed_name.disable
+	rplot.tx_name.disable
+END
+
+SCRIPT rplot_name_on
+BEGIN
+	rplot.ed_name.enable
+	rplot.tx_name.enable
+END
+
+LIST rplot_color_mcolor
+BEGIN
+	rplot.cl_mcolor.hide
+	rplot.cl_mcolor.show
+	rplot.cl_mcolor.hide
+END
+
+LIST rplot_color_mlcolor
+BEGIN
+	rplot.cl_mlcolor.hide
+	rplot.cl_mlcolor.show
+	rplot.cl_mlcolor.hide
+END
+
+DIALOG cplot, tabtitle("Columns")
+BEGIN
+  CHECKBOX ck_noLabel      _lft        _top      _gwd1     .,		///
+  		label("Do not show default column (variable) labels")	///
+  		option(nolabel)
+  CHECKBOX ck_name         @           _ss       @         .,		///
+  		onclickon(script cplot_name_on)				///
+  		onclickoff(script cplot_name_off)			///
+  		label("Override the default name given to columns (variables)")
+  EDIT     ed_name         _cksep      _ss       _vnwd     .,		///
+  		label("Name given to columns (variables)")		///
+  		option(name)
+  TEXT     tx_name         _vnsep      @         100       .,		///
+  		label("Name")
+
+/**** BEGIN -- Arrow options ****/
+  GROUPBOX gb_line           _lft      +30       _gwd1     _ht4h,	///
+  		label("Line options")
+  TEXT     tx_ccol           _lft4_1gi _ss       _txwd     .,		///
+  		label("Color:") right
+DEFINE y @y
+  COMBOBOX cb_ccol           _txsep    @         _tcr2b4g  .,		///
+  		label("Line color") 					///
+  		option(lcolor) 					///
+  		dropdownlist						///
+  		contents(colors) 					///
+  		onselchangelist(cplot_color_ccol)
+  COLOR    cl_ccol           _tcr2b4gsep @       _colorwd  .,		///
+  		label("Line color") 					///
+  		option(lcolor) 					///
+  		default(255 0 0)
+
+  TEXT     tx_clpat          _lft4_1gi _ms       _txwd     .,		///
+  		label("Pattern:") right
+  COMBOBOX cb_clpat          _txsep    @         _txr2b4g  .,		///
+  		label("Pattern") 					///
+  		dropdownlist 						///
+  		contents(linepatterns) 					///
+  		option(lpattern)
+
+  TEXT     tx_clwid          _igft4_2  y         _txwd     .,		///
+  		label("Width:") right
+  COMBOBOX cb_clwid          _txsep    @         _txr2b4g  .,		///
+  		label("Connect width") 					///
+  		dropdownlist						///
+  		contents(linewidths) option(lwidth)
+/**** END   -- Arrow options  ****/
+
+/**** BEGIN -- Arrowhead options ****/
+  GROUPBOX gb_marker   _gft2       _top      _gwd1         _ht12h,	///
+	label("Arrowheads")
+
+  TEXT     tx_mcolor   _igft2      _ss       _txwd         .,		///
+	label("Color:") right
+  COMBOBOX cb_mcolor   _txsep      @         _tcr4gi       .,		///
+	option(mcolor)							///
+	dropdownlist							///
+	contents(colors)						///
+	onselchangelist(cplot_color_mcolor)
+  COLOR    cl_mcolor   _tcr4gisep  @         _btwd         .,		///
+	option(mcolor)
+
+  TEXT     tx_msize    _lft4_4g    @         _txwd         .,		///
+	label("Size:") right
+  COMBOBOX cb_msize    _txsep      @         _txr4gi       .,		///
+	option(msize)							///
+	dropdownlist 							///
+	contents(symbolsizes)
+
+  TEXT     tx_mangle   _igft2      _ms       _txwd         .,		///
+	label("Angle:") right
+  COMBOBOX cb_mangle   _txsep      @         _tcr4gi       .,		///
+	option(mangle)							///
+	dropdownlist							///
+	contents(cplot_angle) values(cplot_angle_values)
+
+  TEXT     tx_barbsize _lft4_4g    @         _txwd         .,		///
+	label("Barb size:") right
+  COMBOBOX cb_barbsize _txsep      @         _txr4gi       .,		///
+	option(barbsize)						///
+	dropdownlist 							///
+	contents(symbolsizes)
+
+  GROUPBOX gb_mlabel   _igft2      _ms       _gwd2	   75,		///
+	label("Labels")
+
+  TEXT     tx_mlsize   _iigft2     _ss       _txswd        .,		///
+	label("Size:") right
+  COMBOBOX cb_mlsize   _txssep     @         _txr4gi       .,		///
+	option(mlabsize) 						///
+	dropdownlist							///
+	contents(textsizes)
+
+  TEXT     tx_mlcolor  _lft4_4g    @         _txwd	   .,		///
+	label("Color:") right
+  COMBOBOX cb_mlcolor  _txsep      @         _tcr4gi       .,		///
+	option(mlabcolor)						///
+	dropdownlist							///
+	contents(colors)						///
+	onselchangelist(cplot_color_mlcolor)
+  COLOR    cl_mlcolor  _tcr4gisep  @         _btwd         .,		///
+	option(mlabcolor)
+
+
+  TEXT     tx_mlposition _iigft2   _ms       _txswd        .,		///
+	label("Position:") right
+  COMBOBOX cb_mlposition _txssep   @         _txr4gi       .,		///
+	option(mlabposition) 						///
+	dropdownlist							///
+	contents(clockpos)
+/**** END   -- Arrowhead options  ****/
+  GROUPBOX gb_negcol       _lft        _xls       _iwd      _ht15,	///
+  		label("Negative column options")
+  CHECKBOX ck_noLabel2     _ilft        _ss       _cwd2     .,		///
+  		label("Do not show default column (variable) labels")	///
+  		option(nolabel)
+  DEFINE top @y
+  CHECKBOX ck_name2        @           _ss       @         .,		///
+  		onclickon(script cplot_name2_on)			///
+  		onclickoff(script cplot_name2_off)			///
+  		label("Override the default name given to columns (variables)")
+  EDIT     ed_name2        _cksep      _ss       _vnwd     .,		///
+  		label("Name given to columns (variables)")		///
+  		option(name)
+  TEXT     tx_name2        _vnsep      @         100       .,		///
+  		label("Name")
+
+/**** BEGIN -- Arrow options ****/
+  GROUPBOX gb_line2          _ilft      +30       355       _ht4h,	///
+  		label("Line options")
+  TEXT     tx_ccol2          _lft4_1gi _ss       _txwd     .,		///
+  		label("Color:") right
+DEFINE y @y
+  COMBOBOX cb_ccol2          _txsep    @         _tcr2b4g  .,		///
+  		label("Line color") 					///
+  		option(lcolor) 					///
+  		dropdownlist						///
+  		contents(colors) 					///
+  		onselchangelist(cplot_color2_ccol)
+  COLOR    cl_ccol2          _tcr2b4gsep @       _colorwd  .,		///
+  		label("Line color") 					///
+  		option(lcolor) 					///
+  		default(255 0 0)
+
+  TEXT     tx_clpat2         _lft4_1gi _ms       _txwd     .,		///
+  		label("Pattern:") right
+  COMBOBOX cb_clpat2         _txsep    @         _txr2b4g  .,		///
+  		label("Pattern") 					///
+  		dropdownlist 						///
+  		contents(linepatterns) 					///
+  		option(lpattern)
+
+  TEXT     tx_clwid2         _igft4_2  y         _txwd     .,		///
+  		label("Width:") right
+  COMBOBOX cb_clwid2         _txsep    @         _txr2b4g  .,		///
+  		label("Connect width") 					///
+  		dropdownlist						///
+  		contents(linewidths) option(lwidth)
+/**** END   -- Arrow options  ****/
+
+/**** BEGIN -- Arrowhead options ****/
+  GROUPBOX gb_marker2  _gft2       top       _cwd1         _ht12h,	///
+	label("Arrowheads")
+
+  TEXT     tx_mcolor2  _igft2      _ss       _txwd         .,		///
+	label("Color:") right
+  COMBOBOX cb_mcolor2  _txsep      @         _tcr4gi       .,		///
+	option(mcolor)							///
+	dropdownlist							///
+	contents(colors)						///
+	onselchangelist(cplot_color2_mcolor)
+  COLOR    cl_mcolor2  _tcr4gisep  @         _btwd         .,		///
+	option(mcolor)
+
+  TEXT     tx_msize2   _lft4_4g    @         _txwd         .,		///
+	label("Size:") right
+  COMBOBOX cb_msize2   _txsep      @         _txr4gi       .,		///
+	option(msize)							///
+	dropdownlist 							///
+	contents(symbolsizes)
+
+  TEXT     tx_mangle2  _igft2      _ms       _txwd         .,		///
+	label("Angle:") right
+  COMBOBOX cb_mangle2  _txsep      @         _tcr4gi       .,		///
+	option(mangle)							///
+	dropdownlist							///
+	contents(cplot_angle) values(cplot_angle_values)
+
+  TEXT    tx_barbsize2 _lft4_4g    @         _txwd         .,		///
+	label("Barb size:") right
+  COMBOBOX cb_barbsize2 _txsep     @         _txr4gi       .,		///
+	option(barbsize)						///
+	dropdownlist 							///
+	contents(symbolsizes)
+
+  GROUPBOX gb_mlabel2  _igft2      _ms       _gwd2	   75,		///
+	label("Labels")
+
+  TEXT     tx_mlsize2  _iigft2     _ss       _txswd        .,		///
+	label("Size:") right
+  COMBOBOX cb_mlsize2  _txssep     @         _txr4gi       .,		///
+	option(mlabsize) 						///
+	dropdownlist							///
+	contents(textsizes)
+	
+  TEXT     tx_mlcolor2 _lft4_4g    @         _txwd	   .,		///
+	label("Color:") right
+  COMBOBOX cb_mlcolor2 _txsep      @         _tcr4gi       .,		///
+	option(mlabcolor)						///
+	dropdownlist							///
+	contents(colors)						///
+	onselchangelist(cplot_color2_mlcolor)
+  COLOR    cl_mlcolor2 _tcr4gisep  @         _btwd         .,		///
+	option(mlabcolor)
+
+
+  TEXT    tx_mlposition2 _iigft2   _ms       _txswd        .,		///
+	label("Position:") right
+  COMBOBOX cb_mlposition2 _txssep  @         _txr4gi       .,		///
+	option(mlabposition) 						///
+	dropdownlist							///
+	contents(clockpos)
+/**** END   -- Arrowhead options  ****/
+END
+
+
+LIST cplot_angle
+BEGIN
+	Default
+	10 degrees
+	15 degrees
+	20 degrees
+	25 degrees
+	30 degrees
+	35 degrees
+	40 degrees
+	45 degrees
+	50 degrees
+	55 degrees
+	60 degrees
+	65 degrees
+	70 degrees
+	75 degrees
+	80 degrees
+	85 degrees
+	90 degrees
+END
+
+LIST cplot_angle_values
+BEGIN
+	""
+	10
+	15
+	20
+	25
+	30
+	35
+	40
+	45
+	50
+	55
+	60
+	65
+	70
+	75
+	80
+	85
+	90
+END
+
+SCRIPT cplot_name_off
+BEGIN
+	cplot.ed_name.disable
+	cplot.tx_name.disable
+END
+
+SCRIPT cplot_name_on
+BEGIN
+	cplot.ed_name.enable
+	cplot.tx_name.enable
+END
+
+LIST cplot_color_ccol
+BEGIN
+	cplot.cl_ccol.hide
+	cplot.cl_ccol.show
+	cplot.cl_ccol.hide
+END
+
+LIST cplot_color_mcolor
+BEGIN
+	cplot.cl_mcolor.hide
+	cplot.cl_mcolor.show
+	cplot.cl_mcolor.hide
+END
+
+LIST cplot_color_mlcolor
+BEGIN
+	cplot.cl_mlcolor.hide
+	cplot.cl_mlcolor.show
+	cplot.cl_mlcolor.hide
+END
+
+SCRIPT cplot_disable
+BEGIN
+	cplot.ck_noLabel.disable
+	cplot.ck_name.disable
+	cplot.ed_name.disable
+	cplot.tx_name.disable
+	cplot.gb_line.disable
+	cplot.tx_ccol.disable
+	cplot.cb_ccol.disable
+	cplot.cl_ccol.disable
+	cplot.tx_clpat.disable
+	cplot.cb_clpat.disable
+	cplot.tx_clwid.disable
+	cplot.cb_clwid.disable
+	cplot.gb_marker.disable
+	cplot.tx_mcolor.disable
+	cplot.cb_mcolor.disable
+	cplot.cl_mcolor.disable
+	cplot.tx_msize.disable
+	cplot.cb_msize.disable
+	cplot.tx_mangle.disable
+	cplot.cb_mangle.disable
+	cplot.tx_barbsize.disable
+	cplot.cb_barbsize.disable
+	cplot.gb_mlabel.disable
+	cplot.tx_mlcolor.disable
+	cplot.cb_mlcolor.disable
+	cplot.cl_mlcolor.disable
+	cplot.tx_mlsize.disable
+	cplot.cb_mlsize.disable
+	cplot.tx_mlposition.disable
+	cplot.cb_mlposition.disable
+	script negcol_disable
+END
+
+SCRIPT negcol_disable
+BEGIN
+	cplot.gb_negcol.disable
+	cplot.ck_noLabel2.disable
+	cplot.ck_name2.disable
+	cplot.ed_name2.disable
+	cplot.tx_name2.disable
+	cplot.gb_line2.disable
+	cplot.tx_ccol2.disable
+	cplot.cb_ccol2.disable
+	cplot.cl_ccol2.disable
+	cplot.tx_clpat2.disable
+	cplot.cb_clpat2.disable
+	cplot.tx_clwid2.disable
+	cplot.cb_clwid2.disable
+	cplot.gb_marker2.disable
+	cplot.tx_mcolor2.disable
+	cplot.cb_mcolor2.disable
+	cplot.cl_mcolor2.disable
+	cplot.tx_msize2.disable
+	cplot.cb_msize2.disable
+	cplot.tx_mangle2.disable
+	cplot.cb_mangle2.disable
+	cplot.tx_barbsize2.disable
+	cplot.cb_barbsize2.disable
+	cplot.gb_mlabel2.disable
+	cplot.tx_mlcolor2.disable
+	cplot.cb_mlcolor2.disable
+	cplot.cl_mlcolor2.disable
+	cplot.tx_mlsize2.disable
+	cplot.cb_mlsize2.disable
+	cplot.tx_mlposition2.disable
+	cplot.cb_mlposition2.disable
+END
+
+PROGRAM cplot_enable
+BEGIN
+	call gaction cplot.ck_noLabel.enable
+	call gaction cplot.ck_name.enable
+	if cplot.ck_name {
+		call script cplot_name_on
+	}
+	if !cplot.ck_name {
+		call script cplot_name_off
+	}
+	call gaction cplot.gb_line.enable
+	call gaction cplot.tx_ccol.enable
+	call gaction cplot.cb_ccol.enable
+	call gaction cplot.cl_ccol.enable
+	call gaction cplot.tx_clpat.enable
+	call gaction cplot.cb_clpat.enable
+	call gaction cplot.tx_clwid.enable
+	call gaction cplot.cb_clwid.enable
+	call gaction cplot.gb_marker.enable
+	call gaction cplot.tx_mcolor.enable
+	call gaction cplot.cb_mcolor.enable
+	call gaction cplot.cl_mcolor.enable
+	call gaction cplot.tx_msize.enable
+	call gaction cplot.cb_msize.enable
+	call gaction cplot.tx_mangle.enable
+	call gaction cplot.cb_mangle.enable
+	call gaction cplot.tx_barbsize.enable
+	call gaction cplot.cb_barbsize.enable
+	call gaction cplot.gb_mlabel.enable
+	call gaction cplot.tx_mlcolor.enable
+	call gaction cplot.cb_mlcolor.enable
+	call gaction cplot.cl_mlcolor.enable
+	call gaction cplot.tx_mlsize.enable
+	call gaction cplot.cb_mlsize.enable
+	call gaction cplot.tx_mlposition.enable
+	call gaction cplot.cb_mlposition.enable
+	if main.ck_negcol {
+		call program negcol_enable
+	}
+END
+
+PROGRAM negcol_enable
+BEGIN
+	call gaction cplot.gb_negcol.enable
+	call gaction cplot.ck_noLabel2.enable
+	call gaction cplot.ck_name2.enable
+	if cplot.ck_name2 {
+		call script cplot_name2_on
+	}
+	if !cplot.ck_name2 {
+		call script cplot_name2_off
+	}
+	call gaction cplot.gb_line2.enable
+	call gaction cplot.tx_ccol2.enable
+	call gaction cplot.cb_ccol2.enable
+	call gaction cplot.cl_ccol2.enable
+	call gaction cplot.tx_clpat2.enable
+	call gaction cplot.cb_clpat2.enable
+	call gaction cplot.tx_clwid2.enable
+	call gaction cplot.cb_clwid2.enable
+	call gaction cplot.gb_marker2.enable
+	call gaction cplot.tx_mcolor2.enable
+	call gaction cplot.cb_mcolor2.enable
+	call gaction cplot.cl_mcolor2.enable
+	call gaction cplot.tx_msize2.enable
+	call gaction cplot.cb_msize2.enable
+	call gaction cplot.tx_mangle2.enable
+	call gaction cplot.cb_mangle2.enable
+	call gaction cplot.tx_barbsize2.enable
+	call gaction cplot.cb_barbsize2.enable
+	call gaction cplot.gb_mlabel2.enable
+	call gaction cplot.tx_mlcolor2.enable
+	call gaction cplot.cb_mlcolor2.enable
+	call gaction cplot.cl_mlcolor2.enable
+	call gaction cplot.tx_mlsize2.enable
+	call gaction cplot.cb_mlsize2.enable
+	call gaction cplot.tx_mlposition2.enable
+	call gaction cplot.cb_mlposition2.enable
+END
+
+SCRIPT cplot_name2_off
+BEGIN
+	cplot.ed_name2.disable
+	cplot.tx_name2.disable
+END
+
+SCRIPT cplot_name2_on
+BEGIN
+	cplot.ed_name2.enable
+	cplot.tx_name2.enable
+END
+
+LIST cplot_color2_ccol
+BEGIN
+	cplot.cl_ccol2.hide
+	cplot.cl_ccol2.show
+	cplot.cl_ccol2.hide
+END
+
+LIST cplot_color2_mcolor
+BEGIN
+	cplot.cl_mcolor2.hide
+	cplot.cl_mcolor2.show
+	cplot.cl_mcolor2.hide
+END
+
+LIST cplot_color2_mlcolor
+BEGIN
+	cplot.cl_mlcolor2.hide
+	cplot.cl_mlcolor2.show
+	cplot.cl_mlcolor2.hide
+END
+
+INCLUDE gr_twoway
+
+PROGRAM rplot_output
+BEGIN
+	if   (rplot.ck_noLabel | rplot.ck_name 				///
+		| rplot.cb_msymbol | rplot.cb_mcolor			///
+		| !H(rplot.cl_mcolor) | rplot.cb_msize 			///
+		| rplot.vn_mlabel | rplot.cb_mlsize 			///
+		| rplot.cb_mlcolor | !H(rplot.cl_mlcolor) 		///
+		| rplot.cb_mlposition )					///
+	{
+		put " " "rowopts(
+		put /program rowopts_output
+		put ") "
+	}
+END
+
+PROGRAM rowopts_output
+BEGIN
+	option rplot.ck_noLabel
+	if rplot.ck_name {
+		require rplot.ed_name
+		optionarg rplot.ed_name
+	}
+	optionarg /hidedefault rplot.cb_msymbol
+	if H(rplot.cl_mcolor) {
+		optionarg /hidedefault rplot.cb_mcolor
+	}
+	if !H(rplot.cl_mcolor) {
+		optionarg /quoted rplot.cl_mcolor
+	}
+	optionarg /hidedefault rplot.cb_msize
+	optionarg rplot.vn_mlabel
+	optionarg /hidedefault rplot.cb_mlsize
+	if H(rplot.cl_mlcolor) {
+		optionarg /hidedefault rplot.cb_mlcolor
+	}
+	if !H(rplot.cl_mlcolor) {
+		optionarg /quoted rplot.cl_mlcolor
+	}
+	optionarg /hidedefault rplot.cb_mlposition
+END
+
+PROGRAM colopts_output
+BEGIN
+	option cplot.ck_noLabel
+	if cplot.ck_name {
+		require cplot.ed_name
+		optionarg cplot.ed_name
+	}
+	if H(cplot.cl_ccol) {
+		optionarg /hidedefault cplot.cb_ccol
+	}
+	if !H(cplot.cl_ccol) {
+		optionarg /quoted cplot.cl_ccol
+	}
+	optionarg /hidedefault cplot.cb_clpat
+	optionarg /hidedefault cplot.cb_clwid
+	if H(cplot.cl_mcolor) {
+		optionarg /hidedefault cplot.cb_mcolor
+	}
+	if !H(cplot.cl_mcolor) {
+		optionarg /quoted cplot.cl_mcolor
+	}
+	optionarg /hidedefault cplot.cb_msize
+	optionarg /hidedefault cplot.cb_mangle
+	optionarg /hidedefault cplot.cb_barbsize
+	optionarg /hidedefault cplot.cb_mlsize
+	if H(cplot.cl_mlcolor) {
+		optionarg /hidedefault cplot.cb_mlcolor
+	}
+	if !H(cplot.cl_mlcolor) {
+		optionarg /quoted cplot.cl_mlcolor
+	}
+	optionarg /hidedefault cplot.cb_mlposition
+END
+
+PROGRAM negcolopts_output
+BEGIN
+	option cplot.ck_noLabel2
+	if cplot.ck_name2 {
+		require cplot.ed_name2
+		optionarg cplot.ed_name2
+	}
+	if H(cplot.cl_ccol2) {
+		optionarg /hidedefault cplot.cb_ccol2
+	}
+	if !H(cplot.cl_ccol2) {
+		optionarg /quoted cplot.cl_ccol2
+	}
+	optionarg /hidedefault cplot.cb_clpat2
+	optionarg /hidedefault cplot.cb_clwid2
+	if H(cplot.cl_mcolor2) {
+		optionarg /hidedefault cplot.cb_mcolor2
+	}
+	if !H(cplot.cl_mcolor2) {
+		optionarg /quoted cplot.cl_mcolor2
+	}
+	optionarg /hidedefault cplot.cb_msize2
+	optionarg /hidedefault cplot.cb_mangle2
+	optionarg /hidedefault cplot.cb_barbsize2
+	optionarg /hidedefault cplot.cb_mlsize2
+	if H(cplot.cl_mlcolor2) {
+		optionarg /hidedefault cplot.cb_mlcolor2
+	}
+	if !H(cplot.cl_mlcolor2) {
+		optionarg /quoted cplot.cl_mlcolor2
+	}
+	optionarg /hidedefault cplot.cb_mlposition2
+END
+
+PROGRAM cplot_output
+BEGIN
+	if   (cplot.ck_noLabel | cplot.ck_name 				///
+		| cplot.cb_ccol | !H(cplot.cl_ccol) 			///
+		| cplot.cb_clpat | cplot.cb_clwid			///
+		| cplot.cb_mangle | cplot.cb_barbsize | cplot.cb_mcolor	///
+		| !H(cplot.cl_mcolor) | cplot.cb_msize 			///
+		| cplot.cb_mlsize | cplot.cb_mlcolor 			///
+		| !H(cplot.cl_mlcolor) 	| cplot.cb_mlposition )		///
+	{
+		put " " "colopts(
+		put /program colopts_output
+		put ") "
+	}
+END
+
+PROGRAM negcol_output
+BEGIN
+	if   (cplot.ck_noLabel2 | cplot.ck_name2			///
+		| cplot.cb_ccol2 | !H(cplot.cl_ccol2) 			///
+		| cplot.cb_clpat2 | cplot.cb_clwid2			///
+		| cplot.cb_mangle2 | cplot.cb_barbsize2 		///
+		| cplot.cb_mcolor2					///
+		| !H(cplot.cl_mcolor2) | cplot.cb_msize2		///
+		| cplot.cb_mlsize2 | cplot.cb_mlcolor2 			///
+		| !H(cplot.cl_mlcolor2)	| cplot.cb_mlposition2 )	///
+	{
+		put " " "negcolopts(
+		put /program negcolopts_output
+		put ") "
+	}
+END
+
+PROGRAM command
+BEGIN
+	put "biplot "
+	varlist main.vl_vars
+	put /program ifin_output
+	beginoptions
+		option main.rb_std
+		if main.rb_dim2 {
+			optionarg main.ed_dim
+		}
+		optionarg /hidedefault main.ed_alpha
+		option main.ck_mahalanobis
+		optionarg main.ed_stretch
+		option main.ck_norow
+		option main.ck_nocol
+		option main.ck_negcol
+		option main.ck_xnegate
+		option main.ck_ynegate
+		option main.ck_autoaspect
+		option main.ck_separate
+		option main.ck_nograph
+		option main.ck_table
+		put " " /program rplot_output
+		put " " /program cplot_output
+		put " " /program negcol_output
+		put " " /program gr_twoway_output
+	endoptions
+END

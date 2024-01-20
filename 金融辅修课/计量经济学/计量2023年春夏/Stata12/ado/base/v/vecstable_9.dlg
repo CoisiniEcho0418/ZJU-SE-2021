@@ -1,0 +1,28 @@
+/*
+    vecstable_9.dlg
+
+*!  VERSION 1.1.1  28aug2006  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+
+HELP hlp1, view("help vecstable")
+RESET res1
+
+DIALOG main, tabtitle("Main") ///
+    label("vecstable - Check stability condition of VECM estimates")
+BEGIN
+	INCLUDE _varstable_common_9
+END
+
+INCLUDE _varstable_common_pr_9
+
+PROGRAM command
+BEGIN
+	put "vecstable"
+	put /program varstable_output
+END

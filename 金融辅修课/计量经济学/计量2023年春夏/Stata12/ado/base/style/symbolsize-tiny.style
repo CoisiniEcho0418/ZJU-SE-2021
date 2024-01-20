@@ -1,0 +1,7 @@
+*! version 1.0.0  22dec2002
+sequence 1100
+label "Tiny"
+
+set val .34722222
+
+* 1 pt based on a 4 inch high graph

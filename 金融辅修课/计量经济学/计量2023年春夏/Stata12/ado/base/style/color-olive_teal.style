@@ -1,0 +1,5 @@
+*! version 1.0.0  22dec2002
+sequence 1450
+label "Olive teal"
+
+set rgb "192 220 192"

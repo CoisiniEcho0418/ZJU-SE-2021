@@ -1,0 +1,73 @@
+/*
+	median
+
+*!  VERSION 1.2.0  23may2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_medium
+INCLUDE _ht230
+INCLUDE header
+
+HELP hlp1, view("help median")
+RESET res1
+
+PROGRAM POSTINIT_PROGRAM
+BEGIN
+	if __MESSAGE.iseq("-exact-") {
+		call main.ck_exact.seton
+	}
+END
+
+
+DIALOG main, label("median - Nonparametric equality-of-medians test")	/*
+		*/ tabtitle("Main")
+BEGIN
+  TEXT     tx_var         _lft      _top    _cwd3_1       .,		/*
+		*/ label("Variable:")
+  VARNAME  vn_var            @       _ss      _vnwd       .,		/*
+		*/ label("Variable")
+  TEXT     tx_byopt    _lft3_2      _top      _cwd1       .,		/*
+		*/ label("Grouping variable:")
+  VARNAME  vn_byopt          @       _ss      _vnwd       .,		/*
+		*/ option(by)						/*
+		*/ label("Grouping variable")
+  CHECKBOX ck_exact       _lft       _ls       _iwd       .,		/*
+		*/ option(exact)					/*
+		*/ label("Perform Fisher's exact test")
+  GROUPBOX gb_medianties     @       _ls          @    _ht8,		/*
+		*/ label("How to handle values equal to median")
+  RADIO    rb_below    _indent       _ss      _inwd       .,		/*
+		*/ first  						/*
+		*/ option("medianties(below)")				/*
+		*/ label("Assign to below group")
+  RADIO    rb_above          @       _ss          @       .,		/*
+		*/ option("medianties(above)")				/*
+		*/ label("Assign to above group")
+  RADIO    rb_drop           @       _ss          @       .,		/*
+		*/ option("medianties(drop)")				/*
+		*/ label("Drop from analysis")
+  RADIO    rb_split          @       _ss          @       .,		/*
+		*/ option("medianties(split)")				/*
+		*/ last							/*
+		*/ label("Split equally between two groups")
+END
+
+INCLUDE byifin
+INCLUDE weights_f
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "median "
+	varlist main.vn_var
+	INCLUDE _weights_pr
+	INCLUDE _ifin_pr
+	beginoptions
+		optionarg main.vn_byopt
+		option main.ck_exact
+		option radio(main rb_below rb_above rb_drop rb_split)
+	endoptions
+END

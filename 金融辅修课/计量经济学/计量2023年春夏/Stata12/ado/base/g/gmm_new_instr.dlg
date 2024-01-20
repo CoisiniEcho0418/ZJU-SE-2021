@@ -1,0 +1,54 @@
+/*
+  gmm_new_instr.dlg
+
+*!  VERSION 1.0.2  15apr2009
+
+  keyword:  eclass
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_large
+DEFINE _dlght 150
+INCLUDE header
+
+RESET res1
+
+DIALOG main, tabtitle("Main")
+BEGIN
+  TEXT tx_eql		_lft	_top	_cwd1	.,			///
+	label("Equation list: (optional)")
+  EDIT ed_eql		@	_ss	@	.,			///
+	label("Equation list")
+
+  TEXT tx_vars		@	_ls	@	.,			///
+	label("Variables:")
+  VARLIST vl_vars	@	_ss	_iwd	.,			///
+	label("Variables") ts
+  CHECKBOX ck_nocons	@	_ls	@	.,			///
+	label("Suppress the constant term")				///
+	option(noconstant)
+END
+
+PROGRAM main_output
+BEGIN
+	if main.ed_eql {
+		put main.ed_eql ":" main.vl_vars
+		beginoptions
+			option main.ck_nocons
+		endoptions
+	}
+	else {
+		put main.vl_vars
+		beginoptions
+			option main.ck_nocons
+		endoptions		
+	}
+END
+
+PROGRAM command
+BEGIN
+	require main.vl_vars
+	put "instruments(" /program main_output ")"
+END

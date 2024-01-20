@@ -1,0 +1,5 @@
+*! version 1.0.0  22dec2002
+sequence 2205
+label "Tight dot"
+
+set pattern ".1 .4"

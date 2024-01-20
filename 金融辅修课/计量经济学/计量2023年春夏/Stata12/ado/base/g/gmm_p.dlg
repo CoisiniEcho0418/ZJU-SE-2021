@@ -1,0 +1,76 @@
+/*
+	predict (after gmm)
+
+*!  VERSION 1.0.1  14apr2009
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help gmm postestimation")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	script _p_gentype_set_hasNoOffSet
+END
+
+SCRIPT POSTINIT
+BEGIN
+	script _p_gentype_setMedium
+END
+
+DIALOG main, label("predict - Prediction after estimation") tabtitle("Main")
+BEGIN
+  INCLUDE  _p_gentype
+
+  GROUPBOX gb_opts	_lft	_ls	_iwd	_ht7,			///
+	label("Produce:")
+  RADIO rb_eq		_indent	_ss	_vnwd	., first		///
+	onclickon(script main_one_eq_on)				///
+	label("One equation")
+  COMBOBOX cb_eq	_indent2 _ss	_vnwd	.,			///
+	dropdown							///
+	option(equation)						///
+	contents(ereturn eqnames)					///
+	label("One equation")
+  TEXT tx_eq		_vnsep	@	_cwd1	.,			///
+	label("Equation name")
+		
+  RADIO rb_alleqs	_ilft	_ls	@	., last			///
+	onclickon(script main_all_eqs_on)				///
+	label("All equations")
+END
+
+INCLUDE _p_gentype_sc
+INCLUDE ifin
+INCLUDE _type_list_fd
+
+SCRIPT main_one_eq_on
+BEGIN
+	script _p_gentype_single
+	main.cb_eq.enable
+	main.tx_eq.enable
+END
+
+SCRIPT main_all_eqs_on
+BEGIN
+	script _p_gentype_multiple
+	main.cb_eq.disable
+	main.tx_eq.disable
+END
+
+PROGRAM command
+BEGIN
+	put "predict "
+	put " " /program _p_gentype_output
+	INCLUDE _ifin_pr
+	beginoptions
+		if main.rb_eq {
+			optionarg main.cb_eq
+		}
+	endoptions
+END

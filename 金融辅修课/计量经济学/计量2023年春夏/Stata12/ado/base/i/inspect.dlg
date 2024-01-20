@@ -1,0 +1,52 @@
+/*
+	inspect
+
+*!  VERSION 1.1.0  07feb2007
+
+*/
+
+VERSION 8.0
+
+INCLUDE _std_medium
+INCLUDE header
+HELP hlp1, view("help inspect")
+RESET res1
+
+DIALOG main, label("inspect - Display simple summary of data's attributes")/*
+	*/ tabtitle("Main")
+BEGIN
+
+	TEXT	tx_var		_lft	_top	_iwd		.,	/*
+		*/	label("Variables: (leave empty for all)")
+
+	VARLIST vl_var		@	_ss	@		.,	/*
+		*/ label("Variables")
+
+	TEXT   	tx_ex		@	_ms	_cwd1		.,	/*
+		*/ label("Examples:")
+
+	TEXT    tx_yr		_ilft	_ss   	_cwd4_2		.,	/*
+		*/ label("yr*")
+
+	TEXT	tx_all         _lft4_2	@	_comb4_1	.,	/*
+		*/ label(`"all variables starting with "yr""')
+
+        TEXT 	tx_ex2	        _ilft	_ss	_cwd4_2		.,	/*
+		*/ label("xyz-abc")
+
+	TEXT    tx_ex3	       _lft4_2	@	_comb4_1	.,	/*
+		*/ label("all variables between xyz and abc")
+
+END
+
+INCLUDE byifin
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "inspect "
+	varlist [main.vl_var]
+	INCLUDE _ifin_pr
+END
+
+

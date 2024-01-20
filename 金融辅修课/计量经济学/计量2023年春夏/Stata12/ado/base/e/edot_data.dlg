@@ -1,0 +1,46 @@
+/*
+  easy graph dot - Dot chart
+
+*!  VERSION 1.0.1  03aug2006  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE egraph_header
+INCLUDE header
+HELP hlp1, view("help graph_dot")
+RESET res1
+
+DIALOG main, label("graph dot - Dot chart (observed data)") tabtitle("Main")
+BEGIN
+  TEXT     tx_var      _lft        _top      _vlwd       .,	///
+  	label("Variables:")
+  VARLIST  vl_var      @           _ss	     @           .,	///
+  	label("Variables")
+
+  CHECKBOX ck_perct    _lft        _ls       _iwd        .,     ///
+	label("Percentages of total (over Y-variables)")	///
+	option(percentages)
+END
+
+INCLUDE eover
+INCLUDE ifin
+INCLUDE etitle
+INCLUDE eyaxis
+INCLUDE edotopts
+
+PROGRAM command
+BEGIN
+	put "graph dot "
+	put "(asis) "
+	varlist main.vl_var
+	INCLUDE _ifin_pr
+	beginoptions
+		option main.ck_perct
+		put " "  /program eover_output
+		put " "  /program etitle_output
+		put " "  /program eyaxis_output
+		put " "  /program edotopts_output
+	endoptions
+END

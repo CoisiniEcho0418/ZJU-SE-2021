@@ -1,0 +1,79 @@
+/*
+	mcci
+
+*! VERSION 1.1.0  19nov2004
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_small
+INCLUDE _ht220
+INCLUDE header
+
+HELP hlp1, view("help mcci")
+RESET res1
+
+DEFINE     col1wd     75
+DEFINE     col2       99
+DEFINE     col2i      110
+DEFINE     col3       230
+DEFINE     col3i      229
+DEFINE 	   spwd       100
+
+DIALOG main, label("mcci - Matched case-control studies") tabtitle("Main")
+BEGIN
+  GROUPBOX gb_cntrls	col2	_top	_comb4_1	_ht8h,		///
+	label("Controls")
+  TEXT     tx_exp1	col2i	_ss	spwd		.,		///
+	label("Exposed") center
+  DEFINE   c1 @x
+
+  TEXT     tx_unexp1	col3	@	spwd		.,		///
+	label("Unexposed") center
+
+  GROUPBOX gb_cases	_lft	_ss	_iwd		_ht4h,		///
+	label("Cases")
+  DEFINE   holdy @y
+  TEXT     tx_exp2	_indent	_ss	col1wd		.,		///
+	label("Exposed")
+  DEFINE   r1 @y
+  TEXT     tx_unexp2	@	_ms	col1wd		.,		///
+	label("Unexposed")
+  DEFINE   r2 @y
+
+  SPINNER  sp_a		col2i	r1	spwd		.,		///
+	label("a") min(0) max(10000000)
+  SPINNER  sp_b		col3i	r1	spwd		.,		///
+	label("b") min(0) max(10000000)
+  SPINNER  sp_c		col2i	r2	spwd		.,		///
+	label("c") min(0)  max(10000000)
+  SPINNER  sp_d		col3i	r2	spwd		.,		///
+	label("d") min(0) max(10000000)
+
+  CHECKBOX ck_tb	_lft	+45	_iwd		.,		///
+	option(tb) label("Test-based confidence intervals")
+
+  DEFINE _x _lft
+  DEFINE _y _ls
+  DEFINE _cx _spr
+  INCLUDE _sp_level
+END
+
+
+PROGRAM command
+BEGIN
+	put "mcci "
+	put main.sp_a
+	put " "
+	put main.sp_b
+	put " "
+	put main.sp_c
+	put " "
+	put main.sp_d
+	put " "
+	beginoptions
+		option main.ck_tb
+		INCLUDE _level_main_pr
+	endoptions
+END

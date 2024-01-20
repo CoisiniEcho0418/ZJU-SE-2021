@@ -1,0 +1,923 @@
+/*
+	sem estat
+
+*!  VERSION 1.0.3  07jul2011
+
+	***
+	USE EXTREME CARE WHEN CHANGING CONTROL NAMES. The names used
+	in this file have multiple external dependencies.
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_large
+DEFINE _dlght 350
+INCLUDE header
+
+HELP hlp1, view("help sem postestimation")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	create STRING stdizeCmdString
+	create STRING main_bu_fmtcoefResults
+END
+
+PROGRAM POSTINIT_PROGRAM
+BEGIN
+	if __MESSAGE.iseq("-mindices-") {
+		call main.lb_subcmd.setvalue mindices
+	}
+	if __MESSAGE.iseq("-scoretests-") {
+		call main.lb_subcmd.setvalue scoretests
+	}
+	if __MESSAGE.iseq("-eqtest-") {
+		call main.lb_subcmd.setvalue eqtest
+	}
+	if __MESSAGE.iseq("-teffects-") {
+		call main.lb_subcmd.setvalue teffects
+	}
+	if __MESSAGE.iseq("-stdize-") {
+		call main.lb_subcmd.setvalue stdize
+	}
+	if __MESSAGE.iseq("-gof-") {
+		call main.lb_subcmd.setvalue gof
+	}
+	if __MESSAGE.iseq("-eqgof-") {
+		call main.lb_subcmd.setvalue eqgof
+	}
+	if __MESSAGE.iseq("-residuals-") {
+		call main.lb_subcmd.setvalue residuals
+	}
+	if __MESSAGE.iseq("-ic-") {
+		call main.lb_subcmd.setvalue ic
+	}
+	if __MESSAGE.iseq("-ggof-") {
+		call main.lb_subcmd.setvalue ggof
+	}
+	if __MESSAGE.iseq("-ginvariant-") {
+		call main.lb_subcmd.setvalue ginvariant
+	}
+	if __MESSAGE.iseq("-framework-") {
+		call main.lb_subcmd.setvalue framework
+	}
+	if __MESSAGE.iseq("-stable-") {
+		call main.lb_subcmd.setvalue stable
+	}
+	if __MESSAGE.iseq("-summarize-") {
+		call main.lb_subcmd.setvalue summarize
+	}
+	if __MESSAGE.iseq("-vce-") {
+		call main.lb_subcmd.setvalue vce
+	}
+
+END
+
+DIALOG main, label("estat - Postestimation tools for sem")		///
+	tabtitle("Main")
+BEGIN
+  TEXT tx_subcmd		_lft	_top	_cwd1	.,		///
+	label("Reports and statistics: (subcommand)")
+  LISTBOX lb_subcmd		@	_ss	_iwd	70,		///
+	contents(main_subcommand_contents)				///
+	values(main_subcommand_values)					///
+	onselchangelist(main_subcommand_scripts)
+
+  DEFINE holdy 110
+
+  // eqgof options
+  TEXT tx_format		_lft	holdy	_vnwd	.,		///
+	label("Display format:")
+  EDIT ed_format		@	_ss	_vnwd	.,		///
+	option(format)							///
+	label("Display format")
+  BUTTON bn_format		_vnsep	@	80	.,		///
+	onpush(script showFormatDialog)					///
+	tooltip("Create display format")				///
+	label("Create...")
+  
+  // eqtest options
+  CHECKBOX ck_eqtest_total	_lft	holdy	_iwd	.,		///
+	option(total)							///
+	label("Display Wald tests aggregated over all groups")
+  
+  // framework options
+  CHECKBOX ck_framework_stand	_lft	holdy	_iwd	.,		///
+	option(standardized)						///
+	label("Report standardized results")
+  CHECKBOX ck_framework_comp	@	_ms	@	.,		///
+	option(compact)							///
+	label("Display matrices in compact form")
+  CHECKBOX ck_framework_fit	@	_ms	@	.,		///
+	option(fitted)							///
+	label("Include fitted means, variances, and covariances")
+  
+  // ginvariant options
+  TEXT tx_showpclass		_lft	holdy	_iwd	.,		///
+	label("Restrict output to parameters in specified parameter classes:")
+  COMBOBOX cb_showpclass	@	_ss	@	.,		///
+	option(showpclass)						///
+	append								///
+	dropdown							///
+	contents(main_showpclass_list)					///
+	values(main_showpclass_values)					///
+	label("Restrict output to parameters in specified parameter classes")
+  CHECKBOX ck_ginvariant_class	@	_ls	@	.,		///
+	option(class)							///
+	label("Include joint tests for parameter classes")
+  CHECKBOX ck_ginvariant_leg	@	_ms	@	.,		///
+	option(legend)							///
+	label("Include legend describing the parameter classes")
+  
+  // gof options
+  TEXT tx_gof_stats		_lft	holdy	_iwd	.,		///
+	label("Statistics to be displayed:")
+  COMBOBOX cb_gof_stats		@	_ss	@	.,		///
+	option(stats)							///
+	append								///
+	dropdown							///
+	contents(main_stats_list)					///
+	values(main_stats_values)					///
+	label("Statistics to be displayed")
+  CHECKBOX ck_gof_nodes		@	_ls	@	.,		///
+	option(nodescribe)						///
+	label("Suppress descriptions of statistics")
+
+  // mindices options
+  TEXT tx_mindices_min		_lft	@	_iwd	.,		///
+	label("Display only tests with modification index MI >= #:")
+  EDIT ed_mindices_min		@	_ss	_vnwd	.,		///
+	option(min)							///
+	default(3.8414588)						///
+	numonly								///
+	label("Display only tests with MI >= #")
+
+  // residuals options
+  CHECKBOX ck_res_nresiduals	_lft	holdy	_iwd	.,		///
+	option(normalized)						///
+	label("Report normalized residuals")
+  CHECKBOX ck_res_sresiduals	@	_ms	@	.,		///
+	option(standardized)						///
+	label("Report standardized residuals")
+  CHECKBOX ck_res_sample	@	_ms	@	.,		///
+	option(sample)							///
+	label("Use sample covariances in residual variance computations")
+  CHECKBOX ck_res_nm1		@	_ms	@	.,		///
+	option(nm1)							///
+	label("Use adjustment N-1 in residual variance computations")
+  TEXT tx_res_zerotol		@	_ls	@	.,		///
+	label("Apply tolerance to treat residuals as zero:")
+  EDIT ed_res_zerotol		@	_ss	_vnwd	.,		///
+	option(zerotolerance)						///
+	numonly								///
+	label("Apply tolerance to treat residuals as zero")
+
+  // scoretests options
+  TEXT tx_score_minchi2		_lft	holdy	_iwd	.,		///
+label("Suppress output of score tests with chi2 statistics less than #:")
+  EDIT ed_score_minchi2		@	_ss	_vnwd	.,		///
+	option(minchi2)							///
+	default(3.8414588)						///
+	numonly								///
+label("Suppress output of score tests with chi2 statistics less than #")
+
+  // stable options
+  CHECKBOX ck_stable_detail	_lft	holdy	_iwd	.,		///
+	option(detail)							///
+	label("Display the Beta matrix")
+  
+  // stdize options
+  TEXT tx_stdize_cmd		_lft	holdy	_iwd	.,		///
+	label("Choose a test command and press 'Go':")
+
+  LISTBOX lb_stdize_cmd		@	+20	400	150, 		///
+  	contents(main_stdize_commands)					///
+	values(main_stdize_command_values)				///
+  	onselchange(program main_stdize_cmd_changed)			///
+  	ondblclick(program main_stdize_doDialog)
+  BUTTON bu_stdize_cmd		+415	@	50	.,		///
+	onpush(program main_stdize_doDialog)				///
+	label("Go -->")
+  TEXT tx_stdize_command	_lft	+160	400	.,		///
+	label("Test command:")
+  EDIT ed_stdize_command	@	_ss	@	.,		///
+	label("Test command")
+  
+  // teffects options
+  CHECKBOX ck_teff_compact	_lft	holdy	_iwd	.,		///
+	option(compact)							///
+	label("Do not display effects with no path")
+  CHECKBOX ck_teff_stand	@	_ms	@	.,		///
+	option(standardized)						///
+	label("Report standardized effects")
+  CHECKBOX ck_teff_nolabel	@	_ms	@	.,		///
+	option(nolabel)							///
+	label("Display group values, not labels")
+  CHECKBOX ck_teff_nodirect	@	_ms	@	.,		///
+	option(nodirect)						///
+	label("Do not display direct effects")
+  CHECKBOX ck_teff_noindirect	@	_ms	@	.,		///
+	option(noindirect)						///
+	label("Do not display indirect effects")
+  CHECKBOX ck_teff_nototal	@	_ms	@	.,		///
+	option(nototal)							///
+	label("Do not display total effects")
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _noomitted
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _vsquish
+
+  BUTTON bu_fmtcoef		@	_ls	200	.,		///
+	onpush("program main_bu_fmtcoef_getOpts")			///
+	label("Set table formats  ")
+
+  // summarize options
+  GROUPBOX gb_eqlist		_lft	holdy	_iwd	_ht6,		///
+	label("Summarize")
+  RADIO rb_default		_ilft	_ss	_inwd	., first	///
+	onclickon(main.vl_spec.disable)					///
+	label("Use all variables involved in the estimation")
+  RADIO rb_spec			@	_ss	@	., last		///
+	onclickon(main.vl_spec.enable)					///
+	label("Use variables and optional equation names:")
+  VARLIST vl_spec		_indent2 _ss	_inwd	.,		///
+	label("Use variables and optional equation names")
+  CHECKBOX ck_equation		_lft	+45	_iwd	.,		///
+	option(equation)						///
+	label("Display summary by equation")
+  CHECKBOX ck_group		@	_ms	@	.,		///
+	option(group)							///
+	label("Display summary by group")
+  CHECKBOX ck_labels		@	_ms	@	.,		///
+	option(labels)							///
+	label("Display variable labels")
+  CHECKBOX ck_noheader		_lft	_ms	_iwd	.,		///
+	option(noheader)						///
+	label("Suppress the header")
+  CHECKBOX ck_noweights		@	_ms	@	.,		///
+	option(noweights)						///
+	label("Ignore weights")
+
+  // Information criteria
+  CHECKBOX ck_n			_lft	holdy	_iwd	.,		///
+	onclickon(main.sp_n.enable)					///
+	onclickoff(main.sp_n.disable)					///
+	label("Number of observations for calculating BIC")
+  SPINNER sp_n			_indent2 _ss	_spwd	.,		///
+	option(n)							///
+	default(e(N))							///
+	min(1)								///
+	max(e(N))
+
+  INCLUDE estat_vce
+  INCLUDE _estat_bootstrap
+END
+
+INCLUDE estat_vce_pr
+INCLUDE _estat_bootstrap_pr
+
+PROGRAM main_bu_fmtcoef_getOpts
+BEGIN
+	call create CHILD fmt_coef_table_reporting AS main_bu_fmtcoef
+	call main_bu_fmtcoef.setExitString main_bu_fmtcoefResults
+	call main_bu_fmtcoef.setExitAction "program main_bu_fmtcoef_ckResults"
+END
+
+PROGRAM main_bu_fmtcoef_ckResults
+BEGIN
+	if main_bu_fmtcoefResults {
+		call main.bu_fmtcoef.setlabel "Set table formats *"
+	}
+	else {
+		call main.bu_fmtcoef.setlabel "Set table formats  "
+	}
+END
+
+SCRIPT showFormatDialog
+BEGIN
+	create STRING FormatString
+	create CHILD format_chooser
+	format_chooser.setExitString FormatString
+	format_chooser.setExitAction 					///
+		"main.ed_format.setvalue class FormatString.value"
+END
+
+LIST main_subcommand_contents
+BEGIN
+	"Equation-level goodness-of-fit statistics (eqgof)"
+	"Equation-level tests that all coefficients are zero (eqtest)"
+	"Display estimation results in modeling framework (framework)"
+	"Group-level goodness-of-fit statistics (ggof)"
+	"Tests for invariance of parameters across groups (ginvariant)"
+	"Goodness-of-fit statistics (gof)"
+	"Modification indices (mindices)"
+	"Display mean and covariance residuals (residuals)"
+	"Score tests (scoretests)"
+	"Check stability of nonrecursive system (stable)"
+	"Test standardized parameters (stdize)"
+	"Decomposition of effects into total, direct, and indirect (teffects)"
+	"Information criteria (ic)"
+	"Summarize estimation sample (summarize)"
+	"Covariance matrix estimates (vce)"
+END
+
+LIST main_subcommand_values
+BEGIN
+	eqgof
+	eqtest
+	framework
+	ggof
+	ginvariant
+	gof
+	mindices
+	residuals
+	scoretests
+	stable
+	stdize
+	teffects
+	ic
+	summarize
+	vce
+END
+
+LIST main_subcommand_scripts
+BEGIN
+	script sel_eqgof
+	script sel_eqtest
+	script sel_framework
+	script sel_ggof
+	script sel_ginvariant
+	script sel_gof
+	script sel_mindices
+	script sel_residuals
+	script sel_scoretests
+	script sel_stable
+	script sel_stdize
+	script sel_teffects
+	script sel_ic
+	script sel_summarize
+	script sel_vce
+END
+	
+LIST main_showpclass_list
+BEGIN
+	"Structural coefficients"
+	"Measurement coefficients"
+	"Structural intercepts"
+	"Measurement intercepts"
+	"Covariances of structural errors"
+	"Covariances of measurement errors"
+	"Covariances of structural and measurement errors"
+	"Means of exogenous variables"
+	"Covariances of exogenous variables"
+END
+
+LIST main_showpclass_values
+BEGIN
+	scoef
+	mcoef
+	scons
+	mcons
+	serrvar
+	merrvar
+	smerrcov
+	meanx
+	covx
+END
+
+LIST main_stats_list
+BEGIN
+	"Chi-squared tests; the default"
+	"Root mean squared error of approximation"
+	"Information indices"
+	"Indices for comparison against baseline"
+	"Measures based on residuals"
+	"All of the above"
+END
+
+LIST main_stats_values
+BEGIN
+	chi2
+	rmsea
+	ic
+	indices
+	residuals
+	all
+END
+
+SCRIPT sel_eqgof
+BEGIN
+	script main_hide_all
+	script main_eqgof_on
+END
+
+SCRIPT sel_eqtest
+BEGIN
+	script main_hide_all
+	script main_eqtest_on
+END
+
+SCRIPT sel_framework
+BEGIN
+	script main_hide_all
+	script main_framework_on
+END
+
+SCRIPT sel_ggof
+BEGIN
+	script main_hide_all
+	script main_ggof_on
+END
+
+SCRIPT sel_ginvariant
+BEGIN
+	script main_hide_all
+	script main_ginvariant_on
+END
+
+SCRIPT sel_gof
+BEGIN
+	script main_hide_all
+	script main_gof_on
+END
+
+SCRIPT sel_mindices
+BEGIN
+	script main_hide_all
+	script main_mindices_on
+END
+
+SCRIPT sel_residuals
+BEGIN
+	script main_hide_all
+	script main_residuals_on
+END
+
+SCRIPT sel_scoretests
+BEGIN
+	script main_hide_all
+	script main_scoretests_on
+END
+
+SCRIPT sel_stable
+BEGIN
+	script main_hide_all
+	script main_stable_on
+END
+
+SCRIPT sel_stdize
+BEGIN
+	script main_hide_all
+	script main_stdize_on
+END
+
+SCRIPT sel_teffects
+BEGIN
+	script main_hide_all
+	script main_teffects_on
+END
+
+SCRIPT sel_ic
+BEGIN
+	script main_hide_all
+	script main_ic_on
+END
+
+SCRIPT sel_summarize
+BEGIN
+	script main_hide_all
+	script main_summ_on
+END
+
+SCRIPT sel_vce
+BEGIN
+	script main_hide_all
+	program vce_on
+END
+
+SCRIPT main_eqgof_on
+BEGIN
+	main.tx_format.show
+	main.ed_format.show
+	main.bn_format.show
+	main.tx_format.setposition . 110
+	main.ed_format.setposition . 130
+	main.bn_format.setposition . 130
+END
+
+SCRIPT main_eqgof_off
+BEGIN
+	main.tx_format.hide
+	main.ed_format.hide
+	main.bn_format.hide
+END
+
+SCRIPT main_eqtest_on
+BEGIN
+	main.ck_eqtest_total.show
+END
+
+SCRIPT main_eqtest_off
+BEGIN
+	main.ck_eqtest_total.hide
+END
+
+SCRIPT main_framework_on
+BEGIN
+	main.ck_framework_stand.show
+	main.ck_framework_comp.show
+	main.ck_framework_fit.show
+	main.tx_format.show
+	main.ed_format.show
+	main.bn_format.show
+	main.tx_format.setposition . 190
+	main.ed_format.setposition . 210
+	main.bn_format.setposition . 210
+END
+
+SCRIPT main_framework_off
+BEGIN
+	main.ck_framework_stand.hide
+	main.ck_framework_comp.hide
+	main.ck_framework_fit.hide
+	main.tx_format.hide
+	main.ed_format.hide
+	main.bn_format.hide
+END
+
+SCRIPT main_ggof_on
+BEGIN
+	main.tx_format.show
+	main.ed_format.show
+	main.bn_format.show
+	main.tx_format.setposition . 110
+	main.ed_format.setposition . 130
+	main.bn_format.setposition . 130
+END
+
+SCRIPT main_ggof_off
+BEGIN
+	main.tx_format.hide
+	main.ed_format.hide
+	main.bn_format.hide
+END
+
+SCRIPT main_ginvariant_on
+BEGIN
+	main.tx_showpclass.show
+	main.cb_showpclass.show
+	main.ck_ginvariant_class.show
+	main.ck_ginvariant_leg.show
+END
+
+SCRIPT main_ginvariant_off
+BEGIN
+	main.tx_showpclass.hide
+	main.cb_showpclass.hide
+	main.ck_ginvariant_class.hide
+	main.ck_ginvariant_leg.hide
+END
+
+SCRIPT main_gof_on
+BEGIN
+	main.tx_gof_stats.show
+	main.cb_gof_stats.show
+	main.ck_gof_nodes.show
+END
+
+SCRIPT main_gof_off
+BEGIN
+	main.tx_gof_stats.hide
+	main.cb_gof_stats.hide
+	main.ck_gof_nodes.hide
+END
+
+SCRIPT main_mindices_on
+BEGIN
+	main.tx_showpclass.show
+	main.cb_showpclass.show
+	main.tx_mindices_min.show
+	main.ed_mindices_min.show
+END
+
+SCRIPT main_mindices_off
+BEGIN
+	main.tx_showpclass.hide
+	main.cb_showpclass.hide
+	main.tx_mindices_min.hide
+	main.ed_mindices_min.hide
+END
+
+SCRIPT main_residuals_on
+BEGIN
+	main.ck_res_nresiduals.show
+	main.ck_res_sresiduals.show
+	main.ck_res_sample.show
+	main.ck_res_nm1.show
+	main.tx_res_zerotol.show
+	main.ed_res_zerotol.show
+	main.tx_format.show
+	main.ed_format.show
+	main.bn_format.show
+	main.tx_format.setposition . 260
+	main.ed_format.setposition . 280
+	main.bn_format.setposition . 280
+END
+
+SCRIPT main_residuals_off
+BEGIN
+	main.ck_res_nresiduals.hide
+	main.ck_res_sresiduals.hide
+	main.ck_res_sample.hide
+	main.ck_res_nm1.hide
+	main.tx_res_zerotol.hide
+	main.ed_res_zerotol.hide
+	main.tx_format.hide
+	main.ed_format.hide
+	main.bn_format.hide
+END
+
+SCRIPT main_scoretests_on
+BEGIN
+	main.tx_score_minchi2.show
+	main.ed_score_minchi2.show
+END
+
+SCRIPT main_scoretests_off
+BEGIN
+	main.tx_score_minchi2.hide
+	main.ed_score_minchi2.hide
+END
+
+SCRIPT main_stable_on
+BEGIN
+	main.ck_stable_detail.show
+END
+
+SCRIPT main_stable_off
+BEGIN
+	main.ck_stable_detail.hide
+END
+
+SCRIPT main_stdize_on
+BEGIN
+	main.tx_stdize_cmd.show
+	main.lb_stdize_cmd.show
+	main.bu_stdize_cmd.show
+	main.tx_stdize_command.show
+	main.ed_stdize_command.show
+END
+
+SCRIPT main_stdize_off
+BEGIN
+	main.tx_stdize_cmd.hide
+	main.lb_stdize_cmd.hide
+	main.bu_stdize_cmd.hide
+	main.tx_stdize_command.hide
+	main.ed_stdize_command.hide
+END
+
+SCRIPT main_teffects_on
+BEGIN
+	main.ck_teff_compact.show
+	main.ck_teff_stand.show
+	main.ck_teff_nolabel.show
+	main.ck_teff_nodirect.show
+	main.ck_teff_noindirect.show
+	main.ck_teff_nototal.show
+	main.ck_noomitted.show
+	main.ck_vsquish.show
+	main.bu_fmtcoef.show
+END
+
+SCRIPT main_teffects_off
+BEGIN
+	main.ck_teff_compact.hide
+	main.ck_teff_stand.hide
+	main.ck_teff_nolabel.hide
+	main.ck_teff_nodirect.hide
+	main.ck_teff_noindirect.hide
+	main.ck_teff_nototal.hide
+	main.ck_noomitted.hide
+	main.ck_vsquish.hide
+	main.bu_fmtcoef.hide
+END
+
+SCRIPT main_ic_on
+BEGIN
+	main.ck_n.show
+	main.sp_n.show
+END
+
+SCRIPT main_summ_on
+BEGIN
+	main.ck_equation.show
+	main.ck_group.show
+	main.ck_labels.show
+	main.ck_noheader.show
+	main.ck_noweights.show
+	main.gb_eqlist.show
+	main.rb_default.show
+	main.rb_spec.show
+	main.vl_spec.show
+END
+
+SCRIPT main_ic_off
+BEGIN
+	main.ck_n.hide
+	main.sp_n.hide
+END
+
+SCRIPT main_summ_off
+BEGIN
+	main.ck_equation.hide
+	main.ck_group.hide
+	main.ck_labels.hide
+	main.ck_noheader.hide
+	main.ck_noweights.hide
+	main.gb_eqlist.hide
+	main.rb_default.hide
+	main.rb_spec.hide
+	main.vl_spec.hide
+END
+
+SCRIPT main_hide_all
+BEGIN
+	script main_eqgof_off
+	script main_eqtest_off
+	script main_framework_off
+	script main_ggof_off
+	script main_ginvariant_off
+	script main_gof_off
+	script main_mindices_off
+	script main_residuals_off
+	script main_scoretests_off
+	script main_stable_off
+	script main_stdize_off
+	script main_teffects_off
+	script main_ic_off
+	program vce_off
+	script main_summ_off
+	script main_bootstrap_hide
+END
+
+LIST main_stdize_commands
+BEGIN
+	Linear test
+	"     --> Test linear hypotheses after estimation"
+	"     --> Linear combinations of estimators"
+	Nonlinear test
+	"     --> Test nonlinear hypotheses after estimation"
+	"     --> Nonlinear combinations of estimators"
+END
+
+LIST main_stdize_command_values
+BEGIN
+	""
+	test
+	lincom
+	""
+	testnl
+	nlcom
+END
+
+PROGRAM main_stdize_cmd_changed
+BEGIN
+	if main.lb_stdize_cmd {
+		call main.bu_stdize_cmd.enable
+	}
+	else {
+		call main.bu_stdize_cmd.disable
+	}
+END
+
+PROGRAM main_stdize_doDialog
+BEGIN
+	call create STRING tmpSTR
+
+	call tmpSTR.setvalue class main.lb_stdize_cmd.value
+	call tmpSTR.withvalue create CHILD @, allowsubmit 
+	call tmpSTR.withvalue @.setExitString stdizeCmdString
+	call tmpSTR.withvalue @.setOkAction "program dialogCmdOk"
+	call tmpSTR.withvalue @.setSubmitAction "program dialogCmdSubmit"
+END
+
+PROGRAM dialogCmdOk
+BEGIN
+	call main.ed_stdize_command.setvalue class stdizeCmdString.value
+END
+
+PROGRAM dialogCmdSubmit
+BEGIN
+	call main.ed_stdize_command.setvalue class stdizeCmdString.value
+	call Submit
+END
+
+PROGRAM vl_output
+BEGIN
+	put main.vl_spec
+END
+
+PROGRAM vl_eq_output
+BEGIN
+	put main.vl_eq
+END
+
+PROGRAM command
+BEGIN
+	put "estat "
+	put main.lb_subcmd
+	if main.rb_spec {
+		require main.vl_spec
+		put " " main.vl_spec
+	}
+	// stdize options
+	if main.lb_subcmd.iseq("stdize") {
+		put " : "
+		put main.ed_stdize_command
+	}
+	beginoptions
+		// eqtest options
+		option main.ck_eqtest_total
+		
+		// framework options
+		option main.ck_framework_stand
+		option main.ck_framework_comp
+		option main.ck_framework_fit
+
+		// ginvariant options
+		optionarg /hidedefault main.cb_showpclass
+		option main.ck_ginvariant_class
+		option main.ck_ginvariant_leg
+
+		// gof options
+		optionarg /hidedefault main.cb_gof_stats
+		option main.ck_gof_nodes
+
+		// mindices options
+		if main.ed_mindices_min.isvisible() &			///
+			!main.ed_mindices_min.isge("0") {
+                        stopbox stop "Invalid modification indices."	///
+`""Display only tests with MI >= #" must be >= 0."'
+		}
+  		optionarg /hidedefault main.ed_mindices_min
+
+		// residuals options
+		option main.ck_res_nresiduals
+		option main.ck_res_sresiduals
+		option main.ck_res_sample
+		option main.ck_res_nm1
+		if main.ed_res_zerotol.isvisible() &			///
+			main.ed_res_zerotol.isgt("1") {
+                        stopbox stop "Invalid tolerance."		///
+`""Apply tolerance tol to treat residuals as zero" must be less than 1."'
+		}
+		optionarg main.ed_res_zerotol
+
+		// scoretests options
+		if main.ed_score_minchi2.isvisible() & 			///
+			!main.ed_score_minchi2.isge("0") {
+                        stopbox stop "Invalid modification indices."	///
+`""Display only tests with MI >= #" must be >= 0."'
+		}
+		optionarg /hidedefault main.ed_score_minchi2
+
+		// stable options
+		option main.ck_stable_detail
+
+		// teffects options
+		option main.ck_teff_compact
+		option main.ck_teff_stand
+		option main.ck_teff_nolabel
+		option main.ck_teff_nodirect
+		option main.ck_teff_noindirect
+		option main.ck_teff_nototal
+		option main.ck_noomitted
+		option main.ck_vsquish
+		if main.lb_subcmd.iseq("teffects") {
+			put " " main_bu_fmtcoefResults
+		}
+		
+		optionarg /hidedefault main.ed_format
+
+		// summarize options
+		option main.ck_equation
+		option main.ck_group
+		option main.ck_labels
+		option main.ck_noheader
+		option main.ck_noweights
+		// ic options
+		if (main.ck_n) {
+			optionarg main.sp_n
+		}
+		put " " /program vce_output
+		put " " /program bootstrap_output
+	endoptions
+END

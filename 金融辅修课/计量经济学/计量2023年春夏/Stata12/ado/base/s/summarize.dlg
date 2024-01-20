@@ -1,0 +1,126 @@
+/*
+	summarize
+
+*!  VERSION 1.0.1  15jun2009
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_medium
+INCLUDE _ht300
+INCLUDE header
+
+HELP hlp1, view("help summarize")
+RESET res1
+
+DEFINE exin    +70
+DEFINE exina   +80
+DEFINE exwd     50
+DEFINE exwda   195
+
+SCRIPT PREINIT
+BEGIN
+	create STRING bu_facvarsResults
+END
+
+DIALOG main, label("summarize - Summary statistics") tabtitle("Main")
+BEGIN
+  TEXT     tx_var        _lft     _top     _iwd        .,		/*
+		*/ label("Variables: (leave empty for all variables)")
+  VARLIST  vl_var           @      _ss        @        ., allowts	/*
+		*/ label("Variables") ts fv
+  TEXT     tx_examples      @      _ms        @        .,		/*
+		*/ label("Examples:")
+  TEXT     tx_examp1     exin        @     exwd        ., right		/*
+		*/ label("yr*")
+  DEFINE   holdx @x
+  TEXT     tx_examp1a   exina        @    exwda        .,		/*
+		*/ label(`"all variables starting with "yr""')
+  TEXT     tx_examp2    holdx      _ss     exwd        ., right		/*
+		*/ label("xyz-abc")
+  TEXT     tx_examp2a   exina        @    exwda        .,		/*
+		*/ label("all variables between xyz and abc")
+
+  GROUPBOX gb_out	 _lft     +35     _iwd    _ht15,		/*
+  		*/ label("Options")
+  RADIO    rb_std     _indent      _ss    _inwd        ., 		/*
+  		*/ first 						/*
+		*/ option(NONE) /* default option */ 			/*
+		*/ label("Standard display") 				/*
+		*/ clickon("script std_on")	
+  RADIO    rb_detail        @      _ss        @        ., 		/*
+		*/ option("detail")					/*
+  		*/ label("Display additional statistics")		/*
+		*/ clickon("script detail_on")	
+  RADIO    rb_mean          @      _ss        @        ., 		/*
+  		*/ last 						/*
+		*/ option("meanonly")					/*
+  		*/ label("No display; just calculate mean")		/*
+		*/ clickon("script mean_on")
+  CHECKBOX ck_format        @      _ms        @        ., 		/*
+		*/ option("format")					/*
+  		*/ label("Use variable's display format")
+  SPINNER  sp_sep           @      _ms    _spwd        .,		/*
+		*/ option("separator")					/*
+		*/ label("Separator line every N variables")		/*
+		*/ min(0)						/*
+		*/ default(5)						/*
+		*/ max(100000)						
+  TEXT     tx_sep      _spsep        @    _sprb        .,		/*
+		*/ label("Separator line every N variables (set 0 for none)")
+
+  BUTTON bu_facvars     _ilft	+35	200	.,			///
+	onpush("program bu_facvars_getOpts")				///
+	label("Factor-variable display options  ")
+END
+
+PROGRAM bu_facvars_getOpts
+BEGIN
+	call create CHILD factor_vars_reporting AS bu_facvars
+	call bu_facvars.setExitString bu_facvarsResults
+	call bu_facvars.setExitAction "program bu_facvars_ckResults"
+END
+
+PROGRAM bu_facvars_ckResults
+BEGIN
+	if bu_facvarsResults {
+		call main.bu_facvars.setlabel "Factor-variable display options *"
+	}
+	else {
+		call main.bu_facvars.setlabel "Factor-variable display options  "
+	}
+END
+
+INCLUDE byifin
+INCLUDE weights_fai 
+
+SCRIPT std_on
+BEGIN
+	weights.rb_iw.enable
+END
+
+SCRIPT detail_on
+BEGIN
+	weights.rb_iw.disable
+END
+
+SCRIPT mean_on
+BEGIN
+	weights.rb_iw.enable
+END
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "summarize "
+	varlist [main.vl_var]
+ 	INCLUDE _weights_pr 
+	INCLUDE _ifin_pr
+	beginoptions
+		option radio(main rb_std rb_detail rb_mean)
+		option main.ck_format
+		optionarg /hidedefault main.sp_sep
+		put " " bu_facvarsResults
+	endoptions
+END

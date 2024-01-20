@@ -1,0 +1,991 @@
+/*
+  easy graph twoway - Twoway overlay 
+
+*!  VERSION 1.0.1  16aug2006  (deprecated)
+
+*/
+
+VERSION 8.0
+INCLUDE egraph_header
+INCLUDE header
+HELP hlp1, view("help graph_twoway")
+RESET res1
+
+DIALOG main, label("twoway - Twoway graph") tabtitle("Main")
+BEGIN
+  TEXT     tx_x        _lft        _top      _txtwd      .,		///
+  	label("X:") right
+  VARNAME  vn_x        _txtsep     @         _vnwd       .,		///
+  	label("X")
+  TEXT     tx_sort     _lft3_002   @         _txmswd     ., label("")
+  CHECKBOX ck_sort     _txmssep    @         _vnwd       .,		///
+  	label("Sort")							///
+  	option(sort)
+  	
+  GROUPBOX gb_plot1    _lft	   _ms       _iwd        _ht4h,		///
+  	label("Plot 1")
+  TEXT     tx_plot1    _ilft	   _ss       _txswd      .,		///
+  	label("Type:") right
+  COMBOBOX cb_plot1    _txssep     @	     _cbwd       .,		///
+  	label("Type Plot 1")						///
+  	dropdownlist							///
+  	contents(graph_type) 						///
+  	onselchangelist(eoverlay_cb_type_plot1_sel)
+  TEXT     tx_y1       _lft3_002   @         _txmswd     .,		///
+  	label("Y:") right
+  VARLIST  vl_y1       _txmssep    @	     _vlmlwd  	 .,		///
+  	label("Y: Plot 1")  	
+  TEXT     tx_y1a      _lft3_002   @         _txmswd     .,		///
+  	label("Y1:") right
+  VARNAME  vn_y1a      _txmssep    @         _vnwd      ., 		///
+  	label("Y1: Plot 1")  	
+  TEXT     tx_y1b      _iilft3_3   @         _txtwd      .,		///
+  	label("Y2:") right
+  VARNAME  vn_y1b      _txtsep     @         _vnwd      ., 		///
+  	label("Y2: Plot 1")  	
+  TEXT     tx_fcn1     _lft3_002   @         _txmswd      ., 		///
+  	label("F(x):") right
+  EXP      ex_fcn1     _txmssep	   @         _vlmlwd     .,		///	
+  	label("Create...")						///
+  	error("F(x): Plot 1")
+  TEXT     tx_exp1     _lft3_002   _ms       _txmswd     .,		///
+    	label("if:") right
+  EXP      ex_exp1     _txmssep    @         _vlmlwd     .,		///	
+  	label("Create...") 
+  TEXT     tx_range1   _lft3_002   @         _txmswd     .,		///
+  	label("Range:") right
+  VARNAME  vn_range1   _txmssep    @         _vnwd       .,		///
+  	label("Range Plot 2") option(range)
+  TEXT     tx_point1   _lft3_3     @         _txwd      ., 		///
+  	label("Points:") right 
+  SPINNER  sp_point1   _txsep      @         _buwd       .,		///
+  	label("Points Plot 1")						///
+  	min(1) max(10000) default(300)					///
+  	option(n)
+  
+  
+  GROUPBOX gb_plot2    _lft	   _ls       _iwd        _ht4h,		///
+  	label("Plot 2")
+  TEXT     tx_plot2    _ilft	   _ss       _txswd      .,		///
+  	label("Type:") right
+  COMBOBOX cb_plot2    _txssep     @	     _cbwd       .,		///
+  	label("Type Plot 2")						///
+  	dropdownlist							///
+  	contents(graph_type2) values(graph_type2_val)			///
+  	onselchangelist(eoverlay_cb_type_plot2_sel)
+  TEXT     tx_y2       _lft3_002   @         _txmswd     .,		///
+  	label("Y:") right   
+  VARLIST  vl_y2       _txmssep    @	     _vlmlwd  	 .,		///
+  	label("Y: Plot 2") 
+  	
+  TEXT     tx_y2a      _lft3_002   @         _txmswd     .,		///
+  	label("Y1:") right
+  VARNAME  vn_y2a      _txmssep    @         _vnwd      ., 		///
+  	label("Y1: Plot 2")
+  	
+  TEXT     tx_y2b      _iilft3_3   @         _txtwd      .,		///
+  	label("Y2:") right
+  VARNAME  vn_y2b      _txtsep     @         _vnwd      ., 		///
+  	label("Y2: Plot 2")
+  
+  TEXT     tx_fcn2     _lft3_002   @         _txmswd      ., 		///
+  	label("F(x):") right
+  EXP      ex_fcn2     _txmssep	   @         _vlmlwd     .,		///	
+  	label("Create...") 						///
+  	error("F(x): Plot 2")
+  
+  TEXT     tx_raxis2   _ilft       _ms       _txswd      ., label("")
+  CHECKBOX ck_raxis2   _txssep     @         _cbwd       .,		///
+  	label("Plot on right")						///
+  	option("yaxis(2)")
+  TEXT     tx_exp2     _lft3_002   @         _txmswd     .,		///
+    	label("if:") right
+  EXP      ex_exp2     _txmssep	   @         _vlmlwd     .,		///	
+  	label("Create...") 
+  
+  TEXT     tx_range2   _lft3_002   @         _txmswd     .,		///
+  	label("Range:") right 
+  VARNAME  vn_range2   _txmssep    @         _vnwd       .,		///
+  	label("Range Plot 2") option(range)
+  TEXT     tx_point2   _lft3_3     @         _txwd       ., 		///
+  	label("Points:") right 
+  SPINNER  sp_point2   _txsep      @         _buwd       .,		///
+  	label("Points Plot 2")						///
+  	min(1) max(10000) default(300)					///
+  	option(n)
+ 
+  
+  GROUPBOX gb_plot3    _lft	   _ls       _iwd        _ht4h,		///
+  	label("Plot 3")
+  TEXT     tx_plot3    _ilft	   _ss       _txswd      .,		///
+  	label("Type:") right
+  COMBOBOX cb_plot3    _txssep     @	     _cbwd       .,		///
+  	label("Type Plot 3")						///
+  	dropdownlist							///
+  	contents(graph_type2) values(graph_type2_val)			///
+  	onselchangelist(eoverlay_cb_type_plot3_sel)
+  TEXT     tx_y3       _lft3_002   @         _txmswd     .,		///
+  	label("Y:") right   
+  VARLIST  vl_y3       _txmssep    @	     _vlmlwd  	 .,		///
+  	label("Y: Plot 3") 
+  	
+  TEXT     tx_y3a      _lft3_002   @         _txmswd     .,		///
+  	label("Y1:") right
+  VARNAME  vn_y3a      _txmssep    @         _vnwd      ., 		///
+  	label("Y1: Plot 3")
+  	
+  TEXT     tx_y3b      _iilft3_3   @         _txtwd      .,		///
+  	label("Y2:") right
+  VARNAME  vn_y3b      _txtsep     @         _vnwd      ., 		///
+  	label("Y2: Plot 3")
+  
+  TEXT     tx_fcn3     _lft3_002   @         _txmswd      ., 		///
+  	label("F(x):") right
+  EXP      ex_fcn3     _txmssep	   @         _vlmlwd     .,		///	
+  	label("Create...") 						///
+  	error("F(x): Plot 3")
+  
+  TEXT     tx_raxis3   _ilft       _ms       _txswd      ., label("")
+  CHECKBOX ck_raxis3   _txssep     @         _cbwd       .,		///
+  	label("Plot on right")						///
+  	option("yaxis(2)")
+  TEXT     tx_exp3     _lft3_002   @         _txmswd     .,		///
+    	label("if:") right
+  EXP      ex_exp3     _txmssep	   @         _vlmlwd     .,		///	
+  	label("Create...") 
+  
+  TEXT     tx_range3   _lft3_002   @         _txmswd     .,		///
+  	label("Range:") right
+  VARNAME  vn_range3   _txmssep    @         _vnwd       .,		///
+  	label("Range Plot 3") option(range)
+  TEXT     tx_point3   _lft3_3     @         _txwd       ., 		///
+  	label("Points:") right 
+  SPINNER  sp_point3   _txsep      @         _buwd       .,		///
+  	label("Points Plot 3")						///
+  	min(1) max(10000) default(300)					///
+  	option(n)
+  	
+  
+  GROUPBOX gb_plot4    _lft	   _ls       _iwd        _ht4h,		///
+  	label("Plot 4")
+  TEXT     tx_plot4    _ilft	   _ss       _txswd      .,		///
+  	label("Type:") right
+  COMBOBOX cb_plot4    _txssep     @	     _cbwd       .,		///
+  	label("Type Plot 4")						///
+  	dropdownlist							///
+  	contents(graph_type2) values(graph_type2_val)			///
+  	onselchangelist(eoverlay_cb_type_plot4_sel)
+  TEXT     tx_y4       _lft3_002   @         _txmswd     .,		///
+  	label("Y:") right   
+  VARLIST  vl_y4       _txmssep    @	     _vlmlwd  	 .,		///
+  	label("Y: Plot 4") 
+  	
+  TEXT     tx_y4a      _lft3_002   @         _txmswd     .,		///
+  	label("Y1:") right
+  VARNAME  vn_y4a      _txmssep    @         _vnwd      ., 		///
+  	label("Y1: Plot 4")
+  	
+  TEXT     tx_y4b      _iilft3_3   @         _txtwd      .,		///
+  	label("Y2:") right
+  VARNAME  vn_y4b      _txtsep     @         _vnwd      ., 		///
+  	label("Y2: Plot 4")
+  
+  TEXT     tx_fcn4     _lft3_002   @         _txmswd      ., 		///
+  	label("F(x):") right
+  EXP      ex_fcn4     _txmssep	   @         _vlmlwd     .,		///	
+  	label("Create...") 						///
+  	error("F(x): Plot 4")
+  
+  TEXT     tx_raxis4   _ilft       _ms       _txswd      ., label("")
+  CHECKBOX ck_raxis4   _txssep     @         _cbwd       .,		///
+  	label("Plot on right")						///
+  	option("yaxis(2)")
+  TEXT     tx_exp4     _lft3_002   @         _txmswd     .,		///
+    	label("if:") right
+  EXP      ex_exp4     _txmssep	   @         _vlmlwd     .,		///	
+  	label("Create...") 
+  
+  TEXT     tx_range4   _lft3_002   @         _txmswd     .,		///
+  	label("Range:") right
+  VARNAME  vn_range4   _txmssep    @         _vnwd       .,		///
+  	label("Range Plot 4") option(range)
+  TEXT     tx_point4   _lft3_3     @         _txwd       ., 		///
+  	label("Points:") right 
+  SPINNER  sp_point4   _txsep      @         _buwd       .,		///
+  	label("Points Plot 4")						///
+  	min(1) max(10000) default(300)					///
+  	option(n)
+END
+
+INCLUDE ifin
+INCLUDE etitle
+INCLUDE eaxes
+INCLUDE eopts
+
+LIST graph_type
+BEGIN
+	scatter
+	line
+	connected
+	area
+	bar
+	spike
+	dropline
+	rarea
+	rbar
+	rspike
+	rcap
+	rcapsym
+	rline
+	rconnected
+	rscatter
+	function
+END
+
+LIST graph_type2
+BEGIN
+	none
+	scatter
+	line
+	connected
+	area
+	bar
+	spike
+	dropline
+	rarea
+	rbar
+	rspike
+	rcap
+	rcapsym
+	rline
+	rconnected
+	rscatter
+	function
+END
+
+LIST graph_type2_val
+BEGIN
+	""
+	scatter
+	line
+	connected
+	area
+	bar
+	spike
+	dropline
+	rarea
+	rbar
+	rspike
+	rcap
+	rcapsym
+	rline
+	rconnected
+	rscatter
+	function
+END
+
+/* PLOT 1 Lists and Scripts */
+
+LIST eoverlay_cb_type_plot1_sel
+BEGIN
+	script eoverlay_plot1_ylist_show
+	script eoverlay_plot1_ylist_show
+	script eoverlay_plot1_ylist_show
+	script eoverlay_plot1_ylist_show
+	script eoverlay_plot1_ylist_show
+	script eoverlay_plot1_ylist_show
+	script eoverlay_plot1_ylist_show
+	script eoverlay_plot1_ynames_show
+	script eoverlay_plot1_ynames_show
+	script eoverlay_plot1_ynames_show
+	script eoverlay_plot1_ynames_show
+	script eoverlay_plot1_ynames_show
+	script eoverlay_plot1_ynames_show
+	script eoverlay_plot1_ynames_show
+	script eoverlay_plot1_ynames_show
+	script eoverlay_plot1_function_show
+END
+
+SCRIPT eoverlay_plot1_ylist_show
+BEGIN
+	main.tx_y1.show
+	main.vl_y1.show
+	script eoverlay_plot1_if_show
+	script eoverlay_plot1_yname_hide
+	script eoverlay_plot1_fcn_hide
+END
+
+SCRIPT eoverlay_plot1_ynames_show
+BEGIN
+	main.tx_y1a.show
+	main.vn_y1a.show
+	main.tx_y1b.show
+	main.vn_y1b.show
+	script eoverlay_plot1_if_show
+	script eoverlay_plot1_ylist_hide
+	script eoverlay_plot1_fcn_hide
+END
+
+SCRIPT eoverlay_plot1_function_show
+BEGIN
+	main.tx_fcn1.show
+	main.ex_fcn1.show
+	main.tx_range1.show
+	main.vn_range1.show
+	main.sp_point1.show
+	main.tx_point1.show
+	script eoverlay_plot1_if_hide
+	script eoverlay_plot1_ylist_hide
+	script eoverlay_plot1_yname_hide
+END
+
+SCRIPT eoverlay_plot1_if_show
+BEGIN
+	main.tx_exp1.show
+	main.ex_exp1.show
+END
+
+SCRIPT eoverlay_plot1_ylist_hide
+BEGIN
+	main.tx_y1.hide
+	main.vl_y1.hide
+END
+
+SCRIPT eoverlay_plot1_yname_hide
+BEGIN
+	main.tx_y1a.hide
+	main.vn_y1a.hide
+	main.tx_y1b.hide
+	main.vn_y1b.hide
+END
+
+SCRIPT eoverlay_plot1_fcn_hide
+BEGIN
+	main.tx_fcn1.hide
+	main.ex_fcn1.hide
+	main.tx_range1.hide
+	main.vn_range1.hide
+	main.sp_point1.hide
+	main.tx_point1.hide
+END
+
+SCRIPT eoverlay_plot1_if_hide
+BEGIN
+	main.tx_exp1.hide
+	main.ex_exp1.hide
+END
+/* END PLOT 1 Lists and Scripts */
+
+
+/* PLOT 2 Lists and Scripts */
+
+LIST eoverlay_cb_type_plot2_sel
+BEGIN
+	script eoverlay_plot2_default
+	script eoverlay_plot2_ylist
+	script eoverlay_plot2_ylist
+	script eoverlay_plot2_ylist
+	script eoverlay_plot2_ylist
+	script eoverlay_plot2_ylist
+	script eoverlay_plot2_ylist
+	script eoverlay_plot2_ylist
+	script eoverlay_plot2_ynames
+	script eoverlay_plot2_ynames
+	script eoverlay_plot2_ynames
+	script eoverlay_plot2_ynames
+	script eoverlay_plot2_ynames
+	script eoverlay_plot2_ynames
+	script eoverlay_plot2_ynames
+	script eoverlay_plot2_ynames
+	script eoverlay_plot2_function
+END
+
+SCRIPT eoverlay_plot2_default
+BEGIN
+	script eoverlay_plot2_ylist_show
+	script eoverlay_plot2_disable
+END
+
+SCRIPT eoverlay_plot2_ylist
+BEGIN
+	script eoverlay_plot2_enable
+	script eoverlay_plot2_ylist_show
+END
+
+SCRIPT eoverlay_plot2_ynames
+BEGIN
+	script eoverlay_plot2_enable
+	script eoverlay_plot2_ynames_show
+END
+
+SCRIPT eoverlay_plot2_function
+BEGIN
+	script eoverlay_plot2_enable
+	script eoverlay_plot2_fcn_show
+END
+
+SCRIPT eoverlay_plot2_disable
+BEGIN
+	main.tx_y2.disable
+	main.vl_y2.disable
+	main.tx_raxis2.disable
+	main.ck_raxis2.disable
+	main.tx_exp2.disable
+	main.ex_exp2.disable	
+END
+
+SCRIPT eoverlay_plot2_enable
+BEGIN
+	main.tx_y2.enable
+	main.vl_y2.enable
+	main.tx_raxis2.enable
+	main.ck_raxis2.enable
+	main.tx_exp2.enable
+	main.ex_exp2.enable	
+END
+
+SCRIPT eoverlay_plot2_ylist_show
+BEGIN
+	main.tx_y2.show
+	main.vl_y2.show
+	script eoverlay_plot2_if_show
+	script eoverlay_plot2_yname_hide
+	script eoverlay_plot2_fcn_hide
+END
+
+SCRIPT eoverlay_plot2_ynames_show
+BEGIN
+	main.tx_y2a.show
+	main.vn_y2a.show
+	main.tx_y2b.show
+	main.vn_y2b.show
+	script eoverlay_plot2_if_show
+	script eoverlay_plot2_ylist_hide
+	script eoverlay_plot2_fcn_hide
+END
+
+SCRIPT eoverlay_plot2_fcn_show
+BEGIN
+	main.tx_fcn2.show
+	main.ex_fcn2.show
+	main.tx_range2.show
+	main.vn_range2.show
+	main.sp_point2.show
+	main.tx_point2.show
+	script eoverlay_plot2_if_hide
+	script eoverlay_plot2_ylist_hide
+	script eoverlay_plot2_yname_hide
+END
+
+SCRIPT eoverlay_plot2_if_show
+BEGIN
+	main.tx_exp2.show
+	main.ex_exp2.show
+END
+
+SCRIPT eoverlay_plot2_ylist_hide
+BEGIN
+	main.tx_y2.hide
+	main.vl_y2.hide
+END
+
+SCRIPT eoverlay_plot2_yname_hide
+BEGIN
+	main.tx_y2a.hide
+	main.vn_y2a.hide
+	main.tx_y2b.hide
+	main.vn_y2b.hide
+END
+
+SCRIPT eoverlay_plot2_fcn_hide
+BEGIN
+	main.tx_fcn2.hide
+	main.ex_fcn2.hide
+	main.tx_range2.hide
+	main.vn_range2.hide
+	main.sp_point2.hide
+	main.tx_point2.hide
+END
+
+SCRIPT eoverlay_plot2_if_hide
+BEGIN
+	main.tx_exp2.hide
+	main.ex_exp2.hide
+END
+
+/* END PLOT 2 Lists and Scripts  */
+
+/* PLOT 3 Lists and Scripts */
+
+LIST eoverlay_cb_type_plot3_sel
+BEGIN
+	script eoverlay_plot3_default
+	script eoverlay_plot3_ylist
+	script eoverlay_plot3_ylist
+	script eoverlay_plot3_ylist
+	script eoverlay_plot3_ylist
+	script eoverlay_plot3_ylist
+	script eoverlay_plot3_ylist
+	script eoverlay_plot3_ylist
+	script eoverlay_plot3_ynames
+	script eoverlay_plot3_ynames
+	script eoverlay_plot3_ynames
+	script eoverlay_plot3_ynames
+	script eoverlay_plot3_ynames
+	script eoverlay_plot3_ynames
+	script eoverlay_plot3_ynames
+	script eoverlay_plot3_ynames
+	script eoverlay_plot3_function
+END
+
+SCRIPT eoverlay_plot3_default
+BEGIN
+	script eoverlay_plot3_ylist_show
+	script eoverlay_plot3_disable
+END
+
+SCRIPT eoverlay_plot3_ylist
+BEGIN
+	script eoverlay_plot3_enable
+	script eoverlay_plot3_ylist_show
+END
+
+SCRIPT eoverlay_plot3_ynames
+BEGIN
+	script eoverlay_plot3_enable
+	script eoverlay_plot3_ynames_show
+END
+
+SCRIPT eoverlay_plot3_function
+BEGIN
+	script eoverlay_plot3_enable
+	script eoverlay_plot3_fcn_show
+END
+
+SCRIPT eoverlay_plot3_disable
+BEGIN
+	main.tx_y3.disable
+	main.vl_y3.disable
+	main.tx_raxis3.disable
+	main.ck_raxis3.disable
+	main.tx_exp3.disable
+	main.ex_exp3.disable	
+END
+
+SCRIPT eoverlay_plot3_enable
+BEGIN
+	main.tx_y3.enable
+	main.vl_y3.enable
+	main.tx_raxis3.enable
+	main.ck_raxis3.enable
+	main.tx_exp3.enable
+	main.ex_exp3.enable	
+END
+
+SCRIPT eoverlay_plot3_ylist_show
+BEGIN
+	main.tx_y3.show
+	main.vl_y3.show
+	script eoverlay_plot3_if_show
+	script eoverlay_plot3_yname_hide
+	script eoverlay_plot3_fcn_hide
+END
+
+SCRIPT eoverlay_plot3_ynames_show
+BEGIN
+	main.tx_y3a.show
+	main.vn_y3a.show
+	main.tx_y3b.show
+	main.vn_y3b.show
+	script eoverlay_plot3_if_show
+	script eoverlay_plot3_ylist_hide
+	script eoverlay_plot3_fcn_hide
+END
+
+SCRIPT eoverlay_plot3_fcn_show
+BEGIN
+	main.tx_fcn3.show
+	main.ex_fcn3.show
+	main.tx_range3.show
+	main.vn_range3.show
+	main.sp_point3.show
+	main.tx_point3.show
+	script eoverlay_plot3_if_hide
+	script eoverlay_plot3_ylist_hide
+	script eoverlay_plot3_yname_hide
+END
+
+SCRIPT eoverlay_plot3_if_show
+BEGIN
+	main.tx_exp3.show
+	main.ex_exp3.show
+END
+
+SCRIPT eoverlay_plot3_ylist_hide
+BEGIN
+	main.tx_y3.hide
+	main.vl_y3.hide
+END
+
+SCRIPT eoverlay_plot3_yname_hide
+BEGIN
+	main.tx_y3a.hide
+	main.vn_y3a.hide
+	main.tx_y3b.hide
+	main.vn_y3b.hide
+END
+
+SCRIPT eoverlay_plot3_fcn_hide
+BEGIN
+	main.tx_fcn3.hide
+	main.ex_fcn3.hide
+	main.tx_range3.hide
+	main.vn_range3.hide
+	main.sp_point3.hide
+	main.tx_point3.hide
+END
+
+SCRIPT eoverlay_plot3_if_hide
+BEGIN
+	main.tx_exp3.hide
+	main.ex_exp3.hide
+END
+
+/* END PLOT 3 Lists and Scripts  */
+
+/* PLOT 4 Lists and Scripts */
+
+LIST eoverlay_cb_type_plot4_sel
+BEGIN
+	script eoverlay_plot4_default
+	script eoverlay_plot4_ylist
+	script eoverlay_plot4_ylist
+	script eoverlay_plot4_ylist
+	script eoverlay_plot4_ylist
+	script eoverlay_plot4_ylist
+	script eoverlay_plot4_ylist
+	script eoverlay_plot4_ylist
+	script eoverlay_plot4_ynames
+	script eoverlay_plot4_ynames
+	script eoverlay_plot4_ynames
+	script eoverlay_plot4_ynames
+	script eoverlay_plot4_ynames
+	script eoverlay_plot4_ynames
+	script eoverlay_plot4_ynames
+	script eoverlay_plot4_ynames
+	script eoverlay_plot4_function
+END
+
+SCRIPT eoverlay_plot4_default
+BEGIN
+	script eoverlay_plot4_ylist_show
+	script eoverlay_plot4_disable
+END
+
+SCRIPT eoverlay_plot4_ylist
+BEGIN
+	script eoverlay_plot4_enable
+	script eoverlay_plot4_ylist_show
+END
+
+SCRIPT eoverlay_plot4_ynames
+BEGIN
+	script eoverlay_plot4_enable
+	script eoverlay_plot4_ynames_show
+END
+
+SCRIPT eoverlay_plot4_function
+BEGIN
+	script eoverlay_plot4_enable
+	script eoverlay_plot4_fcn_show
+END
+
+SCRIPT eoverlay_plot4_disable
+BEGIN
+	main.tx_y4.disable
+	main.vl_y4.disable
+	main.tx_raxis4.disable
+	main.ck_raxis4.disable
+	main.tx_exp4.disable
+	main.ex_exp4.disable	
+END
+
+SCRIPT eoverlay_plot4_enable
+BEGIN
+	main.tx_y4.enable
+	main.vl_y4.enable
+	main.tx_raxis4.enable
+	main.ck_raxis4.enable
+	main.tx_exp4.enable
+	main.ex_exp4.enable	
+END
+
+SCRIPT eoverlay_plot4_ylist_show
+BEGIN
+	main.tx_y4.show
+	main.vl_y4.show
+	script eoverlay_plot4_if_show
+	script eoverlay_plot4_yname_hide
+	script eoverlay_plot4_fcn_hide
+END
+
+SCRIPT eoverlay_plot4_ynames_show
+BEGIN
+	main.tx_y4a.show
+	main.vn_y4a.show
+	main.tx_y4b.show
+	main.vn_y4b.show
+	script eoverlay_plot4_if_show
+	script eoverlay_plot4_ylist_hide
+	script eoverlay_plot4_fcn_hide
+END
+
+SCRIPT eoverlay_plot4_fcn_show
+BEGIN
+	main.tx_fcn4.show
+	main.ex_fcn4.show
+	main.tx_range4.show
+	main.vn_range4.show
+	main.sp_point4.show
+	main.tx_point4.show
+	script eoverlay_plot4_if_hide
+	script eoverlay_plot4_ylist_hide
+	script eoverlay_plot4_yname_hide
+END
+
+SCRIPT eoverlay_plot4_if_show
+BEGIN
+	main.tx_exp4.show
+	main.ex_exp4.show
+END
+
+SCRIPT eoverlay_plot4_ylist_hide
+BEGIN
+	main.tx_y4.hide
+	main.vl_y4.hide
+END
+
+SCRIPT eoverlay_plot4_yname_hide
+BEGIN
+	main.tx_y4a.hide
+	main.vn_y4a.hide
+	main.tx_y4b.hide
+	main.vn_y4b.hide
+END
+
+SCRIPT eoverlay_plot4_fcn_hide
+BEGIN
+	main.tx_fcn4.hide
+	main.ex_fcn4.hide
+	main.tx_range4.hide
+	main.vn_range4.hide
+	main.sp_point4.hide
+	main.tx_point4.hide
+END
+
+SCRIPT eoverlay_plot4_if_hide
+BEGIN
+	main.tx_exp4.hide
+	main.ex_exp4.hide
+END
+
+/* END PLOT 4 Lists and Scripts  */
+
+PROGRAM eoverlay_opts1_pr
+BEGIN
+	beginoptions
+		option main.ck_sort
+	endoptions
+END
+
+PROGRAM eoverlay_fcn_opts1_pr
+BEGIN
+	beginoptions
+		optionarg main.vn_range1
+		optionarg /hidedefault main.sp_point1
+	endoptions
+END
+
+PROGRAM eoverlay_opts2_pr
+BEGIN
+	beginoptions
+		option main.ck_raxis2
+		option main.ck_sort
+	endoptions
+END
+
+PROGRAM eoverlay_fcn_opts2_pr
+BEGIN
+	beginoptions
+		optionarg main.vn_range2
+		optionarg /hidedefault main.sp_point2
+		option main.ck_raxis2
+	endoptions
+END
+
+PROGRAM eoverlay_opts3_pr
+BEGIN
+	beginoptions
+		option main.ck_raxis3
+		option main.ck_sort
+	endoptions
+END
+
+PROGRAM eoverlay_fcn_opts3_pr
+BEGIN
+	beginoptions
+		optionarg main.vn_range3
+		optionarg /hidedefault main.sp_point3
+		option main.ck_raxis3
+	endoptions
+END
+
+PROGRAM eoverlay_opts4_pr
+BEGIN
+	beginoptions
+		option main.ck_raxis4
+		option main.ck_sort
+	endoptions
+END
+
+PROGRAM eoverlay_fcn_opts4_pr
+BEGIN
+	beginoptions
+		optionarg main.vn_range4
+		optionarg /hidedefault main.sp_point4
+		option main.ck_raxis4
+	endoptions
+END
+
+PROGRAM command
+BEGIN
+	if H(main.ex_fcn1) {
+		require main.vn_x
+	}		
+	put "twoway "
+	if !H(main.vl_y1) {
+		put "(" main.cb_plot1 " "
+		require main.vl_y1
+		put main.vl_y1 
+	}
+	if !H(main.vn_y1a) {
+		put "(" main.cb_plot1 " "
+		require main.vn_y1a
+		put main.vn_y1a " "
+		require main.vn_y1b
+		put main.vn_y1b
+	}
+	/// if not a function
+	if H(main.ex_fcn1) {	
+		require main.vn_x
+		put " " main.vn_x
+		ifexp main.ex_exp1
+		put /program eoverlay_opts1_pr
+		put ") "
+	}
+	/// if is a function
+	if !H(main.ex_fcn1) {
+		put "(" main.cb_plot1 " "
+		require main.ex_fcn1
+		put main.ex_fcn1
+		put /program eoverlay_fcn_opts1_pr
+		put ") "
+	}
+	
+	if main.cb_plot2 {
+		if !H(main.vl_y2) {
+			put "(" main.cb_plot2 " "
+			require main.vl_y2
+			put main.vl_y2 
+		}
+		if !H(main.vn_y2a) {
+			put "(" main.cb_plot2 " "
+			require main.vn_y2a
+			put main.vn_y2a " "
+			require main.vn_y2b
+			put main.vn_y2b
+		}
+		/// if not a function
+		if H(main.ex_fcn2) {	
+			require main.vn_x
+			put " " main.vn_x
+			ifexp main.ex_exp2
+			put /program eoverlay_opts2_pr
+			put ") "
+		}
+		/// if is a function
+		if !H(main.ex_fcn2) {
+			put "(" main.cb_plot2 " "
+			require main.ex_fcn2
+			put main.ex_fcn2
+			put /program eoverlay_fcn_opts2_pr
+			put ") "
+		}
+	}
+	if main.cb_plot3 {
+		if !H(main.vl_y3) {
+			put "(" main.cb_plot3 " "
+			require main.vl_y3
+			put main.vl_y3 
+		}
+		if !H(main.vn_y3a) {
+			put "(" main.cb_plot3 " "
+			require main.vn_y3a
+			put main.vn_y3a " "
+			require main.vn_y3b
+			put main.vn_y3b
+		}
+		/// if not a function
+		if H(main.ex_fcn3) {	
+			require main.vn_x
+			put " " main.vn_x
+			ifexp main.ex_exp3
+			put /program eoverlay_opts3_pr
+			put ") "
+		}
+		/// if is a function
+		if !H(main.ex_fcn3) {
+			put "(" main.cb_plot3 " "
+			require main.ex_fcn3
+			put main.ex_fcn3
+			put /program eoverlay_fcn_opts3_pr
+			put ") "
+		}
+	}
+	if main.cb_plot4 {
+		if !H(main.vl_y4) {
+			put "(" main.cb_plot4 " "
+			require main.vl_y4
+			put main.vl_y4 
+		}
+		if !H(main.vn_y4a) {
+			put "(" main.cb_plot4 " "
+			require main.vn_y4a
+			put main.vn_y4a " "
+			require main.vn_y4b
+			put main.vn_y4b
+		}
+		/// if not a function
+		if H(main.ex_fcn4) {	
+			require main.vn_x
+			put " " main.vn_x
+			ifexp main.ex_exp4
+			put /program eoverlay_opts4_pr
+			put ") "
+		}
+		/// if is a function
+		if !H(main.ex_fcn4) {
+			put "(" main.cb_plot4 " "
+			require main.ex_fcn4
+			put main.ex_fcn4
+			put /program eoverlay_fcn_opts4_pr
+			put ") "
+		}
+	}
+	INCLUDE _ifin_pr
+	beginoptions
+		put " "  /program etitle_output
+		put " "  /program eaxes_output
+		put " "  /program eopts_output
+	endoptions
+END

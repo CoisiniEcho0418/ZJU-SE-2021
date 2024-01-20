@@ -1,0 +1,165 @@
+/*
+  xthtaylor
+
+*!  VERSION 1.3.2  28may2009
+
+  keyword:  eclass
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_large
+INCLUDE _ht330
+INCLUDE header
+
+HELP hlp1, view("help xthtaylor")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	script se_createAsConventJknifeBstrap
+END
+
+SCRIPT POSTINIT
+BEGIN
+	script se_setCluster_off
+	script se_setTitleSE
+END
+
+SCRIPT show_xtset
+BEGIN
+	create STRING note
+	note.setvalue `"For the "Amemiya-MaCurdy estimator","'
+	note.append   `" a time variable is required."'
+	note.withvalue create CHILD xtset, message(`"" " `"@"'"')
+END
+
+DIALOG main, tabtitle("Model")	///
+	label("xthtaylor - Hausman-Taylor estimator for error-components models")
+BEGIN
+  BUTTON   bu_xtset	_xsetbu	_top	_setbuwd .,		///
+	onpush(script show_xtset)				///
+	label("Panel settings...")
+
+  TEXT     tx_dv     _lft      _topph    _vnwd     .,			/*
+		*/ label("Dependent variable:")				/*
+		*/
+  VARNAME  vn_dv     @         _ss       @         .,			/*
+		*/ label("Dependent variable")				/*
+		*/ ts
+
+  TEXT     tx_iv     _vlx      _topph    _cwd2     .,			/*
+		*/ label("Independent variables:")			/*
+		*/
+  VARLIST  vl_iv     @         _ss       _vlwd     .,			/*
+		*/ label("Independent variables")			/*
+		*/ allowcat ts			 			/*
+		*/
+
+  CHECKBOX ck_nocons @         _ms       @         .,			/*
+		*/ label("Suppress constant term")			/*
+		*/ option("noconstant")					/*
+		*/
+
+  TEXT     tx_endog  _lft      _ms       _iwd      .,			/*
+		*/ label("Endogenous variables:")			/*
+		*/
+  DEFINE y @y
+  VARLIST  vl_endog  @         _ss       @         .,			/*
+		*/ label("Endogenous variables")			/*
+		*/ option("endog") ts					/*
+		*/
+
+  GROUPBOX gb_indvar  _lft     _ls       _iwd  _ht9,			/*
+		*/ label("Independent variables")			/*
+		*/
+  RADIO    rb_const  _indent   _ss       _inwd     .,			/*
+		*/ label("Constant within panel:")			/*
+		*/ clickon("script constant_on")			/*
+		*/ first						/*
+		*/
+  DEFINE holdx @x
+  DEFINE holdcx @cx
+  VARLIST  vl_const  _indent2  _ss       _inwd     .,			/*
+		*/ label("Constant within panel:")			/*
+		*/ option("constant") ts				/*
+		*/
+  RADIO    rb_vary   holdx     _ms       holdcx    .,			/*
+		*/ label("Varying within panel:")			/*
+		*/ clickon("script constant_off")			/*
+		*/ last							/*
+		*/
+  VARLIST  vl_vary   _indent2  _ss       _inwd     .,			/*
+		*/ label("Varying within panel:")			/*
+		*/ option("varying") ts					/*
+		*/
+
+  GROUPBOX gb_est    _lft      +45       _iwd   _ht2,			/*
+		*/ label("Estimator")					/*
+		*/
+  RADIO    rb_htayl  _indent   _ss       _cwd2     .,			/*
+		*/ label("Hausman-Taylor estimator")			/*
+		*/ first						/*
+		*/ option(NONE)						/*
+		*/ onclickon(script weights_enable)			/*
+		*/
+  RADIO    rb_amacur _lft2     @         @         .,			/*
+		*/ label("Amemiya-MaCurdy estimator")			/*
+		*/ onclickon(script weights_disable)			/*
+		*/ last							/*
+		*/ option("amacurdy")					/*
+		*/
+END
+
+INCLUDE byifin
+INCLUDE weights_fi
+INCLUDE se
+
+DIALOG rpt, label("") tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr
+  DEFINE _y _top
+  INCLUDE _sp_level
+
+  CHECKBOX ck_small  _lft      _ls        _cwd1     .,			/*
+		*/ option("small")					/*
+		*/ label("Report small sample statistics")
+
+END
+
+SCRIPT constant_on
+BEGIN
+	gaction main.vl_const.enable
+	gaction main.vl_vary.disable
+END
+
+SCRIPT constant_off
+BEGIN
+	gaction main.vl_const.disable
+	gaction main.vl_vary.enable
+END
+
+
+PROGRAM command
+BEGIN
+	allowxi
+	put /program by_output " "
+	put "xthtaylor "
+	varlist main.vn_dv
+	varlist main.vl_iv
+	put " " /program ifin_output
+	put " " /program weights_output
+	beginoptions
+		option main.ck_nocons
+		require main.vl_endog
+		optionarg main.vl_endog
+		optionarg main.vl_const
+		optionarg main.vl_vary
+		option radio(main rb_htayl rb_amacur)
+		put " " /program se_output
+		optionarg /hidedefault rpt.sp_level
+		option rpt.ck_small
+	endoptions
+END

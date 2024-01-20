@@ -1,0 +1,211 @@
+/*
+  truncreg
+
+*!  VERSION 1.3.0  11may2011
+
+  keyword:  eclass
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_large
+DEFINE _dlght 380
+INCLUDE header
+
+HELP hlp1, view("help truncreg")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	program parseMessage
+	script se_createAsSvyJknifeBstrapML
+	program svy_check_title
+END
+
+PROGRAM parseMessage
+BEGIN
+	if __MESSAGE.contains("__MI__") {
+		call script se_setMI_on
+	}
+END
+
+SCRIPT POSTINIT
+BEGIN
+	script max_setFromNotVisible
+	program check_bytab
+	program se_setFinalInitState
+END
+
+PROGRAM check_bytab
+BEGIN
+	if ! __MESSAGE.contains("__MI__") {
+		call script sub_set_by_on
+	}
+END
+
+SCRIPT svy_is_on
+BEGIN
+	rpt.gb_tests.disable
+	rpt.ck_noskip.disable
+	script max_setDefaultNoLog
+END
+SCRIPT svy_is_off
+BEGIN
+	rpt.gb_tests.enable
+	rpt.ck_noskip.enable
+	script max_setDefaultLog
+END
+PROGRAM svy_check_title
+BEGIN
+	if __MESSAGE.contains("-svy-") {
+		call settitle "svy: truncreg - Truncated regression for survey data"
+	}
+END
+
+DIALOG main, 								///
+	title("truncreg - Truncated regression") /* has svy title */	///
+	tabtitle("Model")
+BEGIN
+  TEXT tx_dv 		_lft	_top	_vnwd	.,			///
+	label("Dependent variable:")
+  VARNAME vn_dv		@ 	_ss	@	.,			///
+	ts								///
+	label("Dependent variable")
+
+  TEXT tx_iv		_vlx	_top	160	.,			///
+	label("Independent variables:")
+  VARLIST vl_iv		@	_ss	_vlwd	.,			///
+	fv ts								///
+	allowcat							///
+	label("Independent variables")
+
+  CHECKBOX ck_nocons @         _ms       @         .,			/*
+		*/ label("Suppress constant term")			/*
+		*/ option("noconstant")					/*
+		*/
+
+  GROUPBOX gb_censor _lft      _ls       _iwd      _ht4h,		/*
+	*/ label("At least one truncation limit must be specified")	/*
+		*/
+  TEXT     tx_ll     _indent   _ss       _cwd2     .,			/*
+		*/ label("Left-truncation limit:")			/*
+		*/
+  DEFINE y @y
+  VARNAME  vn_ll     @         _ss       _vnwd     .,			/*
+		*/ label("Left-truncation limit")			/*
+		*/ option("ll")						/*
+		*/
+  TEXT     tx_ul     _lft3_2   y         _cwd2     .,			/*
+		*/ label("Right-truncation limit:")			/*
+		*/
+  VARNAME  vn_ul     @         _ss       _vnwd     .,			/*
+		*/ label("Right-truncation limit")			/*
+		*/ option("ul")						/*
+		*/
+
+  GROUPBOX gb_option _lft      +45       _iwd      _ht12,		/*
+  		*/ label("Options")
+  TEXT     tx_offset _ilft     _ss       _cwd1     .,			/*
+		*/ label("Offset variable:")				/*
+		*/
+  VARNAME  vn_offset @         _ss       _vnwd     .,			/*
+		*/ label("Offset variable")				/*
+		*/ option("offset")					/*
+		*/
+
+  DEFINE _x _ilft
+  DEFINE _y _ls
+  DEFINE _cx _ilw80
+  DEFINE _bux _islw80
+  INCLUDE _constraints
+
+  DEFINE _x _ilft
+  DEFINE _xw _ibwd
+  INCLUDE _ck_collinear
+END
+
+INCLUDE _constraints_sc 
+INCLUDE sub_by_ifin_over_subpop
+INCLUDE weights_fpai
+INCLUDE se
+
+SCRIPT rpt_POSTINIT
+BEGIN
+	create STRING rpt_bu_fmtcoefResults
+	program rpt_bu_fmtcoef_ckResults
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr2b
+  DEFINE _y _top
+  INCLUDE _sp_level
+
+  GROUPBOX gb_tests  _lft      +35      _iwd       _ht2,		/*
+  		*/ label("Additional test statistics")
+  CHECKBOX ck_noskip _ilft     _ss      _cwd2      .,			/*
+		*/ label("Perform likelihood-ratio test")		/*
+		*/ option("noskip")					/*
+		*/
+
+  DEFINE _x _lft
+  DEFINE _y _xls
+  DEFINE _cx _iwd
+  INCLUDE _nocnsreport
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _noomitted
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _vsquish
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _factor_vars_reporting
+
+  DEFINE _x _lft
+  DEFINE _y _xxxls
+  INCLUDE _bu_coef_table_reporting
+END
+
+INCLUDE fmt_coef_table_reporting_pr
+
+INCLUDE max_ml
+
+PROGRAM command
+BEGIN
+	put /program by_output " "
+	put /program se_prefix_output " "
+	put "truncreg "
+	varlist main.vn_dv [main.vl_iv]
+	put " " /program ifin_output
+	put " " /program weights_output
+	beginoptions
+		if ! (main.vn_ll | main.vn_ul) {
+			stopbox stop `"At least one truncation limit"' /*
+			*/ `""Left" or "Right" must be specified"'
+		}
+		optionarg main.vn_ll
+		optionarg main.vn_ul
+		option main.ck_nocons
+		optionarg main.vn_offset
+		optionarg main.cb_constr
+		option main.ck_collinear
+		put " " /program se_output
+		optionarg /hidedefault rpt.sp_level
+		option rpt.ck_noskip
+		INCLUDE _nocnsreport_pr
+		INCLUDE _noomitted_pr
+		INCLUDE _vsquish_pr
+		INCLUDE _factor_vars_reporting_pr
+		put " " rpt_bu_fmtcoefResults
+		put " " /program max_output
+	endoptions
+END

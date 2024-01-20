@@ -1,0 +1,6 @@
+*! version 1.0.0  22dec2002
+sequence 3610
+
+set width    scheme dot_area
+set color    scheme dot_arealine 
+set pattern  scheme dot_area

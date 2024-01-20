@@ -1,0 +1,85 @@
+/*
+	gmm_estat
+
+*!  VERSION 1.0.1  24jun2009
+
+	***
+	USE EXTREME CARE WHEN CHANGING CONTROL NAMES. The names used
+	in this file have multiple external dependencies.
+*/
+
+VERSION 11.0
+
+INCLUDE _std_large
+DEFINE _dlght 330
+INCLUDE header
+
+HELP hlp1, view("help gmm postestimation")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	create STRING estimator
+	estimator.setstring e(estimator)
+
+	create STRING vcetype
+	vcetype.setstring e(vcetype)
+END
+
+DIALOG main, label("estat - Postestimation tools for gmm") tabtitle("Main")
+BEGIN
+  TEXT     tx_subcmd		_lft	_top	_iwd	.,		///
+  	label("Reports and statistics: (subcommand)")
+  LISTBOX  lb_subcmd		@	_ss	@	55,		///
+  	contents(main_subcommand_contents)				///
+  	values(main_subcommand_values)					///
+	onselchangelist(main_subcommand_scripts)
+  DEFINE holdy 95
+
+  INCLUDE estat_vce
+END
+
+INCLUDE estat_vce_pr
+
+LIST main_subcommand_contents
+BEGIN
+	"Covariance matrix estimates (vce)"
+	"Perform tests of overidentifying restrictions (overid)"
+END
+
+LIST main_subcommand_values
+BEGIN
+	vce
+	overid
+END
+
+LIST main_subcommand_scripts
+BEGIN
+        script sel_vce
+        script sel_overid
+END
+
+SCRIPT sel_overid
+BEGIN
+	script main_hide_all
+END
+
+SCRIPT sel_vce
+BEGIN
+	script main_hide_all
+	program vce_on
+END
+
+SCRIPT main_hide_all
+BEGIN
+	program vce_off
+END
+
+PROGRAM command
+BEGIN
+	put "estat "
+	put main.lb_subcmd
+	beginoptions
+		put " " /program vce_output
+	endoptions
+END

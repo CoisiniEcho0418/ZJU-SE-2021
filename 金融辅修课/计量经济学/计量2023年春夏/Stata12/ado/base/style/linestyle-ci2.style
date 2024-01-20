@@ -1,0 +1,6 @@
+*! version 1.0.0  22dec2002
+sequence 3512
+
+set width    scheme ci 
+set color    scheme ci_line 
+set pattern  scheme ci 

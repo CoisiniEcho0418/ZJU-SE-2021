@@ -1,0 +1,196 @@
+/*
+  tobit
+
+*!  VERSION 1.2.8  23aug2010
+
+  keyword:  eclass
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_large
+DEFINE _dlght 300
+INCLUDE header
+
+HELP hlp1, view("help tobit")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	script se_createAsSvyInternalML
+	program svy_check_title
+END
+
+SCRIPT POSTINIT
+BEGIN
+	script max_setDefaultNoLog
+	script se_setJknifeBstrap_on
+	script sub_set_by_on
+	program se_setFinalInitState
+END
+
+SCRIPT svy_is_on
+BEGIN
+	//
+END
+SCRIPT svy_is_off
+BEGIN
+	//
+END
+PROGRAM svy_check_title
+BEGIN
+	if __MESSAGE.contains("-svy-") {
+		call settitle "svy: tobit - Tobit regression for survey data"
+	}
+END
+
+DIALOG main, 								///
+	title("tobit - Tobit regression") /* has svy title */		///
+	tabtitle("Model")
+BEGIN
+  TEXT tx_dv 		_lft	_top	_vnwd	.,			///
+	label("Dependent variable:")
+  VARNAME vn_dv		@ 	_ss	@	.,			///
+	ts								///
+	label("Dependent variable")
+
+  TEXT tx_iv		_vlx	_top	160	.,			///
+	label("Independent variables:")
+  VARLIST vl_iv		@	_ss	_vlwd	.,			///
+	fv ts								///
+	allowcat							///
+	label("Independent variables")
+  CHECKBOX ck_nocons	@	_ms	@	.,			///
+	label("Suppress constant term")					///
+	option(noconstant)
+
+  GROUPBOX gb_censor _lft      +35      _iwd      _ht8h,		/*
+		*/ label("Specify at least one censoring limit")	/*
+		*/
+  RADIO    rb_noll   _indent   _ss       _cwd2     .,			/*
+	  	*/ first						/*
+	  	*/ label("No left-censoring limit")			/*
+		*/ onclickon("gaction main.en_ll.disable")
+  DEFINE y @y
+  RADIO    rb_ll     @         _ss       @         .,			/*
+		*/ label("Left-censoring at minimum")			/*
+		*/ clickon("gaction main.en_ll.disable")		/*
+		*/ option("ll")	default(1)				/*
+		*/
+  RADIO    rb_llarg  @         _ss       @         .,			/*
+		*/ last							/*
+		*/ label("Specified left-censoring limit:")		/*
+		*/ clickon("gaction main.en_ll.enable")			/*
+		*/
+  EDIT     en_ll     _indent2  _ss       _en14wd   .,			/*
+		*/ label("Left-censoring limit")			/*
+		*/ numonly						/*
+		*/ option("ll")						/*
+		*/
+  RADIO    rb_noul   _lft2     y         _cwd2     .,			/*
+		*/ first						/*
+		*/ onclickon("gaction main.en_ul.disable")		/*
+		*/ label("No right-censoring limit")
+  RADIO    rb_ul     @         _ss       @         .,			/*
+		*/ label("Right-censoring at maximum")			/*
+		*/ clickon("gaction main.en_ul.disable")		/*
+		*/ option("ul")						/*
+		*/
+  RADIO    rb_ularg  @         _ss       @         .,			/*
+		*/ last							/*
+		*/ label("Specified right-censoring limit:")		/*
+		*/ clickon("gaction main.en_ul.enable")			/*
+		*/
+  EDIT     en_ul     _indent2  _ss       _en14wd   .,			/*
+		*/ label("Right-censoring limit")			/*
+		*/ numonly						/*
+		*/ option("ul")						/*
+		*/
+
+
+  TEXT     tx_offset _lft      _xxls     _ibwd     .,			/*
+		*/ label("Offset variable: (optional)")			/*
+		*/
+  VARNAME  vn_offset @         _ss       _vnwd     .,			/*
+		*/ label("Offset variable")				/*
+		*/ option("offset")					/*
+		*/
+END
+
+INCLUDE sub_by_ifin_over_subpop
+INCLUDE weights_fpai
+INCLUDE se
+
+SCRIPT rpt_POSTINIT
+BEGIN
+	create STRING rpt_bu_fmtcoefResults
+	program rpt_bu_fmtcoef_ckResults
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr2b
+  DEFINE _y 20
+  INCLUDE _sp_level
+
+  DEFINE _x _lft
+  DEFINE _y _ls
+  DEFINE _cx _iwd
+  INCLUDE _noomitted
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _vsquish
+
+  DEFINE _x _lft
+  DEFINE _y _ls
+  DEFINE _cx _iwd
+  INCLUDE _factor_vars_reporting
+
+  DEFINE _x _lft
+  DEFINE _y _xxxls
+  INCLUDE _bu_coef_table_reporting
+END
+
+INCLUDE fmt_coef_table_reporting_pr
+
+INCLUDE max_internal
+
+PROGRAM command
+BEGIN
+	put /program by_output " "
+	put /program se_prefix_output " "
+	put "tobit "
+	varlist main.vn_dv [main.vl_iv]
+	put " " /program ifin_output
+	put " " /program weights_output
+	beginoptions
+		option main.ck_nocons
+		if main.rb_noll & main.rb_noul {
+			stopbox stop				/*
+			*/ `"On the "Model" tab,"'		/*
+			*/ `"at least one censoring limit must be specified"'
+		}
+		if main.rb_llarg {
+			require main.en_ll
+			optionarg main.en_ll
+		}
+		if main.rb_ularg {
+			require main.en_ul
+			optionarg main.en_ul
+		}
+		option main.rb_ll
+		option main.rb_ul
+		optionarg main.vn_offset
+		put " " /program se_output
+		optionarg /hidedefault rpt.sp_level
+		INCLUDE _noomitted_pr
+		INCLUDE _vsquish_pr
+		INCLUDE _factor_vars_reporting_pr
+		put " " rpt_bu_fmtcoefResults
+		put " " /program max_output
+	endoptions
+END

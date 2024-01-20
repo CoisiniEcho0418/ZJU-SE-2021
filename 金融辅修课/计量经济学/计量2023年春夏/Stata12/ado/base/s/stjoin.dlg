@@ -1,0 +1,25 @@
+/*
+	stjoin
+
+*!	VERSION 1.0.2  12jun2009
+*/
+
+VERSION 11.0
+
+INCLUDE _std_small
+DEFINE _dlght 100
+INCLUDE header
+
+HELP hlp1, view("help stjoin")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	create BOOLEAN isMI
+	isMI.setfalse
+END
+
+DIALOG main, label("stjoin - Join time-span records") tabtitle("Main")
+BEGIN
+
+INCLUDE stjoin

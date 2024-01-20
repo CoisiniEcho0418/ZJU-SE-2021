@@ -1,0 +1,6 @@
+*! version 1.0.1  12nov2004
+sequence 2200
+
+set width    scheme background
+set color    scheme background
+set pattern  scheme background

@@ -1,0 +1,85 @@
+/*
+	stack
+
+*!  VERSION 1.1.0  03feb2005
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+INCLUDE _ht250
+INCLUDE header
+
+HELP hlp1, view("help stack")
+RESET res1
+
+DIALOG main, label("stack - Stack data") tabtitle("Main")
+BEGIN
+  TEXT     tx_var        _lft     _top     _iwd        .,		/*
+		*/ label("Variables to be stacked:")
+  VARLIST  vl_var           @      _ss        @        .,		/*
+		*/ label("Variables")
+
+  RADIO    rb_into          @      _ls     _iwd        .,		/*
+		*/ first						/*
+		*/ label("Stack into new variables:")			/*
+		*/ clickon("script into_on")
+  EDIT     vl_into   _indent2      _ss    _inwd        .,		/*
+		*/ option("into")					/*
+  		*/ label("New variables")
+
+  RADIO    rb_group      _lft      _ls    _rbwd        .,		/*
+  		*/ last							/*
+		*/ label("")						/*
+		*/ clickon("script into_off")
+  SPINNER  sp_group    _rbsep        @    _spwd        .,		/*
+		*/ option("group")					/*
+  		*/ label("Group number")				/*
+		*/ min(1)						/*
+		*/ max(1000)
+  TEXT     tx_name     _spsep        @     _rbspr      .,		/*
+		*/ label("Number of groups of variables to be stacked")	/*
+		*/
+
+  GROUPBOX gb_opt        _lft     _xls     _iwd    _ht4h,  		/*
+ 		*/ label("Options")
+  CHECKBOX ck_clear   _indent      _ss    _inwd        .,		/*
+		*/ option("clear") nomem				/*
+                */ label("Clear dataset from memory")
+  CHECKBOX ck_wide          @      _ms        @        .,		/*
+		*/ option("wide")					/*
+                */ label("Keep variables to be stacked")
+END
+
+INCLUDE ifin
+
+SCRIPT into_on
+BEGIN
+main.vl_into.enable
+main.sp_group.disable
+END
+
+SCRIPT into_off
+BEGIN
+main.vl_into.disable
+main.sp_group.enable
+END
+
+
+PROGRAM command
+BEGIN
+	put "stack "
+	varlist main.vl_var
+	INCLUDE _ifin_pr
+	beginoptions
+		if main.rb_into {
+			optionarg main.vl_into
+		}
+		if main.rb_group {
+			optionarg main.sp_group
+		}
+		option main.ck_clear
+		option main.ck_wide
+	endoptions
+END

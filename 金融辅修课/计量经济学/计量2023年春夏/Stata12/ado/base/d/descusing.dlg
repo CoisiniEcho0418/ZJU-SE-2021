@@ -1,0 +1,85 @@
+/*
+	describe using ...
+
+*!  VERSION 1.1.2  11apr2007
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+INCLUDE header
+HELP hlp1, view("help describe")
+RESET res1
+
+DIALOG main, label("describe - Describe data in file")		///
+	tabtitle("Main")
+BEGIN
+  TEXT     tx_using      _lft     _top     _iwd        .,	///
+	label("Filename of Stata dataset:")
+  FILE     fi_using         @      _ss        @        .,	///
+	label("Browse...")					///
+	filter("Stata Dataset (*.dta)|*.dta|All (*.*)|*.*")	///
+	defext(dta)						///
+	error("Filename of Stata dataset")
+
+  GROUPBOX gb_opts       _lft     _xls     _iwd    _ht10, 	///
+	label("Options")
+  TEXT     tx_var     _indent      _ss    _inwd        .,	///
+	label("Variables: (leave empty for all)")
+  EDIT     ed_var           @      _ss        @        .,	///
+	label("Variables")
+
+  CHECKBOX ck_short         @      _ls        @        .,	///
+	option(short) label("Display only general information")	///
+	onclickon(script main_var_off) 				///
+	onclickoff(script main_var_on)
+  
+   CHECKBOX ck_simple        @     _ms        @        .,	///
+	option(simple) label("Display only variable names")	///
+	onclickon(script main_simple_on) 			///
+	onclickoff(program main_simple_off)
+
+/* not including -varlist- option since it is a programmer only option */
+END
+
+SCRIPT main_var_off
+BEGIN
+	main.tx_var.disable
+	main.ed_var.disable
+END
+
+SCRIPT main_var_on
+BEGIN
+	main.tx_var.enable
+	main.ed_var.enable
+END
+
+PROGRAM main_simple_off
+BEGIN
+	call main.ck_short.enable
+	if !main.ck_short {
+		call main.tx_var.enable
+		call main.ed_var.enable
+	}
+END
+
+SCRIPT main_simple_on
+BEGIN
+	main.tx_var.disable
+	main.ed_var.disable
+	main.ck_short.disable
+END
+
+PROGRAM command
+BEGIN
+	require main.fi_using
+	put "describe "
+	put main.ed_var " "
+	put "using "
+	put `"""' main.fi_using `"""'
+	beginoptions
+		option main.ck_short
+		option main.ck_simple
+	endoptions
+END

@@ -1,0 +1,74 @@
+/*
+	icd9[p] check
+	
+*! VERSION 1.0.2  07mar2007
+
+	which icd9  - *! version 1.0.4  31jul2001
+	which icd9p - *! version 1.0.3  11sep2000
+*/
+
+VERSION 8.0
+
+INCLUDE _std_medium
+INCLUDE header
+HELP hlp1, view("help icd9")
+RESET res1
+
+DIALOG main, label("icd9[p] check - Verify that variable contains defined codes") tabtitle("Main")
+BEGIN
+  /*--+----1----+----2----+----3----+----4----+----5----+----6----+----7----+*/
+  TEXT     tx_vn     _lft      _top      _iwd      .,		/*
+		*/ label("Variable name:")
+
+  VARNAME  vn_vn     @         _ss       _vnwd     .,		/*
+		*/ label("Variable name")
+
+  RADIO    rb_diag   _lft      _ls       _cwd1     .,		/*
+		*/ first					/*
+		*/ label("Diagnostic codes")
+
+  RADIO    rb_proc   _lft2     @         @         .,		/*
+		*/ last						/*
+		*/ label("Procedure codes")
+
+  GROUPBOX gb_opt    _lft      _ls       _iwd      _ht11,	/*
+		*/ label("Options")
+
+  CHECKBOX ck_any    _indent   _ss       _ibwd     .,		/*
+		*/ option(any)					/*
+		*/ label("Verify that codes fit, not that they are defined (executes faster)")
+
+  CHECKBOX ck_list   @         _ls       @         .,		/*
+		*/ option(list)					/*
+		*/ label("List individual invalid codes")
+
+  CHECKBOX ck_gen    @         _ls       _ibwd     .,		/*
+		*/ clickon("gaction main.ed_gen.enable")	/*
+		*/ clickoff("gaction main.ed_gen.disable")	/*
+		*/ label("Generate new variable of validity codes:")
+
+  EDIT     ed_gen    _indent2  _ss       _vnwd     .,		/*
+		*/ option(generate)				/*
+		*/ max(32)					/*
+		*/ label("Generate new variable of validity codes")
+END
+
+PROGRAM command
+BEGIN   
+	if main.rb_diag {
+		put "icd9 check "
+	}
+	if main.rb_proc {
+		put "icd9p check "
+	}
+	varlist main.vn_vn
+	beginoptions
+		option main.ck_any
+		option main.ck_list
+		if main.ck_gen {
+			require main.ed_gen
+			optionarg main.ed_gen
+		}
+	endoptions
+END
+

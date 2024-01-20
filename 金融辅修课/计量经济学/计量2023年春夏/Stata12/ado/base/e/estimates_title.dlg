@@ -1,0 +1,38 @@
+/*
+	estimates title
+
+*!  VERSION 1.0.2  19apr2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_msmall
+DEFINE _dlght 100
+INCLUDE header
+
+HELP hlp1, view("help estimates_title")
+RESET res1
+
+DIALOG main, tabtitle("Main")					///
+	label("estimates title - Set title for estimation results")
+BEGIN
+  TEXT tx_title		_lft	20	80	.,		///
+	label("Title:") right
+  EDIT ed_title		+85	@	_lw80	.,		///
+	default(e(estimates_title))
+
+  CHECKBOX ck_clear	@	_ls	@	.,		///
+	label("Clear title")					///
+	onclickon(main.ed_title.disable)			///
+	onclickoff(main.ed_title.enable)
+END
+
+PROGRAM command
+BEGIN
+	put "estimates title: "	
+	if ! main.ck_clear {
+		put main.ed_title
+	}	
+END
+

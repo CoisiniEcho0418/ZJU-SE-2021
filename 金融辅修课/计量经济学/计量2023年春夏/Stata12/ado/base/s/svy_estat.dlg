@@ -1,0 +1,540 @@
+/*
+	svy_estat -- the estat dialog for svy estimation results
+
+*!  VERSION 1.1.7  28may2011
+
+	NOTE: this dialog shares INCLUDE files with estat.dlg
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_large
+DEFINE _dlght 410
+INCLUDE header
+
+HELP hlp1, view("help svy_estat")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	create BOOLEAN has_FactorVars
+	has_FactorVars.settrue
+	program vce_bu_facvars_ckResults
+	create STRING svy_estat_current_subcmd
+	create STRING main_bu_facvarsResults
+	program main_bu_facvars_ckResults
+END
+
+SCRIPT POSTINIT
+BEGIN
+	main._ed_cmd.hide
+END
+
+DIALOG main, tabtitle("Main") 	///
+	label("estat -- Postestimation statistics for survey data")
+BEGIN
+  EDIT _ed_cmd 0 0 0 0, default(e(cmd))
+
+  TEXT		tx_subcmd	_lft	_top	_iwd	.,		///
+	label("Reports and statistics: (subcommand)")
+  LISTBOX	lb_subcmd	@	_ss	@	70,		///
+	contents(main_subcmd_contents)					///
+	values(main_subcmd_values)					///
+	onselchangelist(main_subcmd_scripts)
+
+  DEFINE holdy 110
+
+  // note for -estat svyset-
+  TEXT		tx_note		_lft	holdy	_iwd	.,		///
+  	label("Click OK or Submit to display the estimation's survey design characteristics")
+
+  // expression for -estat lceffects-
+  TEXT		tx_exp		_lft	holdy	_iwd	.,		///
+		label("Linear expression:")
+  EDIT		ed_exp		@	_ss	@	.,		///
+		label("Linear expression")
+
+  // options for -estat effects- and -estat lceffects-
+  GROUPBOX	gb_eff		_lft	holdy	_iwd	_ht18,		///
+	label("Effect measures (by default all available are reported)")
+
+  GROUPBOX	gb_def		_indent	_ss	_inwd	_ht7,		///
+	label("Design-effects")
+DEFINE holdy2 @y
+  CHECKBOX	ck_deff		_indent	_ss	_inwd	.,		///
+	label("Report DEFF")						///
+	option(deff)
+  CHECKBOX	ck_deft		@	_ms	@	.,		///
+	label("Report DEFT")						///
+	option(deft)
+  CHECKBOX	ck_srs		@	_ms	@	.,		///
+	label("Report design effects assuming SRS within subpopulation") ///
+	option(srssubpop)
+
+  GROUPBOX	gb_mef		_ilft	300   	_ibwd 	_ht4h,		///
+	label("Misspecification-effects")
+  CHECKBOX	ck_meff		_indent	_ss	_inwd	.,		///
+	label("Report MEFF")						///
+	option(meff)
+  CHECKBOX	ck_meft		@	_ms	@	.,		///
+	label("Report MEFT")						///
+	option(meft)
+
+  DEFINE _x _lft
+  DEFINE _y 330
+  DEFINE _cx _iwd
+  INCLUDE _noomitted
+
+  DEFINE _x _lft
+  DEFINE _y 355
+  DEFINE _cx _iwd
+  INCLUDE _vsquish
+
+  BUTTON bu_facvars	_lft	380	200	.,			///
+	onpush("program main_bu_facvars_getOpts")			///
+	label("Factor-variable display options  ")
+
+  GROUPBOX	gb_size		_lft	holdy	_iwd	_ht4h,		///
+	label("Subpopulation sizes (by default all are reported)")
+  CHECKBOX	ck_obs		_indent	_ss	_inwd	.,		///
+	option(obs)							///
+	label("Report number of observations (within subpopulation)")
+  CHECKBOX	ck_size		@	_ms	@	.,		///
+	label("Report subpopulation sizes")				///
+	option(size)
+
+  TEXT		_tx_sd		_lft	holdy	_iwd	., 		///
+	label("Mean estimation results are not available.")
+  // options for -estat sd-
+  GROUPBOX	gb_sd		_lft	holdy	_iwd	_ht4h,		///
+	label("Subpopulation standard deviations")
+  CHECKBOX	ck_var		_indent	_ss	_inwd	.,		///
+	option(variance)						///
+	label("Report subpopulation variances instead of standard deviations")
+  CHECKBOX	ck_srssd	@	_ms	@	.,		///
+	option(srssubpop)						///
+	label("Report standard deviations assuming SRS within subpopulation")
+  
+  // options for -estat cv-
+  CHECKBOX	ck_nolegend	_lft	_ss	_iwd	.,		///
+	option(nolegend)						///
+	label("Suppress the table legend")
+  
+  // options for -estat gof-
+  CHECKBOX	ck_total	_lft	_ss	_iwd	.,		///
+	option(total)							///
+	label("Compute test statistic using the total estimator instead of mean estimator")
+  CHECKBOX	ck_all		_lft	_ss	_iwd	.,		///
+	option(all)							///
+	label("Execute test for all observations in the data")
+  SPINNER	sp_group	_lft	_ss	_spwd	.,		///
+	option(group)							///
+	default(10)							///
+	label("Quantiles")
+  TEXT		tx_group	_en7sep	@	120	.,		///
+        label("Quantiles")
+
+  INCLUDE estat_vce
+END
+
+PROGRAM main_bu_facvars_getOpts
+BEGIN
+	call create CHILD factor_vars_reporting AS main_bu_facvars
+	call main_bu_facvars.setExitString main_bu_facvarsResults
+	call main_bu_facvars.setExitAction "program main_bu_facvars_ckResults"
+	call main_bu_facvars.settitle "Factor-variable display options"
+END
+
+PROGRAM main_bu_facvars_ckResults
+BEGIN
+	if main_bu_facvarsResults {
+		call main.bu_facvars.setlabel "Factor-variable display options *"
+	}
+	else {
+		call main.bu_facvars.setlabel "Factor-variable display options  "
+	}
+END
+
+INCLUDE estat_vce_pr
+
+LIST main_subcmd_contents
+BEGIN
+	"Survey design characteristics (svyset)"
+	"DEFF and MEFF for point estimates (effects)"
+	"DEFF and MEFF for linear combinations (lceffects)"
+	"Subpopulation sizes (size)"
+	"Subpopulation standard deviations (sd)"
+	"Singleton and certainty strata (strata)"
+	"Coefficient of variation (cv)"
+	"Goodness-of-fit test for binary response models (gof)"
+	"Display covariance matrix estimates (vce)"
+END
+
+LIST main_subcmd_values
+BEGIN
+	svyset
+	effects
+	lceffects
+	size
+	sd
+	strata
+	cv
+	gof
+	vce
+END
+
+LIST main_subcmd_scripts
+BEGIN
+	script sel_svyset
+	script sel_effects
+	script sel_lceffects
+	script sel_size
+	script sel_sd
+	script sel_strata
+	script sel_cv
+	script sel_gof
+	script sel_vce
+END
+
+SCRIPT sel_svyset
+BEGIN
+	svy_estat_current_subcmd.setstring "svyset"
+	main.tx_note.setlabel ///
+"Click OK or Submit to display the estimation's survey design characteristics"
+	main.tx_note.show
+	main.tx_exp.hide
+	main.ed_exp.hide
+	main.ck_noomitted.hide
+	main.ck_vsquish.hide
+	main.bu_facvars.hide
+	script deffmeff_hide
+	script size_hide
+	script sd_hide
+	script cv_hide
+	script gof_hide
+	program vce_off
+	script ifin_disable
+END
+
+SCRIPT sel_effects
+BEGIN
+	svy_estat_current_subcmd.setstring "effects"
+	main.tx_note.hide
+	main.tx_exp.hide
+	main.ed_exp.hide
+	main.ck_noomitted.show
+	main.ck_vsquish.show
+	main.bu_facvars.show
+	main.ck_noomitted.setposition . 330
+	main.ck_vsquish.setposition . 350
+	main.bu_facvars.setposition . 380
+	script move_effects
+	script deffmeff_show
+	script size_hide
+	script sd_hide
+	program vce_off
+	script ifin_disable
+END
+
+SCRIPT sel_lceffects
+BEGIN
+	svy_estat_current_subcmd.setstring "lceffects"
+	main.tx_note.hide
+	main.tx_exp.show
+	main.ed_exp.show
+	main.ck_noomitted.hide
+	main.ck_vsquish.hide
+	main.bu_facvars.hide
+	script move_lceffects
+	script deffmeff_show
+	script size_hide
+	script sd_hide
+	program vce_off
+	script ifin_disable
+END
+
+SCRIPT sel_size
+BEGIN
+	svy_estat_current_subcmd.setstring "size"
+	main.tx_note.hide
+	main.tx_exp.hide
+	main.ed_exp.hide
+	main.ck_noomitted.hide
+	main.ck_vsquish.hide
+	main.bu_facvars.hide
+	script deffmeff_hide
+	script size_show
+	script sd_hide
+	script cv_hide
+	script gof_hide
+	program vce_off
+	script ifin_disable
+END
+
+SCRIPT sel_sd
+BEGIN
+	svy_estat_current_subcmd.setstring "sd"
+	main.tx_note.hide
+	main.tx_exp.hide
+	main.ed_exp.hide
+	main.ck_noomitted.hide
+	main.ck_vsquish.hide
+	main.bu_facvars.hide
+	script deffmeff_hide
+	script size_hide
+	program sd_show
+	script cv_hide
+	script gof_hide
+	program vce_off
+	script ifin_disable
+END
+
+SCRIPT sel_strata
+BEGIN
+	svy_estat_current_subcmd.setstring "strata"
+	main.tx_note.setlabel ///
+"Click OK or Submit to display the table of singleton and certainty strata"
+	main.tx_note.show
+	main.tx_exp.hide
+	main.ed_exp.hide
+	main.ck_noomitted.hide
+	main.ck_vsquish.hide
+	main.bu_facvars.hide
+	script deffmeff_hide
+	script size_hide
+	script sd_hide
+	script cv_hide
+	script gof_hide
+	program vce_off
+	script ifin_disable
+END
+
+SCRIPT sel_cv
+BEGIN
+	svy_estat_current_subcmd.setstring "cv"
+	main.tx_note.hide
+	main.tx_exp.hide
+	main.ed_exp.hide
+	main.ck_noomitted.show
+	main.ck_vsquish.show
+	main.bu_facvars.show
+	main.ck_noomitted.setposition . 130
+	main.ck_vsquish.setposition . 150
+	main.bu_facvars.setposition . 180
+	script deffmeff_hide
+	script size_hide
+	script sd_hide
+	program cv_show
+	script gof_hide
+	program vce_off
+	script ifin_disable
+END
+
+SCRIPT sel_gof
+BEGIN
+	svy_estat_current_subcmd.setstring "gof"
+	main.tx_note.hide
+	main.tx_exp.hide
+	main.ed_exp.hide
+	main.ck_noomitted.hide
+	main.ck_vsquish.hide
+	main.bu_facvars.hide
+	script deffmeff_hide
+	script size_hide
+	script cv_hide
+	program gof_show
+	program vce_off
+	script ifin_disable
+END
+
+SCRIPT sel_vce
+BEGIN
+	svy_estat_current_subcmd.setstring "vce"
+	main.tx_note.hide
+	main.tx_exp.hide
+	main.ed_exp.hide
+	main.ck_noomitted.hide
+	main.ck_vsquish.hide
+	main.bu_facvars.hide
+	script deffmeff_hide
+	script size_hide
+	script sd_hide
+	script cv_hide
+	script gof_hide
+	program vce_on
+	script ifin_disable
+END
+
+SCRIPT move_effects
+BEGIN
+	main.gb_eff.setposition		. 110 . .
+	main.gb_def.setposition		. 130 . .
+	main.ck_deff.setposition	. 150 . .
+	main.ck_deft.setposition	. 175 . .
+	main.ck_srs.setposition		. 200 . .
+	main.gb_mef.setposition		. 235 . .
+	main.ck_meff.setposition	. 255 . .
+	main.ck_meft.setposition	. 280 . .
+END
+
+SCRIPT move_lceffects
+BEGIN
+	main.gb_eff.setposition		. 160 . .
+	main.gb_def.setposition		. 180 . .
+	main.ck_deff.setposition	. 200 . .
+	main.ck_deft.setposition	. 225 . .
+	main.ck_srs.setposition		. 250 . .
+	main.gb_mef.setposition		. 285 . .
+	main.ck_meff.setposition	. 305 . .
+	main.ck_meft.setposition	. 330 . .
+END
+
+SCRIPT deffmeff_hide
+BEGIN
+	main.gb_eff.hide
+	main.gb_def.hide
+	main.ck_deff.hide
+	main.ck_deft.hide
+	main.ck_srs.hide
+	main.gb_mef.hide
+	main.ck_meff.hide
+	main.ck_meft.hide
+END
+
+SCRIPT deffmeff_show
+BEGIN
+	main.gb_eff.show
+	main.gb_def.show
+	main.ck_deff.show
+	main.ck_deft.show
+	main.ck_srs.show
+	main.gb_mef.show
+	main.ck_meff.show
+	main.ck_meft.show
+END
+
+SCRIPT size_hide
+BEGIN
+	main.gb_size.hide
+	main.ck_obs.hide
+	main.ck_size.hide
+END
+
+SCRIPT size_show
+BEGIN
+	main.gb_size.show
+	main.ck_obs.show
+	main.ck_size.show
+END
+
+SCRIPT sd_hide
+BEGIN
+	main._tx_sd.hide
+	main.gb_sd.hide
+	main.ck_var.hide
+	main.ck_srssd.hide
+END
+
+PROGRAM sd_show
+BEGIN
+	if main._ed_cmd.equals("mean") {
+		call main.gb_sd.show
+		call main.ck_var.show
+		call main.ck_srssd.show
+	}
+	if ! main._ed_cmd.equals("mean") {
+		call main._tx_sd.show
+	}
+END
+
+SCRIPT cv_hide
+BEGIN
+	main.ck_nolegend.hide
+END
+
+PROGRAM cv_show
+BEGIN
+	call main.ck_nolegend.show
+	call main.ck_nolegend.setposition		. 110 . .
+END
+
+SCRIPT gof_hide
+BEGIN
+	main.ck_total.hide
+	main.ck_all.hide
+	main.sp_group.hide
+	main.tx_group.hide
+END
+
+PROGRAM gof_show
+BEGIN
+	call main.ck_total.show
+	call main.ck_all.show
+	call main.sp_group.show
+	call main.tx_group.show
+	call main.ck_total.setposition		. 110 . .
+	call main.ck_all.setposition		. 135 . .
+	call main.sp_group.setposition		. 165 . .
+	call main.tx_group.setposition		. 165 . .
+END
+
+INCLUDE ifin
+
+PROGRAM vl_eq_output
+BEGIN
+	put main.vl_eq
+END
+
+PROGRAM sd_output
+BEGIN
+	if main.lb_subcmd.equals("sd") {
+		if ! main._ed_cmd.equals("mean") {
+			stopbox stop ///
+				"Mean estimation results are not available."
+		}
+		if main._ed_cmd.equals("mean") {
+			option main.ck_var
+			option main.ck_srssd
+		}
+	}
+END
+
+PROGRAM command
+BEGIN
+	put "estat"
+	put " " main.lb_subcmd
+	if svy_estat_current_subcmd.equals("lceffects") {
+		require main.ed_exp
+		put " " main.ed_exp
+	}
+	beginoptions
+		// -estat [lc]effects-
+		option main.ck_deff
+		option main.ck_deft
+		option main.ck_srs
+		option main.ck_meff
+		option main.ck_meft
+		option main.ck_noomitted
+		option main.ck_vsquish
+		put " " main_bu_facvarsResults
+
+		// -estat size-
+		option main.ck_obs
+		option main.ck_size
+
+		// -estat sd-
+		put " " /program sd_output
+		
+		// -estat cv-
+		option main.ck_nolegend
+		
+		if svy_estat_current_subcmd.equals("gof") {
+			option main.ck_total
+			option main.ck_all
+			optionarg /hidedefault main.sp_group
+		}
+
+		put " " /program vce_output
+	endoptions
+END

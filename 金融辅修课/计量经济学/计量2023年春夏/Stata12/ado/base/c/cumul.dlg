@@ -1,0 +1,57 @@
+/*
+	cumul
+
+*!  VERSION 1.1.1  01may2007
+
+*/
+
+VERSION 8.0
+
+INCLUDE _std_medium
+INCLUDE header
+HELP hlp1, view("help cumul")
+RESET res1
+
+DIALOG main, label("cumul - Cumulative distribution")			/*
+		*/ tabtitle("Main")
+BEGIN
+  TEXT     tx_var        _lft     _top    _cwd1      .,			/*
+		*/ label("Variable:")
+  VARNAME  vn_var           @      _ss    _vnwd      ., 		/*
+		*/ label("Variable")
+  TEXT     tx_gen       _lft2     _top    _cwd1      .,			/*
+		*/ label("Generate variable:")
+  EDIT     ed_gen           @      _ss    _vnwd      ., 		/*
+		*/ option("generate")					/*
+		*/ label("Generate variable")
+  CHECKBOX ck_freq       _lft     _xls     _iwd      .,			/*
+		*/ option("freq")					/*
+		*/ label("Use frequency units for cumulative")
+  CHECKBOX ck_equal      _lft      _ms        @      .,			/*
+		*/ option("equal")					/*
+		*/ label("Generate equal cumulatives for tied values")
+END
+
+INCLUDE byifin
+INCLUDE weights_fa
+
+PROGRAM generate_output
+BEGIN
+	varlist main.ed_gen
+END
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "cumul "
+	varlist main.vn_var
+	INCLUDE _ifin_pr
+	INCLUDE _weights_pr
+	beginoptions
+		put "generate("
+		put /program generate_output
+		put ")"
+		option main.ck_freq
+		option main.ck_equal
+	endoptions
+END

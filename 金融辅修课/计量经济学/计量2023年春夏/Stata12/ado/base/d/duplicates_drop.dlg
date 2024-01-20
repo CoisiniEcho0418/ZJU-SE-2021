@@ -1,0 +1,55 @@
+/*
+  duplicates drop
+
+*!  VERSION 1.1.0  28mar2005
+
+*/
+VERSION 9.0
+
+INCLUDE _std_medium
+INCLUDE _ht200
+INCLUDE header
+HELP hlp1, view("help duplicates")
+RESET res1
+
+DIALOG main, label("duplicates drop - Remove duplicated observations") /*
+		*/ tabtitle("Main")
+BEGIN
+  RADIO    rb_var          _lft      _top       _iwd     .,		/*
+  	*/label("Drop duplicates with respect to the entire dataset")   /*
+  		*/clickon(script all_on) first
+  RADIO    rb_var2         @         _ss        @        .,		/*
+  		*/label("Drop duplicates with respect to these variables:")/*
+  		*/clickon(script var_on) last
+  VARLIST  vl_var          _indent2  _ss        _inwd    .,		/*
+  		*/label("Drop duplicates with respect to these variables")
+  CHECKBOX ck_force        _lft      _xls       _iwd     .,		/*
+  */label("Force the drop, even though information may be lost (required)")/*
+		*/option(force)
+END
+
+SCRIPT var_on
+BEGIN
+	main.vl_var.enable
+	main.ck_force.show
+END
+
+SCRIPT all_on
+BEGIN
+	main.vl_var.disable
+	main.ck_force.hide
+END
+
+INCLUDE ifin
+
+PROGRAM command
+BEGIN
+	put "duplicates drop "
+	if main.rb_var2 {
+		varlist main.vl_var
+	}
+	INCLUDE _ifin_pr
+	beginoptions
+		option main.ck_force
+	endoptions
+END

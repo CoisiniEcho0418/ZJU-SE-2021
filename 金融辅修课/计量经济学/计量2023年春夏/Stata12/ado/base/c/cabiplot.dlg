@@ -1,0 +1,164 @@
+/*
+  cabiplot
+
+*!  VERSION 2.0.3  21feb2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_mlarge
+DEFINE _dlght 300
+INCLUDE header
+
+HELP hlp1, view("help cabiplot")
+RESET res1
+
+SCRIPT main_PREINIT
+BEGIN
+	create STRING originResults
+END
+SCRIPT main_POSTINIT
+BEGIN
+	program checkOriginResults
+END
+
+DIALOG main, tabtitle("Main")						///
+label("cabiplot - Correspondence analysis biplot") 
+BEGIN
+  GROUPBOX gb_dim		_lft	_top	_iwd	_ht6,		///
+	label("Dimensions")
+  RADIO rb_default_dim		_ilft	_ss	_cwd1	.,		///
+	first label("Plot first and second dimensions")			///
+	onclickon(script main_dim_off)
+  RADIO rb_dim			@	_ss	@	.,		///
+	last label("Specify other dimensions to plot")			///
+	onclickon(script main_dim_on)
+  EDIT ed_dim			_indent2 _ss	_en7wd	.,		///
+	label("Two dimensions to plot") option(dim)			///
+	default("2  1")
+  TEXT tx_dim			_en7sep	@	200	.,		///
+	label("Two dimensions to plot")
+
+  CHECKBOX ck_norow		_lft	+45	_cwd1	.,		///
+	label("Suppress row coordinates")				///
+	option(norow) 							///
+	onclickon(script main_ca_row_disable)				///
+	onclickoff(script main_ca_row_enable)
+  CHECKBOX ck_nocolumn		@	_ms	@	.,		///
+	label("Suppress column coordinates")				///
+	option(nocolumn)						///
+	onclickon(script main_ca_col_disable)				///
+	onclickoff(script main_ca_col_enable)
+
+  CHECKBOX ck_xnegate		_lft	_ms	_iwd	.,		///
+	label("Negate the data relative to the x axis")			///
+	option(xnegate)
+  CHECKBOX ck_ynegate		@	_ms	@	.,		///
+	label("Negate the data relative to the y axis")			///
+	option(ynegate)
+
+  SPINNER sp_maxlength		@	_ms	_spwd	.,		///
+	default(12) min(1) max(32) option(maxlength)
+  TEXT tx_maxlength		_spsep	@	_spr	.,		///
+	label("Maximum number of characters displayed for labels")
+  CHECKBOX ck_origin 		_lft	_ms	_iwd	.,		///
+	label("Display origin")						///
+	option(origin)							///
+	onclickon(main.bu_origin.enable)				///
+	onclickoff(main.bu_origin.disable)
+  BUTTON   bu_origin		+20	_ss	120	.,		///
+	label("Line properties  ")					///
+	onpush(script show_origin_dialog)
+END
+
+SCRIPT show_origin_dialog
+BEGIN
+	create CHILD gr_line_properties AS originDLG, allowsubmit
+	originDLG.setExitString originResults
+	originDLG.settitle "Line properties for origin"
+	originDLG.setExitAction "program checkOriginResults"
+	originDLG.setSubmitAction "program submitOrigin"
+END
+PROGRAM checkOriginResults
+BEGIN
+	if originResults.iseq("") {
+		call main.bu_origin.setlabel "Line properties  "
+	}
+	else {
+		call main.bu_origin.setlabel "Line properties *"
+	}
+END
+PROGRAM submitOrigin
+BEGIN
+	call program checkOriginResults
+	call Submit
+END
+
+SCRIPT main_ca_row_enable
+BEGIN
+	main.ck_nocolumn.enable
+	script ca_row_enable
+END
+
+SCRIPT main_ca_row_disable
+BEGIN
+	main.ck_nocolumn.disable
+	script ca_row_disable
+END
+
+SCRIPT main_ca_col_enable
+BEGIN
+	main.ck_norow.enable
+	script ca_col_enable
+END
+
+SCRIPT main_ca_col_disable
+BEGIN
+	main.ck_norow.disable
+	script ca_col_disable
+END
+
+SCRIPT main_dim_on
+BEGIN
+	main.ed_dim.enable
+	main.tx_dim.enable
+END
+SCRIPT main_dim_off
+BEGIN
+	main.ed_dim.disable
+	main.tx_dim.disable
+END
+INCLUDE gr_ca_row_col
+INCLUDE gr_yaxis
+INCLUDE gr_xaxis
+INCLUDE gr_titles
+INCLUDE gr_legend
+INCLUDE gr_overall
+
+PROGRAM command
+BEGIN
+	put "cabiplot "
+	beginoptions
+		if main.rb_dim {
+			require main.ed_dim
+			optionarg main.ed_dim
+		}
+		option main.ck_norow
+		option main.ck_nocolumn
+		option main.ck_xnegate
+		option main.ck_ynegate
+		optionarg /hidedefault main.sp_maxlength
+		option main.ck_origin
+		if main.ck_origin & originResults {
+			put " originlopts(" originResults ") "
+		}
+		put " " /program gr_ca_row_col_output
+		put " " /program gr_yaxis_output
+		put " " /program gr_xaxis_output
+		put " " /program gr_titles_output
+		put " " /program gr_legend_output
+		put " " /program gr_overall_output
+	endoptions
+END
+

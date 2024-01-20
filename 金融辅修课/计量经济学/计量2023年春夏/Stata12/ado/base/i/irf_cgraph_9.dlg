@@ -1,0 +1,666 @@
+/*
+    irf_cgraph_9.dlg
+
+*!  VERSION 1.1.4  07sep2006  (deprecated)
+
+*/
+
+VERSION 9.0
+SYNCHRONOUS_ONLY
+
+INCLUDE graph_header
+INCLUDE header
+
+HELP hlp1, view("help irf_cgraph")
+RESET res1
+
+DIALOG main, tabtitle("Main") ///
+label("irf cgraph - Combine graphs of impulse-response functions and FEVDs")
+BEGIN
+  // set IRF active file
+  DEFINE _x _xsetbu
+  DEFINE _y _top
+  INCLUDE _bu_irfset
+
+DEFINE varwd 105
+DEFINE varsep +110
+DEFINE statwd 295
+DEFINE statsep +300
+
+  // column 0
+  TEXT     tx_irf	85        _ms       varwd     .,		///
+		label("IRF result set:")
+  DEFINE x1 @x						// column 1
+  TEXT     tx_imp	varsep    @         @         .,		///
+		label("Impulse:")
+  DEFINE x2 @x						// column 2
+  TEXT     tx_res	varsep    @         @         .,		///
+		label("Response:")
+  DEFINE x3 @x						// column 3
+  TEXT     tx_stats	varsep    @         statwd    .,		///
+		label("Statistics:")
+  DEFINE x4 @x						// column 4
+  TEXT     tx_ci	statsep   @         _ckwd     .,		///
+		label("CI")
+  DEFINE x5 @x						// column 5
+  TEXT     tx_se	_cksep    @         @         .,		///
+		label("SE")
+  DEFINE x6 @x						// column 6
+//---
+  CHECKBOX ck_spec1	     _lft      _ss       73        .,		///
+		onclickon(script irf_spec1_on)				///
+		onclickoff(script irf_spec1_off) label("Graph 1")
+
+  COMBOBOX cb_irf1	     x1        @         varwd     .,		///
+		label("IRF result set")	error("IRF result set 1") 	///
+		dropdownlist						///
+		contents(irf_list1) onselchange(program main_update_vars1)
+  COMBOBOX cb_imp1	     x2        @         @         .,		///
+		label("Impulse") error("Impulse 1")			///
+		contents(impulse_list1) dropdown
+  COMBOBOX cb_res1	     x3        @         @         .,		///
+		label("Response") error("Response 1")			///
+		contents(response_list1) dropdown
+  COMBOBOX cb_stats1	     x4        @         statwd    .,		///
+		dropdown						///
+		append							///
+		contents(irf_stat_contents)				///
+		values(irf_stat_values)					///
+		label("Statistic")					///
+		error("Statistic 1")
+  CHECKBOX ck_ci1	     x5        @         _ckwd     .,		///
+		option(ci) 						///
+		onclickon(script main_ci1_on)				///
+		onclickoff(script main_ci1_off)
+  CHECKBOX ck_se1	     x6        @         @         .,		///
+		option(stderror)
+//--
+//---
+  CHECKBOX ck_spec2	     _lft      _ms       73        .,		///
+		onclickon(script irf_spec2_on)				///
+		onclickoff(script irf_spec2_off) label("Graph 2")
+
+  COMBOBOX cb_irf2	     x1        @         varwd     .,		///
+		label("IRF result set")	error("IRF result set 2") 	///
+		dropdownlist						///
+		contents(irf_list2) onselchange(program main_update_vars2)
+  COMBOBOX cb_imp2	     x2        @         @         .,		///
+		label("Impulse") error("Impulse 2")			///
+		contents(impulse_list2) dropdown
+  COMBOBOX cb_res2	     x3        @         @         .,		///
+		label("Response") error("Response 2")			///
+		contents(response_list2) dropdown
+  COMBOBOX cb_stats2	     x4        @         statwd    .,		///
+		dropdown						///
+		append							///
+		contents(irf_stat_contents)				///
+		values(irf_stat_values)					///
+		label("Statistic")					///
+		error("Statistic 2")
+  CHECKBOX ck_ci2	     x5        @         _ckwd     .,		///
+		option(ci) 						///
+		onclickon(script main_ci2_on)				///
+		onclickoff(script main_ci2_off)
+  CHECKBOX ck_se2	     x6        @         @         .,		///
+		option(stderror)
+//--
+//---
+  CHECKBOX ck_spec3	     _lft      _ms       73        .,		///
+		onclickon(script irf_spec3_on)				///
+		onclickoff(script irf_spec3_off) label("Graph 3")
+
+  COMBOBOX cb_irf3	     x1        @         varwd     .,		///
+		label("IRF result set")	error("IRF result set 3") 	///
+		dropdownlist						///
+		contents(irf_list3) onselchange(program main_update_vars3)
+  COMBOBOX cb_imp3	     x2        @         @         .,		///
+		label("Impulse") error("Impulse 3")			///
+		contents(impulse_list3) dropdown
+  COMBOBOX cb_res3	     x3        @         @         .,		///
+		label("Response") error("Response 3")			///
+		contents(response_list3) dropdown
+  COMBOBOX cb_stats3	     x4        @         statwd    .,		///
+		dropdown						///
+		append							///
+		contents(irf_stat_contents)				///
+		values(irf_stat_values)					///
+		label("Statistic")					///
+		error("Statistic 3")
+  CHECKBOX ck_ci3	     x5        @         _ckwd     .,		///
+		option(ci) 						///
+		onclickon(script main_ci3_on)				///
+		onclickoff(script main_ci3_off)
+  CHECKBOX ck_se3	     x6        @         @         .,		///
+		option(stderror)
+//--
+//---
+  CHECKBOX ck_spec4	     _lft      _ms       73        .,		///
+		onclickon(script irf_spec4_on)				///
+		onclickoff(script irf_spec4_off) label("Graph 4")
+
+  COMBOBOX cb_irf4	     x1        @         varwd     .,		///
+		label("IRF result set")	error("IRF result set 4") 	///
+		dropdownlist						///
+		contents(irf_list4) onselchange(program main_update_vars4)
+  COMBOBOX cb_imp4	     x2        @         @         .,		///
+		label("Impulse") error("Impulse 4")			///
+		contents(impulse_list4) dropdown
+  COMBOBOX cb_res4	     x3        @         @         .,		///
+		label("Response") error("Response 4")			///
+		contents(response_list4) dropdown
+  COMBOBOX cb_stats4	     x4        @         statwd    .,		///
+		dropdown						///
+		append							///
+		contents(irf_stat_contents)				///
+		values(irf_stat_values)					///
+		label("Statistic")					///
+		error("Statistic 4")
+  CHECKBOX ck_ci4	     x5        @         _ckwd     .,		///
+		option(ci) 						///
+		onclickon(script main_ci4_on)				///
+		onclickoff(script main_ci4_off)
+  CHECKBOX ck_se4	     x6        @         @         .,		///
+		option(stderror)
+//--
+
+  GROUPBOX gb_note           _lft      _ls       _cwd1     _ht6,
+DEFINE y @y
+  TEXT     tx_note1          _indent   _vss      _inwd     .,		///
+  		label("Refresh IRF selections anytime the active IRF file is set or")
+  TEXT     tx_note2          @         _vss      @         .,		///
+  		label("changed, while this dialog is open.")
+  BUTTON   bu_refresh        260       _ls       100       ., 		///
+  		label("Refresh") 					///
+  		onpush(program main_get_irf)
+
+  /*
+  	-individual- was not included on this dialog intentionally because
+  	it does not have any use. The individual graphs can just as easily
+  	be created by generating graphs one at a time.
+
+  	-cilines- was not included because it is a command line utility.
+  	and because the individual cioptions can perform the same function.
+*/
+
+END
+
+SCRIPT main_PREINIT
+BEGIN
+	create BOOLEAN isGettingIRF
+	create BOOLEAN isGettingIRFVars
+	create BOOLEAN isLoading
+	isLoading.settrue
+END
+
+SCRIPT main_POSTINIT
+BEGIN
+	isLoading.setfalse
+END
+
+PROGRAM main_get_irf
+BEGIN
+	put "_get_irf, "
+	put "dialog(irf_cgraph_9) "
+	put "control("
+		put "main.cb_irf1 main.cb_irf2 main.cb_irf3 main.cb_irf4"
+	put ") "
+	put "irfvalues("
+		put /hidden main.cb_irf1 " "
+		put /hidden main.cb_irf2 " "
+		put /hidden main.cb_irf3 " "
+		put /hidden main.cb_irf4 " "
+	put ") "
+	put "busyflag(isGettingIRF)"
+	stata hidden
+	call program main_update_vars1
+	call program main_update_vars2
+	call program main_update_vars3
+	call program main_update_vars4
+	if ! main.ck_spec1 & ! main.ck_spec2 & ! main.ck_spec3 & ! main.ck_spec4 {
+		if main.cb_irf1 {
+			call main.ck_spec1.seton
+		}
+	}
+END
+
+
+PROGRAM main_update_vars1
+BEGIN
+	if ! isGettingIRF & ! isLoading & ! isGettingIRFVars {
+		put "_set_irf_vars, "
+		put "dialog(irf_cgraph_9) "
+		put "irfname("
+			put /hidden main.cb_irf1
+		put ") "
+		put "impulsetarget(main.cb_imp1) "
+		put "responsetarget(main.cb_res1) "
+		put "impulsevalue(" main.cb_imp1 ") "
+		put "responsevalue(" main.cb_res1 ") "
+		put "list(main.cb_irf1) "
+		put "busyflag(isGettingIRFVars)"
+		stata hidden
+	}
+END
+
+PROGRAM main_update_vars2
+BEGIN
+	if ! isGettingIRF & ! isLoading & ! isGettingIRFVars {
+		put "_set_irf_vars, "
+		put "dialog(irf_cgraph_9) "
+		put "irfname("
+			put /hidden main.cb_irf2
+		put ") "
+		put "impulsetarget(main.cb_imp2) "
+		put "responsetarget(main.cb_res2) "
+		put "impulsevalue(" main.cb_imp2 ") "
+		put "responsevalue(" main.cb_res2 ") "
+		put "list(main.cb_irf2) "
+		put "busyflag(isGettingIRFVars)"
+		stata hidden
+	}
+END
+
+PROGRAM main_update_vars3
+BEGIN
+	if ! isGettingIRF & ! isLoading & ! isGettingIRFVars {
+		put "_set_irf_vars, "
+		put "dialog(irf_cgraph_9) "
+		put "irfname("
+			put /hidden main.cb_irf3
+		put ") "
+		put "impulsetarget(main.cb_imp3) "
+		put "responsetarget(main.cb_res3) "
+		put "impulsevalue(" main.cb_imp3 ") "
+		put "responsevalue(" main.cb_res3 ") "
+		put "list(main.cb_irf3) "
+		put "busyflag(isGettingIRFVars)"
+		stata hidden
+	}
+END
+
+PROGRAM main_update_vars4
+BEGIN
+	if ! isGettingIRF & ! isLoading & ! isGettingIRFVars {
+		put "_set_irf_vars, "
+		put "dialog(irf_cgraph_9) "
+		put "irfname("
+			put /hidden main.cb_irf4
+		put ") "
+		put "impulsetarget(main.cb_imp4) "
+		put "responsetarget(main.cb_res4) "
+		put "impulsevalue(" main.cb_imp4 ") "
+		put "responsevalue(" main.cb_res4 ") "
+		put "list(main.cb_irf4) "
+		put "busyflag(isGettingIRFVars)"
+		stata hidden
+	}
+END
+
+INCLUDE irf_stat_list		// lists for statistics
+INCLUDE irf_spec1_pr		// LISTs for stats1
+INCLUDE irf_spec2_pr		// LISTs for stats2
+INCLUDE irf_spec3_pr		// LISTs for stats3
+INCLUDE irf_spec4_pr		// LISTs for stats3
+
+/* Enable ci tabs if any ci is checked */
+SCRIPT main_ci1_on
+BEGIN
+	script p5_opts_enable
+	script p6_opts_enable
+END
+
+SCRIPT main_ci2_on
+BEGIN
+	script p5_opts_enable
+	script p6_opts_enable
+END
+
+SCRIPT main_ci3_on
+BEGIN
+	script p5_opts_enable
+	script p6_opts_enable
+END
+
+SCRIPT main_ci4_on
+BEGIN
+	script p5_opts_enable
+	script p6_opts_enable
+END
+//*
+
+/* see if ci tabs need to be disabled when ci checkboxes are clicked off */
+SCRIPT main_ci1_off
+BEGIN
+	program main_ci_check
+END
+
+SCRIPT main_ci2_off
+BEGIN
+	program main_ci_check
+END
+
+SCRIPT main_ci3_off
+BEGIN
+	program main_ci_check
+END
+
+SCRIPT main_ci4_off
+BEGIN
+	program main_ci_check
+END
+
+PROGRAM main_ci_check
+BEGIN
+	if ! ( (main.ck_ci1 & !D(main.ck_ci1) ) ///
+	     | (main.ck_ci2 & !D(main.ck_ci2) )	///
+	     | (main.ck_ci3 & !D(main.ck_ci3) )	///
+	     | (main.ck_ci4 & !D(main.ck_ci4) ) ) {
+		call script p5_opts_disable
+		call script p6_opts_disable
+	}
+
+	if   ( (main.ck_ci1 & !D(main.ck_ci1) ) ///
+	     | (main.ck_ci2 & !D(main.ck_ci2) )	///
+	     | (main.ck_ci3 & !D(main.ck_ci3) )	///
+	     | (main.ck_ci4 & !D(main.ck_ci4) ) ) {
+		call script p5_opts_enable
+		call script p6_opts_enable
+	}
+END
+//*
+
+/* see if ci tabs need to be disabled when spec checkboxes are clicked off */
+SCRIPT main_spec1_off
+BEGIN
+	program main_ci_check
+END
+
+SCRIPT main_spec2_off
+BEGIN
+	program main_ci_check
+END
+
+SCRIPT main_spec3_off
+BEGIN
+	program main_ci_check
+END
+
+SCRIPT main_spec4_off
+BEGIN
+	program main_ci_check
+END
+//*
+
+/* see if ci tabs need to be enabled when spec checkboxes are clicked on */
+SCRIPT main_spec1_on
+BEGIN
+	program main_ci_check
+END
+
+SCRIPT main_spec2_on
+BEGIN
+	program main_ci_check
+END
+
+SCRIPT main_spec3_on
+BEGIN
+	program main_ci_check
+END
+
+SCRIPT main_spec4_on
+BEGIN
+	program main_ci_check
+END
+//*
+
+//******************************
+DIALOG opt1, tabtitle("Options")
+BEGIN
+
+  GROUPBOX gb_opts	     _lft      _top      _cwd1     _ht9,	///
+  		label("Common options")
+  TEXT     tx_fill           _ilft     _ms       0         0,
+  DEFINE   _x  _cksep
+  DEFINE   _cx _ckspr2b
+  DEFINE   _y  @
+  INCLUDE  _sp_level
+
+  CHECKBOX ck_lstep	     _ilft     _ls       _ckwd     .,		///
+		onclickon(program lstep_check)				///
+		onclickoff(program lstep_check)
+DEFINE x @x
+  SPINNER  sp_lstep	     _cksep    @         _spwd     .,		///
+		min(1)							///
+		max(500)						///
+		default(0)						///
+		option(lstep)						///
+		label("Common first step")
+
+
+  TEXT     tx_lstep	     _spsep    @         _ckspr2b  .,		///
+		label("Common first step")
+  CHECKBOX ck_ustep	     x        _ls       _ckwd     .,		///
+		onclickon(program ustep_check)				///
+		onclickoff(program ustep_check)
+
+  DEFINE x @x
+  SPINNER  sp_ustep	     _cksep    @         _spwd     .,		///
+		min(1)							///
+		max(500)						///
+		default(1)						///
+		option(ustep)						///
+		label("Common maximum step")
+  TEXT     tx_ustep	     _spsep    @         _ckspr2b  .,		///
+		label("Common maximum step")
+
+
+  GROUPBOX gb_combine        _lft2     _top    	 _cwd1     _ht23h,	///
+  		label("Graph combine options")
+
+  CHECKBOX ck_colf           _ilft2    _ms       _cwd3_1   .,		///
+  		label("Display down columns first") option(colfirst)
+  CHECKBOX ck_ycom           @         _ms       @         .,		///
+  		label("Common scale for Y-axes") option(ycommon)
+  CHECKBOX ck_xcom           @         _ms       @         .,		///
+  		label("Common scale for X-axes") option(xcommon)
+
+  TEXT     tx_margin         @         _ls       _txwd     .,		///
+  		label("Margins:")
+DEFINE y @y
+  COMBOBOX cb_margin         @         _ss       _txr4g    .,		///
+  		label("Margins") option(imargin) contents(margin)	///
+  		dropdownlist
+
+  TEXT     tx_holes          _ilft4_4  y         _txwd     .,		///
+  		label("Holes:")
+  EDIT     ed_holes          @         _ss       _tcr4gi    .,		///
+  		label("Holes") option(holes)
+  BUTTON   bu_holes          _tcr4gisep @        _btwd     ., 		///
+  		label("?") onpush(view help numlist##|_new)
+
+
+  TEXT     tx_layout         _ilft2    _ls       _txwd     ., 		///
+  		label("Layout:")
+  TEXT     tx_scale          _ilft4_4  @         _txwd     .,		///
+  		label("Scale text:")
+
+  COMBOBOX cb_layout         _ilft2    _ss       _txr4g    .,		///
+  		label("Layout") contents(opt1_layout) dropdownlist	///
+  		onselchangelist(opt1_layout_action)
+  EDIT     en_scale          _ilft4_4  @         _tcr4gi   .,		///
+  		label("Scale text") numonly option(iscale)
+
+
+  TEXT     tx_rows           _ilft2    _ls       _txwd     .,		///
+  		label("Rows:")
+  TEXT     tx_cols           @         @         _txwd     .,		///
+  		label("Columns:")
+
+  SPINNER  sp_rows           @         _ss       _spwd     .,		///
+ 		label("Number of rows") default(1) min(1) max(100) 	///
+ 		option(rows)
+  SPINNER  sp_cols           @         @         _spwd     .,		///
+  		label("Number of columns") min(1) default(1) max(100) 	///
+  		option(cols)
+END
+
+PROGRAM lstep_check
+BEGIN
+	if opt1.ck_lstep {
+		call gaction opt1.sp_lstep.enable
+	}
+	if !opt1.ck_lstep {
+		call gaction opt1.sp_lstep.disable
+	}
+END
+
+PROGRAM ustep_check
+BEGIN
+	if opt1.ck_ustep {
+		call gaction opt1.sp_ustep.enable
+	}
+	if !opt1.ck_ustep {
+		call gaction opt1.sp_ustep.disable
+	}
+END
+
+LIST opt1_layout
+BEGIN
+	Default
+	Rows
+	Columns
+END
+
+LIST opt1_layout_action
+BEGIN
+	script opt1_hide_rc
+	script opt1_rows_show
+	script opt1_cols_show
+END
+
+SCRIPT opt1_rows_show
+BEGIN
+	opt1.tx_rows.show
+	opt1.sp_rows.show
+	opt1.tx_cols.hide
+	opt1.sp_cols.hide
+END
+
+SCRIPT opt1_cols_show
+BEGIN
+	opt1.tx_cols.show
+	opt1.sp_cols.show
+	opt1.tx_rows.hide
+	opt1.sp_rows.hide
+END
+
+SCRIPT opt1_hide_rc
+BEGIN
+	opt1.tx_cols.hide
+	opt1.tx_rows.hide
+	opt1.sp_rows.hide
+	opt1.sp_cols.hide
+END
+
+PROGRAM irf_cgraph_opts_output
+BEGIN
+	optionarg /hidedefault opt1.sp_level
+	if opt1.ck_lstep {
+		optionarg opt1.sp_lstep
+	}
+	if opt1.ck_ustep {
+		optionarg opt1.sp_ustep
+	}
+	option opt1.ck_colf
+	option opt1.ck_ycom
+	option opt1.ck_xcom
+	optionarg /hidedefault opt1.cb_margin
+	optionarg opt1.ed_holes
+	optionarg opt1.en_scale
+	optionarg opt1.sp_rows
+	optionarg opt1.sp_cols
+END
+//*********************************
+
+INCLUDE p1_opts
+INCLUDE p2_opts
+INCLUDE p3_opts
+INCLUDE p4_opts
+INCLUDE p5_opts
+INCLUDE p6_opts
+
+SCRIPT PREINIT
+BEGIN
+	script p1_opts_createAsNoRange
+	script p1_opts_setDefaultLine
+	script p2_opts_createAsNoRange
+	script p2_opts_setDefaultLine
+	script p3_opts_createAsNoRange
+	script p3_opts_setDefaultLine
+	script p4_opts_createAsNoRange
+	script p4_opts_setDefaultLine
+	script p5_opts_createAsRange
+	script p5_opts_setDefaultRarea
+	script p6_opts_createAsRange
+	script p6_opts_setDefaultRarea
+END
+
+SCRIPT POSTINIT
+BEGIN
+	main.tx_se.hide
+	main.ck_se1.hide
+	main.ck_se2.hide
+	main.ck_se3.hide
+	main.ck_se4.hide
+
+	p1_opts.settabtitle "Plot 1"
+	p2_opts.settabtitle "Plot 2"
+	p3_opts.settabtitle "Plot 3"
+	p4_opts.settabtitle "Plot 4"
+	p5_opts.settabtitle "CI 1"
+	p6_opts.settabtitle "CI 2"
+
+	p1_opts_specialOutput.setstring "plot1"
+	p2_opts_specialOutput.setstring "plot2"
+	p3_opts_specialOutput.setstring "plot3"
+	p4_opts_specialOutput.setstring "plot4"
+	p5_opts_specialOutput.setstring "ciopts1"
+	p6_opts_specialOutput.setstring "ciopts2"
+
+	program main_get_irf
+END
+
+INCLUDE gr_twoway
+
+PROGRAM command
+BEGIN
+	if !main.ck_spec1 & !main.ck_spec2 & !main.ck_spec3 & !main.ck_spec4 {
+		stopbox stop ///
+		"On Main tab: at least one specification is required"
+	}
+	put "irf cgraph "
+	if main.ck_spec1 {
+		put  "(" /program irf_spec1_output ") "
+	}
+	if main.ck_spec2 {
+		put  "(" /program irf_spec2_output ") "
+	}
+	if main.ck_spec3 {
+		put  "(" /program irf_spec3_output ") "
+	}
+	if main.ck_spec4 {
+		put  "(" /program irf_spec4_output ") "
+	}
+	beginoptions
+		put " " /program irf_cgraph_opts_output
+
+		put " " /program p1_opts_special_output
+		put " " /program p2_opts_special_output
+		put " " /program p3_opts_special_output
+		put " " /program p4_opts_special_output
+		put " " /program p5_opts_special_output
+		put " " /program p6_opts_special_output
+
+		put " " /program gr_twoway_output
+	endoptions
+END

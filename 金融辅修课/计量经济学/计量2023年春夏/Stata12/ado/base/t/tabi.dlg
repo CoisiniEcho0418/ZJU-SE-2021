@@ -1,0 +1,97 @@
+/*
+  tabi
+
+*!  VERSION 1.2.1  09oct2008
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_glm
+INCLUDE _ht350
+INCLUDE header
+
+HELP hlp1, view("help tabi")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	main.ck_first.hide
+END
+
+
+PROGRAM POSTINIT_PROGRAM
+BEGIN
+	if __MESSAGE.iseq("-exact-") {
+		call script main_exact_seton
+	}
+END
+
+DIALOG main, label("tabi - Two-way tables") tabtitle("Main")
+BEGIN
+  /*--+----1----+----2----+----3----+----4----+----5----+----6----+----7----+*/
+  TEXT     tx_vals   _lft      _top      _iwd      .,			/*
+*/ label(`"User-supplied cell frequencies:  (space separated with "\" for new rows)"')/*
+		*/
+  EDIT     ed_vals   @         _ss       _iwd      .,			/*
+		*/ label("User-supplied cell frequencies")		/*
+		*/
+
+  DEFINE _y _ls
+  INCLUDE _tab2
+
+END
+
+DIALOG adv, label("") tabtitle("Advanced")
+BEGIN
+  /*--+----1----+----2----+----3----+----4----+----5----+----6----+----7----+*/
+  TEXT     tx_matcel _lft      _top      _iwd      .,			/*
+		*/ label("Generate a matrix with the cell frequencies:")/*
+		*/
+  EDIT     ed_matcel _lft      _ss       _vnwd     .,			/*
+		*/ label("Matrix of cell frequencies")			/*
+		*/ max(32)						/*
+		*/ option("matcell")					/*
+		*/
+
+  TEXT     tx_matrow _lft      _ls       _iwd      .,			/*
+		*/ label("Generate a matrix with the row values:")/*
+		*/
+  EDIT     ed_matrow _lft      _ss       _vnwd     .,			/*
+		*/ label("Matrix of row values")			/*
+		*/ max(32)						/*
+		*/ option("matrow")					/*
+		*/
+
+  TEXT     tx_matcol _lft      _ls       _iwd      .,			/*
+		*/ label("Generate a matrix with the column values:")	/*
+		*/
+  EDIT     ed_matcol _lft      _ss       _vnwd     .,			/*
+		*/ label("Matrix of column values")			/*
+		*/ max(32)						/*
+		*/ option("matcol")					/*
+		*/
+
+  CHECKBOX ck_replace _lft     _ls       _iwd      .,			/*
+*/ label("Replace the current data with the given cell frequencies")	/*
+		*/ option("replace") nomem
+
+
+END
+
+INCLUDE _tab2_pr
+
+PROGRAM command
+BEGIN
+	put "tabi "
+	require main.ed_vals
+	put main.ed_vals
+	beginoptions
+		put /program _tab2_opts_output
+		optionarg adv.ed_matcel
+		optionarg adv.ed_matrow
+		optionarg adv.ed_matcol
+		option adv.ck_replace
+	endoptions
+END
+

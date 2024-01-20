@@ -1,0 +1,31 @@
+/*
+  aorder
+
+  VERSION 1.0.0  21dec2002
+
+*/
+VERSION 8.0
+
+INCLUDE _std_small
+INCLUDE header
+HELP hlp1, view("help aorder")
+RESET res1
+
+DIALOG main, label("aorder - Alphabetize variables and move") /*
+		*/ tabtitle("Main")
+BEGIN
+  /*--+----1----+----2----+----3----+----4----+----5----+----6----+----7----+*/ 
+  TEXT     tx_vars         _lft      _top       _iwd     .,		/*
+  		*/label("Variables to alphabetize and move:")
+  TEXT     tx_vars2        @         _vss        @        .,		/*
+  		*/label("(Leave blank to alphabetize all the variables)")
+  VARLIST  vl_vars         @         _ss        @        .,		/*
+  		*/label("Variables to alphabetize and move")
+END
+
+PROGRAM command
+BEGIN
+	put "aorder "
+	varlist [main.vl_vars]
+END
+

@@ -1,0 +1,10 @@
+/*
+    _ck_collinear.idlg -- checkbox for the collinear option
+
+*!  VERSION 1.0.0  27jul2006
+
+*/
+
+  CHECKBOX ck_collinear _x _ls _xw ., option("collinear")	///
+  	label("Keep collinear variables (rarely used)")
+

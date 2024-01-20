@@ -1,0 +1,40 @@
+/*
+	compare
+
+*!  VERSION 1.1.0  27jan2005
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_small
+DEFINE _dlght 230
+INCLUDE header
+HELP hlp1, view("help compare")
+RESET res1
+
+DIALOG main,label("compare - Compare two variables") tabtitle("Main")
+BEGIN
+  TEXT     tx_var1	  _lft 	    _top      _cwd1	 .,		/*
+		*/	label("Variable1:")
+
+  VARNAME  vn_var1        @         _ss       _vnwd	 .,		/*
+		*/	label("Variable1")
+
+  TEXT     tx_var2	  _lft2	    _top      _cwd1	 .,		/*
+		*/	label("Variable2:")
+
+  VARNAME  vn_var2        @         _ss       _vnwd	 .,		/*
+		*/	label("Variable2")
+END
+
+INCLUDE byifin
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "compare "
+	varlist main.vn_var1
+	varlist main.vn_var2
+	INCLUDE _ifin_pr
+END

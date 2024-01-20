@@ -1,0 +1,210 @@
+/*
+  ivprobit
+
+*!  VERSION 1.2.6  23aug2010
+
+  keyword:  eclass
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_xlarge // long title w/survey
+DEFINE _dlght 350
+INCLUDE header
+
+HELP hlp1, view("help ivprobit")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	script se_createAsSvyJknifeBstrapML
+	program svy_check_title
+END
+
+SCRIPT POSTINIT
+BEGIN
+	script sub_set_by_on
+	program se_setFinalInitState
+END
+
+SCRIPT svy_is_on
+BEGIN
+	main.ck_newey.disable
+	rpt.ck_first.disable
+	script max_setDefaultNoLog
+END
+SCRIPT svy_is_off
+BEGIN
+	main.ck_newey.enable
+	rpt.ck_first.enable
+	script max_setDefaultLog
+END
+PROGRAM svy_check_title
+BEGIN
+	if __MESSAGE.contains("-svy-") {
+		call settitle "svy: ivprobit - Probit model with continuous endogenous regressors for survey data"
+	}
+END
+
+DIALOG main, tabtitle("Model") 				///
+	/// **** has svy title ****			///
+	title("ivprobit - Probit model with continuous endogenous regressors")
+BEGIN
+  TEXT tx_dv 		_lft	_top	_vnwd	.,			///
+	label("Dependent variable:")
+  VARNAME vn_dv		@ 	_ss	@	.,			///
+	ts								///
+	label("Dependent variable")
+
+  TEXT tx_iv		_vlx	_top	160	.,			///
+	label("Independent variables:")
+  VARLIST vl_iv		@	_ss	_vlwd	.,			///
+	fv ts								///
+	allowcat							///
+	label("Independent variables")
+  TEXT     tx_vars2	_lft	_ls	_iwd	.,	///
+	label("Endogenous variables:")
+  VARLIST  vl_vars2	@	_ss	@	.,	///
+	label("Endogenous variables")			///
+	allowcat ts
+
+  TEXT     tx_ivars	@	_ls	@	.,	///
+	label("Instrumental variables:")
+  VARLIST  vl_ivars	@	_ss	@	.,	///
+	label("Instrumental variables")			///
+	allowcat ts fv
+
+  CHECKBOX ck_newey	_lft	_ls	_iwd	.,	///
+	  option(twostep)				///
+	  onclickon(script main_newey_on)		///
+	  onclickoff(script main_newey_off)		///
+	  label("Use Newey's two-step estimator instead of maximum likelihood estimator")
+
+  CHECKBOX ck_asis 	_lft	_ms	_iwd	.,	///
+	  option(asis)					///
+	  label("Retain perfect predictor variables")
+
+  TEXT     tx_constr	_lft	_ms	_iwd	.,	///
+	label("Constraints: (optional)")
+  COMBOBOX cb_constr	@	_ss	@	.,	///
+	append						///
+	dropdown					///
+	contents(constraint)				///
+	label("Constraints")				///
+	option(constraints)
+  DEFINE _x @x
+  DEFINE _xw @xsize
+END
+
+SCRIPT main_newey_on
+BEGIN
+	// THE ORDER MATTERS
+	script se_switchToJknifeBstrap
+	script se_setN2step_on
+	script weights_setLayout_f
+	script max_disable
+	main.tx_constr.disable
+	main.cb_constr.disable
+	rpt.ck_nocnsreport.disable
+END
+
+SCRIPT main_newey_off
+BEGIN
+	// THE ORDER MATTERS
+	script max_enable
+	script se_setN2step_off
+	script se_switchToSvyJknifeBstrapML
+	script weights_setLayout_fpi
+	main.tx_constr.enable
+	main.cb_constr.enable
+	rpt.ck_nocnsreport.enable
+END
+
+INCLUDE sub_by_ifin_over_subpop
+INCLUDE weights_fpi
+INCLUDE se
+
+SCRIPT rpt_POSTINIT
+BEGIN
+	create STRING rpt_bu_fmtcoefResults
+	program rpt_bu_fmtcoef_ckResults
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr2b
+  DEFINE _y _top
+  INCLUDE _sp_level
+
+  CHECKBOX ck_first	_lft	_ls	_iwd	.,	///
+	label("Report first-stage regression") option(first)
+
+  DEFINE _x _lft
+  DEFINE _y _ls
+  DEFINE _cx _iwd
+  INCLUDE _nocnsreport
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _noomitted
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _vsquish
+
+  DEFINE _x _lft
+  DEFINE _y _ls
+  DEFINE _cx _iwd
+  INCLUDE _factor_vars_reporting
+
+  DEFINE _x _lft
+  DEFINE _y _xxxls
+  INCLUDE _bu_coef_table_reporting
+END
+
+INCLUDE fmt_coef_table_reporting_pr
+
+PROGRAM rpt_output
+BEGIN
+	optionarg /hidedefault rpt.sp_level
+	option rpt.ck_first
+	INCLUDE _nocnsreport_pr
+	INCLUDE _noomitted_pr
+	INCLUDE _vsquish_pr
+	INCLUDE _factor_vars_reporting_pr
+	put " " rpt_bu_fmtcoefResults
+END
+
+INCLUDE max_ml
+
+PROGRAM command_sub
+BEGIN
+	varlist main.vl_vars2
+	put "="
+	varlist main.vl_ivars
+END
+
+PROGRAM command
+BEGIN
+	put /program by_output " "
+	put /program se_prefix_output " "
+	put "ivprobit "
+	varlist main.vn_dv [main.vl_iv]
+	put "("
+	put /program command_sub
+	put ")"
+	put " " /program ifin_output
+	put " " /program weights_output
+	beginoptions
+		option main.ck_newey
+		option main.ck_asis
+		optionarg main.cb_constr
+		put " " /program se_output
+		put " " /program rpt_output
+		put " " /program max_output
+	endoptions
+END

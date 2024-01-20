@@ -1,0 +1,47 @@
+/*
+	robvar
+
+*!  VERSION 1.1.2  14mar2011
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help robvar")
+RESET res1
+
+DIALOG main, label("robvar - Robust tests for quality of variances")	/*
+	*/tabtitle("Main")
+BEGIN
+  TEXT     tx_var		_lft	_top	_iwd	.,		///	
+	label("Variable:")
+  VARNAME  vn_var		@	_ss	_vnwd	.,		///
+	label("Variable")
+  TEXT     tx_byopt		@	_ls	_iwd	.,		///
+	label("Variable defining comparison groups:")
+  VARNAME  vn_byopt		@	_ss	_vnwd	.,		///
+	label("by() variable")
+END
+
+INCLUDE byifin
+
+PROGRAM by_opt
+BEGIN
+	varlist main.vn_byopt
+END
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "robvar "
+	varlist main.vn_var
+	INCLUDE _ifin_pr
+	beginoptions
+		put "by("
+		put /program by_opt
+		put ")"
+	endoptions
+END

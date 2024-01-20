@@ -1,0 +1,6 @@
+*! version 1.0.0  11jan2011
+sequence 2190
+
+set width    scheme zyx2
+set color    scheme zyx2
+set pattern  scheme zyx2

@@ -1,0 +1,34 @@
+/*
+	_epitab_stdopts.idlg
+
+*! VERSION 1.1.2  11may2009
+
+*/
+
+  GROUPBOX gb_std	_lft	_ls	_cwd1	_ht10h,		///
+	label("Within-stratum weights")
+  RADIO    rb_mstd	_indent	_ss	_inwd	.,		///
+	first option(NONE) label("Use Mantel-Haenszel")		///
+	onclickon(script mstd_on)
+  RADIO    rb_estd	@	_ss	@	.,		///
+	label("Use external") option(estandard)			///
+	onclickon(script estd_on)
+  RADIO    rb_istd	@	_ss	@	.,		///
+	label("Use internal") option(istandard) 		///
+	onclickon(script istd_on)
+  RADIO    rb_vstd	@	_ss	@	.,		///
+	last option(NONE) label("User-specified variable:")	///
+	onclickon(script vstd_on)
+  VARNAME  vn_vstd	_indent2 _ss	_vnwd	., 		///
+	option(standard)					///
+	label("Within-stratum weight variable")
+  CHECKBOX ck_missing	_lft	+45	_cwd1	.,		///
+	option(missing) label("Include missing categories")
+  CHECKBOX ck_pool      @	_ms	@	.,		///
+	option(pool) label("Display pooled estimate")
+  CHECKBOX ck_nocrude	@	_ms	@	.,		///
+	option(nocrude) label("No crude estimate")
+  CHECKBOX ck_nohom	@	_ms	@	.,		///
+	option(nohom) label("No homogeneity test")
+
+

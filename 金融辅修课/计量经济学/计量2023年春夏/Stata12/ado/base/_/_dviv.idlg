@@ -1,0 +1,18 @@
+/*
+  _dviv.idlg
+
+*!  VERSION 1.1.0  30nov2004
+
+*/
+
+  TEXT     tx_dv     _lft      _top      _vnwd     .,	///
+	label("Dependent variable:")
+  VARNAME  vn_dv     @         _ss       @         .,	///
+	label("Dependent variable")
+
+  TEXT     tx_iv     _vlx      _top      160       .,	///
+	label("Independent variables:")
+  VARLIST  vl_iv     @         _ss       _vlwd     .,	///
+	label("Independent variables") allowcat
+
+/* END: _dviv.idlg */

@@ -1,0 +1,59 @@
+/*
+   _clusmat_hier.idlg include file for the hierarchical -clustermat-
+
+*! VERSION 1.1.0  19jul2006
+
+*/
+
+  BUTTON   bu_matinput  _rj100	_top    100	 .,		///
+	label("Input matrix...") 				///
+	onpush(program show_matrix_input)			///
+	tooltip("Input matrix by hand")
+
+  TEXT     tx_mat       _lft    _top    _vnwd    .,		///
+	label("Dissimilarity matrix:")
+  DEFINE   holdy @y
+  COMBOBOX cb_mat       @       _ss     @        .,		///
+	label("Dissimilarity matrix")				///
+	dropdown						///
+	contents(matrix)
+
+  TEXT     tx_shape     _lft    _ls     _comb4_1 .,		///
+	label("Storage shape:")
+  COMBOBOX cb_shape     @       _ss     @        .,		///
+	label("Storage shape")					///
+	dropdownlist						///
+	contents(shape_words)					///
+	value(shape_values)					///
+	option(shape)
+  
+  GROUPBOX gb_data	_lft	+35	_iwd	 _ht4,		///
+	label("Data")
+  RADIO    rb_add       _ilft   _ss     _ibwd   ., first	///
+	option(add)						///
+	onclickon(script ifin_enable)				///
+	label("Add cluster information to data currently in memory")
+  RADIO    rb_clear     @       _ss     @        ., last	///
+	option(clear)						///
+	onclickon(script ifin_disable)				///
+	label("Replace data in memory with cluster information")
+
+  CHECKBOX ck_labelvar  _lft    +45     _cwd1    .,		///
+	label("Place dissimilarity matrix row")			///
+	onclickon(main.ed_labelvar.enable)			///
+	onclickoff(main.ed_labelvar.disable)
+  DEFINE   holdy2 @y
+  TEXT     tx_labelvar  _cksep  _vss    _cwd2    .,		///
+	label("names in label variable:")
+  EDIT     ed_labelvar  @       _ss     _vnwd    ., max(32)	///
+	label("Place dissimilarity matrix row names in label variable") ///
+	option(labelvar)
+
+  TEXT     tx_name      _lft2   holdy2  _cwd1    .,		///
+	label("Name this cluster analysis:")
+  TEXT     tx_name2     @       _vss    @        .,		///
+	label("(leave empty for default name)")
+  EDIT     ed_name      @       _ss     _vnwd    ., max(32)	///
+	label("Name this cluster analysis")			///
+	option(name)
+

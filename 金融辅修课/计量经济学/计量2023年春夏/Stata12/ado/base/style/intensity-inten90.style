@@ -1,0 +1,5 @@
+*! version 1.0.1  01dec2006
+sequence 1120
+
+label "90%"
+set val 90

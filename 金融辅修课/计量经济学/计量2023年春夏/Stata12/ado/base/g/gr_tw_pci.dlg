@@ -1,0 +1,74 @@
+/*
+    gr_tw_pci.dlg
+    
+*!  VERSION 1.0.0  03oct2006 
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_medium
+DEFINE _dlght 270
+INCLUDE header_gr_child
+
+HELP hlp1, view("help scatteri")
+RESET res1
+
+DIALOG main, label("Define immediate plot coordinates and text")
+BEGIN
+  GROUPBOX gb_coord1		_lft	_top	_iwd	_ht2,	///
+	label("Coordinate 1")
+  TEXT     tx_y1		_ilft	_ss	30	.,	///
+	right label("Y:")
+  EDIT 	   ed_y1		+35	@	70	.,	///
+	label("Coordinate 1 (Y)") numonly
+  TEXT     tx_x1		+80	@	30	.,	///
+	right label("X:")
+  EDIT 	   ed_x1		+35	@	70	.,	///
+	label("Coordinate 1 (X)") numonly
+
+  GROUPBOX gb_coord2		_lft	+35	_iwd	_ht2,	///
+	label("Coordinate 2")
+  TEXT     tx_y2		_ilft	_ss	30	.,	///
+	right label("Y:")
+  EDIT 	   ed_y2		+35	@	70	.,	///
+	label("Coordinate 2 (Y)") numonly
+  TEXT     tx_x2		+80	@	30	.,	///
+	right label("X:")
+  EDIT 	   ed_x2		+35	@	70	.,	///
+	label("Coordinate 2 (X)") numonly
+  
+  GROUPBOX gb_options		_lft	+40	_iwd	_ht10,	///
+	label("Marker label options")
+
+  TEXT     tx_label		_ilft	_ss	_ibwd	.,	///
+	label("Label: (Visible when used on a plot with marker symbols)")
+  EDIT     ed_label		@	_ss	@	.,
+  
+  TEXT     tx_clockpos		_ilft	_ls	_vnwd	.,	///
+	label("Clock position:")
+  COMBOBOX cb_clockpos		@	_ss	@	.,	///
+	dropdownlist contents(clockpos) 
+END
+
+PROGRAM command
+BEGIN
+	require main.ed_y1
+	put main.ed_y1
+	require main.ed_x1
+	put " " main.ed_x1
+
+	require main.ed_y2
+	put " " main.ed_y2
+	require main.ed_x2
+	put " " main.ed_x2
+	
+	if main.cb_clockpos {
+		put " (" main.cb_clockpos ") "
+	}
+	if main.ed_label {
+		put `" ""' 
+		put main.ed_label
+		put `"""'
+	}
+END

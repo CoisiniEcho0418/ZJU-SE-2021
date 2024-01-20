@@ -1,0 +1,46 @@
+/*
+	rvpplot_9.dlg
+
+*!  VERSION 1.1.1  07aug2006  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+
+HELP hlp1, view("help rvpplot")
+RESET res1
+
+DIALOG main, label("rvpplot - Residual-versus-predictor plot")	///
+	tabtitle("Main")
+BEGIN
+   TEXT	    tx_var        _lft	    _top      _iwd	.,	///
+	label("Independent variable:")
+   VARNAME  vn_var        @         _ss       _vnwd	.,	///
+	label("Independent variable")
+END
+
+INCLUDE p1_opts
+INCLUDE addplot
+INCLUDE gr_twoway
+
+SCRIPT PREINIT
+BEGIN
+	script p1_opts_createAsNoRange
+	script p1_opts_setDefaultScatter
+END
+
+PROGRAM command
+BEGIN
+	put "rvpplot "
+	varlist main.vn_var
+	beginoptions
+		put " " /program p1_opts_output
+		put " " /program addplot_output
+		put " " /program gr_twoway_output
+
+	endoptions
+END
+/* end */

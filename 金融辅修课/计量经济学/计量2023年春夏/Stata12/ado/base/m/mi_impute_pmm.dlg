@@ -1,0 +1,126 @@
+/*
+  mi impute pmm
+
+*!  VERSION 1.0.5  11may2011
+
+  keyword:  mi impute
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_large
+DEFINE _dlght 410
+INCLUDE header
+
+HELP hlp1, view("help mi impute pmm")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	create STRING _mi_ivars
+	create LIST   _mi_IVARS_LIST
+
+	create STRING bu_groupOptResults
+END
+
+SCRIPT POSTINIT
+BEGIN
+	_mi_ivars.setvalue char _dta[_mi_ivars]
+
+	_mi_IVARS_LIST.Arrdropall
+	_mi_ivars.tokenize _mi_IVARS_LIST
+	main.cb_ivar.repopulate
+
+	create DOUBLE _mi_M
+	create STRING _mi_M_STR
+	program check_M
+END
+
+PROGRAM check_M
+BEGIN
+	call _mi_M_STR.setvalue char _dta[_mi_M]
+	call _mi_M.setvalue class _mi_M_STR.value
+
+	if _mi_M.islt(1) {
+		call main.ck_add.seton
+	}
+END
+
+DIALOG main, tabtitle("Main")	///
+	label("mi impute pmm - Impute using predictive mean matching")
+BEGIN
+  TEXT     tx_dv 	_lft	_topph	_vnwd	.,			///
+	label("Imputed variable:")
+  COMBOBOX cb_ivar	@ 	_ss	@	.,			///
+	label("Imputed variable") contents(_mi_IVARS_LIST)		///
+	dropdown
+
+  TEXT     tx_iv	_vlx	_topph	160	.,			///
+	label("Independent variables:")
+  VARLIST  vl_iv	@	_ss	_vlwd	.,			///
+	fv								///
+	label("Independent variables")
+
+  CHECKBOX ck_nocons	@	_ms	@	.,			///
+	label("Suppress constant term")					///
+	option(noconstant)
+
+  DEFINE _x _lft
+  DEFINE _cx _iwd
+  DEFINE _y _ls
+  INCLUDE _mi_impute_opts
+
+  SPINNER sp_knn	_lft	_ls	_spwd	.,			///
+	default(1)							///
+	min(1)								///
+	max(1000)							///
+	option(knn)							///
+	label("Number of nearest neighbors")
+  TEXT tx_knn		_spsep	@	200200	.,			///
+	label("Number of nearest neighbors (optional)")
+
+  DEFINE _x _lft
+  DEFINE _cx _iwd
+  DEFINE _y _ls
+  INCLUDE _mi_impute_uni_cond_boot
+END
+
+INCLUDE _mi_impute_opts_sc
+
+INCLUDE if
+INCLUDE weights
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _iwd
+  DEFINE _y _top
+  INCLUDE _mi_impute_rpt
+END
+
+DIALOG adv, tabtitle("Advanced")
+BEGIN
+  CHECKBOX ck_force	_lft	_top	_iwd	.,			///
+	option(force)							///
+	label("Proceed with imputation even when missing imputed values are encountered")
+END
+
+PROGRAM command
+BEGIN
+	put "mi impute pmm "
+	varlist main.cb_ivar
+	if main.vl_iv {
+		put " " main.vl_iv
+	}
+	put " " /program if_output
+	put " " /program weights_output
+	beginoptions
+		option main.ck_nocons
+		INCLUDE _mi_impute_opts_main_pr
+		optionarg /hidedefault main.sp_knn
+		INCLUDE _mi_impute_uni_cond_boot_pr
+		INCLUDE _mi_impute_rpt_pr
+		option adv.ck_force
+	endoptions
+END

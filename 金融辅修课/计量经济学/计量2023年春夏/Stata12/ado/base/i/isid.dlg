@@ -1,0 +1,53 @@
+/*
+  isid
+
+  VERSION 1.0.0  21dec2002
+
+*/
+VERSION 8.0
+
+INCLUDE _std_small
+INCLUDE header
+HELP hlp1, view("help isid")
+RESET res1
+
+DIALOG main, label("isid - Check for unique identifiers") /*
+		*/ tabtitle("Main")
+BEGIN
+  /*--+----1----+----2----+----3----+----4----+----5----+----6----+----7----+*/ 
+  TEXT     tx_var          _lft      _top       _iwd     .,		/*
+  		*/label("Variables:")
+  VARLIST  vl_var          @         _ss        @        .,		/*
+  		*/label("Variables")
+  CHECKBOX ck_file         @         _ls        @        .,		/*
+  		*/label("Use file:")					/*
+  		*/clickon(gaction main.fi_file.enable)			/*
+		*/clickoff(gaction main.fi_file.disable)
+  FILE     fi_file         _indent2   _ss        _ibwd    .,		/*
+		*/ filter("Stata Dataset (*.dta)|*.dta|All Files (*.*)|*.*")	/*
+		*/ defext(dta)						/*
+  		*/label("Browse...") error("Use file")
+  CHECKBOX ck_sort         _lft      _ls        _iwd     .,		/*
+  		*/label("Sort data by the variable names given")	/*
+  		*/option(sort)
+  CHECKBOX ck_missok       @         _ls        @        .,		/*
+  		*/label("Missing values are permitted")			/*
+  		*/option(missok)
+END
+
+PROGRAM command
+BEGIN
+	put "isid "
+	varlist main.vl_var
+	if main.ck_file {
+		require main.fi_file
+		put "using " 
+		put `"""'
+		put main.fi_file
+		put `"""'
+	}
+	beginoptions
+		option main.ck_sort
+		option main.ck_missok
+	endoptions
+END

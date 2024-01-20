@@ -1,0 +1,89 @@
+/*
+	predict (after vec)
+
+*!  VERSION 1.1.0  09apr2007
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_large
+DEFINE _dlght 260
+INCLUDE header
+
+HELP hlp1, view("help vec postestimation")
+RESET res1
+
+DIALOG main, label("predict - Prediction after estimation") tabtitle("Main")
+BEGIN
+  INCLUDE  _p_gentype
+  GROUPBOX gb_opts           _lft      _ls       _iwd      _ht15,	///
+	label("Produce:")
+  RADIO    rb_xb             _ilft     _ss       _comb3_2   ., first	///
+	option(xb) onclickon(program equation_check)			///
+	label("Linear prediction (xb)")
+  DEFINE   holdy@y
+  RADIO    rb_stdp           @         _ss       @         ., 		///
+	option(stdp) onclickon(program equation_check)			///
+	label("Standard error of the prediction")
+  RADIO    rb_residuals      @         _ss       @         ., 		///
+	option(residuals) onclickon(program equation_check)		///
+	label("Residuals")
+  RADIO    rb_ce	     @         _ss       @         ., 		///
+	option(ce) onclickon(program equation_check)			///
+	label("Prediction of cointegrating equation")
+  RADIO    rb_level	     @         _ss       @         .,	last	///
+  	option(level) onclickon(program equation_check)			///
+  	label("Prediction of level of endogenous variable")
+
+  CHECKBOX ck_usece	     @         _ms       _ibwd     .,		///
+  	label("Use previously predicted cointegrating equation:")	///
+  	onclickon(main.vl_usece.enable) onclickoff(main.vl_usece.disable)
+  VARLIST  vl_usece	     _indent2  _ss       _inwd     .,		///
+  	option(usece) 							///
+  	label("Variables for previously predicted cointegrationg equation")
+
+  TEXT     tx_equation       _iilft3_3 holdy     _cwd3_1   .,		///
+	label("Equation to predict:")
+  LISTBOX  lb_equation1      @         _ss       @         80,		///
+	contents(e(eqnames))
+  LISTBOX  lb_equation2      @         @         @         @,		///
+	contents(e(cenames))
+END
+
+PROGRAM equation_check
+BEGIN
+	if main.rb_xb | main.rb_stdp | main.rb_residuals | main.rb_level {
+		call main.lb_equation1.show
+		call main.lb_equation2.hide
+		call main.ck_usece.enable
+		if main.ck_usece {
+			call main.vl_usece.enable
+		}
+	}
+	if main.rb_ce {
+		call main.lb_equation1.hide
+		call main.lb_equation2.show
+		call main.ck_usece.disable
+		call main.vl_usece.disable
+	}
+END
+
+INCLUDE _p_gentype_sc
+INCLUDE ifin
+INCLUDE _type_list_fd
+
+PROGRAM command
+BEGIN
+	put "predict "
+	put " " /program _p_gentype_output
+	INCLUDE _ifin_pr
+	beginoptions
+		option radio(main rb_xb rb_stdp rb_residuals rb_ce rb_level)
+		optionarg main.vl_usece
+		put "equation("
+		put main.lb_equation1
+		put main.lb_equation2
+		put ") "
+	endoptions
+END

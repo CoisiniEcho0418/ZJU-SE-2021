@@ -1,0 +1,40 @@
+/*
+	estimates drop
+
+*!  VERSION 1.1.1  13apr2007
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+DEFINE  _dlght 210
+INCLUDE header
+HELP hlp1, view("help estimates store")
+RESET res1
+
+DIALOG main, label("estimates drop - Drop stored estimation results")	///
+	tabtitle("Main")
+BEGIN
+  TEXT     tx_elist       _lft     _top       _iwd         ., 		///
+	label("Estimation results to drop:")
+  COMBOBOX cb_elist       @        _ss        @            _ht10, 	///
+  	append contents(estimates)					///
+  	label("Estimation results to drop")
+  CHECKBOX ck_all         _lft    _vs9       _iwd         ., 		///
+	onclickon(main.cb_elist.disable)				///
+	onclickoff(main.cb_elist.enable)				///
+	label("Drop all stored estimation results")
+END
+
+PROGRAM command
+BEGIN
+	put "estimates drop "
+	if main.ck_all {
+		put "_all"
+	}
+	if ! main.ck_all {
+		require main.cb_elist
+		put main.cb_elist
+	}
+END

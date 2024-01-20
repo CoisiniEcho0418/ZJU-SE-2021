@@ -1,0 +1,58 @@
+/*
+	predict (after xtreg (fe, be, ml options))
+
+*!  VERSION 1.1.1  28mar2005
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help xtreg postestimation")
+RESET res1
+
+DIALOG main, label("predict - Prediction after estimation") tabtitle("Main")
+BEGIN
+  INCLUDE  _p_gentype
+
+  GROUPBOX gb_opts           _lft      _ls       _iwd      _ht12,	/*
+		*/ label("Produce:")
+  RADIO    rb_xb             _indent   _ss       _inwd     ., first	/*
+		*/ option(xb)						/*
+		*/ label("Fitted values (xb)")
+  RADIO    rb_stdp           @         _ss       @         .,		/*
+		*/ option(stdp)						/*
+		*/ label("Standard error of the fitted values")
+  RADIO    rb_ue             @         _ss       @         .,		/*
+		*/ option(ue)						/*
+		*/ label("Combined residual (u_i + e_it)")
+  RADIO    rb_xbu            @         _ss       @         .,		/*
+		*/ option(xbu)						/*
+		*/ label("Prediction including effect (xb + u_i)")
+  RADIO    rb_u              @         _ss       @         .,		/*
+		*/ option(u)						/*
+		*/ label("Fixed or random error component (u_i)")
+  RADIO    rb_e              @         _ss       @         ., last	/*
+		*/ option(e)						/*
+		*/ label("Error component (e_it)")
+
+  INCLUDE _p_nooffset
+END
+
+INCLUDE _p_gentype_sc
+INCLUDE ifin
+INCLUDE _type_list_fd
+
+PROGRAM command
+BEGIN
+	put "predict "
+	put " " /program _p_gentype_output
+	INCLUDE _ifin_pr
+	beginoptions
+		option radio(main rb_xb rb_stdp rb_ue rb_xbu rb_u rb_e)
+	endoptions
+	INCLUDE _p_nooffset_pr
+END
+

@@ -1,0 +1,6 @@
+*! version 1.0.0  22dec2002
+sequence 235
+label "elightgreen"
+
+* 623 C
+set rgb "151 182 176"

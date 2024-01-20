@@ -1,0 +1,28 @@
+/*
+	cluster wardslinkage
+
+*! VERSION 1.1.1  31may2007
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_large
+INCLUDE header
+HELP hlp1, view("help cluster_linkage")
+RESET res1
+
+DIALOG main, label("cluster wardslinkage - Ward's linkage clustering") /*
+		*/ tabtitle("Main")
+BEGIN
+  INCLUDE _clus_hier
+END
+
+INCLUDE _clus_hier2
+
+PROGRAM command
+BEGIN
+	allowxi
+	put "cluster wardslinkage "
+	INCLUDE _clus_hier_pr
+END

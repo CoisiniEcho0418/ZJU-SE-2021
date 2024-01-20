@@ -1,0 +1,38 @@
+/*
+  nlsur_new_eq.dlg
+
+*!  VERSION 1.0.1  12nov2010
+
+  keyword:  eclass
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_mlarge
+DEFINE _dlght 100
+INCLUDE header
+
+RESET res1
+
+DIALOG main, tabtitle("Main")
+BEGIN
+  TEXT     tx_dv	_lft	20	130	.,	///
+  	label("Dependent variable:") right
+  DEFINE holdy @y
+  VARNAME  vn_dv	+135	@	@	.,	///
+  	label("Dependent variable")
+
+  TEXT     tx_subexpr	_lft	_ls	130	.,	///
+	label("Substitutable expression:") right
+  EXP      ex_subexpr	+135	@	_vlwd	.,	///
+	error("Substitutable expression")		///
+	parameter					///
+	label("Create...")
+END
+
+PROGRAM command
+BEGIN
+	require main.vn_dv main.ex_subexpr
+	put main.vn_dv " = " main.ex_subexpr
+END

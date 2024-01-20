@@ -1,0 +1,113 @@
+/*
+    vecrank.dlg
+
+*!  VERSION 1.0.0  14jul2004
+
+*/
+
+VERSION 8.0
+
+INCLUDE _std_large
+INCLUDE header
+HELP hlp1, view("help vecrank")
+RESET res1
+
+DIALOG model, tabtitle("Model") ///
+	label("vecrank - Estimate the cointegrating rank of a VECM")
+BEGIN
+  INCLUDE _tsdepvars
+
+  SPINNER  sp_lags           _lft        +35       _spwd       .,	///
+  		default(2) min(1) option(lags)
+  TEXT     tx_lags           _spsep      @         _spr        .,	///
+  		label("Maximum lag to be included in underlying VAR model")
+
+  TEXT     tx_trend          _lft        _ls       _cwd1       .,	///
+  		label("Trend specification:")
+  COMBOBOX cb_trend          @           _ss       _vnwd       .,	///
+  		dropdownlist 						///
+  		option(trend) contents(trend_spec) default(constant) 	///
+  		onselchangelist(trend_action)
+END
+
+LIST trend_spec
+BEGIN
+	trend
+	rtrend
+	constant
+	rconstant
+	none
+END
+
+LIST trend_action
+BEGIN
+	model2.vl_sindicator.enable
+	model2.vl_sindicator.enable
+	model2.vl_sindicator.enable
+	model2.vl_sindicator.disable
+	model2.vl_sindicator.disable
+END
+
+DIALOG model2, tabtitle("Adv. model")
+BEGIN
+  GROUPBOX gb_advanced       _lft        _top      _iwd      _ht9,	///
+  		label("Advanced model options")
+  TEXT     tx_sindicator     _ilft       _ss       _inwd     .,		///
+		label("Normalized seasonal indicator variables:")
+  VARLIST  vl_sindicator     @           _ss       @         .,		///
+  		option(sindicators)					///
+		label("Normalized seasonal indicator variables")
+
+  CHECKBOX ck_noreduce       @           _ls       @         .,		///
+  		option(noreduce)					///
+  		label("Do not perform checks and corrections for collinearity among lags of")
+  TEXT     tx_noreduce       _indent2    _vss      _inwd     .,		///
+  		label("dependent variables")
+
+END
+
+INCLUDE byifin
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  CHECKBOX ck_notrace        _lft      _top      _iwd      .,		///
+  		label("Suppress reporting of the trace statistic")	///
+  		option(notrace)
+  CHECKBOX ck_max            @         _ms       @         .,		///
+  		label("Report maximum-eigenvalue statistic")		///
+  		option(max)
+  CHECKBOX ck_ic             @         _ms       @         .,		///
+  		label("Report information criteria")			///
+  		option(ic)
+  CHECKBOX ck_level99        @         _ms       @         .,		///
+  		option(level99)						///
+  		onclickon(rpt.ck_levela.disable)			///
+  		onclickoff(rpt.ck_levela.enable)			///
+  		label("Report 1% critical values instead of 5% critical values")
+  CHECKBOX ck_levela         @         _ms       @         .,		///
+  		option(levela)						///
+  		onclickon(rpt.ck_level99.disable)			///
+  		onclickoff(rpt.ck_level99.enable)			///
+  		label("Report both 1% and 5% critical values")
+END
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "vecrank "
+	varlist model.vl_dv
+	INCLUDE _ifin_pr
+	beginoptions
+		optionarg model.cb_trend
+		optionarg /hidedefault model.sp_lags
+
+		optionarg model2.vl_sindicator
+		option model2.ck_noreduce
+
+		option rpt.ck_notrace
+		option rpt.ck_max
+		option rpt.ck_ic
+		option rpt.ck_level99
+		option rpt.ck_levela
+	endoptions
+END

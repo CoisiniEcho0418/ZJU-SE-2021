@@ -1,0 +1,190 @@
+/*
+	nlogit_estat
+
+*!  VERSION 1.0.2  25may2009
+
+	***
+	USE EXTREME CARE WHEN CHANGING CONTROL NAMES. The names used
+	in this file have multiple external dependencies.
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_large
+DEFINE _dlght 360	//dialog length for bootstrap options
+INCLUDE header
+
+HELP hlp1, view("help nlogit postestimation")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	create BOOLEAN has_FactorVars
+	has_FactorVars.setfalse
+END
+
+DIALOG main, label("estat - Postestimation tools for nlogit") tabtitle("Main")
+BEGIN
+  TEXT     tx_subcmd		_lft	_top	_cwd1	.,		///
+  	label("Reports and statistics: (subcommand)")
+  LISTBOX  lb_subcmd		@	_ss	_iwd	70,		///
+  	contents(main_subcommand_contents)				///
+  	values(main_subcommand_values)					///
+  	onselchangelist(main_subcommand_scripts)
+
+  DEFINE holdy 110
+
+  // alternatives options
+  TEXT     tx_altnote		_lft	holdy	_iwd	.,		///
+  	label("Click OK or Submit to display the alternative summary statistics")
+
+  // Information criteria
+  CHECKBOX ck_n			_lft	holdy	_iwd	.,		///
+	onclickon(main.sp_n.enable)					///
+	onclickoff(main.sp_n.disable)					///
+	label("Number of observations for calculating BIC")
+  SPINNER sp_n			_indent2 _ss	_spwd	.,		///
+	default(e(N)) min(1) max(e(N))					///
+	option(n)
+
+  // Summarize options
+  GROUPBOX gb_eqlist            _lft    holdy	_iwd	_ht6,		///
+  	label("Summarize")
+  RADIO    rb_default		_ilft	_ss	_inwd	.,		///
+  	first label("Use all variables involved in the estimation")	///
+  	onclickon(main.vl_spec.disable)
+  RADIO    rb_spec		@	_ss	@	.,		///
+	onclickon(main.vl_spec.enable) last				///
+	label("Use variables and optional equation names:")
+  VARLIST  vl_spec	      _indent2	_ss	_inwd	.,		///
+	label("Use variables and optional equation names")
+  CHECKBOX ck_equation      	_lft	+45	_iwd	.,		///
+	option(equation)						///
+	label("Display summary by equation")
+  CHECKBOX ck_labels		@	_ms	@	.,		///
+  	label("Display variable labels")				///
+  	option(labels)
+  CHECKBOX ck_noheader		_lft	_ms	_iwd	.,		///
+	option(noheader)						///
+	label("Suppress the header")
+  CHECKBOX ck_noweights		@	_ms	@	.,		///
+	option(noweights)						///
+	label("Ignore weights")
+
+  INCLUDE estat_vce
+  INCLUDE _estat_bootstrap
+END
+
+INCLUDE _estat_bootstrap_pr
+INCLUDE estat_vce_pr
+
+LIST main_subcommand_contents
+BEGIN
+  	 "Alternative summary statistics (alternatives)"
+ 	 "Information criteria (ic)"
+ 	 "Summarize estimation sample (summarize)"
+ 	 "Covariance matrix estimates (vce)"
+END
+
+LIST main_subcommand_values
+BEGIN
+	alternatives
+	ic
+	summarize
+	vce
+END
+
+LIST main_subcommand_scripts
+BEGIN
+	script sel_alternatives
+	script sel_ic
+	script sel_summarize
+	script sel_vce
+END
+
+SCRIPT sel_alternatives
+BEGIN
+	script main_hide_all
+	main.tx_altnote.show
+END
+
+SCRIPT sel_ic
+BEGIN
+	script main_hide_all
+	main.ck_n.show
+	main.sp_n.show
+END
+
+SCRIPT sel_summarize
+BEGIN
+	script main_hide_all
+	script main_summ_on
+END
+
+SCRIPT sel_vce
+BEGIN
+	script main_hide_all
+	program vce_on
+END
+
+SCRIPT main_summ_on
+BEGIN
+	main.ck_equation.show
+	main.ck_labels.show
+	main.ck_noheader.show
+	main.ck_noweights.show
+	main.gb_eqlist.show
+	main.rb_default.show
+	main.rb_spec.show
+	main.vl_spec.show
+END
+
+SCRIPT main_summ_off
+BEGIN
+	main.ck_equation.hide
+	main.ck_labels.hide
+	main.ck_noheader.hide
+	main.ck_noweights.hide
+	main.gb_eqlist.hide
+	main.rb_default.hide
+	main.rb_spec.hide
+	main.vl_spec.hide
+END
+
+SCRIPT main_hide_all
+BEGIN
+	main.ck_n.hide
+	main.sp_n.hide
+	main.tx_altnote.hide
+	program vce_off
+	script main_summ_off
+	script main_bootstrap_hide
+END
+
+PROGRAM vl_output
+BEGIN
+	put main.vl_spec
+END
+
+PROGRAM command
+BEGIN
+	put "estat "
+	put main.lb_subcmd
+	if main.rb_spec {
+		require main.vl_spec
+		put " " main.vl_spec
+	}
+	beginoptions
+		// ic options
+		optionarg main.sp_n
+
+		// Summarize options
+		option main.ck_equation
+		option main.ck_labels
+		option main.ck_noheader
+		option main.ck_noweights
+		put " " /program vce_output
+		put " " /program bootstrap_output
+	endoptions
+END

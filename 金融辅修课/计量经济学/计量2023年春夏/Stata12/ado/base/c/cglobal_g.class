@@ -1,0 +1,29 @@
+//                                  cglobal_g
+//
+//  Globals specific to the current command running on a graph
+
+*! version 1.1.2  21feb2011
+
+version 8
+
+class {
+	gversion	= 3
+	clsversion	= 3
+	gmetric_mult	= 1
+	reading		= 0
+	redraw		= 0
+} , inherit(object)
+
+
+// ---------------------------------------------------------------------------
+
+program set
+	gettoken clsvar value : 0
+
+	if "`.`clsvar'.isa'" == "" {
+		.Declare `clsvar' = `value'
+	}
+	else {
+		.`clsvar' = `value'
+	}
+end

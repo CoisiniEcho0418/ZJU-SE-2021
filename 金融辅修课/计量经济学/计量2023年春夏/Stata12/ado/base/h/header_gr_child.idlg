@@ -1,0 +1,16 @@
+/* 
+  header_gr_child.idlg -- header for all source dialogs
+
+*! VERSION 1.0.0  06jun2006
+
+*/
+
+POSITION . . _dlgwd _dlght
+
+OK ok1, label("Accept")
+CANCEL can1, label("Cancel")
+SUBMIT sub1, label("Submit")
+
+INCLUDE levels_list
+
+/* END:  header_gr_child.idlg */

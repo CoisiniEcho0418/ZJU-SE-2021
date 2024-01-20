@@ -1,0 +1,234 @@
+/*
+    _varstable_common_9_pr.idlg
+
+*!  VERSION 1.1.1  28aug2006 (deprecated)
+
+*/
+
+SCRIPT main_graph_on
+BEGIN
+	script grlopts_enable
+	script addplot_enable
+	script gr_twoway_enable
+	main.gb_label.enable
+	main.rb_nolabel.enable
+	main.rb_dlabel.enable
+	main.rb_modlabel.enable
+	main.gb_pgrid.enable
+	main.rb_default.enable
+	main.rb_nogrid.enable
+	main.rb_pgrid.enable
+	program main_pgrid_ckeck
+	program main_nogrid_check
+END
+
+PROGRAM main_nogrid_check
+BEGIN
+	if ! main.rb_nogrid {
+		call main.rb_pgrid.enable
+		call program polar_grid_line_opts_on
+	}
+END
+
+PROGRAM main_pgrid_ckeck
+BEGIN
+	if main.rb_pgrid {
+		call main.ed_pgrid.enable
+	}
+END
+
+SCRIPT main_graph_off
+BEGIN
+	script grlopts_disable
+	script addplot_disable
+	script gr_twoway_disable
+	main.gb_label.disable
+	main.rb_nolabel.disable
+	main.rb_dlabel.disable
+	main.rb_modlabel.disable
+	main.gb_pgrid.disable
+	main.rb_default.disable
+	main.rb_nogrid.disable
+	main.rb_pgrid.disable
+	main.ed_pgrid.disable
+	script polar_grid_line_opts_off
+END
+
+SCRIPT main_nogrid_on
+BEGIN
+	main.ed_pgrid.disable
+	script polar_grid_line_opts_off
+END
+
+SCRIPT main_pgrid_on
+BEGIN
+	main.ed_pgrid.enable
+	program polar_grid_line_opts_on
+END
+
+SCRIPT main_grid_default_on
+BEGIN
+	program polar_grid_line_opts_on
+	main.ed_pgrid.disable
+END
+
+PROGRAM polar_grid_line_opts_on
+BEGIN
+	if main.ck_graph {
+		call main.tx_pcol.enable
+		call main.cb_pcol.enable
+		call main.cl_pcol.enable
+		call main.tx_plwid.enable
+		call main.cb_plwid.enable
+		call main.tx_plpat.enable
+		call main.cb_plpat.enable
+		call main.tx_pconn.enable
+		call main.cb_pconn.enable
+	}
+END
+
+SCRIPT polar_grid_line_opts_off
+BEGIN
+	main.tx_pcol.disable
+	main.cb_pcol.disable
+	main.cl_pcol.disable
+	main.tx_plwid.disable
+	main.cb_plwid.disable
+	main.tx_plpat.disable
+	main.cb_plpat.disable
+	main.tx_pconn.disable
+	main.cb_pconn.disable
+END
+
+LIST rlopts_color_ccol
+BEGIN
+	main.cl_ccol.hide
+	main.cl_ccol.show
+	main.cl_ccol.hide
+END
+
+LIST polar_color_pcol
+BEGIN
+	main.cl_pcol.hide
+	main.cl_pcol.show
+	main.cl_pcol.hide
+END
+
+SCRIPT grlopts_disable
+BEGIN
+	main.gb_reference.disable
+	main.tx_ccol.disable
+	main.cb_ccol.disable
+	main.cl_ccol.disable
+	main.tx_clwid.disable
+	main.cb_clwid.disable
+	main.tx_clpat.disable
+	main.cb_clpat.disable
+	main.tx_conn.disable
+	main.cb_conn.disable
+END
+
+SCRIPT grlopts_enable
+BEGIN
+	main.gb_reference.enable
+	main.tx_ccol.enable
+	main.cb_ccol.enable
+	main.cl_ccol.enable
+	main.tx_clwid.enable
+	main.cb_clwid.enable
+	main.tx_clpat.enable
+	main.cb_clpat.enable
+	main.tx_conn.enable
+	main.cb_conn.enable
+END
+
+
+PROGRAM rlopts_options
+BEGIN
+	if H(main.cl_ccol) {
+		optionarg /hidedefault main.cb_ccol
+	}
+	if !H(main.cl_ccol) {
+		optionarg /quoted main.cl_ccol
+	}
+	optionarg /hidedefault main.cb_clwid
+	optionarg /hidedefault main.cb_clpat
+	optionarg /hidedefault main.cb_conn
+END
+
+PROGRAM rlopts_output
+BEGIN
+	if !H(main.cl_ccol)	| 				///
+	   (main.cb_ccol	& !H(main.cb_ccol))	| 	///
+	   (main.cb_clwid	& !H(main.cb_clwid))	| 	///
+	   (main.cb_clpat	& !H(main.cb_clpat))	| 	///
+	   (main.cb_conn	& !H(main.cb_conn)) {
+		put "rlopts("
+		put /program rlopts_options
+		put ")"
+	}
+END
+
+PROGRAM grid_options
+BEGIN
+	if main.rb_default {
+		put ".1 .2 .3 .4 .5 .6 .7 .8 .9"
+	}
+	if main.rb_pgrid {
+		require main.ed_pgrid
+		put main.ed_pgrid
+	}
+	beginoptions
+		if H(main.cl_pcol) {
+			optionarg /hidedefault main.cb_pcol
+		}
+		if !H(main.cl_pcol) {
+			optionarg /quoted main.cl_pcol
+		}
+		optionarg /hidedefault main.cb_plwid
+		optionarg /hidedefault main.cb_plpat
+		optionarg /hidedefault main.cb_pconn
+	endoptions
+END
+
+PROGRAM grid_output
+BEGIN
+	if !H(main.cl_pcol)	| 				///
+	   (main.cb_pcol	& !H(main.cb_pcol))	 | 	///
+	   (main.cb_plwid	& !H(main.cb_plwid))	 | 	///
+	   (main.cb_plpat	& !H(main.cb_plpat))	 | 	///
+	   (main.cb_pconn	& !H(main.cb_pconn))     |  	///
+	   (main.ed_pgrid 	& !D(main.ed_pgrid))	 |	///
+	    main.rb_pgrid					///
+	{
+		put " " "pgrid("
+		put /program grid_options
+		put ")"
+	}
+END
+
+INCLUDE addplot
+INCLUDE gr_twoway
+
+PROGRAM varstable_output
+BEGIN
+	if main.ck_amat {
+		require main.ed_amat
+	}
+	if main.rb_use {
+		require main.cb_estimates
+	}
+
+	beginoptions
+		optionarg main.ed_amat
+		optionarg main.cb_estimates
+		option main.ck_graph
+		option main.rb_dlabel
+		option main.rb_modlabel
+		option main.rb_nogrid
+		put " " /program rlopts_output
+		put " " /program grid_output
+		put " " /program addplot_output
+		put " " /program gr_twoway_output
+	endoptions
+END

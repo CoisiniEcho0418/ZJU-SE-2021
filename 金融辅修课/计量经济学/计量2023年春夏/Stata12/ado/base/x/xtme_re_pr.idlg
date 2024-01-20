@@ -1,0 +1,644 @@
+/*
+  xtme_re_pr.idlg 
+  
+  * programming for xtme_re include file
+
+*!  VERSION 1.0.2  05jul2007
+
+*/
+
+SCRIPT main_set_isXTMIXED
+BEGIN
+	isXTMIXED.settrue
+END
+
+PROGRAM main_POSTINIT_PROGRAM
+BEGIN
+	call create BOOLEAN isXTMIXED
+
+	if ! main.ck_equation_1 & ! main.ck_equation_2 		///
+		& ! main.ck_equation_3 & ! main.ck_equation_4 	///
+		& ! main.ck_equation_5 & ! main.ck_equation_6 	///
+		& ! main.ck_equation_7 & ! main.ck_equation_8 	///
+	{
+		call main.ck_equation_1.seton
+	}
+END
+	
+LIST main_covariance_list
+BEGIN
+	independent
+	exchangeable
+	identity
+	unstructured
+END
+
+LIST main_covariance_2_list
+BEGIN
+	identity
+	exchangeable
+END
+
+/* equation_1 programming */
+PROGRAM main_equation_1_on
+BEGIN
+	call main.vn_level_1.enable
+	call main.ck_factor_eq_1.enable
+	call main.vn_factor_eq_1.enable
+	call main.vl_independent_1.enable
+	call main.cb_cov_structure_1.enable
+	call main.cb_fcov_structure_1.enable
+	if ! main.ck_factor_eq_1 {
+		call main.ck_noconstant_1.enable
+	}
+	call main.ck_collinear_1.enable
+END
+SCRIPT main_equation_1_off
+BEGIN
+	main.vn_level_1.disable
+	main.ck_factor_eq_1.disable
+	main.vn_factor_eq_1.disable
+	main.vl_independent_1.disable
+	main.cb_cov_structure_1.disable
+	main.cb_fcov_structure_1.disable
+	main.ck_noconstant_1.disable
+	main.ck_collinear_1.disable
+END
+SCRIPT main_factor_eq_1_show
+BEGIN
+	main.vn_factor_eq_1.show
+	main.cb_fcov_structure_1.show
+	main.vl_independent_1.hide
+	main.cb_cov_structure_1.hide
+	main.ck_noconstant_1.disable
+END
+PROGRAM main_factor_eq_1_hide
+BEGIN
+	call main.vn_factor_eq_1.hide
+	call main.cb_fcov_structure_1.hide
+	call main.vl_independent_1.show
+	call main.cb_cov_structure_1.show
+	if main.ck_equation_1 {
+		call main.ck_noconstant_1.enable
+	}
+END
+
+/* equation_2 programming */
+PROGRAM main_equation_2_on
+BEGIN
+	call main.vn_level_2.enable
+	call main.ck_factor_eq_2.enable
+	call main.vn_factor_eq_2.enable
+	call main.vl_independent_2.enable
+	call main.cb_cov_structure_2.enable
+	call main.cb_fcov_structure_2.enable
+	if ! main.ck_factor_eq_2 {
+		call main.ck_noconstant_2.enable
+	}
+	call main.ck_collinear_2.enable
+END
+SCRIPT main_equation_2_off
+BEGIN
+	main.vn_level_2.disable
+	main.ck_factor_eq_2.disable
+	main.vn_factor_eq_2.disable
+	main.vl_independent_2.disable
+	main.cb_cov_structure_2.disable
+	main.cb_fcov_structure_2.disable
+	main.ck_noconstant_2.disable
+	main.ck_collinear_2.disable
+END
+SCRIPT main_factor_eq_2_show
+BEGIN
+	main.vn_factor_eq_2.show
+	main.cb_fcov_structure_2.show
+	main.vl_independent_2.hide
+	main.cb_cov_structure_2.hide
+	main.ck_noconstant_2.disable
+END
+PROGRAM main_factor_eq_2_hide
+BEGIN
+	call main.vn_factor_eq_2.hide
+	call main.cb_fcov_structure_2.hide
+	call main.vl_independent_2.show
+	call main.cb_cov_structure_2.show
+	if main.ck_equation_2 {
+		call main.ck_noconstant_2.enable
+	}
+END
+
+/* equation_3 programming */
+PROGRAM main_equation_3_on
+BEGIN
+	call main.vn_level_3.enable
+	call main.ck_factor_eq_3.enable
+	call main.vn_factor_eq_3.enable
+	call main.vl_independent_3.enable
+	call main.cb_cov_structure_3.enable
+	call main.cb_fcov_structure_3.enable
+	if ! main.ck_factor_eq_3 {
+		call main.ck_noconstant_3.enable
+	}
+	call main.ck_collinear_3.enable
+END
+SCRIPT main_equation_3_off
+BEGIN
+	main.vn_level_3.disable
+	main.ck_factor_eq_3.disable
+	main.vn_factor_eq_3.disable
+	main.vl_independent_3.disable
+	main.cb_cov_structure_3.disable
+	main.cb_fcov_structure_3.disable
+	main.ck_noconstant_3.disable
+	main.ck_collinear_3.disable
+END
+SCRIPT main_factor_eq_3_show
+BEGIN
+	main.vn_factor_eq_3.show
+	main.cb_fcov_structure_3.show
+	main.vl_independent_3.hide
+	main.cb_cov_structure_3.hide
+	main.ck_noconstant_3.disable
+END
+PROGRAM main_factor_eq_3_hide
+BEGIN
+	call main.vn_factor_eq_3.hide
+	call main.cb_fcov_structure_3.hide
+	call main.vl_independent_3.show
+	call main.cb_cov_structure_3.show
+	if main.ck_equation_3 {
+		call main.ck_noconstant_3.enable
+	}
+END
+
+/* equation_4 programming */
+PROGRAM main_equation_4_on
+BEGIN
+	call main.vn_level_4.enable
+	call main.ck_factor_eq_4.enable
+	call main.vn_factor_eq_4.enable
+	call main.vl_independent_4.enable
+	call main.cb_cov_structure_4.enable
+	call main.cb_fcov_structure_4.enable
+	if ! main.ck_factor_eq_4 {
+		call main.ck_noconstant_4.enable
+	}
+	call main.ck_collinear_4.enable
+END
+SCRIPT main_equation_4_off
+BEGIN
+	main.vn_level_4.disable
+	main.ck_factor_eq_4.disable
+	main.vn_factor_eq_4.disable
+	main.vl_independent_4.disable
+	main.cb_cov_structure_4.disable
+	main.cb_fcov_structure_4.disable
+	main.ck_noconstant_4.disable
+	main.ck_collinear_4.disable
+END
+SCRIPT main_factor_eq_4_show
+BEGIN
+	main.vn_factor_eq_4.show
+	main.cb_fcov_structure_4.show
+	main.vl_independent_4.hide
+	main.cb_cov_structure_4.hide
+	main.ck_noconstant_4.disable
+END
+PROGRAM main_factor_eq_4_hide
+BEGIN
+	call main.vn_factor_eq_4.hide
+	call main.cb_fcov_structure_4.hide
+	call main.vl_independent_4.show
+	call main.cb_cov_structure_4.show
+	if main.ck_equation_4 {
+		call main.ck_noconstant_4.enable
+	}
+END
+
+/* equation_5 programming */
+PROGRAM main_equation_5_on
+BEGIN
+	call main.vn_level_5.enable
+	call main.ck_factor_eq_5.enable
+	call main.vn_factor_eq_5.enable
+	call main.vl_independent_5.enable
+	call main.cb_cov_structure_5.enable
+	call main.cb_fcov_structure_5.enable
+	if ! main.ck_factor_eq_5 {
+		call main.ck_noconstant_5.enable
+	}
+	call main.ck_collinear_5.enable
+END
+SCRIPT main_equation_5_off
+BEGIN
+	main.vn_level_5.disable
+	main.ck_factor_eq_5.disable
+	main.vn_factor_eq_5.disable
+	main.vl_independent_5.disable
+	main.cb_cov_structure_5.disable
+	main.cb_fcov_structure_5.disable
+	main.ck_noconstant_5.disable
+	main.ck_collinear_5.disable
+END
+SCRIPT main_factor_eq_5_show
+BEGIN
+	main.vn_factor_eq_5.show
+	main.cb_fcov_structure_5.show
+	main.vl_independent_5.hide
+	main.cb_cov_structure_5.hide
+	main.ck_noconstant_5.disable
+END
+PROGRAM main_factor_eq_5_hide
+BEGIN
+	call main.vn_factor_eq_5.hide
+	call main.cb_fcov_structure_5.hide
+	call main.vl_independent_5.show
+	call main.cb_cov_structure_5.show
+	if main.ck_equation_5 {
+		call main.ck_noconstant_5.enable
+	}
+END
+
+/* equation_6 programming */
+PROGRAM main_equation_6_on
+BEGIN
+	call main.vn_level_6.enable
+	call main.ck_factor_eq_6.enable
+	call main.vn_factor_eq_6.enable
+	call main.vl_independent_6.enable
+	call main.cb_cov_structure_6.enable
+	call main.cb_fcov_structure_6.enable
+	if ! main.ck_factor_eq_6 {
+		call main.ck_noconstant_6.enable
+	}
+	call main.ck_collinear_6.enable
+END
+SCRIPT main_equation_6_off
+BEGIN
+	main.vn_level_6.disable
+	main.ck_factor_eq_6.disable
+	main.vn_factor_eq_6.disable
+	main.vl_independent_6.disable
+	main.cb_cov_structure_6.disable
+	main.cb_fcov_structure_6.disable
+	main.ck_noconstant_6.disable
+	main.ck_collinear_6.disable
+END
+SCRIPT main_factor_eq_6_show
+BEGIN
+	main.vn_factor_eq_6.show
+	main.cb_fcov_structure_6.show
+	main.vl_independent_6.hide
+	main.cb_cov_structure_6.hide
+	main.ck_noconstant_6.disable
+END
+PROGRAM main_factor_eq_6_hide
+BEGIN
+	call main.vn_factor_eq_6.hide
+	call main.cb_fcov_structure_6.hide
+	call main.vl_independent_6.show
+	call main.cb_cov_structure_6.show
+	if main.ck_equation_6 {
+		call main.ck_noconstant_6.enable
+	}
+END
+
+/* equation_7 programming */
+PROGRAM main_equation_7_on
+BEGIN
+	call main.vn_level_7.enable
+	call main.ck_factor_eq_7.enable
+	call main.vn_factor_eq_7.enable
+	call main.vl_independent_7.enable
+	call main.cb_cov_structure_7.enable
+	call main.cb_fcov_structure_7.enable
+	if ! main.ck_factor_eq_7 {
+		call main.ck_noconstant_7.enable
+	}
+	call main.ck_collinear_7.enable
+END
+SCRIPT main_equation_7_off
+BEGIN
+	main.vn_level_7.disable
+	main.ck_factor_eq_7.disable
+	main.vn_factor_eq_7.disable
+	main.vl_independent_7.disable
+	main.cb_cov_structure_7.disable
+	main.cb_fcov_structure_7.disable
+	main.ck_noconstant_7.disable
+	main.ck_collinear_7.disable
+END
+SCRIPT main_factor_eq_7_show
+BEGIN
+	main.vn_factor_eq_7.show
+	main.cb_fcov_structure_7.show
+	main.vl_independent_7.hide
+	main.cb_cov_structure_7.hide
+	main.ck_noconstant_7.disable
+END
+PROGRAM main_factor_eq_7_hide
+BEGIN
+	call main.vn_factor_eq_7.hide
+	call main.cb_fcov_structure_7.hide
+	call main.vl_independent_7.show
+	call main.cb_cov_structure_7.show
+	if main.ck_equation_7 {
+		call main.ck_noconstant_7.enable
+	}
+END
+
+/* equation_8 programming */
+PROGRAM main_equation_8_on
+BEGIN
+	call main.vn_level_8.enable
+	call main.ck_factor_eq_8.enable
+	call main.vn_factor_eq_8.enable
+	call main.vl_independent_8.enable
+	call main.cb_cov_structure_8.enable
+	call main.cb_fcov_structure_8.enable
+	if ! main.ck_factor_eq_8 {
+		call main.ck_noconstant_8.enable
+	}
+	call main.ck_collinear_8.enable
+END
+SCRIPT main_equation_8_off
+BEGIN
+	main.vn_level_8.disable
+	main.ck_factor_eq_8.disable
+	main.vn_factor_eq_8.disable
+	main.vl_independent_8.disable
+	main.cb_cov_structure_8.disable
+	main.cb_fcov_structure_8.disable
+	main.ck_noconstant_8.disable
+	main.ck_collinear_8.disable
+END
+SCRIPT main_factor_eq_8_show
+BEGIN
+	main.vn_factor_eq_8.show
+	main.cb_fcov_structure_8.show
+	main.vl_independent_8.hide
+	main.cb_cov_structure_8.hide
+	main.ck_noconstant_8.disable
+END
+PROGRAM main_factor_eq_8_hide
+BEGIN
+	call main.vn_factor_eq_8.hide
+	call main.cb_fcov_structure_8.hide
+	call main.vl_independent_8.show
+	call main.cb_cov_structure_8.show
+	if main.ck_equation_8 {
+		call main.ck_noconstant_8.enable
+	}
+END
+
+PROGRAM equation_1_output
+BEGIN
+	if main.ck_equation_1 {
+		put " " "|| "
+		require main.vn_level_1
+		put main.vn_level_1 ": "
+		if main.ck_factor_eq_1 {
+			require main.vn_factor_eq_1
+			put "R."
+			put main.vn_factor_eq_1
+			beginoptions
+				optionarg main.cb_fcov_structure_1
+			endoptions
+		}
+		if ! main.ck_factor_eq_1 {
+        		if !main.vl_independent_1 & main.ck_noconstant_1 & !isXTMIXED {
+	 		  stopbox stop `""Suppress constant" for equation 1 is selected without independent variables""'
+			}
+			varlist [main.vl_independent_1]
+			beginoptions
+				option main.ck_noconstant_1
+				optionarg main.cb_cov_structure_1
+			endoptions
+		}
+		beginoptions
+			option main.ck_collinear_1
+		endoptions
+	}
+END
+
+PROGRAM equation_2_output
+BEGIN
+	if main.ck_equation_2 {
+		put " " "|| "
+		require main.vn_level_2
+		put main.vn_level_2 ": "
+		if main.ck_factor_eq_2 {
+			require main.vn_factor_eq_2
+			put "R."
+			put main.vn_factor_eq_2
+			beginoptions
+				optionarg main.cb_fcov_structure_2
+			endoptions
+		}
+		if ! main.ck_factor_eq_2 {
+        		if !main.vl_independent_2 & main.ck_noconstant_2 & !isXTMIXED {
+	 		  stopbox stop `""Suppress constant" for equation 2 is selected without independent variables""'
+			}
+			varlist [main.vl_independent_2]
+			beginoptions
+				option main.ck_noconstant_2
+				optionarg main.cb_cov_structure_2
+			endoptions
+		}
+		beginoptions
+			option main.ck_collinear_2
+		endoptions
+	}
+END
+
+PROGRAM equation_3_output
+BEGIN
+	if main.ck_equation_3 {
+		put " " "|| "
+		require main.vn_level_3
+		put main.vn_level_3 ": "
+		if main.ck_factor_eq_3 {
+			require main.vn_factor_eq_3
+			put "R."
+			put main.vn_factor_eq_3
+			beginoptions
+				optionarg main.cb_fcov_structure_3
+			endoptions
+		}
+		if ! main.ck_factor_eq_3 {
+        		if !main.vl_independent_3 & main.ck_noconstant_3 & !isXTMIXED {
+	 		  stopbox stop `""Suppress constant" for equation 3 is selected without independent variables""'
+			}
+			varlist [main.vl_independent_3]
+			beginoptions
+				option main.ck_noconstant_3
+				optionarg main.cb_cov_structure_3
+			endoptions
+		}
+		beginoptions
+			option main.ck_collinear_3
+		endoptions
+	}
+END
+
+PROGRAM equation_4_output
+BEGIN
+	if main.ck_equation_4 {
+		put " " "|| "
+		require main.vn_level_4
+		put main.vn_level_4 ": "
+		if main.ck_factor_eq_4 {
+			require main.vn_factor_eq_4
+			put "R."
+			put main.vn_factor_eq_4
+			beginoptions
+				optionarg main.cb_fcov_structure_4
+			endoptions
+		}
+		if ! main.ck_factor_eq_4 {
+        		if !main.vl_independent_4 & main.ck_noconstant_4 & !isXTMIXED {
+	 		  stopbox stop `""Suppress constant" for equation 4 is selected without independent variables""'
+			}
+			varlist [main.vl_independent_4]
+			beginoptions
+				option main.ck_noconstant_4
+				optionarg main.cb_cov_structure_4
+			endoptions
+		}
+		beginoptions
+			option main.ck_collinear_4
+		endoptions
+	}
+END
+
+PROGRAM equation_5_output
+BEGIN
+	if main.ck_equation_5 {
+		put " " "|| "
+		require main.vn_level_5
+		put main.vn_level_5 ": "
+		if main.ck_factor_eq_5 {
+			require main.vn_factor_eq_5
+			put "R."
+			put main.vn_factor_eq_5
+			beginoptions
+				optionarg main.cb_fcov_structure_5
+			endoptions
+		}
+		if ! main.ck_factor_eq_5 {
+        		if !main.vl_independent_5 & main.ck_noconstant_5 & !isXTMIXED {
+	 		  stopbox stop `""Suppress constant" for equation 5 is selected without independent variables""'
+			}
+			varlist [main.vl_independent_5]
+			beginoptions
+				option main.ck_noconstant_5
+				optionarg main.cb_cov_structure_5
+			endoptions
+		}
+		beginoptions
+			option main.ck_collinear_5
+		endoptions
+	}
+END
+
+PROGRAM equation_6_output
+BEGIN
+	if main.ck_equation_6 {
+		put " " "|| "
+		require main.vn_level_6
+		put main.vn_level_6 ": "
+		if main.ck_factor_eq_6 {
+			require main.vn_factor_eq_6
+			put "R."
+			put main.vn_factor_eq_6
+			beginoptions
+				optionarg main.cb_fcov_structure_6
+			endoptions
+		}
+		if ! main.ck_factor_eq_6 {
+        		if !main.vl_independent_6 & main.ck_noconstant_6 & !isXTMIXED {
+	 		  stopbox stop `""Suppress constant" for equation 6 is selected without independent variables""'
+			}
+			varlist [main.vl_independent_6]
+			beginoptions
+				option main.ck_noconstant_6
+				optionarg main.cb_cov_structure_6
+			endoptions
+		}
+		beginoptions
+			option main.ck_collinear_6
+		endoptions
+	}
+END
+
+PROGRAM equation_7_output
+BEGIN
+	if main.ck_equation_7 {
+		put " " "|| "
+		require main.vn_level_7
+		put main.vn_level_7 ": "
+		if main.ck_factor_eq_7 {
+			require main.vn_factor_eq_7
+			put "R."
+			put main.vn_factor_eq_7
+			beginoptions
+				optionarg main.cb_fcov_structure_7
+			endoptions
+		}
+		if ! main.ck_factor_eq_7 {
+        		if !main.vl_independent_7 & main.ck_noconstant_7 & !isXTMIXED {
+	 		  stopbox stop `""Suppress constant" for equation 7 is selected without independent variables""'
+			}
+			varlist [main.vl_independent_7]
+			beginoptions
+				option main.ck_noconstant_7
+				optionarg main.cb_cov_structure_7
+			endoptions
+		}
+		beginoptions
+			option main.ck_collinear_7
+		endoptions
+	}
+END
+
+PROGRAM equation_8_output
+BEGIN
+	if main.ck_equation_8 {
+		put " " "|| "
+		require main.vn_level_8
+		put main.vn_level_8 ": "
+		if main.ck_factor_eq_8 {
+			require main.vn_factor_eq_8
+			put "R."
+			put main.vn_factor_eq_8
+			beginoptions
+				optionarg main.cb_fcov_structure_8
+			endoptions
+		}
+		if ! main.ck_factor_eq_8 {
+        		if !main.vl_independent_8 & main.ck_noconstant_8 & !isXTMIXED {
+	 		  stopbox stop `""Suppress constant" for equation 8 is selected without independent variables""'
+			}
+			varlist [main.vl_independent_8]
+			beginoptions
+				option main.ck_noconstant_8
+				optionarg main.cb_cov_structure_8
+			endoptions
+		}
+		beginoptions
+			option main.ck_collinear_8
+		endoptions
+	}
+END
+
+PROGRAM xtme_re_output
+BEGIN
+	put " " /program equation_1_output
+	put " " /program equation_2_output
+	put " " /program equation_3_output
+	put " " /program equation_4_output
+	put " " /program equation_5_output
+	put " " /program equation_6_output
+	put " " /program equation_7_output
+	put " " /program equation_8_output
+END

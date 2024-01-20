@@ -1,0 +1,207 @@
+/*
+    cluster kmeans -- clkmeans.dlg
+
+*!  VERSION 1.1.1  21may2007
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_large
+INCLUDE _ht330
+INCLUDE header
+HELP hlp1, view("help cluster_kmeans")
+RESET res1
+
+
+DIALOG main, label("cluster kmeans - Kmeans cluster analysis") tabtitle("Main")
+BEGIN
+  INCLUDE _clus_k
+END
+
+INCLUDE ifin
+
+DIALOG opt, tabtitle("Options")
+BEGIN
+  GROUPBOX gb_start          _lft      _top      _iwd      _ht25,	/*
+		*/ label("Initial group centers")
+  RADIO    rb_krandom        _ilft     _ss       _ibwd     ., first	/*
+		*/ option(krandom)					/*
+		*/ clickon("script start_random")			/*
+		*/ label("K unique random observations")
+  RADIO    rb_firstk         @         _ss       @         .,		/*
+		*/ option(firstk)					/*
+		*/ clickon("script start_exclude")			/*
+		*/ label("First K observations")
+  RADIO    rb_lastk          @         _ss       @         .,		/*
+		*/ option(lastk)					/*
+		*/ clickon("script start_exclude")			/*
+		*/ label("Last K observations")
+  RADIO    rb_random         @         _ss       @         .,		/*
+		*/ option(random)					/*
+		*/ clickon("script start_random")			/*
+		*/ label("K random centers chosen from within the range of the data")
+  RADIO    rb_prandom        @         _ss       @         .,		/*
+		*/ option(prandom)					/*
+		*/ clickon("script start_random")			/*
+		*/ label("Group means from K random partitions of the data")
+  RADIO    rb_everykth       @         _ss       @         .,		/*
+		*/ option(everykth)					/*
+		*/ clickon("script start_alloff")			/*
+		*/ label("Group means from K partitions formed by grouping every Kth observation")
+  RADIO    rb_segments       @         _ss       @         .,		/*
+		*/ option(segments)					/*
+		*/ clickon("script start_alloff")			/*
+		*/ label("Group means from K (nearly equal) contiguous partitions of the data")
+  RADIO    rb_group          @         _ss       @         ., last	/*
+		*/ option(group)					/*
+		*/ clickon("script start_group")			/*
+		*/ label("Group means from partitions defined by initial grouping variable:")
+  VARNAME  vn_group          _indent2  _ss       _vnwd     .,		/*
+		*/ option(group)					/*
+		*/ label("Group means from partitions defined by initial grouping variable")
+
+  CHECKBOX ck_seed           _ilft     _xls      _ckwd     .,		/*
+		*/ clickon("gaction opt.en_seed.enable")		/*
+		*/ clickoff("gaction opt.en_seed.disable")		/*
+		*/ label("")
+  EDIT     en_seed           _cksep    @         _en7wd    .,		/*
+		*/ numonly						/*
+		*/ label("Random-number seed")
+  TEXT     tx_seed           _en7sep   @         _cken7rb  .,		/*
+		*/ label("Random-number seed")
+
+  CHECKBOX ck_exclude        _ilft     _ls       _ibwd     .,		/*
+		*/ option(", exclude")					/*
+		*/ label("Exclude the K observations")
+
+  CHECKBOX ck_keepcenters    _lft      _xls      _iwd      .,		/*
+		*/ option(keepcenters)					/*
+		*/ label("Append the K final group means to the data")
+END
+
+DIALOG adv, tabtitle("Advanced")
+BEGIN
+  TEXT     tx_gen            _lft      _top      _iwd      .,		/*
+		*/ label("Generated grouping variable name: (leave empty for default)")
+  EDIT     ed_gen            @         _ss       _vnwd     ., max(32)	/*
+		*/ option(generate)					/*
+		*/ label("Generated grouping variable name:")
+  SPINNER  sp_iterate        @         _xls      _spwd     .,		/*
+		*/ option(iterate)					/*
+		*/ min(1) max(1000000) default(10000)			/*
+		*/ label("Maximum number of iterations")
+  TEXT     tx_iterate        _spsep    @         _spr      .,		/*
+		*/ label("Maximum number of iterations")
+END
+
+INCLUDE _cl_dist_sc
+
+SCRIPT seedoff
+BEGIN
+  opt.ck_seed.disable
+  opt.en_seed.disable
+  opt.tx_seed.disable
+END
+
+PROGRAM seedon
+BEGIN
+	call gaction opt.ck_seed.enable
+	if opt.ck_seed {
+		call gaction opt.en_seed.enable
+	}
+	if !opt.ck_seed {
+		call gaction opt.en_seed.disable
+	}
+	call gaction opt.tx_seed.enable
+END
+
+SCRIPT start_alloff
+BEGIN
+  opt.vn_group.disable
+  script seedoff
+  opt.ck_exclude.disable
+END
+
+SCRIPT start_exclude
+BEGIN
+  opt.vn_group.disable
+  script seedoff
+  opt.ck_exclude.enable
+END
+
+SCRIPT start_random
+BEGIN
+  opt.vn_group.disable
+  program seedon
+  opt.ck_exclude.disable
+END
+
+SCRIPT start_group
+BEGIN
+  opt.vn_group.enable
+  script seedoff
+  opt.ck_exclude.disable
+END
+
+
+PROGRAM start_opts_output
+BEGIN
+	if opt.rb_krandom & !opt.ck_seed {
+		option opt.rb_krandom
+	}
+	if opt.rb_krandom & opt.ck_seed {
+		require opt.en_seed
+		put "krandom(" opt.en_seed ")"
+	}
+	if opt.rb_firstk | opt.rb_lastk {
+		if opt.rb_firstk {
+			put "firstk"
+		}
+		if opt.rb_lastk {
+			put "lastk"
+		}
+		if opt.ck_exclude {
+			put ", exclude"
+		}
+	}
+	if opt.rb_random & !opt.ck_seed {
+		option opt.rb_random
+	}
+	if opt.rb_random & opt.ck_seed {
+		require opt.en_seed
+		put "random(" opt.en_seed ")"
+	}
+	if opt.rb_prandom & !opt.ck_seed {
+		option opt.rb_prandom
+	}
+	if opt.rb_prandom & opt.ck_seed {
+		require opt.en_seed
+		put "prandom(" opt.en_seed ")"
+	}
+	option opt.rb_everykth
+	option opt.rb_segments
+	if opt.rb_group {
+		require opt.vn_group
+		optionarg opt.vn_group
+	}
+END
+
+PROGRAM command
+BEGIN
+	allowxi
+	put "cluster kmeans "
+	varlist [main.vl_var]
+	INCLUDE _ifin_pr
+	beginoptions
+		optionarg main.sp_k
+		INCLUDE _cl_dist_pr
+		optionarg main.ed_name
+		put " " "start("
+		put /program start_opts_output
+		put ") "
+		option opt.ck_keepcenters
+		optionarg adv.ed_gen
+		optionarg /hidedefault adv.sp_iterate
+	endoptions
+END

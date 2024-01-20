@@ -1,0 +1,256 @@
+/*
+    ltable_9.dlg
+
+*!  VERSION 1.1.4  03aug2006  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+HELP hlp1, view("help ltable")
+RESET res1
+
+DIALOG main, label("ltable - Life tables for survival data")    /*
+	*/ tabtitle("Main")
+BEGIN
+  TEXT     tx_tvar   _lft      _top      _cwd4_1   .,		/*
+		*/ label("Time variable:")
+
+  VARNAME  vn_tvar   @         _ss       _vnwd     .,		/*
+		*/ label("Time variable")
+
+  TEXT     tx_dvar   _lft4_2   _top      _cwd4_1   .,		/*
+		*/ label("Failure variable:")
+
+  VARNAME  vn_dvar   @         _ss       _vnwd	   .,    	/*
+		*/ label("Failure variable")
+
+  GROUPBOX gb_output _lft      +35       _cwd1     _ht6,	/*
+		*/ label("Type of result")
+  RADIO    rb_table  _ilft     _ss       _inwd     .,		/*
+  		*/ label("Table") 				/*
+  		*/ onclickon(script main_rb_table_on) first
+  RADIO    rb_graph  @         _ss       @         .,		/*
+  		*/ label("Graph") 				/*
+  		*/ onclickon(program main_rb_graph_on) 		/*
+  		*/ option(graph notable)
+  RADIO    rb_both   @         _ss       @         .,		/*
+  		*/ label("Graph and table") 			/*
+  		*/ onclickon(script main_rb_both_on) last	/*
+  		*/ option(graph)
+
+  GROUPBOX gb_funct  _lft      _xls      _cwd1     _ht7,
+  CHECKBOX ck_surv   _indent   _ss       _inwd     .,		/*
+		*/ option(survival)				/*
+		*/ label("Survival table")			/*
+		*/ default(1)
+DEFINE   holdy @y
+  CHECKBOX ck_fail   @         _ms       @         .,		/*
+		*/ option(failure)				/*
+		*/ label("Cumulative failure table")
+  CHECKBOX ck_haz    @         _ms       @         .,		/*
+		*/ option(hazard)				/*
+		*/ label("Hazard table")
+  RADIO    rb_surv   @         holdy     @         .,		/*
+  		*/ first option(survival) 			/*
+  		*/ label("Survival function")
+  RADIO    rb_fail   @         _ss       @         .,		/*
+  		*/ last option(failure)				/*
+  		*/ label("Cumulative failure function")
+  CHECKBOX ck_noci   @         _ls       @         .,		/*
+		*/ option(noconf)				/*
+		*/ onclickon(program ci_check)			/*
+		*/ onclickoff(program ci_check)			/*
+		*/ label("Suppress graphing of confidence intervals")
+
+  DEFINE _x _lft
+  DEFINE _y _xxls
+  DEFINE _cx _spr2
+  INCLUDE _sp_level
+
+  CHECKBOX ck_noadj  _lft      _ls       _cwd1     .,		/*
+		*/ option(noadjust)				/*
+		*/ label("Suppress actuarial adjustment for deaths and censored obs.")
+
+  CHECKBOX ck_by     _gft2     _top      _gwd1     _ht11h,	/*
+  		*/ groupbox					/*
+  		*/ onclickon(program main_ck_by_on)		/*
+  		*/ onclickoff(script main_ck_by_off)		/*
+  		*/ label("Group tables or graphs by values of a variable")
+  TEXT     tx_by     _indent   _ms       _gwd3     .,		/*
+  		*/ label("Variable:")
+DEFINE holdx @x
+  VARNAME  vn_by     @         _ss       _vnwd     .,		/*
+  		*/ label("Grouping variable") option(by)
+  CHECKBOX ck_test   @         _ls       _gwd3 	   .,		/*
+  		*/ option(test)					/*
+  		*/ label("Report chi-squared measure of differences between")
+  TEXT     tx_test   _cksep    _vss      _gwd4     .,		/*
+  		*/ label("groups (two tests)")
+  CHECKBOX ck_over   holdx     _ms       _gwd3     .,		/*
+  		*/ label("Overlay plots on the same graph") 	/*
+  		*/ option(over)
+
+  GROUPBOX gb_opts   _gft2     _xls      _gwd1     _ht15,	/*
+  		*/ label("Additional options")
+  TEXT     tx_tvid   _indent   _ms       _inwd     .,		/*
+		*/ label("Subject ID variable: (when time varying)")
+DEFINE width @xsize
+  VARNAME  vn_tvid   @         _ss       _vnwd     .,		/*
+		*/ option(tvid)					/*
+		*/ label("Subject ID variable")
+  TEXT     tx_int    @         _ls       width     .,		/*
+		*/ label("Time intervals:")
+  EDIT     ed_int    @         _ss       @         .,		/*
+		*/ option(intervals)				/*
+		*/ label("Time intervals")
+  TEXT     tx_sav    @         _ls       @         .,			/*
+		*/ label("Save life table data to file:")		/*
+		*/
+  FILE     fi_sav    @         _ss       @         .,			/*
+		*/ label("Browse...")					/*
+		*/ option("saving")					/*
+		*/ filter("Stata Dataset (*.dta)|*.dta|All (*.*)|*.*")	/*
+		*/ defext(dta)						/*
+		*/ save							/*
+		*/
+END
+
+SCRIPT main_rb_table_on
+BEGIN
+	main.rb_surv.hide
+	main.rb_fail.hide
+	main.ck_noci.hide
+	main.ck_surv.show
+	main.ck_fail.show
+	main.ck_haz.show
+	main.ck_over.disable
+	script p1_opts_disable
+	script p2_opts_disable
+	script addplot_disable
+	script gr_twoway_disable
+	program ci_check
+	main.ck_by.setlabel "Group tables by values of a variable"
+END
+
+PROGRAM main_rb_graph_on
+BEGIN
+	call program main_graph_common
+	call main.ck_by.setlabel "Group graphs by values of a variable"
+END
+
+SCRIPT main_rb_both_on
+BEGIN
+	program main_graph_common
+	main.ck_by.setlabel "Group graphs and tables by values of a variable"
+END
+
+PROGRAM main_graph_common
+BEGIN
+	call main.rb_surv.show
+	call main.rb_fail.show
+	call main.ck_noci.show
+	call main.ck_surv.hide
+	call main.ck_fail.hide
+	call main.ck_haz.hide
+	if main.ck_by {
+		call main.ck_over.enable
+	}
+	call script p1_opts_enable
+	call script p2_opts_enable
+	call script addplot_enable
+	call script gr_twoway_enable
+	call program ci_check
+END
+
+PROGRAM ci_check
+BEGIN
+	if ((main.rb_graph | main.rb_both) & !main.ck_noci) {
+		call script p2_opts_enable
+	}
+	if main.rb_table | main.ck_noci {
+		call script p2_opts_disable
+	}
+END
+
+PROGRAM main_ck_by_on
+BEGIN
+	call main.tx_by.enable
+	call main.vn_by.enable
+	if main.rb_graph | main.rb_both {
+		call main.ck_over.enable
+	}
+	call main.ck_test.enable
+	call main.tx_test.enable
+END
+
+SCRIPT main_ck_by_off
+BEGIN
+	main.tx_by.disable
+	main.vn_by.disable
+	main.ck_over.disable
+	main.ck_test.disable
+	main.tx_test.disable
+END
+
+INCLUDE ifin
+INCLUDE weights_f
+INCLUDE p1_opts
+INCLUDE p2_opts
+INCLUDE addplot
+INCLUDE gr_twoway
+
+SCRIPT PREINIT
+BEGIN
+	script p1_opts_createAsNoRange
+	script p1_opts_setDefaultConnected
+	script p2_opts_createAsRange
+	script p2_opts_setDefaultRspike
+END
+
+SCRIPT POSTINIT
+BEGIN
+	script p2_opts_setTabtitleCi
+END
+PROGRAM command
+BEGIN
+	put "ltable "
+	varlist main.vn_tvar
+	varlist [main.vn_dvar]
+	INCLUDE _weights_pr
+	INCLUDE _ifin_pr
+	beginoptions
+		option main.ck_surv
+		option main.ck_fail
+		option main.ck_haz
+		option main.rb_graph
+		option main.rb_both
+		option main.rb_surv
+		option main.rb_fail
+		option main.ck_noci
+		INCLUDE _level_main_pr
+		if main.ck_by {
+			require main.vn_by
+			optionarg main.vn_by
+		}
+		option main.ck_noadj
+		option main.ck_test
+		option main.ck_over
+		optionarg main.vn_tvid
+		optionarg main.ed_int
+		if main.fi_sav {
+			repfile main.fi_sav
+			put `"saving(""'
+			put main.fi_sav
+			put `"", replace)"'
+		}
+
+		put " " /program p1_opts_output
+		put " " /program p2_opts_ci_output
+		put " " /program addplot_output
+		put " " /program gr_twoway_output
+	endoptions
+END
+/* end */

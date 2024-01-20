@@ -1,0 +1,6 @@
+*! version 1.0.0  22dec2002
+sequence 5440
+label "edarkblue"
+
+* 5405 C
+set rgb "62 100 125"

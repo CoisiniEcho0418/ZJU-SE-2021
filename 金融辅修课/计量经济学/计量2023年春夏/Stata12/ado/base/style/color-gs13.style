@@ -1,0 +1,4 @@
+*! version 1.0.0  22dec2002
+sequence 4203
+label "Gray 13"
+set rgb "208 208 208"

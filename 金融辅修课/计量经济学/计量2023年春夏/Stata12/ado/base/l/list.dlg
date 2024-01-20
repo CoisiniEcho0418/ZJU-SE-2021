@@ -1,0 +1,123 @@
+/*
+	list
+
+*! VERSION 1.1.2  22may2009
+
+        built-in command list
+*/
+
+VERSION 11.0
+
+INCLUDE _std_large
+INCLUDE header
+
+HELP hlp1, view("help list")
+RESET res1
+
+DIALOG main, label("list - List values of variables") 		///
+	tabtitle("Main")
+BEGIN
+  TEXT     tx_var    _lft      _top      _iwd      .,		///
+	label("Variables: (leave empty for all variables)")
+  VARLIST  vl_var    @         _ss       @         .,		///
+	label("Variables") fv ts
+
+  GROUPBOX gb_sty    @         _ls       @         _ht16h, 	///
+	label("Column widths")
+
+  RADIO    rb_no     _indent   _ss       _inwd     .,		///
+	first label("Default")
+
+  DEFINE holdx @x
+  RADIO    rb_com    @         _ss       @         ., 		///
+	option(compress)					///
+	label("Compress width of columns in both table and display formats")
+
+  RADIO    rb_nocom  @         _ss       @         ., 		///
+	option(nocompress)					///
+	last label("Use display format of each variable")
+
+  CHECKBOX ck_abbr   @         _ls       _ibwd     ., 		///
+	option(display)						///
+	onclickon(script main_abbr_on) 				///
+	onclickoff(script main_abbr_off)			///
+	label("Override minimum abbreviation of variable names")
+
+  SPINNER  sp_abbr   _indent2  _ss       _spwd     .,		///
+	option(abbreviate)					///
+	min(1) max(32) default(8)				///
+	label("Minimum abbreviation of variable names")
+  TEXT	   tx_abbr   _spsep    @         _cksprb   .,		///
+	label("Characters")
+
+  CHECKBOX ck_str    holdx     _ls       _ibwd     ., 		///
+	onclickon(script main_string_on)			///
+	onclickoff(script main_string_off)			///
+	label("Truncate string variables")
+
+  SPINNER  sp_str    _indent2  _ss       _spwd     .,		///
+	option(string)						///
+	min(1) max(80) default(10)				///
+	label("Truncate string variables to N characters")
+
+  TEXT	   tx_str    _spsep    @         _cksprb   .,		///
+ 	label("Characters")
+
+  CHECKBOX ck_noobs  _lft      +45       _cwd1     ., 		///
+	option(noobs)						///
+	label("Do not list observation numbers")
+
+  CHECKBOX ck_fvall  _lft2     @         @         ., 		///
+	option(fvall)						///
+	label("Display all levels of factor variables")
+END
+
+SCRIPT main_abbr_on
+BEGIN
+	main.sp_abbr.enable
+	main.tx_abbr.enable
+END
+
+SCRIPT main_abbr_off
+BEGIN
+	main.sp_abbr.disable
+	main.tx_abbr.disable
+END
+
+SCRIPT main_string_on
+BEGIN
+	main.sp_str.enable
+	main.tx_str.enable
+END
+
+SCRIPT main_string_off
+BEGIN
+	main.sp_str.disable
+	main.tx_str.disable
+END
+
+INCLUDE byifin
+INCLUDE list_opts
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "list "
+	varlist [main.vl_var]
+	INCLUDE _ifin_pr
+	beginoptions
+		option main.rb_com
+		option main.rb_nocom
+		if main.ck_abbr {
+			optionarg main.sp_abbr
+		}
+		if main.ck_str {
+			optionarg main.sp_str
+		}
+		option main.ck_noobs
+		option main.ck_fvall
+
+		put " " /program list_opts_output
+	endoptions
+END
+/* end */

@@ -1,0 +1,99 @@
+/*
+    save_option.dlg
+
+*!  VERSION 1.1.1  08feb2008
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_mlarge
+INCLUDE _ht220
+INCLUDE header
+HELP hlp1, view("help save")
+RESET res1
+
+DIALOG main,label("save - Save datasets")  tabtitle("Main")
+BEGIN
+  GROUPBOX gb_using           _lft     _top     _iwd        _ht4, 		///
+	label("Location to save dataset")
+
+  TEXT     tx_using           _ilft    _ss      _ibwd       .,			///
+	label("Filename:")
+
+  FILE     fi_using           @        _ss      @           .,			///
+	filter("Stata Dataset (*.dta)|*.dta|All (*.*)|*.*")			///
+	defext(dta)								///
+	default(c(filename))							///
+	error("Filename of dataset on disk")					///
+	label("Browse...") save
+
+  GROUPBOX gb_opt             _lft     +45     _iwd        _ht7h, 		///
+	label("Options")
+
+  CHECKBOX ck_nolabel         _ilft    _ss      _ibwd       .,			///
+	label("Omit value labels from the saved dataset.")			///
+	option(nolabel) 							///
+	onclickon(program nolabel_on)						///
+	onclickoff(program nolabel_off)
+
+  CHECKBOX ck_orphans         @        _ms      @           .,			///
+	option(orphans)								///
+	onclickon(main.ck_nolabel.disable)					///
+	onclickoff(main.ck_nolabel.enable)					///
+	label("Save all value labels, including those not attached to any variable.")
+
+  CHECKBOX ck_saveold         @        _ms      @           .,			///
+	label("Save dataset in Stata's version 8/9 format.")			///
+	option(saveold)								///
+	onclickon(program saveold_on)						///
+	onclickoff(program saveold_off)
+END
+
+PROGRAM nolabel_on
+BEGIN
+  call gaction main.ck_orphans.disable
+END
+
+PROGRAM nolabel_off
+BEGIN
+  if !main.ck_saveold {
+    call gaction main.ck_orphans.enable
+  }
+END
+
+PROGRAM saveold_on
+BEGIN
+  call gaction main.ck_orphans.disable
+  if main.ck_orphans | D(main.ck_orphans) {
+  	call main.ck_nolabel.enable
+  }
+END
+
+PROGRAM saveold_off
+BEGIN
+  if !main.ck_nolabel | D(main.ck_nolabel) {
+    call gaction main.ck_orphans.enable
+  }
+  if main.ck_orphans {
+    call main.ck_nolabel.disable
+  }
+END
+
+PROGRAM command
+BEGIN
+	require main.fi_using
+	repfile main.fi_using
+	if !main.ck_saveold {
+		put "save "
+	}
+	if main.ck_saveold {
+		put "saveold "
+	}
+	put `"""' main.fi_using `"""'
+	beginoptions
+		put "replace "
+		option main.ck_nolabel
+		option main.ck_orphans
+	endoptions
+END

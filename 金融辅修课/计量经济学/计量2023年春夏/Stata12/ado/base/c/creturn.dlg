@@ -1,0 +1,31 @@
+/*
+	creturn list
+
+	VERSION 1.0.0  21dec2002
+*/
+
+VERSION 8.0
+
+INCLUDE _std_small
+INCLUDE _ht150
+INCLUDE header
+HELP hlp1, view("help creturn")
+RESET res1
+
+DIALOG main, label("creturn - List constants and current values") /*
+		*/ tabtitle("Main")
+BEGIN
+  TEXT     tx_message1  _lft      _top      _iwd      .,		/*
+		*/ label("creturn list lists defined constants and current")
+  TEXT     tx_message2  @         _vss      @         .,		/*
+		*/ label("values of system parameters and settings.")
+  TEXT     tx_message4  @         _ls       @         .,		/*
+		*/ label("Press OK to perform creturn list")
+END
+
+
+PROGRAM command
+BEGIN
+	put "creturn list"
+END
+

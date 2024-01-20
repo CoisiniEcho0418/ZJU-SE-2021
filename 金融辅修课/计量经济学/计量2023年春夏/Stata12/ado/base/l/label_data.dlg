@@ -1,0 +1,42 @@
+/*
+	label data
+
+*!  VERSION 1.2.0  07feb2007
+
+	which label = built-in command:  label
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+INCLUDE _ht150
+INCLUDE header
+
+HELP hlp1, view("help label")
+RESET res1
+
+
+DIALOG main, label("label data - Label dataset") tabtitle("Main")
+BEGIN
+  RADIO    rb_attach _lft      _top      _iwd      .,		/*
+                */ label("Attach label to data: (up to 80 characters)") /*
+		*/ first					/*
+		*/ clickon("gaction main.ed_lab.enable")
+
+  EDIT     ed_lab    _indent2  _ss       _inwd     .,		/*
+                */ label("Attach label to data")
+
+  RADIO    rb_remove _lft      _ls       _iwd      .,		/*
+                */ label("Remove label from data")		/*
+		*/ last 					/*
+		*/ clickon("gaction main.ed_lab.disable")
+END
+
+PROGRAM command
+BEGIN
+	put "label data "
+	if main.rb_attach {
+		require main.ed_lab
+		put `"""' main.ed_lab `"""'
+	}
+END

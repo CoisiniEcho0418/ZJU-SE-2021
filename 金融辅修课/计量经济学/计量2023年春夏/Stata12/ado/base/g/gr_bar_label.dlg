@@ -1,0 +1,349 @@
+/*
+  gr_bar_label.dlg
+
+*!  VERSION 1.0.1  30may2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_vsmall
+DEFINE _dlght 190
+INCLUDE header_gr_child
+
+DEFINE _clwd	15
+DEFINE _wd	130
+DEFINE _sep	+135
+DEFINE _cbwd	120
+DEFINE _cbsep	+125
+
+INCLUDE gr_orientation
+
+HELP hlp1, view("help graph_bar##lookofbar_options")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	create STRING tmp
+	create ARRAY  tmpArray
+	create STRING main_marginResult
+	create STRING box_marginResult
+END
+
+SCRIPT POSTINIT
+BEGIN
+	program main_checkMarginResult
+	program box_checkMarginResult
+END
+
+DIALOG main, title("Bar label properties") tabtitle("Main")
+BEGIN
+  TEXT     tx_size	_lft	15	_wd	.,	///
+	label("Size:") right
+  COMBOBOX cb_size     _sep	@	_cbwd	.,	///
+	dropdown contents(textsizes) option(size)
+
+  TEXT     tx_clr	_lft	_mls	_wd	.,	///
+	label("Color:") right
+  COMBOBOX cb_clr	_sep	@	_cbwd	.,	///
+	dropdownlist contents(colors)			///
+	onselchangelist(cl_clr_selection) 		///
+	option(color)
+  COLOR    cl_clr	_cbsep	@	_clwd	.,	///
+	option(color)
+  
+  TEXT     tx_position	_lft	_mls	_wd	.,	///
+	label("Position:") right
+  COMBOBOX cb_position	_sep	@	_cbwd	.,	///
+	dropdownlist option(position) 			///
+	contents(position_list) 			///
+	values(position_list_values)
+  
+  TEXT     tx_orient	_lft	_mls	_wd	.,	///
+	label("Orientation:") right
+  COMBOBOX cb_orient	_sep	@	_cbwd	.,	///
+	dropdownlist option(orientation)		///
+	contents(orientation) values(orientation_values)
+
+  TEXT     tx_margin	_lft	_mls	_wd	.,	///
+	label("Margin:") right
+  COMBOBOX cb_margin	_sep	@	_cbwd	.,	///
+	dropdownlist					///
+	contents(margin)				///
+	option(margin)					///
+	onselchange(program main_cb_margin_check)
+  BUTTON   bu_margin	_cbsep	@	_clwd	.,	///
+	label("..") tooltip("Custom margin")		///
+	onpush(script main_show_margin_dialog)
+
+  TEXT     tx_fmt	_lft	_mls	_wd	.,	///
+  	label("Format:") right
+  EDIT     ed_fmt	_sep	@	_cbwd	.,	///
+	option(format)
+  BUTTON   bu_fmt	_cbsep	@	_clwd	.,	///
+	label(..) onpush(script label_GetFormat)	///
+	tooltip("Create display format")
+END
+
+SCRIPT label_GetFormat
+BEGIN
+	create STRING labelFormat
+	create CHILD format_chooser
+	format_chooser.setExitString labelFormat
+	format_chooser.setExitAction "main.ed_fmt.setvalue class labelFormat.value"
+END
+
+LIST position_list
+BEGIN
+	"Default"
+	"Outside"
+	"Inside"
+	"Base"
+	"Center"
+END
+
+LIST position_list_values
+BEGIN
+	""
+	"outside"
+	"inside"
+	"base"
+	"center"
+END
+
+LIST cl_clr_selection
+BEGIN
+	main.cl_clr.hide
+	main.cl_clr.show
+	main.cl_clr.hide
+END
+
+PROGRAM main_cb_margin_check
+BEGIN
+	if main.cb_margin.iseq("custom") {
+		call main.bu_margin.show
+	}
+	else {
+		call main.bu_margin.hide
+	}
+END
+
+SCRIPT main_show_margin_dialog
+BEGIN
+	create CHILD gr_margin_create AS main_margin_dlg
+	main_margin_dlg.setExitString main_marginResult
+	main_margin_dlg.setExitAction "program main_checkMarginResult"
+END	
+PROGRAM main_checkMarginResult
+BEGIN
+	if main_marginResult {
+		call main_marginResult.tokenize tmpArray
+		call tmp.setvalue "Custom margin "
+		call tmp.append "(Left:"
+		call tmp.append class tmpArray[1]
+		call tmp.append " Right:"
+		call tmp.append class tmpArray[2]
+		call tmp.append " Bottom:"
+		call tmp.append class tmpArray[3]
+		call tmp.append " Top:"
+		call tmp.append class tmpArray[4]
+		call tmp.append ")"
+		call tmp.withvalue main.bu_margin.settooltip "@"
+	}
+	else {
+		call main.bu_margin.settooltip "Custom margin (not defined)"
+	}
+END
+
+DIALOG box, tabtitle("Box")
+BEGIN
+  CHECKBOX ck_box	_lft	15	_iwd	_ht8,	///
+	groupbox 					///
+	label("Place box around text")			///
+	option(box)		 			///
+	onclickon(script box_on)			///
+	onclickoff(script box_off)
+
+  TEXT     tx_bclr	_ilft	_ss	_wd	.,	///
+	label("Fill color:") right
+  COMBOBOX cb_bclr	_sep	@	_cbwd	.,	///
+	dropdownlist					///
+	contents(colors) 				///
+	option(fcolor)					///
+	onselchangelist(cl_bclr_selection)
+  COLOR    cl_bclr	_cbsep	@	_clwd	.,	///
+	option(fcolor)
+
+  TEXT     tx_blclr	_ilft	_mls	_wd	.,	///
+	label("Outline color:") right
+  COMBOBOX cb_blclr	_sep	@	_cbwd	.,	///
+	dropdownlist					///
+	contents(colors)				///
+	option(lcolor)					///
+	onselchangelist(cl_blclr_selection)
+  COLOR    cl_blclr	_cbsep	@	_clwd	.,	///
+	option(lcolor)
+
+  TEXT     tx_bmargin	_ilft	_mls	_wd	.,	///
+	label("Margin:") right
+  COMBOBOX cb_bmargin	_sep	@	_cbwd	.,	///
+	dropdownlist					///
+	contents(margin)				///
+	option(bmargin)					///
+	onselchange(program box_cb_bmargin_check)
+  BUTTON   bu_bmargin	_cbsep	@	_clwd	.,	///
+	label("..") tooltip("Custom margin")		///
+	onpush(script box_show_bmargin_dialog)
+END
+
+LIST cl_bclr_selection
+BEGIN
+	box.cl_bclr.hide
+	box.cl_bclr.show
+	box.cl_bclr.hide
+END
+
+LIST cl_blclr_selection
+BEGIN
+	box.cl_blclr.hide
+	box.cl_blclr.show
+	box.cl_blclr.hide
+END
+
+SCRIPT box_on
+BEGIN
+	box.tx_bclr.enable
+	box.cb_bclr.enable
+	box.cl_bclr.enable
+	box.tx_blclr.enable
+	box.cb_blclr.enable
+	box.cl_blclr.enable
+	box.tx_bmargin.enable
+	box.cb_bmargin.enable
+	box.bu_bmargin.enable
+END
+
+SCRIPT box_off
+BEGIN
+	box.tx_bclr.disable
+	box.cb_bclr.disable
+	box.cl_bclr.disable
+	box.tx_blclr.disable
+	box.cb_blclr.disable
+	box.cl_blclr.disable
+	box.tx_bmargin.disable
+	box.cb_bmargin.disable
+	box.bu_bmargin.disable
+END
+
+PROGRAM box_cb_bmargin_check
+BEGIN
+	if box.cb_bmargin.iseq("custom") {
+		call box.bu_bmargin.show
+	}
+	else {
+		call box.bu_bmargin.hide
+	}
+END
+
+SCRIPT box_show_bmargin_dialog
+BEGIN
+	create CHILD gr_margin_create AS box_bmargin_dlg
+	box_bmargin_dlg.setExitString box_marginResult
+	box_bmargin_dlg.setExitAction "program box_checkMarginResult"
+END	
+PROGRAM box_checkMarginResult
+BEGIN
+	if box_marginResult {
+		call box_marginResult.tokenize tmpArray
+		call tmp.setvalue "Custom margin "
+		call tmp.append "(Left:"
+		call tmp.append class tmpArray[1]
+		call tmp.append " Right:"
+		call tmp.append class tmpArray[2]
+		call tmp.append " Bottom:"
+		call tmp.append class tmpArray[3]
+		call tmp.append " Top:"
+		call tmp.append class tmpArray[4]
+		call tmp.append ")"
+		call tmp.withvalue box.bu_bmargin.settooltip "@"
+	}
+	else {
+		call box.bu_bmargin.settooltip "Custom margin (not defined)"
+	}
+END
+
+DIALOG adv, tabtitle("Advanced")
+BEGIN
+  TEXT     tx_just	_lft	15	_wd	.,	///
+	label("Justification:") right
+  COMBOBOX cb_just	_sep	@	_cbwd	.,	///
+	dropdownlist 					///
+	contents(justification)  			///
+	option(justification)
+  
+  TEXT     tx_align	_lft	_mls	_wd	.,	///
+	label("Alignment:") right
+  COMBOBOX cb_align	_sep	@	_cbwd	.,	///
+	dropdownlist 					///
+	contents(alignment)				///
+	option(alignment)
+
+  TEXT     tx_gap	_lft	_mls	_wd	.,	///
+  	label("Gap:") right
+  EDIT     ed_gap	_sep	@	_cbwd	.,	///
+	option(gap)
+END
+
+PROGRAM command
+BEGIN
+	optionarg /hidedefault main.cb_size
+	if ! main.cl_clr.isvisible() {
+		optionarg /hidedefault main.cb_clr
+	}
+	else {
+		optionarg /quoted main.cl_clr
+	}
+	optionarg /hidedefault main.cb_position
+	optionarg /hidedefault main.cb_orient
+	if main.cb_margin.isneq("custom") {
+		optionarg /hidedefault main.cb_margin
+	}
+	else {
+		if main_marginResult {
+			put " margin("
+			put main_marginResult
+			put ") "
+		}
+	}
+	optionarg /hidedefault main.ed_fmt
+	
+	option box.ck_box
+	if ! box.cl_bclr.isvisible() {
+		optionarg /hidedefault box.cb_bclr
+	}
+	else {
+		optionarg /quoted box.cl_bclr
+	}
+	
+	if ! box.cl_blclr.isvisible() {
+		optionarg /hidedefault box.cb_blclr
+	}
+	else {
+		optionarg /quoted box.cl_blclr
+	}
+	if box.cb_bmargin.isneq("custom") {
+		optionarg /hidedefault box.cb_bmargin
+	}
+	else {
+		if box_marginResult {
+			put " bmargin("
+			put box_marginResult
+			put ") "
+		}
+	}
+
+	optionarg /hidedefault adv.cb_just
+	optionarg /hidedefault adv.cb_align
+	optionarg /hidedefault adv.ed_gap
+END

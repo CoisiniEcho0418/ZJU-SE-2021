@@ -1,0 +1,80 @@
+/*
+  -orthog-
+
+  VERSION 1.0.0  21dec2002
+
+*/
+
+VERSION 8.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help orthog")
+RESET res1
+
+DEFINE exin    +60
+DEFINE exina   +80
+DEFINE exwd     55
+DEFINE exwda   195
+
+
+DIALOG main, label("orthog - Orthogonalize variables") tabtitle("Main")
+BEGIN
+  TEXT     tx_var            _lft      _top      _iwd      .,		/*
+	*/ label("Orthogonalize variables:  (leave empty for all variables)")
+  VARLIST  vl_var            @         _ss       @         .,		/*
+		*/ label("Orthogonalize variables")
+
+  GROUPBOX gb_gen            @         _ls       @         _ht14,	/*
+		*/ label("Generate:")
+  TEXT     tx_gen            _ilft     _ss       _ibwd     .,		/*
+		*/ label("Variables:  (same # of variables as above)")
+  EDIT     ed_gen            @         _ss       @         .,		/*
+		*/ option(generate)					/*
+		*/ label("Generate variables")
+  TEXT     tx_examples       @         _ss       exwd      .,		/*
+		*/ label("Examples:")
+  TEXT     tx_examp1         exin      @         exwd      ., right	/*
+		*/ label("v*")
+  DEFINE   holdx @x
+  TEXT     tx_examp1a        exina     @         exwda     .,		/*
+		*/ label("creates variables v1, v2, ..., v#")
+  TEXT     tx_examp2         holdx     _vss      exwd      ., right	/*
+		*/ label("z1-z8")
+  TEXT     tx_examp2a        exina     @         exwda     .,		/*
+		*/ label("creates variables z1, z2, ..., z8")
+  TEXT     tx_examp3         holdx     _vss      exwd      ., right	/*
+		*/ label("a b c")
+  TEXT     tx_examp3a        exina     @         exwda     .,		/*
+		*/ label("creates variables a, b, c")
+
+  CHECKBOX ck_matrix         _ilft     _ls       _ibwd     .,		/*
+		*/ clickon("gaction main.ed_matrix.enable")		/*
+		*/ clickoff("gaction main.ed_matrix.disable")		/*
+		*/ label("Create transformation matrix:")
+  EDIT     ed_matrix         _indent2  _ss       _vnwd     .,		/*
+		*/ option(matrix)					/*
+		*/ label("Create transformation matrix")
+
+END
+
+
+INCLUDE weights_fpai
+INCLUDE ifin
+
+
+PROGRAM command
+BEGIN
+	require main.ed_gen main.ed_matrix
+
+	put "orthog "
+	varlist [main.vl_var]
+	INCLUDE _weights_pr
+	INCLUDE _ifin_pr
+	beginoptions
+		optionarg main.ed_gen
+		optionarg main.ed_matrix
+	endoptions
+END
+

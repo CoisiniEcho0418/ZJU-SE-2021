@@ -1,0 +1,146 @@
+/*
+	predict (after glm, binreg, ...)
+
+*!  VERSION 1.2.1  27may2010
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_large
+INCLUDE header
+HELP hlp1, view("help glm postestimation")
+RESET res1
+
+DIALOG main, label("predict - Prediction after estimation") tabtitle("Main")
+BEGIN
+  INCLUDE  _p_gentype
+
+  GROUPBOX gb_opts           _lft      _ls       _iwd      _ht12,	/*
+		*/ label("Produce:")
+  RADIO    rb_mu             _ilft     _ss       _cwd2     ., first	/*
+		*/ option(mu) 						/*
+		*/ label("Mean of y=g_inverse(xb)")			/*
+		*/ clickon(gaction opt.ck_adjusted.disable)
+  DEFINE   hldy @y
+  RADIO    rb_xb             @         _ss       @         .,		/*
+		*/ option(xb)						/* 
+		*/ label("Linear prediction (xb)")			/*
+		*/ clickon(gaction opt.ck_adjusted.disable)
+  RADIO    rb_stdp           @         _ss       @         .,		/*
+		*/ option(stdp)						/*
+		*/ label("Standard error of the linear pred.")		/*
+		*/ clickon(gaction opt.ck_adjusted.disable)
+  RADIO    rb_anscombe       @         _ss       @         .,		/*
+		*/ option(anscombe)					/*
+		*/ label("Anscombe residuals")				/*
+		*/ clickon(gaction opt.ck_adjusted.disable)
+  RADIO    rb_cooksd         @         _ss       @         .,		/*
+		*/ option(cooksd)					/*
+		*/ label("Cook's distance") 				/*
+		*/ clickon(gaction opt.ck_adjusted.disable)
+  RADIO    rb_deviance       @         _ss       @         .,		/*
+		*/ option(deviance) 					/*
+		*/ label("Deviance residuals")				/*
+		*/ clickon(gaction opt.ck_adjusted.enable) 
+  RADIO    rb_hat            _lft2     hldy      @         .,		/*
+		*/ option(hat)						/*
+		*/ label("Diagonals of the hat matrix")			/*
+		*/ clickon(gaction opt.ck_adjusted.disable)
+  RADIO    rb_likelihood     @         _ss       @         .,		/*
+		*/ option(likelihood)					/*
+		*/ label("Likelihood residuals")			/*
+		*/ clickon(gaction opt.ck_adjusted.disable)
+  RADIO    rb_pearson        @         _ss       @         .,		/*
+		*/ option(pearson)					/*
+		*/ label("Pearson residuals")				/*
+		*/ clickon(gaction opt.ck_adjusted.disable)
+  RADIO    rb_response       @         _ss       @         .,		/*
+		*/ option(response)					/*
+		*/ label("Response residuals")				/*
+		*/ clickon(gaction opt.ck_adjusted.disable)
+  RADIO    rb_score          @         _ss       @         .,		/*
+		*/ option(score)					/*
+		*/ label("Score residuals")				/*
+		*/ clickon(gaction opt.ck_adjusted.disable)
+  RADIO    rb_working        @         _ss       @         ., last	/*
+		*/ option(working)					/*
+		*/ label("Working residuals")				/*
+		*/ clickon(gaction opt.ck_adjusted.disable)
+  INCLUDE _svy_predict_note
+END
+
+SCRIPT PREINIT
+BEGIN
+	create STRING prefix_name
+	prefix_name.setstring e(prefix)
+END
+
+SCRIPT POSTINIT
+BEGIN
+	main.tx_temp.hide
+	main.tx_svy_note.hide
+	program svy_check
+END
+
+PROGRAM svy_check
+BEGIN
+	if prefix_name.equals("svy") {
+		call main.tx_svy_note.show
+		call main.rb_anscombe.disable
+		call main.rb_cooksd.disable
+		call main.rb_deviance.disable
+		call main.rb_hat.disable
+		call main.rb_likelihood.disable
+		call main.rb_pearson.disable
+		call main.rb_response.disable
+		call main.rb_working.disable
+		call opt.ck_adjusted.disable
+		call opt.ck_standardized.disable
+		call opt.ck_studentized.disable
+		call opt.ck_modified.disable
+	}
+END
+
+INCLUDE _p_gentype_sc
+INCLUDE ifin
+
+DIALOG opt, tabtitle("Options")
+BEGIN
+  CHECKBOX ck_nooffset       _lft      _top      _iwd      .,		/*
+		*/ option(nooffset)					/*
+		*/ label("Ignore offset variable (if any)")
+  CHECKBOX ck_adjusted       @         _ms       @         .,		/*
+		*/ option(adjusted)					/*
+*/ label("Adjust deviance residual to speed up convergence to limiting distribution")
+  CHECKBOX ck_standardized   @         _ms       @         .,		/*
+		*/ option(standardized)					/*
+		*/ label("Multiply residual by 1/sqrt(1-hat)")
+  CHECKBOX ck_studentized    @         _ms       @         .,		/*
+		*/ option(studentized)					/*
+		*/ label("Multiply residual by 1/sqrt(scale)")
+  CHECKBOX ck_modified       @         _ms       @         .,		/*
+		*/ option(modified)					/*
+*/ label("Modify denominator of residual to estimate of the variance of the dep. var.")
+END
+
+
+INCLUDE _type_list_fd
+
+
+PROGRAM command
+BEGIN
+	put "predict "
+	put " " /program _p_gentype_output
+	INCLUDE _ifin_pr
+	beginoptions
+		option radio(main rb_mu rb_xb rb_stdp rb_anscombe rb_cooksd /*
+			*/ rb_deviance rb_hat rb_likelihood rb_pearson /*
+			*/ rb_response rb_score rb_working)
+		option opt.ck_nooffset
+		option opt.ck_standardized
+		option opt.ck_studentized
+		option opt.ck_modified
+		option opt.ck_adjusted
+	endoptions
+END

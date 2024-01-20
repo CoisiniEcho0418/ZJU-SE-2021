@@ -1,0 +1,14 @@
+/*
+	_clus_hier_pr.idlg  include file for the hierarch. -cluster- PROGRAM
+
+	VERSION 1.0.0  21dec2002
+*/
+
+	varlist [main.vl_var]
+	INCLUDE _ifin_pr
+	beginoptions
+		INCLUDE _cl_dist_pr
+		optionarg main.ed_name
+		optionarg adv.ed_gen
+	endoptions
+

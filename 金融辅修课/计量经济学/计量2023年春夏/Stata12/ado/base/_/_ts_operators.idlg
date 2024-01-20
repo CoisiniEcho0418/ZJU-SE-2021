@@ -1,0 +1,52 @@
+/* _ts_operators.idlg
+
+*!  VERSION 1.0.1  25may2009
+
+*/
+
+  GROUPBOX 	gb_operator	_x	_y	_cx	_ht13h,		///
+	label("Time-series operators")
+  RADIO 	rb_nolag	_indent	_ss	150	., first	///
+	label("No lag") onclickon(program nolag_on)
+  RADIO 	rb_lag		@	_ss	@	., middle	///
+	label("Lag") onclickon(program lag_on)
+  RADIO 	rb_lead		@	_ss	@	., middle	///
+	label("Lead") onclickon(program lead_on)
+  RADIO 	rb_rlag		@	_ss	@	., last		///
+	label("Range lag") onclickon(program rlag_on)
+
+  CHECKBOX	ck_diff		@	_ms	@	., 		///
+	label("Difference") 						///
+	onclickon(program diff_check) onclickoff(program diff_check)
+  CHECKBOX 	ck_sdiff	@	_ms	@	., 		///
+	label("Seasonal difference") 					///
+	onclickon(program sdiff_check) onclickoff(program sdiff_check)
+
+
+  TEXT		tx_lag		_irj180	-90	115	.,		///
+	label("Lag:") right
+  SPINNER	sp_lag		+120	@	50	.,		///
+	default(1) min(1) max(500)
+  TEXT		tx_lead		_irj180	_ss	115	.,		///
+	label("Lead:") right
+  SPINNER	sp_lead		+120	@	50	.,		///
+	default(1) min(1) max(500)
+  TEXT		tx_rlag		_irj220	_ss	90	.,		///
+	label("Range lag:") right
+  SPINNER	sp_rlag		+95	@	50	.,		///
+	default(1) min(-500) max(500)
+  TEXT		tx_rlag2	+55	@	10	.,		///
+	label("/")
+  SPINNER	sp_rlag2	+10	@	50	.,		///
+	default(1) min(-500) max(500)
+
+  TEXT		tx_diff		_irj180	_ms	115	.,		///
+	label("Difference:") right
+  SPINNER	sp_diff		+120	@	50	.,		///
+	default(1) min(1) max(500)
+  TEXT		tx_sdiff	_irj180	_ms	115	.,		///
+	label("Seasonal difference:") right
+  SPINNER	sp_sdiff	+120	@	50	.,		///
+	default(1) min(1) max(500)
+
+/* end _ts_operators.idlg */

@@ -1,0 +1,79 @@
+/*
+	lv
+
+*!  VERSION 1.0.1  02apr2005
+
+*/
+
+VERSION 8.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help lv")
+RESET res1
+
+DIALOG main, label("lv - Letter-value displays") tabtitle("Main")
+BEGIN
+	TEXT	 tx_var		_lft	_top	_iwd	.,		/*
+		*/	label("Variables: (leave empty for all)")
+
+	VARLIST  vl_var		@	_ss	@	.,		/*
+		*/	label("Variables")
+
+	GROUPBOX gb_opts	@	_ls	_iwd	_ht9h,		/*
+		*/	label("Options")
+
+        CHECKBOX ck_gen		_indent	_ss	_inwd	.,		/*
+                */      label("Generate four new variables")		/*
+		*/	option(generate)
+	DEFINE   holdx  @x
+	DEFINE   holdcx @cx
+
+	TEXT	 tx_gen		_indent2 _vss	_inwd	.,		/*
+		*/	label("(mids, spreads, pseudosigmas, z^2)")
+
+	CHECKBOX ck_adv		holdx	_ms	holdcx	_ht2h,		/*
+		*/	label("Advanced")				/*
+		*/	groupbox					/*
+		*/	clickon("script sp_tail_on")			/*
+		*/	clickoff("script sp_tail_off")
+
+	SPINNER	sp_tail		_indent	_ms	_spwd	.,		/*
+		*/	label("Tail")					/*
+		*/	min(2) max(1024)				/*
+		*/	default(2)					/*
+		*/	option(tail)
+
+	TEXT	tx_tail		_spsep	@	_cksprb	.,		/*
+		*/	label("Tail() (see manual:[R] lv)")
+
+END
+
+INCLUDE byifin
+
+SCRIPT	sp_tail_on
+BEGIN
+main.sp_tail.enable
+main.tx_tail.enable
+END
+
+SCRIPT  sp_tail_off
+BEGIN
+main.sp_tail.disable
+main.tx_tail.disable
+END
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "lv "
+	varlist [main.vl_var]
+	INCLUDE _ifin_pr
+	beginoptions
+		option main.ck_gen
+		if main.ck_adv{
+			optionarg main.sp_tail
+		}
+	endoptions
+END

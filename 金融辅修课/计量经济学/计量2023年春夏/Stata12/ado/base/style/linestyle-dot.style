@@ -1,0 +1,6 @@
+*! version 1.0.0  22dec2002
+sequence 3710
+
+set width    scheme foreground 
+set color    scheme foreground
+set pattern  dot 

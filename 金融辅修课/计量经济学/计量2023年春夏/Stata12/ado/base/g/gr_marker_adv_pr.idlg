@@ -1,0 +1,45 @@
+/*
+    gr_marker_adv_pr.idlg
+    // Common programming for advanced marker tab components.
+    
+    // ** IMPORTANT
+    // ** This file is to be used with "INCLUDE gr_marker_adv" and 
+    //		should only be used with dialog tabs named -adv- 
+    
+	// SCRIPTS and PROGRAMS for external use
+		* PROGRAM  gr_marker_adv_output
+    
+*!  VERSION 1.0.0  03jan2007
+
+*/
+
+LIST main_cl_fclr_sel
+BEGIN
+	adv.cl_fclr.hide
+	adv.cl_fclr.show
+	adv.cl_fclr.hide
+END
+
+LIST main_cl_lclr_sel
+BEGIN
+	adv.cl_lclr.hide
+	adv.cl_lclr.show
+	adv.cl_lclr.hide
+END
+
+PROGRAM gr_marker_adv_output
+BEGIN
+	if adv.cl_fclr.isvisible() {
+		optionarg /quoted adv.cl_fclr
+	}
+	if ! adv.cl_fclr.isvisible() {
+		optionarg /hidedefault adv.cb_fclr
+	}
+	if adv.cl_lclr.isvisible() {
+		optionarg /quoted adv.cl_lclr
+	}
+	if ! adv.cl_lclr.isvisible() {
+		optionarg /hidedefault adv.cb_lclr
+	}
+	optionarg /hidedefault adv.cb_lwidth
+END

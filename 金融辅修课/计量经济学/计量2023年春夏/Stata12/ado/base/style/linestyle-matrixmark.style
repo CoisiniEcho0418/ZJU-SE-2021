@@ -1,0 +1,6 @@
+*! version 1.0.1  05may2004
+sequence 3528
+
+set width    scheme matrixmark 
+set color    scheme matrixmarkline 
+set pattern  scheme matrixmark 

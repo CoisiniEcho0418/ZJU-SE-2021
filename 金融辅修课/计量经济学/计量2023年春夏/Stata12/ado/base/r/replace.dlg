@@ -1,0 +1,45 @@
+/*
+
+  replace
+
+*!  VERSION 1.3.1  07nov2008
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_medium
+INCLUDE header
+HELP hlp1, view("help replace")
+RESET res1
+
+DIALOG main, label("replace - Replace contents of existing variable")	///
+	tabtitle("Main")
+BEGIN
+  TEXT     tx_dv	_lft	_top	_iwd	.,	///
+	label("Variable:")
+  VARNAME  vn_old	@	_ss	_vnwd	.,	///
+	label("Variable")
+
+  TEXT     tx_exp	_lft	_ls	_iwd	.,	///
+	label("New contents: (value or expression)")
+  EXP      ex_exp	_lft	_ss	_iwd	.,	///
+	label("Create ...") error("New contents")
+  CHECKBOX ck_type	_lft	+35	_iwd	.,	///
+	option(nopromote) label("Preserve type ")
+END
+
+INCLUDE ifin
+
+PROGRAM command
+BEGIN
+        put "replace "
+        varlist main.vn_old
+        put "= "
+        require main.ex_exp
+        put main.ex_exp
+        INCLUDE _ifin_pr
+        beginoptions
+                option main.ck_type
+        endoptions
+END

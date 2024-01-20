@@ -1,0 +1,388 @@
+/*
+    irf_graph_9.dlg
+
+*!  VERSION 1.1.2  22aug2006  (deprecated)
+
+*/
+
+VERSION 9.0
+SYNCHRONOUS_ONLY
+
+INCLUDE graph_header
+INCLUDE header
+
+HELP hlp1, view("help irf_graph")
+RESET res1
+
+DIALOG main, tabtitle("Main") ///
+	label("irf graph - Graph impulse-response functions and FEVDs")
+BEGIN
+
+  // set IRF active file
+  DEFINE _x _xsetbu
+  DEFINE _y _top
+  INCLUDE _bu_irfset
+
+  TEXT     tx_stat	     _lft      _top      _cwd0     .,		///
+			label("Statistics to graph:")
+  COMBOBOX cb_stat	     @         _ss       @         .,		///
+		append							///
+		dropdown						///
+		contents(irf_stat_contents)				///
+		values(irf_stat_values)					///
+		label("Statistics to graph")
+
+  GROUPBOX gb_comb	     _lft      _ls       _iwd      _ht14h,	///
+		label("IRF combinations")
+  TEXT     tx_irf	     _indent   _ss       _comb3_1  .,		///
+	label("IRF result sets: (leave empty for all)")
+  COMBOBOX cb_irf	     @         _ss       @         .,		///
+		option(irf)						///
+		dropdown append 					///
+		contents(irfresults) 					///
+		label("IRF results to include")				///
+		onselchange(program main_update_vars)
+  DEFINE _y @y
+
+  TEXT     tx_imp	     @         _ls       @         .,		///
+	label("Impulse variables: (leave empty for all)")
+  COMBOBOX cb_imp	     @         _ss       @         .,		///
+		option(impulse)						///
+		label("Impulse variables")				///
+		contents(irfimpulse) dropdown append
+  TEXT     tx_resp	     @         _ls       @         .,		///
+	label("Response variables: (leave empty for all)")
+  COMBOBOX cb_resp	     @         _ss       @         .,		///
+		option(response)					///
+		label("Response variables")				///
+		contents(irfresponse) dropdown append
+  FRAME    fr_note           _lft3_3   _y        _cwd3_2   _ht9,
+  TEXT     tx_note1          _indent   _vss      _inwd     .,		///
+  		label("Refresh IRF combinations anytime")
+  TEXT     tx_note2          @         _vss      @         .,		///
+  		label("the active IRF file is set or changed,")
+  TEXT     tx_note3          @         _vss      @         .,		///
+  		label("while this dialog is open.")
+  TEXT     tx_note4          @         _vss      @         .,		///
+  		label("")
+  BUTTON   bu_refresh        @         _ls       @         ., 		///
+  		label("Refresh") 					///
+  		onpush(program main_get_irf)
+/*
+  	-cilines- was not included because it is a command line utility.
+  	and because the individual cioptions can perform the same function.
+*/
+
+END
+
+SCRIPT main_PREINIT
+BEGIN
+	create LIST irfresults
+	create LIST irfimpulse
+	create LIST irfresponse
+	// a temperory fix for uninitialized comboxes not dropping down.
+	irfresults.Arrpush ""
+	irfresults.Arrpush ""
+	irfimpulse.Arrpush ""
+	irfimpulse.Arrpush ""
+	irfresponse.Arrpush ""
+	irfresponse.Arrpush ""
+	create BOOLEAN isGettingIRF
+	create BOOLEAN isGettingIRFVars
+	create BOOLEAN isLoading
+	isLoading.settrue
+END
+
+SCRIPT main_POSTINIT
+BEGIN
+	isLoading.setfalse
+END
+
+PROGRAM main_get_irf
+BEGIN
+	put "_get_irf, "
+	put "dialog(irf_graph_9) "
+	put "control(main.cb_irf) "
+	put "irfvalue(" main.cb_irf ") "
+	put "irfappends "
+	put "busyflag(isGettingIRF) "
+	stata hidden
+	call program main_update_vars  // initialize the sub lists
+END
+
+PROGRAM main_update_vars
+BEGIN
+	if main.cb_irf {
+		if ! isGettingIRF & ! isLoading & ! isGettingIRFVars {
+			put "_set_irf_vars, "
+			put "dialog(irf_graph_9) "
+			put "irfname(" main.cb_irf ") "
+			put "impulsetarget(main.cb_imp) "
+			put "impulsevalue(" main.cb_imp ") "
+			put "responsetarget(main.cb_resp) "
+			put "responsevalue(" main.cb_resp ") "
+			put "list(main.cb_irf) "
+			put "busyflag(isGettingIRFVars) "
+			stata hidden
+		}
+	}
+	if ! main.cb_irf { // handle the empty case here
+		call irfimpulse.Arrdropall
+		call irfresponse.Arrdropall
+		call main.cb_imp.clearlist
+		call main.cb_resp.clearlist
+		call main.cb_imp.setvalue ""
+		call main.cb_resp.setvalue ""
+	}
+END
+
+INCLUDE irf_stat_list		// LISTs for statlist
+
+DIALOG opt, tabtitle("Options")
+BEGIN
+  GROUPBOX gb_opts	     _lft      _top      _cwd1     _ht11,	///
+		label("Common options")
+  CHECKBOX ck_noci	     _ilft     _ss       _inwd     .,		///
+		onclickon("program noci_check")				///
+		onclickoff("program noci_check")			///
+		option(noci)						///
+		label("Suppress confidence bands")
+  DEFINE   y @y
+  DEFINE   _x _indent2
+  DEFINE   _cx _ckspr2b
+  DEFINE   _y _ms
+  INCLUDE  _sp_level
+  CHECKBOX ck_lstep	     _ilft     _ls       _ckwd     .,		///
+		onclickon(program lstep_check)				///
+		onclickoff(program lstep_check)
+  DEFINE x @x
+  SPINNER  sp_lstep	     _cksep    @         _spwd     .,		///
+		min(0)							///
+		max(500)						///
+		default(0)						///
+		option(lstep)						///
+		label("First step")
+  TEXT     tx_lstep	     _spsep    @         _ckspr2b  .,		///
+		label("First step")
+  CHECKBOX ck_ustep	     x         _ls       _ckwd     .,		///
+		onclickon(program ustep_check)				///
+		onclickoff(program ustep_check)
+
+  SPINNER  sp_ustep	     _cksep    @         _spwd     .,		///
+		min(1)							///
+		max(500)						///
+		default(10)						///
+		option(ustep)						///
+		label("Maximum step")
+  TEXT     tx_ustep	     _spsep    @         _ckspr2b  .,		///
+		label("Maximum step")
+
+  CHECKBOX ck_indiv	     _lft      _xls      _cwd1     _ht15,	///
+		groupbox						///
+		clickon(program indiv_check)				///
+		clickoff(program indiv_check)				///
+		option(individual)					///
+		label(`"Graph each combination individually (suppresses "By")"')
+
+  CHECKBOX ck_iname	     _indent   _ms       _inwd     .,		///
+		clickon(program iname_check)				///
+		clickoff(program iname_check)				///
+		label("Stub for naming the individual graphs")
+  DEFINE x @x
+  DEFINE cx @cx
+  EDIT     ed_iname	     _indent2  _ss       _vnwd     .,		///
+		max(32)							///
+		label("Stub for naming the individual graphs")
+  CHECKBOX ck_inrep	     @         _ms       _cwd5     .,		///
+		option(replace) nomem					///
+		label("Allow existing named graphs to be replaced")
+  CHECKBOX ck_isav	     x         _ls       cx        .,		///
+		clickon(program isav_check)				///
+		clickoff(program isav_check)				///
+		label("Stub for saving the individual graphs to files")
+  EDIT     ed_isav	     _indent2  _ss       _vnwd     .,		///
+		max(32)							///
+		label("Stub for saving the individual graphs to files")
+  CHECKBOX ck_isrep	     @         _ms       _cwd5     .,		///
+		option(replace) nomem					///
+		label("Allow existing graph files to be replaced")
+END
+
+PROGRAM noci_check
+BEGIN
+	if opt.ck_noci {
+		call gaction opt.sp_level.disable
+		call gaction opt.tx_level.disable
+		call script p5_opts_disable
+		call script p6_opts_disable
+	}
+	if ! opt.ck_noci {
+		call gaction opt.sp_level.enable
+		call gaction opt.tx_level.enable
+		call script p5_opts_enable
+		call script p6_opts_enable
+	}
+END
+
+PROGRAM lstep_check
+BEGIN
+	if opt.ck_lstep {
+		call gaction opt.sp_lstep.enable
+	}
+	if ! opt.ck_lstep {
+		call gaction opt.sp_lstep.disable
+	}
+END
+
+PROGRAM ustep_check
+BEGIN
+	if opt.ck_ustep {
+		call gaction opt.sp_ustep.enable
+	}
+	if ! opt.ck_ustep {
+		call gaction opt.sp_ustep.disable
+	}
+END
+
+PROGRAM indiv_check
+BEGIN
+	if opt.ck_indiv {
+		call gaction opt.ck_iname.enable
+		call program iname_check
+		call gaction opt.ck_isav.enable
+		call program isav_check
+		call script gby_disable
+	}
+	if ! opt.ck_indiv {
+		call gaction opt.ck_iname.disable
+		call program iname_check
+		call gaction opt.ck_isav.disable
+		call program isav_check
+		call script gby_enable
+	}
+END
+
+PROGRAM iname_check
+BEGIN
+	if !H(opt.ck_iname) & opt.ck_iname {
+		call gaction opt.ed_iname.enable
+		call gaction opt.ck_inrep.enable
+	}
+	if H(opt.ck_iname) | ! opt.ck_iname {
+		call gaction opt.ed_iname.disable
+		call gaction opt.ck_inrep.disable
+	}
+END
+
+PROGRAM isav_check
+BEGIN
+	if !H(opt.ck_isav) & opt.ck_isav {
+		call gaction opt.ed_isav.enable
+		call gaction opt.ck_isrep.enable
+	}
+	if H(opt.ck_isav) | ! opt.ck_isav {
+		call gaction opt.ed_isav.disable
+		call gaction opt.ck_isrep.disable
+	}
+END
+
+INCLUDE p1_opts
+INCLUDE p2_opts
+INCLUDE p3_opts
+INCLUDE p4_opts
+INCLUDE p5_opts
+INCLUDE p6_opts
+
+SCRIPT PREINIT
+BEGIN
+	script p1_opts_createAsNoRange
+	script p1_opts_setDefaultLine
+	script p2_opts_createAsNoRange
+	script p2_opts_setDefaultLine
+	script p3_opts_createAsNoRange
+	script p3_opts_setDefaultLine
+	script p4_opts_createAsNoRange
+	script p4_opts_setDefaultLine
+	script p5_opts_createAsRange
+	script p5_opts_setDefaultRarea
+	script p6_opts_createAsRange
+	script p6_opts_setDefaultRarea
+END
+
+SCRIPT POSTINIT
+BEGIN
+	script gby_setViewByopts
+	p1_opts.settabtitle "Plot 1"
+	p2_opts.settabtitle "Plot 2"
+	p3_opts.settabtitle "Plot 3"
+	p4_opts.settabtitle "Plot 4"
+	p5_opts.settabtitle "CI 1"
+	p6_opts.settabtitle "CI 2"
+
+	p1_opts_specialOutput.setstring "plot1"
+	p2_opts_specialOutput.setstring "plot2"
+	p3_opts_specialOutput.setstring "plot3"
+	p4_opts_specialOutput.setstring "plot4"
+	p5_opts_specialOutput.setstring "ciopts1"
+	p6_opts_specialOutput.setstring "ciopts2"
+
+	program main_get_irf
+END
+
+INCLUDE gr_twoway
+INCLUDE gby
+
+PROGRAM command
+BEGIN
+	put "irf graph "
+	require main.cb_stat
+	put main.cb_stat
+	beginoptions
+		optionarg main.cb_irf
+		optionarg main.cb_imp
+		optionarg main.cb_resp
+
+		// options
+		option opt.ck_noci
+		INCLUDE _level_opt_pr
+		if opt.ck_lstep {
+			optionarg opt.sp_lstep
+		}
+		if opt.ck_ustep {
+			optionarg opt.sp_ustep
+		}
+
+		// advanced options
+		if opt.ck_indiv {
+			option opt.ck_indiv
+			if opt.ck_iname {
+				require opt.ed_iname
+				put " iname(" opt.ed_iname
+				if opt.ck_inrep {
+					put ","
+					option opt.ck_inrep
+				}
+				put " " ") "
+			}
+			if opt.ck_isav {
+				require opt.ed_isav
+				put " isaving(" opt.ed_isav
+				if opt.ck_isrep {
+					put ","
+					option opt.ck_isrep
+				}
+				put " " ") "
+			}
+		}
+
+		put " " /program p1_opts_special_output
+		put " " /program p2_opts_special_output
+		put " " /program p3_opts_special_output
+		put " " /program p4_opts_special_output
+		put " " /program p5_opts_special_output
+		put " " /program p6_opts_special_output
+
+		put " " /program gr_twoway_output
+		put " " /program gby_byopts_output " "
+	endoptions
+END

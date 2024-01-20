@@ -1,0 +1,109 @@
+/*
+	infix
+
+*!  VERSION 1.1.3  03apr2011
+
+	which infix - built-in command:  infix
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+INCLUDE _ht270
+INCLUDE header
+HELP hlp1, view("help infix")
+RESET res1
+
+DIALOG main,label("infix - Import text data in fixed format")		/*
+		*/ tabtitle("Main")
+BEGIN
+  RADIO    rb_dict   _lft      _top      _iwd        .,		/*
+                */ label("Use dictionary file:")		/*
+		*/ clickon("script dict_on")			/*
+		*/ first
+
+  FILE     fi_dict   _indent2  _ss       _ibwd       .,		/*
+		*/ error("Dictionary filename")			/*
+                */ label("Browse...")				/*
+                */ defext(dct)					/*
+		*/ filter("Stata Dictionary (*.dct)|*.dct|All (*.*)|*.*")
+
+  RADIO    rb_spec   _lft      _ls       _iwd        .,		/*
+                */ label("Specifications:")			/*
+		*/ clickon("script spec_on")			/*
+		*/ last
+
+  EDIT     ed_spec   _indent2  _ss       _inwd       .,		/*
+                */ label("Specifications")
+
+  GROUPBOX gb_ex     @         _ms       @           _ht4,	/*
+                */ label("Examples")
+
+  TEXT     tx_ex1    _indent   _ss       _inwd       .,		/*
+                */ label("rate 1-4 speed 6-7 acc 9-11")
+
+  TEXT     tx_ex2    @         _ss       @           .,		/*
+                */ label("2 lines 1: id 1-6 str name 7-36 2: age 1-2 sex 4")
+
+  TEXT     tx_using  _lft      _xls      _iwd        .,		/*
+                */ label("Text dataset filename:")
+
+  FILE     fi_using  @         _ss       @           .,		/*
+		*/ option(using)				/*
+		*/ error("Text dataset filename")		/*
+		*/ filter("Raw Files (*.raw)|*.raw|Text Files (*.txt)|*.txt|All (*.*)|*.*")/*
+		*/ defext(raw)					/*
+                */ label("Browse...")
+
+  CHECKBOX ck_clear  _lft      _ls       @           .,		/*
+                */ option(clear)				/*
+                */ label("Replace data in memory") nomem
+END
+
+SCRIPT POSTINIT
+BEGIN
+	script ifin_setNotDataDependent
+END
+
+SCRIPT dict_on
+BEGIN
+main.fi_dict.enable
+main.ed_spec.disable
+main.tx_using.setlabel "Text dataset filename: (required if not specified in dictionary)"
+END
+
+SCRIPT spec_on
+BEGIN
+main.fi_dict.disable
+main.ed_spec.enable
+main.tx_using.setlabel "Text dataset filename: (required)"
+END
+
+INCLUDE ifin
+
+PROGRAM command
+BEGIN
+	put "infix "
+	if main.rb_dict {
+		require main.fi_dict
+		put "using "
+		put `"""' main.fi_dict `"""'
+	}
+	if main.rb_spec {
+		require main.ed_spec
+		require main.fi_using
+		put main.ed_spec
+		put " "
+		put "using "
+		put `"""' main.fi_using `"""'
+	}
+	put " " /program ifin_output
+	beginoptions
+		if main.rb_dict {
+			if main.fi_using {
+				optionarg /quoted main.fi_using
+			}
+		}
+		option main.ck_clear
+	endoptions
+END

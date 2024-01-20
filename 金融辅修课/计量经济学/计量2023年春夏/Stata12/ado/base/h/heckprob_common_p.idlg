@@ -1,0 +1,89 @@
+/*
+	heckprob_common_p.idlg
+
+	This is an INCLUDE file for the -predict- dialogs that go with
+	-heckprob- and -svy: heckprob-.
+
+*!  VERSION 1.0.1  28mar2005
+
+*/
+
+
+DIALOG main, label("predict - Prediction after estimation") tabtitle("Main")
+BEGIN
+  INCLUDE  _p_gentype
+
+  GROUPBOX gb_opts           _lft      _ls       _iwd      _ht14,	/*
+		*/ label("Produce:")
+  RADIO    rb_pmargin        _indent   _ss       _cwd2     ., first	/*
+		*/ option(pmargin)					/*
+		*/ onclickon(script _p_gentype_scores_off)		/*
+		*/ label("Pr(depvar = 1)")
+  DEFINE   holdy @y
+  RADIO    rb_psel           @         _ss       @         .,		/*
+		*/ option(psel)						/*
+		*/ onclickon(script _p_gentype_scores_off)		/*
+		*/ label("Pr(depvar_s = 1)")
+  RADIO    rb_pcond          @         _ss       @         .,		/*
+		*/ option(pcond)					/*
+		*/ onclickon(script _p_gentype_scores_off)		/*
+		*/ label("Pr(depvar = 1 | depvar_s = 1)")
+  RADIO    rb_xb             @         _ss       @         .,		/*
+		*/ option(xb)						/*
+		*/ onclickon(script _p_gentype_scores_off)		/*
+		*/ label("Linear prediction")
+  RADIO    rb_stdp           @         _ss       @         .,		/*
+		*/ option(stdp)						/*
+		*/ onclickon(script _p_gentype_scores_off)		/*
+		*/ label("Std. error of the linear prediction")
+  RADIO    rb_xbsel          @         _ss       _ibwd     .,		/*
+		*/ option(xbsel)					/*
+		*/ onclickon(script _p_gentype_scores_off)		/*
+		*/ label("Linear prediction in the selection equation")
+  RADIO    rb_stdpsel        @         _ss       @         .,		/*
+		*/ option(stdpsel)					/*
+		*/ onclickon(script _p_gentype_scores_off)		/*
+		*/ label("Standard error of the linear prediction for selection equation")
+
+  RADIO    rb_p11            _lft2     holdy     _cwd2     .,		/*
+		*/ option(p11)						/*
+		*/ onclickon(script _p_gentype_scores_off)		/*
+		*/ label("Pr(depvar = 1, depvar_s = 1)")
+  RADIO    rb_p10            @         _ss       @         .,		/*
+		*/ option(p10)						/*
+		*/ onclickon(script _p_gentype_scores_off)		/*
+		*/ label("Pr(depvar = 1, depvar_s = 0)")
+  RADIO    rb_p01            @         _ss       @         .,		/*
+		*/ option(p01)						/*
+		*/ onclickon(script _p_gentype_scores_off)		/*
+		*/ label("Pr(depvar = 0, depvar_s = 1)")
+  RADIO    rb_p00            @         _ss       @         .,		/*
+		*/ option(p00)						/*
+		*/ onclickon(script _p_gentype_scores_off)		/*
+		*/ label("Pr(depvar = 0, depvar_s = 0)")
+  RADIO    rb_score          @         _ss       @         ., last	/*
+		*/ option(score)					/*
+		*/ onclickon(script _p_gentype_scores_on)		/*
+		*/ label("Equation-level scores")
+
+  TEXT     tx_blank          0         _xls      0         .,
+
+  INCLUDE  _p_nooffset
+END
+
+INCLUDE _p_gentype_sc
+INCLUDE ifin
+INCLUDE _type_list_fd
+
+PROGRAM command
+BEGIN
+	put "predict "
+	put " " /program _p_gentype_output
+	INCLUDE _ifin_pr
+	beginoptions
+		option radio(main rb_pmargin rb_p11 rb_p10 rb_p01 rb_p00 /*
+			*/ rb_psel rb_pcond rb_xb rb_stdp rb_xbsel /*
+			*/ rb_stdpsel rb_score)
+	endoptions
+	INCLUDE _p_nooffset_pr
+END

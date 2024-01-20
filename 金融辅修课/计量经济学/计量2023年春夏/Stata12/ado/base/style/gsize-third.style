@@ -1,0 +1,6 @@
+*! version 1.0.1  01apr2005
+sequence 5300
+label "Third"
+set val 33.333333333333
+
+* ?? make +1.5555555555555X-002 later

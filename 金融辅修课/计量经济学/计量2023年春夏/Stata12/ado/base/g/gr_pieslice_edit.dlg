@@ -1,0 +1,77 @@
+/*
+    gr_pieslice_edit.dlg
+
+*!  VERSION 1.0.0  24jan2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_vsmall
+DEFINE _dlght 160
+INCLUDE header_gr_child
+
+DEFINE _clwd	15
+DEFINE _wd	120
+DEFINE _sep	+125
+DEFINE _wd2	110
+DEFINE _sep2	+115
+DEFINE _cbwd	120
+DEFINE _cbsep	+125
+
+RESET res1
+
+DIALOG main, tabtitle("Main") title("Pie slice properties")
+BEGIN
+  GROUPBOX gb_pie	_lft	_top	_iwd	_ht10,		///
+	label("Slice properties")
+  TEXT     tx_clr	_ilft	_ms	_wd	.,		///
+	label("Fill color:") right
+  COMBOBOX cb_clr	_sep	@	_cbwd	.,		///
+	dropdownlist contents(colors) option(color)		///
+	onselchangelist(main_cl_clr_sel)
+  COLOR    cl_clr	_cbsep	@	_clwd	., option(fcolor)
+
+  CHECKBOX ck_explode	_ilft	+35	_ibwd	_ht2h,		///
+	label("Explode slice") groupbox				///
+	onclickon(script main_explode_on)			///
+	onclickoff(script main_explode_off)			///
+	option(explode)
+  TEXT     tx_explode	_iilft	_ss	_wd2	.,		///
+	label("Explode:") right
+  COMBOBOX cb_explode	_sep2	@	_cbwd	.,		///
+	dropdownlist option(explode)				///
+	contents(textsizes)
+END
+
+SCRIPT main_explode_on
+BEGIN
+	main.tx_explode.enable
+	main.cb_explode.enable
+END
+SCRIPT main_explode_off
+BEGIN
+	main.tx_explode.disable
+	main.cb_explode.disable
+END
+
+LIST main_cl_clr_sel
+BEGIN
+	main.cl_clr.hide
+	main.cl_clr.show
+	main.cl_clr.hide
+END
+
+PROGRAM command
+BEGIN
+	if main.cl_clr.isvisible() {
+		optionarg /quoted main.cl_clr
+	}
+	else {
+		optionarg /hidedefault main.cb_clr
+	}
+	if main.ck_explode & ! main.cb_explode {
+		option main.ck_explode
+	}
+	optionarg /hidedefault main.cb_explode
+END

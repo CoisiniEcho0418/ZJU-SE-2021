@@ -1,0 +1,55 @@
+/*
+  varwle
+
+*!  VERSION 1.1.0  07feb2007
+
+*/
+
+VERSION 8.0
+
+INCLUDE _std_medium
+INCLUDE _ht170
+INCLUDE header
+
+HELP hlp1, view("help varwle")
+RESET res1
+
+DIALOG main, 	/*
+  */ label("varwle - Obtain Wald lag-exclusion statistics after var or svar")/*
+  */ tabtitle("Main")
+BEGIN
+  GROUPBOX gb_opt            _lft      _top      _iwd      _ht11,	/*
+		*/ label("Options")
+  RADIO    rb_curres         _indent   _ms       _inwd     ., first	/*
+		*/ label("Use active var or svar results")
+  RADIO    rb_use            @         _ss       @         ., last	/*
+		*/ label("Use:")					/*
+		*/ onclickon(gaction main.cb_estimates.enable)		/*
+		*/ onclickoff(gaction main.cb_estimates.disable)
+  COMBOBOX cb_estimates      _indent2  _ss       _inwd     .,		/*
+		*/ dropdown						/*
+		*/ option("estimates")					/*
+		*/ contents(estimates)					/*
+		*/ label("Alternative var or svar results")
+  SPINNER  sp_sep            _ilft     _xls      _spwd     .,		/*
+		*/ label("Separator every N lines")			/*
+		*/ min(0)						/*
+		*/ max(500)						/*
+		*/ default(0)						/*
+		*/ option("separator")
+  TEXT     tx_sep            _spsep    @         _cwd1     _ht0,	/*
+		*/ label("Separator every N lines")
+END
+
+PROGRAM command
+BEGIN
+	if main.rb_use {
+		require main.cb_estimates
+	}
+
+	put "varwle"
+	beginoptions
+		optionarg main.cb_estimates
+		optionarg /hidedefault main.sp_sep
+	endoptions
+END

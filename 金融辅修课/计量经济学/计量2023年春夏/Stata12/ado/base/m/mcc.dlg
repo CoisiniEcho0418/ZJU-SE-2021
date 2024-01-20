@@ -1,0 +1,51 @@
+/*
+    mcc.dlg
+
+*!  VERSION 1.1.0  15nov2004
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help mcc")
+RESET res1
+
+DIALOG main, label("mcc - Matched case-control studies") tabtitle("Main")
+BEGIN
+  TEXT     tx_var	_lft	_top	_cwd1	.,	///
+	label("Exposed case variable:")
+  VARNAME  vn_var	@	_ss	_vnwd	.,	///
+	label("Exposed case variable")
+
+  TEXT     tx_val	_lft2	_top	_cwd1	.,	///
+	label("Exposed control variable:")
+  VARNAME  vn_val	@	_ss	_vnwd	.,	///
+	label("Exposed control variable")
+
+  CHECKBOX ck_tb	_lft	+35	_iwd	.,	///
+	option(tb) label("Test-based confidence intervals")
+
+  DEFINE _x _lft
+  DEFINE _y _ls
+  DEFINE _cx _spr
+  INCLUDE _sp_level
+END
+
+INCLUDE ifin
+INCLUDE weights_f
+
+PROGRAM command
+BEGIN
+	put "mcc "
+	varlist main.vn_var
+	varlist main.vn_val
+	INCLUDE _weights_pr
+	INCLUDE _ifin_pr
+	beginoptions
+		option main.ck_tb
+		INCLUDE _level_main_pr
+	endoptions
+END

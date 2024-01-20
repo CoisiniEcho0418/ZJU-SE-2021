@@ -1,0 +1,228 @@
+/*
+	pcamat
+
+*!  VERSION 1.1.2  22jan2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_large
+DEFINE _dlght 330
+INCLUDE header
+
+HELP hlp1, view("help pcamat")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	create STRING matrixResult
+END
+
+DIALOG main, label("pcamat - Principal component analysis") tabtitle("Model")
+BEGIN
+  TEXT     tx_selmatrix		_lft	_top	_cwd1	.,		///
+	label("Correlation or covariance matrix:")
+  COMBOBOX cb_selmatrix		@       _ss     300	.,		///
+	label("Correlation or covariance matrix")			///
+	dropdown							///
+	contents(matrix)
+  BUTTON   bu_matinput   	_rj100	_top    100	.,		///
+	label("Input matrix...") onpush(program show_matrix_input)	///
+	tooltip("Input matrix by hand")
+  TEXT     tx_shape    		_lft	_xxls	_iwd	.,		///
+	label("Storage shape:")
+  COMBOBOX cb_shape		@       _ss     300	.,		///
+	label("Storage shape")						///
+	dropdownlist							///
+	contents(shape_words)						///
+	value(shape_values)						///
+	option(shape)
+  TEXT     tx_names		@	_ls	_iwd	.,  		///
+	label("Variable names corresponding to row and column names of matrix:")
+  EDIT     en_names		@	_ss	@	.,		///
+	option(names)							///
+	label("Variable names")
+  CHECKBOX ck_forcepsd		@	_ls	_iwd	.,		///
+	label("Force correlation/covariance matrix to be positive semidefinite") ///
+	option(forcepsd)
+  SPINNER  sp_n			@	_ls	_spwd	.,		///
+	label("Number of observations")					///
+	min(1) max(c(N)) default(c(N)) option("n")
+  TEXT     tx_n			_spsep	@	_spr	.,  		///
+	label("Number of observations")
+  TEXT     tx_sds		_lft	_ls	_iwd	.,		///
+	label("Vector with the standard deviations of the variables: (For correlation matrix only)")
+  COMBOBOX cb_sds		@       _ss     300	.,		///
+	label("Vector with the standard deviations of the variables")	///
+	dropdown option(sds)						///
+	contents(vector)
+  TEXT     tx_means		@	_ls	_iwd	.,		///
+	label("Vector with the means of the variables: (For use by postestimation)")
+  COMBOBOX cb_means		@       _ss     300	.,		///
+	label("Vector with the means of the variables")			///
+	dropdown option(means)						///
+	contents(vector)
+END
+
+PROGRAM show_matrix_input
+BEGIN
+	call create CHILD matrix_input
+	if ! _rc {
+		call matrix_input.setExitString matrixResult
+		call matrix_input.setExitAction "program getMatrixResult"
+		call matrix_input.callthru "isChildContext.settrue"
+	}
+END
+PROGRAM getMatrixResult
+BEGIN
+	call main.cb_selmatrix.repopulate
+	call matrixResult.withvalue main.cb_selmatrix.setvalue "@"
+END
+
+LIST shape_words
+BEGIN
+	"Square symmetric matrix (default)"
+	"Vector of rowwise lower triangle (with diagonal)"
+	"Vector of rowwise upper triangle (with diagonal)"
+END
+
+LIST shape_values
+BEGIN
+	full
+	lower
+	upper
+END
+
+DIALOG model2, tabtitle("Model 2")
+BEGIN
+  CHECKBOX ck_components	_lft	_top	_iwd	.,		///
+	label("Maximum number of principal components to retain:")	///
+	onclickon(model2.sp_components.enable)				///
+	onclickoff(model2.sp_components.disable)
+  SPINNER  sp_components	_cksep	_ss	_spwd	.,		///
+	min(1) max(100000)						///
+	option(components)
+  CHECKBOX ck_mineigen		_lft	_ls	_iwd	.,		///
+  	onclickon(model2.en_mineigen.enable)				///
+  	onclickoff(model2.en_mineigen.disable)				///
+	label("Minimum eigenvalue to be retained:")
+  EDIT     en_mineigen	       _indent2	_ss	_en7wd	.,		///
+	option(mineigen) default(1e-5)					///
+	label("Minimum eigenvalue to be retained")
+
+  CHECKBOX ck_covar		_lft	_ls	_iwd	.,		///
+	option(covariance)						///
+	label("Use covariance instead of correlation matrix")
+  CHECKBOX ck_vce		@	_ms	@	.,		///
+	option(vce(normal))						///
+  	onclickon(program ck_vce_on)					///
+  	onclickoff(script ck_vce_off)					///
+	label("Compute VCE of the eigenvalues and vectors assuming multivariate normality")
+END
+
+PROGRAM ck_vce_on
+BEGIN
+	call report.sp_level.enable
+	call report.tx_level.enable
+	call report.ck_blanks.enable
+	if report.ck_blanks {
+		call report.en_blanks.enable
+		call report.tx_blanks.enable
+	}
+	call adv.en_tol.enable
+	call adv.tx_tol.enable
+	call adv.ck_ignore.enable
+END
+
+SCRIPT ck_vce_off
+BEGIN
+	report.sp_level.disable
+	report.tx_level.disable
+	report.ck_blanks.disable
+	report.en_blanks.disable
+	report.tx_blanks.disable
+	adv.en_tol.disable
+	adv.tx_tol.disable
+	adv.ck_ignore.disable
+END
+
+DIALOG report, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr
+  DEFINE _y _top
+  INCLUDE _sp_level
+
+  CHECKBOX ck_blanks		_lft	_ls	_iwd	.,		///
+  	onclickon(script ck_blanks_on)					///
+  	onclickoff(script ck_blanks_off)				///
+	label("Display loadings as blank when absolute value of loadings is less than:")
+  EDIT     en_blanks	       _indent2	_ss	_en7wd	.,		///
+	option(blanks)							///
+	label("Value")
+  TEXT     tx_blanks		_spsep	@	_cksprb	.,		///
+	label("Value")
+  CHECKBOX ck_novce		_lft	_ls	_iwd	.,		///
+	option(novce)							///
+	label("Suppress display of standard errors, even if computed")
+END
+
+SCRIPT ck_blanks_on
+BEGIN
+	report.en_blanks.enable
+	report.tx_blanks.enable
+END
+
+SCRIPT ck_blanks_off
+BEGIN
+	report.en_blanks.disable
+	report.tx_blanks.disable
+END
+
+DIALOG adv, tabtitle("Advanced")
+BEGIN
+  EDIT     en_tol		_lft	_top	_en7wd	.,		///
+	default(1e-5)							///
+	option(tol)							///
+	label("Numeric tolerance (rarely needed)")
+  TEXT     tx_tol		_spsep	@	_cksprb	.,		///
+	label("Numeric tolerance (rarely needed)")
+  CHECKBOX ck_ignore		_lft	_ls	_iwd	.,		///
+	option(ignore)							///
+	label("Continue computation of standard errors and tests (rarely needed)")
+END
+
+PROGRAM command
+BEGIN
+	put "pcamat "
+	require main.cb_selmatrix
+	put main.cb_selmatrix
+	beginoptions
+		optionarg main.sp_n
+		if !main.cb_shape.equals("full") {
+			optionarg main.cb_shape
+		}
+		optionarg main.en_names
+		option main.ck_forcepsd
+		optionarg main.cb_sds
+		optionarg main.cb_means
+		if model2.ck_components {
+			optionarg model2.sp_components
+		}
+		if model2.ck_mineigen {
+			require model2.en_mineigen
+			optionarg /hidedefault model2.en_mineigen
+		}
+		option model2.ck_covar
+		option model2.ck_vce
+		optionarg /hidedefault report.sp_level
+		if report.ck_blanks {
+			require report.en_blanks
+			optionarg /hidedefault report.en_blanks
+		}
+		option report.ck_novce
+		optionarg /hidedefault adv.en_tol
+		option adv.ck_ignore
+	endoptions
+END

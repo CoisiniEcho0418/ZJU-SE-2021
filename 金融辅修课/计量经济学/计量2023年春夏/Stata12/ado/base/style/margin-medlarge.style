@@ -1,0 +1,7 @@
+*! version 1.0.0  22dec2002
+sequence 1600
+
+set left   5
+set right  5
+set top    5
+set bottom 5

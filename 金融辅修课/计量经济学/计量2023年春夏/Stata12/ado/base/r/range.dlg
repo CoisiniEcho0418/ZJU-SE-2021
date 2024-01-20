@@ -1,0 +1,58 @@
+/*
+	range
+
+*!  VERSION 1.1.0  07feb2007
+
+*/
+
+VERSION 8.0
+
+INCLUDE _std_small
+INCLUDE header
+
+HELP hlp1, view("help range")
+RESET res1
+
+DIALOG main, label("range - Generate numerical range") tabtitle("Main")
+BEGIN
+  TEXT     tx_var       _lft     _top     _iwd        .,		/*
+		*/ label("Generate variable:")
+  EDIT     ed_var       @        _ss      _vnwd       .,		/*
+		*/ label("Generate variable")
+
+  EDIT     en_first     @        _xls     _en7wd      ., numonly	/*
+		*/ default(literal "1")					/*
+		*/ label("Start value")
+  TEXT     tx_first     _en7sep  @        _en7r       .,		/*
+		*/ label("Start value")
+
+  EDIT     en_last      _lft     _ls      _en7wd      ., numonly	/*
+		*/ default(literal "100")				/*
+		*/ label("End value")
+  TEXT     tx_last      _en7sep  @        _en7r       .,		/*
+		*/ label("End value")
+
+  RADIO    rb_default   _lft     _xls     _iwd        ., first		/*
+		*/ clickon("gaction main.sp_obs.disable")		/*
+		*/ label("Current number of observations")
+
+  RADIO    rb_obs       @        _ms      _rbwd       ., last		/*
+		*/ clickon("gaction main.sp_obs.enable")		/*
+		*/ label("")
+  SPINNER  sp_obs       _rbsep   @        _spwd       .,		/*
+		*/ min(2) max(10000000) default(100)			/*
+		*/ label("Number of observations")
+  TEXT     tx_obs       _spsep   @        _rbspr      .,		/*
+		*/ label("Observations")
+END
+
+
+PROGRAM command
+BEGIN
+	require main.ed_var main.en_first main.en_last
+	put "range " main.ed_var " " main.en_first " " main.en_last
+	if main.rb_obs {
+		put " " main.sp_obs
+	}
+END
+

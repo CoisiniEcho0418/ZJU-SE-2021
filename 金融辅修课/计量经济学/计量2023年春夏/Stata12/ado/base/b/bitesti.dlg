@@ -1,0 +1,54 @@
+/*
+	bitesti
+
+*!  VERSION 1.0.1  15mar2007
+
+*/
+
+VERSION 8.0
+
+INCLUDE _std_small
+INCLUDE _ht150
+INCLUDE header
+HELP hlp1, view("help bitesti")
+RESET res1
+
+DEFINE txtwid  160
+DEFINE skip   +165
+
+DIALOG main, label("bitesti - Binomial probability test calculator") tabtitle("Main")
+BEGIN
+  TEXT     tx_totn       _lft       20   txtwid        ., right /*
+		*/ label("Total number:")
+  SPINNER  sp_totn       skip        @    _spwd        .,	/*
+		*/ label("Total number")			/*
+		*/ min(1) max(10000000) default(literal 100)
+
+  TEXT     tx_succ       _lft      _ls   txtwid        ., right /*
+		*/ label("Number of successes:")
+  SPINNER  sp_succ       skip        @    _spwd        .,	/*
+		*/ label("Number of successes")			/*
+		*/ min(1) max(10000000) default(literal  50)
+
+  TEXT     tx_prob       _lft      _ls   txtwid        ., right /*
+		*/ label("Probability of success:")
+  EDIT     en_prob       skip        @    _spwd        .,	/*
+		*/ numonly default(literal  "0.5")		/*
+		*/ label("Probability of success")
+END
+
+DIALOG adv, label("bitesti - Binomial prob. test") tabtitle("Advanced")
+BEGIN
+  CHECKBOX ck_detail     _lft      _top    _iwd        .,	/*
+		*/ option(detail)				/*
+		*/ label("Show additional details")
+END
+
+
+PROGRAM command
+BEGIN
+	put "bitesti " main.sp_totn " " main.sp_succ " " main.en_prob
+	beginoptions
+		option adv.ck_detail
+	endoptions
+END

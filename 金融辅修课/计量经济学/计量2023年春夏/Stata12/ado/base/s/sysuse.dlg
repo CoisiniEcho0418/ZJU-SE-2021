@@ -1,0 +1,80 @@
+/*
+  sysuse
+
+  VERSION 1.0.0  21dec2002
+
+*/
+VERSION 8.0
+
+INCLUDE _std_medium
+INCLUDE _ht210
+INCLUDE header
+
+HELP hlp1, view("help sysuse")
+RESET res1
+
+DIALOG main, label("sysuse - Use shipped dataset") /*
+           */tabtitle("Main")
+BEGIN
+  /*--+----1----+----2----+----3----+----4----+----5----+----6----+----7----+*/ 
+  GROUPBOX gb_opt           _lft      _top       _iwd      _ht4,          /*
+           */ label("Options")
+  RADIO    rb_file          _indent   _ss        _inwd      .,            /*
+           */ first                                                       /*
+           */ label("Select file")                                        /*
+           */ clickon(script rb_file_on)
+  RADIO    rb_dir              @      _ss         @         .,            /*
+           */ last                                                        /*
+           */ label("Show datasets available in the adopath")	 	  /*
+           */ clickon(script rb_dir_on)
+  
+  GROUPBOX gb_file          _lft      _xxls      _iwd      _ht5,    
+           
+  EDIT     ed_file          _indent   _ms        _vnwd      .,            /*
+           */ label("File ")                    
+  DEFINE   holdy @y
+  CHECKBOX ck_clear            @      _ms        _ibwd      .,            /*
+           */ label("Automatically discard data in memory")               /*
+           */ option(clear) nomem
+           
+  CHECKBOX ck_all              @      holdy      _ibwd      .,            /*
+	*/label("List all datasets, even those with an ( _ ) in their name") /*
+           */ option(all)                                 
+END
+
+SCRIPT rb_file_on
+BEGIN
+  main.gb_file.setlabel "File to select "
+  main.ck_all.hide
+  main.gb_file.show
+  main.ed_file.show
+  main.ck_clear.show
+END
+
+SCRIPT rb_dir_on
+BEGIN
+  main.gb_file.setlabel "Show hidden files "
+  main.ck_all.show
+  main.ck_clear.hide
+  main.ed_file.hide
+END
+
+PROGRAM command
+BEGIN
+	put "sysuse "
+        if main.rb_file {
+           require main.ed_file
+           put `"""'
+           put main.ed_file
+           put `"""'
+        }
+        if main.rb_dir {
+           put "dir "
+        }
+        beginoptions
+           option main.ck_clear
+           option main.ck_all
+        endoptions
+       
+END
+

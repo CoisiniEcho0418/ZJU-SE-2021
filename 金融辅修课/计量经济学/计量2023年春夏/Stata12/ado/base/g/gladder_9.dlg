@@ -1,0 +1,38 @@
+/*
+  gladder
+
+*!  VERSION 1.1.1  15aug2006 (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+HELP hlp1, view("help gladder")
+RESET res1
+INCLUDE ghistogram
+INCLUDE ifin
+
+INCLUDE gdensity
+INCLUDE gr_twoway
+
+SCRIPT POSTINIT
+BEGIN
+	script ghistogram_createAsGladder
+	script gdensity_allow_kDensity
+	script gdensity_normalByDefault
+END
+
+PROGRAM command
+BEGIN
+	put "gladder "
+	put /program ghistogram_main_output
+	INCLUDE _ifin_pr
+	beginoptions
+		put " " /program ghistogram_options_output
+		put " " /program gdensity_output
+		put " " /program gr_twoway_output
+	endoptions
+END
+/* end */

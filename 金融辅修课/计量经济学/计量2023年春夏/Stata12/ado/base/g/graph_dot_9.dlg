@@ -1,0 +1,55 @@
+/*
+  graph_dot_9.dlg
+
+*!  VERSION 2.0.1  18jan2007  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+
+HELP hlp1, view("help graph_dot")
+RESET res1
+
+SCRIPT POSTINIT
+BEGIN
+	script gbarstyle_setMarkerTab
+	script weights_setLayout_fpa
+	script gbar_setDotOn
+END
+
+INCLUDE gbar
+INCLUDE gover
+INCLUDE ifin
+INCLUDE weights
+INCLUDE gdotopt
+INCLUDE gmarkerstyle
+INCLUDE gdotline
+INCLUDE gbaryaxis
+INCLUDE gtitle
+INCLUDE gcaption
+INCLUDE glegend
+INCLUDE gregion
+INCLUDE gby
+
+PROGRAM command
+BEGIN
+	put "graph "
+	put " " /program gbar_output
+	put " " /program weights_output
+	put " " /program ifin_output
+	beginoptions
+		put " " /program gover_output
+		put " " /program gdotopt_output
+		put " " /program gmarkerstyle_output
+		put " " /program gdotline_output
+		put " " /program gbaryaxis_output
+		put " " /program gtitle_output
+		put " " /program gcaption_output
+		put " " /program glegend_output
+		put " " /program gregion_output
+		put " " /program gby_output
+	endoptions
+END

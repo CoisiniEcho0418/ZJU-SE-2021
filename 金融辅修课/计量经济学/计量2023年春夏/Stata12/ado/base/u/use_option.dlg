@@ -1,0 +1,88 @@
+/*
+	use
+
+*! VERSION 2.0.0  13sep2010
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_medium
+DEFINE	_dlght 170
+INCLUDE header
+HELP hlp1, view("help use")
+RESET res1
+
+SCRIPT PREINIT_SCRIPT
+BEGIN
+	create ARRAY main_using_variables
+	create DOUBLE main_des_error
+END
+
+DIALOG main, tabtitle("Main") label("use - Load Stata dataset")
+BEGIN
+  TEXT tx_use			_lft	_top	_iwd	.,		///
+	label("Filename:")
+
+  FILE fi_use			@	_ss	@	.,		///
+	option(using)							///
+	error("Filename")						///
+	defext(dta)							///
+	filter("Stata File (*.dta)|*.dta|All (*.*)|*.*")		///
+	label("Browse...")
+
+  TEXT tx_using			@	_ls	_iwd	.,		///
+	label("Variables to use from dataset on disk: (optional)")
+  COMBOBOX cb_using		_lft	_ss	320	.,		///
+	append								///
+	dropdown							///
+	contents(main_using_variables)					///
+	label("Variables to load from dataset on disk")
+  BUTTON bu_pop			335	@	75	.,		///
+	tooltip("Populate combobox with varlist of dataset on disk")	///
+	onpush(program main_populate_using)				///
+	label("Populate")
+
+  CHECKBOX ck_clear		_lft	+35	_iwd	.,		///
+	option(clear)							///
+	nomem								///
+	label("Replace data in memory")
+
+  CHECKBOX ck_nolabel		@	_ms	@	.,		///
+	label("Omit value labels from the saved dataset")		///
+	option(nolabel)
+END
+
+PROGRAM main_populate_using
+BEGIN
+	require main.fi_use
+	call main_des_error.setvalue 0
+	put "use_option_wrk_dlg using "
+	put `"""'
+	put main.fi_use
+	put `"""'
+	stata hidden immediate
+
+	if main_des_error {
+		stopbox stop "Unable to get variables from dataset on disk"
+	}
+	call main.cb_using.repopulate
+END
+
+INCLUDE ifin
+
+PROGRAM command
+BEGIN
+	require main.fi_use
+	put "use "
+	put main.cb_using
+	put " " /program ifin_output
+	if ifin_has_output | main.cb_using {
+		put " using "
+	}
+	put `"""' main.fi_use `"""'
+	beginoptions
+		option main.ck_clear
+		option main.ck_nolabel
+	endoptions
+END

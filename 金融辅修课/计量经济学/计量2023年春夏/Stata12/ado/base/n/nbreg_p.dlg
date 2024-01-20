@@ -1,0 +1,143 @@
+/*
+	predict (after nbreg)
+
+*!  VERSION 2.0.1  27may2010
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_medium  // ** set POSTINIT to match
+DEFINE _dlght 310
+INCLUDE header
+
+HELP hlp1, view("help nbreg postestimation")
+RESET res1
+
+SCRIPT POSTINIT
+BEGIN
+	script _p_gentype_setMedium
+END
+
+DIALOG main, label("predict - Prediction after estimation") tabtitle("Main")
+BEGIN
+  INCLUDE  _p_gentype
+
+  GROUPBOX gb_opts           _lft      _ls       _iwd      _ht19,	/*
+		*/ label("Produce:")
+  RADIO    rb_n              _indent   _ss       _inwd     ., first	/*
+		*/ option(n)						/*
+		*/ onclickon(script _p_gentype_score_off)		/*
+		*/ label("Number of events")
+  RADIO    rb_ir             @         _ss       @         .,		/*
+		*/ option(ir)						/*
+		*/ onclickon(script _p_gentype_score_off)		/*
+		*/ label("Incidence rate")
+  RADIO    rb_pr_n           @         _ss       @         .,		/*
+		*/ onclickon(script main_pr_n_on)			/*
+		*/ onclickoff(script main_pr_n_off)			/*
+		*/ label("Probability of y=n")
+  RADIO    rb_pr_a_b       @         +45       @         .,		/*
+		*/ onclickon(script main_pr_a_b_on)			/*
+		*/ onclickoff(script main_pr_a_b_off)			/*
+		*/ label("Probability of a<=y<=b")
+  RADIO    rb_xb             @         +45       @         .,		/*
+		*/ option(xb)						/*
+		*/ onclickon(script _p_gentype_score_off)		/*
+		*/ label("Linear prediction")
+  RADIO    rb_stdp           @         _ss       @         .,		/*
+		*/ option(stdp)						/*
+		*/ onclickon(script _p_gentype_score_off)		/*
+		*/ label("Standard error of the linear prediction")
+  RADIO    rb_score          @         _ss       @         ., last	/*
+		*/ option(score)					/*
+		*/ onclickon(script _p_gentype_scores_on)		/*
+		*/ label("Equation-level scores")
+  EDIT      ed_pr_n          _indent2  -110      _en7wd    .,		/*
+		*/ option(pr)						/*
+		*/ label("Probability of y=n")
+
+DEFINE x @x
+  TEXT      tx_pr_n          _en7sep   @         50        .,		/*
+		*/ label("n")
+
+  EDIT      ed_pr_a         x         +45       _en7wd    .,		/*
+		*/ label("Probability of a<=y")
+  TEXT      tx_pr_a         _en7sep   @         50        .,		/*
+		*/ label("a")
+
+  EDIT      ed_pr_b         +55       @        _en7wd     .,		/*
+		*/ label("Probability of y<=b")
+  TEXT      tx_pr_b         _en7sep   @        50         .,		/*
+		*/ label("b")
+
+  CHECKBOX ck_nooffset       _lft      +100     _iwd       .,		/*
+		*/ option(nooffset)					/*
+		*/ label("Ignore offset variable (if any)")
+END
+
+SCRIPT main_pr_n_on
+BEGIN
+	script _p_gentype_score_off
+	main.ed_pr_n.enable
+	main.tx_pr_n.enable
+END
+
+SCRIPT main_pr_n_off
+BEGIN
+	script _p_gentype_score_off
+	main.ed_pr_n.disable
+	main.tx_pr_n.disable
+END
+
+SCRIPT main_pr_a_b_on
+BEGIN
+	script _p_gentype_score_off
+	main.ed_pr_a.enable
+	main.tx_pr_a.enable
+	main.ed_pr_b.enable
+	main.tx_pr_b.enable
+END
+
+SCRIPT main_pr_a_b_off
+BEGIN
+	script _p_gentype_score_off
+	main.ed_pr_a.disable
+	main.tx_pr_a.disable
+	main.ed_pr_b.disable
+	main.tx_pr_b.disable
+END
+
+INCLUDE _p_gentype_sc
+INCLUDE ifin
+
+INCLUDE _type_list_fd
+
+PROGRAM main_ed_pr_a_b_output
+BEGIN
+	put "pr("
+	put main.ed_pr_a
+	put ","
+	put main.ed_pr_b
+	put ")"
+END
+
+PROGRAM command
+BEGIN
+	put "predict "
+	put " " /program _p_gentype_output
+	INCLUDE _ifin_pr
+	beginoptions
+		option radio(main rb_n rb_ir rb_xb rb_stdp rb_score)
+		if main.rb_pr_n {
+			require main.ed_pr_n
+			optionarg main.ed_pr_n
+		}
+		if main.rb_pr_a_b {
+			require main.ed_pr_a
+			require main.ed_pr_b
+			put " " /program main_ed_pr_a_b_output
+		}
+		option main.ck_nooffset
+	endoptions
+END

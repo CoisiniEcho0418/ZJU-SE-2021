@@ -1,0 +1,4 @@
+*! version 1.0.0  22dec2002
+sequence 4213
+label "Gray 3"
+set rgb "48 48 48"

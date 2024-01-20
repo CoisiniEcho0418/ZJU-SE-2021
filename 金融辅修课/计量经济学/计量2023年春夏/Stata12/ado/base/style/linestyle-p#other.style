@@ -1,0 +1,6 @@
+*! version 1.0.1  05dec2003
+sequence 4501
+
+set width    scheme p#other
+set color    scheme p#otherline
+set pattern  scheme p#other

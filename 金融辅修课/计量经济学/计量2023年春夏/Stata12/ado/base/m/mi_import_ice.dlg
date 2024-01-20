@@ -1,0 +1,49 @@
+/*
+  mi_import_ice
+
+*! VERSION 1.0.1  02jul2009
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_msmall
+DEFINE _dlght 170
+INCLUDE header
+
+HELP hlp1, view("help mi_import_ice")
+RESET res1
+
+DIALOG main, label("mi import ice - Import ice-format data into mi") ///
+	tabtitle("Main")
+BEGIN
+  TEXT tx_imp		_lft	_top	_iwd	.,			///
+	label("Imputed variables to be registered:")
+  VARLIST vl_imp	@	_ss	@	.,			///
+	option(imputed)							///
+	label("Imputed variables to be registered")
+  TEXT tx_pas		@	_ls	@	.,			///
+	label("Passive variables to be registered:")
+  VARLIST vl_pas	@	_ss	@	.,			///
+	option(passive)							///
+	label("Passive variables to be registered")
+
+  CHECKBOX ck_auto	@	_ls	@	.,			///
+	option(automatic)						///
+	label("Register variables automatically")
+  CHECKBOX ck_clear	@	_ms	@	.,			///
+	option(clear)							///
+	label("Replace data in memory")
+END
+
+PROGRAM command
+BEGIN
+	put "mi import ice "
+
+	beginoptions
+		optionarg main.vl_imp
+		optionarg main.vl_pas
+		option main.ck_clear
+		option main.ck_auto
+	endoptions
+END

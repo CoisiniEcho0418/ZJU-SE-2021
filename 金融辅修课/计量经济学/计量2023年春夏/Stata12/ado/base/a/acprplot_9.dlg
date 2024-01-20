@@ -1,0 +1,51 @@
+/*
+  acprplot_9.dlg
+
+*!  VERSION 1.1.2  07aug2006  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+
+INCLUDE header
+HELP hlp1, view("help acprplot")
+RESET res1
+
+DIALOG main, label("acprplot - Augmented component-plus-residual plot") /*
+		*/ tabtitle("Main")
+BEGIN
+  TEXT     tx_iv           _lft      _top      _iwd      .,		/*
+		*/label("Independent variable:")
+  VARNAME  vn_iv           @         _ss       _vnwd     .,             /*
+  		*/label("Independent variable")
+END
+
+INCLUDE p1_opts
+INCLUDE line_opts
+INCLUDE glsopts
+INCLUDE gmsopts
+INCLUDE addplot
+INCLUDE gr_twoway
+
+SCRIPT PREINIT
+BEGIN
+	script p1_opts_createAsNoRange
+	script p1_opts_setDefaultScatter
+END
+
+PROGRAM command
+BEGIN
+	put "acprplot "
+	varlist main.vn_iv
+	beginoptions
+		put " " /program p1_opts_output
+		put " " /program line_opts_rlopts_output
+		put " " /program glsopts_output
+		put " " /program gmsopts_output
+		put " " /program addplot_output
+		put " " /program gr_twoway_output
+	endoptions
+END
+/* end */

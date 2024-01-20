@@ -1,0 +1,6 @@
+*! version 1.0.0  22dec2002
+sequence 2520
+label "Third tiny"
+set val .46296
+
+* 1.33 pt based on a 4 inch high graph

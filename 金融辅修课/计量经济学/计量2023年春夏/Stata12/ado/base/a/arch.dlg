@@ -1,0 +1,97 @@
+/*
+  arch models
+
+*!  VERSION 1.0.0  19jun2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_large
+POSITION . . _dlgwd 260
+CANCEL can1, label("Close")
+SUBMIT sub1, label("Next...") target(stata hidden)
+
+DIALOG main, 	///
+	title("Autoregressive conditional heteroskedasticity (ARCH)")
+BEGIN
+  GROUPBOX gb_arch	_lft	_top	_iwd	_ht20,		///
+	label("Estimators")
+  RADIO    rb_1		_ilft	_ss	_ibwd	.,		///
+ 	first							///
+ 	option(garch)						///
+ 	label("ARCH and GARCH models")
+  RADIO    rb_2		@	_ss	@	.,		///
+	option(egarch)						///
+	label("Nelson's EGARCH model (EARCH, EGARCH)")
+  RADIO    rb_3		@	_ss	@	.,		///
+	option(tarch)						///
+	label("Threshold ARCH model (ABARCH, ATARCH, SDGARCH)")
+  RADIO    rb_4		@	_ss	@	.,		///
+	option(gjrtarch)					///
+	label("GJR form of threshold ARCH model (ARCH, TARCH, GARCH)")
+  RADIO    rb_5		@	_ss	@	.,		///
+	option(saarch)						///
+	label("Simple asymmetric ARCH model (ARCH, SAARCH, GARCH)")
+  RADIO    rb_6		@	_ss	@	.,		///
+	option(parch)						///
+	label("Power ARCH model (PARCH, PGARCH)")
+  RADIO    rb_7		@	_ss	@	.,		///
+	option(narch)						///
+	label("Nonlinear ARCH model (NARCH, GARCH)")
+  RADIO    rb_8		@	_ss	@	.,		///
+	option(narchk)						///
+	label("Nonlinear ARCH model with one shift (NARCHK, GARCH)")
+  RADIO    rb_9		@	_ss	@	.,		///
+	option(aparch)						///
+	label("Asymmetric power ARCH model (APARCH, PGARCH)")
+  RADIO    rb_10	@	_ss	@	.,		///
+	last							///
+	option(nparch)						///
+	label("Nonlinear power ARCH model (NPARCH, PGARCH)")
+END
+
+PROGRAM command
+BEGIN
+	call create STRING cmd
+	if main.rb_1 {
+		call view dialog garch
+		exit
+	}
+	if main.rb_2 {
+		call view dialog egarch
+		exit
+	}
+	if main.rb_3 {
+		call view dialog tarch
+		exit
+	}
+	if main.rb_4 {
+		call view dialog gjrtarch
+		exit
+	}
+	if main.rb_5 {
+		call view dialog saarch
+		exit
+	}
+	if main.rb_6 {
+		call view dialog parch
+		exit
+	}
+	if main.rb_7 {
+		call view dialog narch
+		exit
+	}
+	if main.rb_8 {
+		call view dialog narchk
+		exit
+	}
+	if main.rb_9 {
+		call view dialog aparch
+		exit
+	}
+	if main.rb_10 {
+		call view dialog nparch
+		exit
+	}
+END

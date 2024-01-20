@@ -1,0 +1,143 @@
+/*
+  ci
+
+*! VERSION 1.1.0  07dec2004
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_large
+INCLUDE _ht360
+INCLUDE header
+HELP hlp1, view("help ci")
+RESET res1
+
+
+DIALOG main, label("ci - Confidence intervals for means, proportions, and counts") /*
+		*/ tabtitle("Main")
+BEGIN
+  TEXT     tx_var          _lft      _top      _iwd      .,		/*
+		*/label("Variables: (leave empty for all variables)")
+  VARLIST  vl_var          @         _ss       _iwd      .,             /*
+  		*/label("Variables")
+  GROUPBOX gb_opt          @         _xls      _iwd      _ht23h,        /*
+  		*/label("Options")
+
+  GROUPBOX gb_variables	   _indent   _ss       _cwd1     _ht6,		/*
+		*/ label("Variable type")
+  DEFINE y @y
+  RADIO    rb_normal       _indent   _ss       _cwd3     .,		/*
+  		*/ label("Normal variables")				/*
+		*/ option("NONE")					/*
+  		*/ first						/*
+  		*/ onclickon(script binomial_off)
+  RADIO    rb_binom        @         _ss       @         .,		/*
+  		*/ label("Binomial variables (0/1)")/*
+  		*/ option("binomial")					/*
+		*/ onclickon(script binomial_on)
+  RADIO    rb_poiss        @         _ss       @         .,		/*
+  		*/ label("Poisson variables")/*
+  		*/ option("poisson")					/*
+		*/ last							/*
+		*/ onclickon(script binomial_off)
+  CHECKBOX ck_expos        _ilft     _xls      @         .,		/*
+  		*/ label("Exposure variable (uses Poisson)")		/*
+  		*/ clickon("script exposure_on")			/*
+		*/ clickoff(gaction main.vn_expos.disable)
+
+  DEFINE _x @x
+  DEFINE _y _ls
+  DEFINE _cx _sprb
+
+  VARNAME  vn_expos        _indent2  _ss       _vnwd     .,	        /*
+  		*/ label("Exposure variable") 				/*
+  		*/ option("exposure")
+  CHECKBOX ck_total	   _x	     _ls       _ibwd     .,             /*
+  		*/ option("total")					/*
+  		*/ label("Add output for all groups combined (for use with by only)")
+  SPINNER  sp_sep          _x        _ls       _spwd     .,          	/*
+  		*/ option(separator)					/*
+		*/ min(0)						/*
+		*/ max(10000)						/*
+		*/ default(5)
+  TEXT	   tx_sep          _spsep    @         _sprb     .,		/*
+  		*/ label("Separator line every N variables (set 0 for none)")
+  INCLUDE _sp_level
+
+  GROUPBOX gb_biopts       _lft2     y         _cwd2     _ht10,		/*
+  		*/ label("Binomial confidence interval")
+  RADIO    rb_exact        _indent   _ss       _inwd     .,		/*
+  		*/ label("Exact") 					/*
+  		*/ first
+  RADIO    rb_wald	   @         _ss       @         .,		/*
+	  	*/ label("Wald")					/*
+		*/ option(wald)
+  RADIO    rb_wilson       @         _ss       @         .,		/*
+  		*/ label("Wilson") 					/*
+  		*/ option("wilson")
+  RADIO    rb_agresti      @         _ss       @         .,		/*
+  		*/ label("Agresti-Coull") option("agresti")
+  RADIO    rb_jeffreys     @         _ss       @         .,		/*
+  		*/ label("Jeffreys") 					/*
+  		*/ last							/*
+  		*/ option("jeffreys")
+END
+
+INCLUDE byifin
+INCLUDE weights_fa
+
+SCRIPT exposure_on
+BEGIN
+	main.vn_expos.enable
+END
+
+SCRIPT binomial_on
+BEGIN
+	main.gb_biopts.enable
+	main.rb_exact.enable
+	main.rb_wald.enable
+	main.rb_wilson.enable
+	main.rb_agresti.enable
+	main.rb_jeffreys.enable
+END
+
+SCRIPT binomial_off
+BEGIN
+	main.gb_biopts.disable
+	main.rb_exact.disable
+	main.rb_wald.disable
+	main.rb_wilson.disable
+	main.rb_agresti.disable
+	main.rb_jeffreys.disable
+END
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "ci "
+	varlist [main.vl_var]
+	INCLUDE _weights_pr
+	INCLUDE _ifin_pr
+	beginoptions
+		option main.rb_normal
+		option main.rb_binom
+		option main.rb_poiss
+
+		option main.rb_wald
+		option main.rb_wilson
+		option main.rb_agresti
+		option main.rb_jeffreys
+		if !sub.ck_by & main.ck_total {
+			stopbox stop `"On the "Main" tab, "Add output for all groups combined""' ///
+			`"requires "Repeat command by groups" on the "by/if/in" tab to be used."'
+		}
+		option main.ck_total
+		if main.ck_expos {
+			require main.vn_expos
+			optionarg main.vn_expos
+		}
+		optionarg /hidedefault main.sp_sep
+		INCLUDE _level_main_pr
+	endoptions
+END

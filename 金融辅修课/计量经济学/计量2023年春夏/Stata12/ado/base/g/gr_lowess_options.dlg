@@ -1,0 +1,45 @@
+/*
+    gr_lowess_options.dlg
+    
+*!  VERSION 1.0.0  06jun2006 
+
+*/
+
+VERSION 10
+
+INCLUDE _std_msmall
+DEFINE  _dlght 180
+INCLUDE header_gr_child
+
+HELP hlp1, view("help twoway_lowess")
+RESET res1
+
+DIALOG main, label("Lowess options") tabtitle("Main")
+BEGIN
+  CHECKBOX ck_mean		_lft	20	_iwd	.,	///
+	option(mean)						///
+	label("Use running-mean smoothing") 
+  CHECKBOX ck_noweight		@	_ms	@	.,	///
+	option(noweight)					///
+	label("Prevent the use of Cleveland's tricube weighting function") 
+  CHECKBOX ck_logit		@	_ms	@	.,	///
+	option(logit)						///
+	label("Transform the smoothed yvar into logits") 
+  CHECKBOX ck_adjust		@	_ms	@	.,	///
+	option(adjust)						///
+	label("Adjust mean of the smoothed yvar to equal the mean of yvar")
+  EDIT     ed_bwidth		@	_ms	_en7wd	.,	///
+	default(0.8) option(bwidth)
+  TEXT     tx_bwidth		_en7sep @	140	.,	///
+	label("Bandwidth")
+END
+
+
+PROGRAM command
+BEGIN
+	option main.ck_mean
+	option main.ck_noweight
+	option main.ck_logit
+	option main.ck_adjust
+	optionarg /hidedefault main.ed_bwidth
+END

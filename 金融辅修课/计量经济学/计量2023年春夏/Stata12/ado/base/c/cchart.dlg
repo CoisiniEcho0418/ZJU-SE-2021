@@ -1,0 +1,93 @@
+/*
+	cchart
+
+*!  VERSION 2.0.1  11mar2011
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_large
+DEFINE _dlght 300
+INCLUDE header
+
+HELP hlp1, view("help cchart")
+RESET res1
+
+SCRIPT POSTINIT
+BEGIN
+	gr_ciplots.settabtitle "Control limits"
+	script gr_plots_setDefaultConnected
+	gr_ciplots_outputCmd.setstring "clopts"
+	script gr_ciplots_setDefaultLine
+END
+
+DIALOG main,label("cchart - Draw a c chart")	tabtitle("Main")
+BEGIN
+  TEXT     tx_defect      _lft       _top       _iwd	   .,	///
+	label("Variable containing number of defects:")
+  VARNAME  vn_defect      @          _ss        _vnwd      .,	///
+	label("Variable containing number of defects")
+
+  TEXT     tx_unit        @	     _ls        _iwd       .,	///
+	label("Variable containing sample units:")
+  VARNAME  vn_unit        @          _ss        _vnwd      .,	///
+	label("Variable containing sample units")
+
+  CHECKBOX ck_nograph     _lft       _ls        _iwd       .,	///
+	label("Suppress graph") option(nograph)			///
+	onclickon(script graph_off) onclickoff(script graph_on)
+END
+
+SCRIPT graph_on
+BEGIN
+	script gr_plots_enable
+	script gr_ciplots_enable
+	script gr_addplots_enable
+	script gr_yaxis_enable
+	script gr_xaxis_enable
+	script gr_titles_enable
+	script gr_legend_enable
+	script gr_overall_enable
+END
+
+SCRIPT graph_off
+BEGIN
+	script gr_plots_disable
+	script gr_ciplots_disable
+	script gr_addplots_disable
+	script gr_yaxis_disable
+	script gr_xaxis_disable
+	script gr_titles_disable
+	script gr_legend_disable
+	script gr_overall_disable
+END
+
+INCLUDE gr_plots
+INCLUDE gr_ciplots
+INCLUDE gr_addplots
+INCLUDE gr_yaxis
+INCLUDE gr_xaxis
+INCLUDE gr_titles
+INCLUDE gr_legend
+INCLUDE gr_overall
+
+PROGRAM command
+BEGIN
+	put "cchart "
+	varlist main.vn_defect
+	varlist main.vn_unit
+
+	beginoptions
+		option main.ck_nograph
+		put " " /program gr_plots_output
+		put " " /program gr_ciplots_output
+		put " " /program gr_addplots_output
+		put " " /program gr_yaxis_output
+		put " " /program gr_xaxis_output
+		put " " /program gr_titles_output
+		put " " /program gr_legend_output
+		put " " /program gr_overall_output
+	endoptions
+END
+

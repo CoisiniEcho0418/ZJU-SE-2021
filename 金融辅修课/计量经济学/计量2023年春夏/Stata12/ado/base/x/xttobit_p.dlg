@@ -1,0 +1,13 @@
+/*
+	predict (after xttobit)
+
+*!  VERSION 1.1.2  31mar2005
+
+*/
+
+VERSION 9.0
+
+HELP hlp1, view("help xttobit postestimation")
+RESET res1
+
+INCLUDE xttobit_common_p

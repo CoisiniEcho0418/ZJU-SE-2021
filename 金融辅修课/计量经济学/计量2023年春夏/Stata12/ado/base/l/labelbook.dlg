@@ -1,0 +1,86 @@
+/*
+  labelbook
+
+*! VERSION 1.1.0  19nov2004
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_large
+INCLUDE _ht330
+INCLUDE header
+
+HELP hlp1, view("help labelbook")
+RESET res1
+
+DIALOG main, tabtitle("Main")	///
+	label("labelbook - Produce a codebook describing value labels")
+BEGIN
+  TEXT     tx_label        _lft      _top       _iwd     .,		///
+	label("Label name list: (leave empty for all)")
+  COMBOBOX cb_label        @         _ss        @        .,		///
+	label("Label name list: (leave empty for all)")			///
+	contents(valuelabels) dropdown append
+  GROUPBOX gb_opt          @         +35        @        _ht21h,	///
+	label("Options")
+  CHECKBOX ck_alpha        _indent   _ss        _ibwd    .,		///
+	label("Alphabetize label mappings")				///
+	option(alpha)
+  SPINNER  sp_len          @         _ls        _spwd    .,		///
+	min(1) max(100000) default(12) option(length)			///
+	label("Check if value labels shortened to this length are unique")
+  TEXT     tx_len          _spsep    @          _sprb    .,		///
+	label("Check if value labels shortened to this length are unique")
+
+  GROUPBOX gb_list         _ilft     +35        _ibwd    _ht6,		///
+	label("Mappings")
+  RADIO    rb_all          _indent   _ss        _inwd    .,		///
+	label("Display all mappings") onclickon(script list_off) first
+  RADIO    rb_list         @         _ss        @        .,		///
+	label("Specify maximum number of mappings to list")		///						/*
+	onclickon(script list_on) last
+  SPINNER  sp_list         _indent2  _ss        _spwd    .,		///
+	label("Maximum number of mappings to list")			///
+	min(0) max(100000) default(1) option(list)
+  TEXT     tx_list         _spsep    @          _rbspr4c .,		///
+	label("Number of mappings")
+
+  CHECKBOX ck_prob         _ilft     +45        _ibwd    .,		///
+	label("Describe potential problems in a summary report")	///
+	option(problems)						///
+	onclickon(main.ck_detail.enable)				///
+	onclickoff(main.ck_detail.disable)
+  CHECKBOX  ck_detail      @         _ms        @        .,		///
+	option(detail)							///
+	label("Do not suppress detailed report on variables or value labels")
+END
+
+SCRIPT list_on
+BEGIN
+	main.sp_list.enable
+	main.tx_list.enable
+END
+
+SCRIPT list_off
+BEGIN
+	main.sp_list.disable
+	main.tx_list.disable
+END
+
+PROGRAM command
+BEGIN
+	put "labelbook "
+	put main.cb_label
+	beginoptions
+		option main.ck_alpha
+		optionarg /hidedefault main.sp_len
+		if main.rb_list {
+			optionarg main.sp_list
+		}
+		option main.ck_prob
+		if main.ck_prob {
+			option main.ck_detail
+		}
+	endoptions
+END

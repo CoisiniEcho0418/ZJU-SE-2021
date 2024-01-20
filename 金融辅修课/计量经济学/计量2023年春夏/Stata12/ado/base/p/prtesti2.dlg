@@ -1,0 +1,84 @@
+/*
+	prtesti
+
+*!  VERSION 1.0.2  20mar2007
+
+	Two sample immediate proportions test.
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+DEFINE _dlght 200
+INCLUDE header
+
+HELP hlp1, view("help prtesti")
+RESET res1
+
+DIALOG main, label("prtesti - Two-sample proportion test calculator")	/*
+		*/ tabtitle("Main")
+BEGIN
+  /*--+----1----+----2----+----3----+----4----+----5----+----6----+----7----+*/ 
+  FRAME    fr_sam1   _lft3_02  _top      _cwd3_02  _ht5h,		/*
+		*/ label("")	
+  FRAME    fr_sam2   _lft3_03  @         _cwd3_03  @,			/*
+		*/ label("")	
+  TEXT     tx_sam1   _lft3_2   @         _cwd3_2   .,			/*
+		*/ center						/*
+		*/ label("Sample 1")
+  TEXT     tx_sam2   _lft3_3   @         @         .,			/*
+		*/ center						/*
+		*/ label("Sample 2")
+
+  FRAME    fr_rows   _lft      _ss       _iwd      _ht3h,		/*
+		*/ label("")
+  TEXT     tx_size   _ilft     _indent   _cwd3_1   .,			/*
+		*/ label("Size")	
+  EDIT     en_size1  _ilft3_2  @         _cwd3_2   .,			/*
+		*/ numonly						/*
+		*/ label("Size for Sample 1")	
+  EDIT     en_size2  _ilft3_3  @         _cwd3_2   .,			/*
+		*/ numonly						/*
+		*/ label("Size for Sample 2")	
+
+  TEXT     tx_prop   _ilft     _ms       _cwd3_1   .,			/*
+		*/ label("Proportion")	
+  EDIT     en_prop1  _ilft3_2  @         _cwd3_2   .,			/*
+		*/ numonly						/*
+		*/ label("Proportion for Sample 1")	
+  EDIT     en_prop2  _ilft3_3  @         _cwd3_2   .,			/*
+		*/ numonly						/*
+		*/ label("Proportion for Sample 2")
+
+  DEFINE _x _lft
+  DEFINE _cx _spr
+  DEFINE _y _xxls
+  INCLUDE _sp_level
+
+  CHECKBOX ck_count  _lft      _ls       _iwd      .,			/*
+		*/ option("count")					/*
+		*/ label("Use integer counts instead of proportions")	
+END
+
+
+
+PROGRAM command
+BEGIN
+	put "prtesti "	
+	require main.en_size1
+	put main.en_size1 
+	put " "
+	require main.en_prop1
+	put main.en_prop1
+	put " "
+	require main.en_size2
+	put main.en_size2 
+	put " "
+	require main.en_prop2
+	put main.en_prop2
+	put " "
+	beginoptions
+		INCLUDE _level_main_pr
+		option main.ck_count
+	endoptions
+END

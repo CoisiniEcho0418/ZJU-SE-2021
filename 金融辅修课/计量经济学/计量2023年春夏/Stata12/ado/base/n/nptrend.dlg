@@ -1,0 +1,63 @@
+/*
+	nptrend	
+
+*!  VERSION 1.1.0  07feb2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_msmall
+DEFINE _dlght 200
+INCLUDE header
+
+HELP hlp1, view("help nptrend")
+RESET res1
+
+DIALOG main, label("nptrend - Test for trend across ordered groups") 	/*
+		*/ tabtitle("Main")
+BEGIN
+  TEXT     tx_var        _lft     _top    _cwd1        .,		/*
+		*/ label("Variable:")
+  TEXT     tx_byopt     _lft2        @    _cwd1        .,		/*
+		*/ label("Group variable:")
+  VARNAME  vn_var        _lft      _ss    _vnwd        .,		/*
+		*/ label("Variable")
+  VARNAME  vn_byopt     _lft2        @    _vnwd        .,		/*
+		*/ label("Group variable")
+  CHECKBOX ck_nodetail   _lft     +35      _iwd	       .,		/*
+		*/ option("nodetail")					/*
+		*/ label("Suppress the display of group rank sums")
+  GROUPBOX gb_opt	 _lft     +30      _iwd	    _ht6,		/*
+		*/ label("Score variable for groups")
+  RADIO    rb_gscore  _indent      _ss    _inwd        .,		/*
+		*/ first						/*
+		*/ label("Use values of group variable")		/*
+		*/ clickon("gaction main.vn_vscore.disable")		
+  RADIO    rb_vscore        @      _ss        @        .,		/*
+		*/ last							/*
+		*/ label("Use values of variable:")			/*
+		*/ clickon("gaction main.vn_vscore.enable")		
+  VARNAME  vn_vscore _indent2      _ss    _vnwd        .,		/*
+		*/ option("score")					/*
+		*/ label("Score variable")
+END
+
+INCLUDE ifin
+
+
+PROGRAM command
+BEGIN
+	put "nptrend "
+	varlist main.vn_var
+	INCLUDE _ifin_pr
+	beginoptions
+		put "by("
+		varlist main.vn_byopt
+		put ")"
+		option main.ck_nodetail
+		if main.rb_vscore {
+			optionarg main.vn_vscore	
+		}
+	endoptions
+END

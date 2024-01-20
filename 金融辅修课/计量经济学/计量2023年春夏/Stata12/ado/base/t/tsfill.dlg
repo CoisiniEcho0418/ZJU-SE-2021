@@ -1,0 +1,37 @@
+/*
+	tsfill
+	
+*!  VERSION 1.1.0  07feb2007
+
+*/
+
+VERSION 8.0
+
+INCLUDE _std_small
+DEFINE _dlght 150
+INCLUDE header
+
+HELP hlp1, view("help tsfill")
+RESET res1
+
+DIALOG main,label("tsfill - Fill in gaps in time variable") tabtitle("Main")
+BEGIN
+  GROUPBOX gb_fill        _lft    _top     _iwd         _ht4,           /*
+                */ label("Create observations to fill missing values:")
+  RADIO    rb_fill        _ilft   _ss      _inwd        .,              /*
+                */ label("For each panel")                              /*
+                */ first                                                /*
+                */ option(NONE) 
+  RADIO    rb_full        _ilft   _ss      @            .,              /*
+                */ label("Balancing values across panels")              /*
+                */ last                                                 /*
+                */ option(full)
+END
+
+PROGRAM command
+BEGIN
+        put "tsfill "
+	beginoptions
+		option radio(main rb_fill rb_full)
+	endoptions
+END 

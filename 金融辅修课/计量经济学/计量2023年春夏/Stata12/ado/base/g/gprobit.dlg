@@ -1,0 +1,98 @@
+/*
+  gprobit
+
+*! VERSION 1.2.3  24aug2010
+
+  keyword:  eclass
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_large
+INCLUDE header
+HELP hlp1, view("help gprobit")
+RESET res1
+
+DIALOG main, label("gprobit - Weighted least-squares probit regression for grouped data")/*
+		*/ tabtitle("Model")
+BEGIN
+  TEXT     tx_pos    _lft      _top      _cwd1     .,			/*
+		*/ label("Outcome variable:")				/*
+		*/
+  VARNAME  vn_pos    @         _ss       _vnwd     .,			/*
+		*/ label("Outcome variable")				/*
+		*/
+  TEXT     tx_pop    _vlx      _top      _cwd1     .,			/*
+		*/ label("Population variable:")			/*
+		*/
+  VARNAME  vn_pop    @         _ss       _vnwd     .,			/*
+		*/ label("Population variable")				/*
+		*/
+  TEXT     tx_iv     _lft      _ls       _iwd      .,			/*
+		*/ label("Independent variables:")			/*
+		*/
+  VARLIST  vl_iv     @         _ss       @         .,			/*
+		*/ label("Independent variables")			/*
+		*/ allowcat fv						/*
+		*/
+END
+
+INCLUDE byifin
+INCLUDE se
+
+SCRIPT PREINIT
+BEGIN
+	script se_createAsOLSJknifeBstrap
+END
+
+SCRIPT rpt_POSTINIT
+BEGIN
+	create STRING rpt_bu_fmtcoefResults
+	program rpt_bu_fmtcoef_ckResults
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr
+  DEFINE _y 20
+  INCLUDE _sp_level
+
+  DEFINE _x _lft
+  DEFINE _y _ls
+  DEFINE _cx _iwd
+  INCLUDE _noomitted
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _vsquish
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _factor_vars_reporting
+
+  DEFINE _x _lft
+  DEFINE _y _xxxls
+  INCLUDE _bu_coef_table_reporting
+END
+
+INCLUDE fmt_coef_table_reporting_pr
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "gprobit "
+	varlist main.vn_pos main.vn_pop [main.vl_iv]
+	INCLUDE _ifin_pr
+	beginoptions
+		put " " /program se_output
+		optionarg /hidedefault rpt.sp_level
+		INCLUDE _noomitted_pr
+		INCLUDE _vsquish_pr
+		INCLUDE _factor_vars_reporting_pr
+		put " " rpt_bu_fmtcoefResults
+	endoptions
+END

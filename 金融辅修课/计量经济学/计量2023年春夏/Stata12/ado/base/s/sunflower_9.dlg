@@ -1,0 +1,723 @@
+/*
+  sunflower_9.dlg
+
+*!  VERSION 1.1.3  03aug2006  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+HELP hlp1, view("help sunflower")
+RESET res1
+
+DIALOG main, tabtitle("Main")						///
+	label("sunflower - Density-distribution sunflower plots")
+		
+BEGIN
+  GROUPBOX gb_vars     _lft        _top      _gwd1       _ht3,		///
+  		label("Variables")
+  TEXT     tx_xvar     _igft       _ms       _yvarwd     .,		///
+                label("X:") right
+
+  VARNAME  vn_xvar     _yvarsep    @         143         .,		///
+                label("X variable")
+  TEXT     tx_yvar     _igft4_2    @         _yvarwd     .,		///
+ 		label("Y:") right
+  VARNAME  vn_yvar     _yvarsep    @         143         .,		///
+                label("Y variable")
+
+/* Bin control options */
+  GROUPBOX gb_bin      _lft        +55       _gwd1       _ht10h,  	///
+  		label("Bin controls")
+DEFINE hold_op @y
+  TEXT     tx_binwd    _igft       _ss       _txwd       .,		///
+  		label("Width:") right
+DEFINE holdy @y
+  EDIT     ed_binwd    _txsep      @         _txr2b4g    .,		///
+  		label("Width") 						///
+  		option(binwidth) numonly
+  TEXT     tx_aspect   _igft       _ms       _txwd       .,		///
+  		label("Aspect:") right
+  EDIT     ed_aspect   _txsep      @         _txr2b4g    .,		///
+  		label("Aspect ratio")					///
+  		option(binar)
+
+  TEXT     tx_light    _igft4_2    holdy     _txwd       .,		///
+  		label("Light min.:") right
+  SPINNER  sp_light    _txsep      @         _txr2b4g    .,		///
+  		label("Light minimum")					///
+  		min(1) default(3) max(1000000)				///
+  		option(light)
+  TEXT     tx_dark     _igft4_2    _ms       _txwd       .,		///
+  		label("Dark min.:") right
+  SPINNER  sp_dark     _txsep      @         _txr2b4g    .,		///
+  		label("Dark minimum")					///
+  		min(1) default(13) max(1000000)				///
+  		option(dark)
+
+  GROUPBOX gb_refbin   _igft       +35       _cwd1gb     _ht2,		///
+  		label("Reference bin")
+  TEXT     tx_xval     _iigft      _ss       _txswd      .,		///
+  		label("X value:") right
+  EDIT     ed_xval     _txssep     @         _txr2b4g    .,		///
+  		label("X value") 					///
+  		option(xcenter) numonly
+  TEXT     tx_yval     _gft4_2     @         _txwd       .,		///
+  		label("Y value:") right
+  EDIT     ed_yval     _txsep      @         _txr4gi     .,		///
+  		label("Y value") 					///
+  		option(ycenter) numonly
+/* End bin control options */
+
+/* Petal control options */
+  GROUPBOX gb_petals   _lft        _xls      _gwd1       _ht2h,		///
+  		label("Petal controls")
+  TEXT     tx_ptlwght  _igft       _ss       _txwd       .,		///
+  		label("Weight:") right
+  EDIT     ed_ptlwght  _txsep      @         _txr2b4g    .,		///
+  		label("Petal weight") 					///
+  		option(petalweight) numonly
+  TEXT     tx_length   _gft4_2     @         _txwd       .,		///
+  		label("Length (%):") right
+  SPINNER  sp_length   _txsep      @         _txr2b4g    .,		///
+  		label("Length of pedals in %")				///
+  		min(1) default(100) max(100) 				///
+  		option(petallength)
+/* End petal control options */
+
+/* Display control options */
+  GROUPBOX gb_display  _lft        _xls      _gwd1       _ht2,		///
+  		label("Display controls")
+  TEXT     tx_notable  _igft       _ss       _txwd       ., right
+  CHECKBOX ck_notable  _txsep      @         125         .,		///
+  		label("Do not show table")				///
+  		option(notable)						///
+  		onclickon(main.ck_nograph.disable)			///
+  		onclickoff(main.ck_nograph.enable)
+  TEXT     tx_nograph  _gft4_2     @         _txwd       ., right
+  CHECKBOX ck_nograph  _txsep      @         _txr2b4g    .,		///
+  		label("Do not graph")					///
+  		option(nograph)						///
+  		onclickon(script main_ck_nograph_on)			///
+  		onclickoff(program main_ck_nograph_off)
+/* End display control options */
+
+/* BEGIN RIGHT SIDE-- Bin / petal look and feel options */
+  GROUPBOX gb_bin_gp   _gft2       _top      _gwd1       _ht16, 	///
+  		label("Light and dark petal options")
+  COMBOBOX cb_binmode  _igft2      _ms       _cwd4_6     .,		///
+  		dropdownlist						///
+  		contents(main_shading)					///
+  		onselchangelist(main_shading_change)
+  TEXT     tx_binmode  +150        @         _cwd4_1     .,		///
+  		label("")
+  CHECKBOX ck_flowers  _igft2      _ls       _vnwd       .,		///
+  		label("Show petals only")				///
+  		onclickon(script main_bin_opts_off)			///
+  		onclickoff(script main_bin_opts_on)			///
+  		option(flowersonly)
+  CHECKBOX ck_single   _ilft2b4_4g @         _cwd2b4_g   .,		///
+  		label("Suppress single petals")				///
+  		option(nosinglepetal)
+
+  /* Bin options */
+  GROUPBOX gb_bin_op   _ilft2g     _ms       _cwd2b4_g   _ht7h,
+DEFINE holdy @y
+
+  TEXT     tx_lbfclr   _ilft2gi    _ss       _txwd       .,		///
+  		label("Fill color:") right
+  COMBOBOX cb_lbfclr   _txsep      @         _tcr2b4gi   .,		///
+  		contents(colors)  					///
+  		option(lbfcolor)					///
+  		onselchangelist(lbfclr_change)				///
+  		dropdownlist
+  COMBOBOX cb_dbfclr   @           @         @           .,		///
+  		contents(colors)  					///
+  		option(dbfcolor)					///
+  		onselchangelist(dbfclr_change)				///
+  		dropdownlist
+  COLOR    cl_lbfclr   _tcr2b4gisep @        _colorwd    .,		///
+  		option(lbfcolor)
+  COLOR    cl_dbfclr   @           @         @           .,		///
+  		option(dbfcolor)
+
+  TEXT     tx_lblclr   _ilft2gi    _ms       _txwd       .,		///
+  		label("Line color:") right
+  COMBOBOX cb_lblclr   _txsep      @         _tcr2b4gi   .,		///
+  		contents(colors)  					///
+  		option(lblcolor)					///
+  		onselchangelist(lblclr_change)				///
+  		dropdownlist
+  COMBOBOX cb_dblclr   @           @         @           .,		///
+  		contents(colors)  					///
+  		option(dblcolor)					///
+  		onselchangelist(dblclr_change)				///
+  		dropdownlist
+  COLOR    cl_lblclr   _tcr2b4gisep @       _colorwd     .,		///
+  		option(lblcolor)
+  COLOR    cl_dblclr   @           @        @            .,		///
+  		option(dblcolor)
+DEFINE holdy2 @y
+
+  TEXT     tx_lblwidth _ilft2gi    _ms       _txwd       .,		///
+  		label("Line width:") right
+  COMBOBOX cb_lblwidth _txsep      @         _txr2b4gi   .,		///
+  		contents(linewidths) 					///
+  		option(lblwidth)					///
+  		dropdownlist
+  COMBOBOX cb_dblwidth @           @         @           .,		///
+  		contents(linewidths) 					///
+  		option(dblwidth)					///
+  		dropdownlist
+
+  /* Petal options */
+  GROUPBOX gb_petal_op _ilft2b4_4g  holdy    _cwd2b4_g   _ht7h,
+
+  TEXT     tx_lflclr   _ilft2b4_4gi holdy2   _txwd       .,		///
+  		label("Line color:") right
+  COMBOBOX cb_lflclr   _txsep       @        _tcr2b4gi   .,		///
+  		contents(colors)  					///
+  		option(lflcolor)					///
+  		onselchangelist(lflclr_change)				///
+  		dropdownlist
+  COMBOBOX cb_dflclr   @            @        @           .,		///
+  		contents(colors)  					///
+  		option(dflcolor)					///
+  		onselchangelist(dflclr_change)				///
+  		dropdownlist
+  COLOR    cl_lflclr   _tcr2b4gisep @        _colorwd    .,		///
+  		option(lflcolor)
+  COLOR    cl_dflclr   @           @         @           .,		///
+  		option(dflcolor)
+
+  TEXT     tx_lflwidth _ilft2b4_4gi _ms      _txwd       .,		///
+  		label("Line width:") right
+  COMBOBOX cb_lflwidth _txsep      @         _txr2b4gi   .,		///
+  		contents(linewidths) 					///
+  		option(lflwidth)					///
+  		dropdownlist
+  COMBOBOX cb_dflwidth @           @         @           .,		///
+  		contents(linewidths) 					///
+  		option(dflwidth)					///
+  		dropdownlist
+
+/* BEGIN Marker options */
+
+  GROUPBOX gb_marker   _lft2g      +45       _gwd1       _ht5,  	///
+  		label("Marker options")
+  TEXT     tx_msym     _igft4_3    _ss       _txwd       .,		///
+  		label("Symbol:") right
+
+  COMBOBOX cb_msym     _txsep      @         _txr2b4g    .,		///
+  		label("Marker symbol") 					///
+  		option(msymbol)						///
+  		dropdownlist						///
+  		contents(symbols)
+
+  TEXT     tx_mcol     _gft4_4     @         _txwd       .,		///
+  		label("Color:") right
+  COMBOBOX cb_mcol     _txsep      @         _tcr2b4g    .,		///
+  		option(mcolor)						///
+  		dropdownlist						///
+  		contents(colors) 					///
+		onselchangelist(main_color_mcol)
+  COLOR    cl_mcol     _tcr2b4gsep @         _colorwd    .,		///
+  		option(mcolor)
+  TEXT     tx_msize    _igft4_3    _ms       _txwd       .,		///
+  		label("Size:") right
+  COMBOBOX cb_msize    _txsep      @         _txr2b4g    .,		///
+  		label("Marker size") 					///
+  		option(msize)						///
+  		dropdownlist 						///
+  		contents(symbolsizes)
+
+ // Other marker options need to be implemented before this code is included
+ /*
+  CHECKBOX ck_mlab     _igft4_3    _ms       _cwd1gb     _ht4h,		///
+  		label("Marker labels") groupbox				///
+  		clickon(script main_mlabel_enable)			///
+		clickoff(script main_mlabel_disable)
+  TEXT     tx_mlab     _iigft2     _ss       _txswd      .,		///
+  		label("Variable:") right
+DEFINE holdy @y
+  VARLIST  vl_mlab     _txssep     @         _txr2b4g    .,		///
+  		label("Marker labels variable") option(mlabel)
+  TEXT     tx_mlsiz    _iigft2     _ms       _txswd      .,		///
+  		label("Size:") right
+  COMBOBOX cb_mlsiz    _txssep     @         _txr2b4g    .,		///
+		option(mlabsize) 					///
+  		dropdownlist						///
+  		contents(textsizes)
+
+  TEXT     tx_mlcol    _igft4_4    holdy     _txwd       .,		///
+  		label("Color:") right
+  COMBOBOX cb_mlcol    _txsep      @         _tcr4gi     .,		///
+		option(mlabcolor)					///
+  		dropdownlist						///
+  		contents(colors) 					///
+  		onselchangelist(main_color_mlcol)
+
+  COLOR    cl_mlcol    _tcr4gisep  @         _colorwd    .,		///
+  		option(mlabcolor)
+  TEXT     tx_mlpos    _igft4_4    _ms       _txwd       .,		///
+  		label("Position:") right
+  COMBOBOX cb_mlpos    _txsep      @         _txr4gi     .,		///
+  		label("Position") 					///
+  		option(mlabposition) 					///
+  		dropdownlist						///
+  		contents(clockpos)
+*/
+/* END Marker options */
+END
+
+SCRIPT main_ck_nograph_on
+BEGIN
+	main.ck_notable.disable
+
+	// disable all look and feel controls
+	main.gb_bin_gp.disable
+	main.ck_single.disable
+	main.ck_flowers.disable
+	script main_bin_opts_off
+	main.gb_petal_op.disable
+	main.tx_lflclr.disable
+	main.cb_lflclr.disable
+	main.cb_dflclr.disable
+	main.cl_lflclr.disable
+	main.cl_dflclr.disable
+	main.tx_lflwidth.disable
+	main.cb_lflwidth.disable
+	main.cb_dflwidth.disable
+	main.cb_binmode.disable
+	main.tx_binmode.disable
+
+	script main_marker_opts_off
+
+	// disable other tabs
+	script all_tabs_disable
+END
+
+PROGRAM main_ck_nograph_off
+BEGIN
+	call main.ck_notable.enable
+
+	// enable all look and feel controls
+	call main.gb_bin_gp.enable
+	call main.cb_binmode.enable
+	call main.tx_binmode.enable
+	call main.ck_single.enable
+	call main.ck_flowers.enable
+	if !main.ck_flowers {
+		call script main_bin_opts_on
+	}
+	call main.gb_petal_op.enable
+	call main.tx_lflclr.enable
+	call main.cb_lflclr.enable
+	call main.cb_dflclr.enable
+	call main.cl_lflclr.enable
+	call main.cl_dflclr.enable
+	call main.tx_lflwidth.enable
+	call main.cb_lflwidth.enable
+	call main.cb_dflwidth.enable
+
+	call program main_marker_opts_on
+
+	// enable other tabs
+	call script all_tabs_enable
+END
+
+SCRIPT main_bin_opts_off
+BEGIN
+	main.gb_bin_op.disable
+	main.tx_lbfclr.disable
+	main.cb_lbfclr.disable
+	main.cb_dbfclr.disable
+	main.cl_lbfclr.disable
+	main.cl_dbfclr.disable
+	main.tx_lblclr.disable
+	main.cb_lblclr.disable
+	main.cb_dblclr.disable
+	main.cl_lblclr.disable
+	main.cl_dblclr.disable
+	main.tx_lblwidth.disable
+	main.cb_lblwidth.disable
+	main.cb_dblwidth.disable
+END
+
+SCRIPT main_bin_opts_on
+BEGIN
+	main.gb_bin_op.enable
+	main.tx_lbfclr.enable
+	main.cb_lbfclr.enable
+	main.cb_dbfclr.enable
+	main.cl_lbfclr.enable
+	main.cl_dbfclr.enable
+	main.tx_lblclr.enable
+	main.cb_lblclr.enable
+	main.cb_dblclr.enable
+	main.cl_lblclr.enable
+	main.cl_dblclr.enable
+	main.tx_lblwidth.enable
+	main.cb_lblwidth.enable
+	main.cb_dblwidth.enable
+END
+
+LIST main_shading
+BEGIN
+	"Light bins and petals"
+	"Dark bins and petals"
+END
+
+LIST main_shading_change
+BEGIN
+	script main_light_bin_opts_on
+	script main_dark_bin_opts_on
+END
+
+SCRIPT main_light_bin_opts_on
+BEGIN
+	script main_dark_off
+	main.tx_binmode.setlabel "Light bin and petal options"
+	main.gb_bin_op.setlabel "Light bins"
+	main.gb_petal_op.setlabel "Light petals"
+	script main_light_on
+END
+
+SCRIPT main_dark_bin_opts_on
+BEGIN
+	script main_light_off
+	main.tx_binmode.setlabel "Dark bin and petal options"
+	main.gb_bin_op.setlabel "Dark bins"
+	main.gb_petal_op.setlabel "Dark petals"
+	script main_dark_on
+END
+
+SCRIPT main_light_on
+BEGIN
+  	main.cb_lbfclr.show
+	main.cb_lbfclr.withvalue  main.cb_lbfclr.setvalue "@"
+	main.cb_lblclr.show
+	main.cb_lblclr.withvalue  main.cb_lblclr.setvalue "@"
+	main.cb_lblwidth.show
+	main.cb_lflclr.show
+	main.cb_lflclr.withvalue  main.cb_lflclr.setvalue "@"
+	main.cb_lflwidth.show
+END
+
+SCRIPT main_light_off
+BEGIN
+  	main.cb_lbfclr.hide
+	main.cl_lbfclr.hide
+	main.cb_lblclr.hide
+	main.cl_lblclr.hide
+	main.cb_lblwidth.hide
+	main.cb_lflclr.hide
+	main.cl_lflclr.hide
+	main.cb_lflwidth.hide
+END
+
+SCRIPT main_dark_on
+BEGIN
+  	main.cb_dbfclr.show
+	main.cb_dbfclr.withvalue  main.cb_dbfclr.setvalue "@"
+	main.cb_dblclr.show
+	main.cb_dblclr.withvalue  main.cb_dblclr.setvalue "@"
+	main.cb_dblwidth.show
+	main.cb_dflclr.show
+	main.cb_dflclr.withvalue  main.cb_dflclr.setvalue "@"
+	main.cb_dflwidth.show
+END
+
+SCRIPT main_dark_off
+BEGIN
+  	main.cb_dbfclr.hide
+	main.cl_dbfclr.hide
+	main.cb_dblclr.hide
+	main.cl_dblclr.hide
+	main.cb_dblwidth.hide
+	main.cb_dflclr.hide
+	main.cl_dflclr.hide
+	main.cb_dflwidth.hide
+END
+
+LIST lbfclr_change
+BEGIN
+	main.cl_lbfclr.hide
+	main.cl_lbfclr.show
+	main.cl_lbfclr.hide
+END
+LIST dbfclr_change
+BEGIN
+	main.cl_dbfclr.hide
+	main.cl_dbfclr.show
+	main.cl_dbfclr.hide
+END
+
+LIST lblclr_change
+BEGIN
+	main.cl_lblclr.hide
+	main.cl_lblclr.show
+	main.cl_lblclr.hide
+END
+LIST dblclr_change
+BEGIN
+	main.cl_dblclr.hide
+	main.cl_dblclr.show
+	main.cl_dblclr.hide
+END
+
+LIST lflclr_change
+BEGIN
+	main.cl_lflclr.hide
+	main.cl_lflclr.show
+	main.cl_lflclr.hide
+END
+LIST dflclr_change
+BEGIN
+	main.cl_dflclr.hide
+	main.cl_dflclr.show
+	main.cl_dflclr.hide
+END
+
+LIST main_color_mcol
+BEGIN
+	main.cl_mcol.hide
+	main.cl_mcol.show
+	main.cl_mcol.hide
+END
+
+LIST main_color_mlcol
+BEGIN
+	main.cl_mlcol.hide
+	main.cl_mlcol.show
+	main.cl_mlcol.hide
+END
+
+PROGRAM main_marker_opts_on
+BEGIN
+	call main.gb_marker.enable
+	call main.tx_msym.enable
+	call main.cb_msym.enable
+	call main.tx_mcol.enable
+	call main.cb_mcol.enable
+	call main.cl_mcol.enable
+	call main.tx_msize.enable
+	call main.cb_msize.enable
+	// Marker controls
+	//call main.ck_mlab.enable
+	//if main.ck_mlab {
+	//	call script main_mlabel_enable
+	//}
+END
+
+/*
+// Marker controls
+SCRIPT main_mlabel_enable
+BEGIN
+	main.tx_mlab.enable
+	main.vl_mlab.enable
+	main.tx_mlsiz.enable
+	main.cb_mlsiz.enable
+	main.tx_mlcol.enable
+	main.cb_mlcol.enable
+	main.cl_mlcol.enable
+	main.tx_mlpos.enable
+	main.cb_mlpos.enable
+END
+*/
+
+SCRIPT main_marker_opts_off
+BEGIN
+	main.gb_marker.disable
+	main.tx_msym.disable
+	main.cb_msym.disable
+	main.tx_mcol.disable
+	main.cb_mcol.disable
+	main.cl_mcol.disable
+	main.tx_msize.disable
+	main.cb_msize.disable
+	// Marker controls
+	// main.ck_mlab.disable
+	// script main_mlabel_disable
+END
+
+/*
+// Marker controls
+SCRIPT main_mlabel_disable
+BEGIN
+	main.tx_mlab.disable
+	main.vl_mlab.disable
+	main.tx_mlsiz.disable
+	main.cb_mlsiz.disable
+	main.tx_mlcol.disable
+	main.cb_mlcol.disable
+	main.cl_mlcol.disable
+	main.tx_mlpos.disable
+	main.cb_mlpos.disable
+END
+*/
+
+LIST main_color_clcol
+BEGIN
+	main.cl_clcol.hide
+	main.cl_clcol.show
+	main.cl_clcol.hide
+END
+
+PROGRAM main_control_opts
+BEGIN
+	optionarg main.ed_binwd
+	optionarg main.ed_aspect
+	optionarg /hidedefault main.sp_light
+	optionarg /hidedefault main.sp_dark
+	option main.ck_flowers
+	option main.ck_single
+	optionarg main.ed_xval
+	optionarg main.ed_yval
+	optionarg /hidedefault main.ed_ptlwght
+	optionarg /hidedefault main.sp_length
+	option main.ck_notable
+	option main.ck_nograph
+END
+
+PROGRAM main_bin_petal_display_opts
+BEGIN
+// light
+	if !Hcc(main.cb_lbfclr) {
+		hoptionarg /hidedefault main.cb_lbfclr
+	}
+	if Hcc(main.cb_lbfclr) {
+		hoptionarg /quoted main.cl_lbfclr
+	}
+
+	if !Hcc(main.cb_lblclr) {
+		hoptionarg /hidedefault main.cb_lblclr
+	}
+	if Hcc(main.cb_lblclr) {
+		hoptionarg /quoted main.cl_lblclr
+	}
+
+ 	hoptionarg /hidedefault main.cb_lblwidth
+
+	if !Hcc(main.cb_lflclr) {
+		hoptionarg /hidedefault main.cb_lflclr
+	}
+	if Hcc(main.cb_lflclr) {
+		hoptionarg /quoted main.cl_lflclr
+	}
+
+ 	hoptionarg /hidedefault main.cb_lflwidth
+
+//dark
+	if !Hcc(main.cb_dbfclr) {
+		hoptionarg /hidedefault main.cb_dbfclr
+	}
+	if Hcc(main.cb_dbfclr) {
+		hoptionarg /quoted main.cl_dbfclr
+	}
+
+	if !Hcc(main.cb_dblclr) {
+		hoptionarg /hidedefault main.cb_dblclr
+	}
+	if Hcc(main.cb_dblclr) {
+		hoptionarg /quoted main.cl_dblclr
+	}
+
+	if !Hcc(main.cb_dflclr) {
+		hoptionarg /hidedefault main.cb_dflclr
+	}
+	if Hcc(main.cb_dflclr) {
+		hoptionarg /quoted main.cl_dflclr
+	}
+
+	hoptionarg /hidedefault main.cb_dblwidth
+	hoptionarg /hidedefault main.cb_dflwidth
+END
+
+PROGRAM main_marker_opts
+BEGIN
+	optionarg main.cb_msym
+	if !Hcc(main.cb_mcol) {
+		optionarg /hidedefault main.cb_mcol
+	}
+	if Hcc(main.cb_mcol) {
+		optionarg /quoted main.cl_mcol
+	}
+	optionarg main.cb_msize
+	/*
+	// Marker programming
+	if main.ck_mlab {
+		require main.vl_mlab
+		optionarg main.vl_mlab
+		optionarg main.cb_mlsiz
+		if !Hcc(main.cb_mlcol) {
+			optionarg /hidedefault main.cb_mlcol
+		}
+		if Hcc(main.cb_mlcol) {
+			optionarg /quoted main.cl_mlcol
+		}
+		optionarg main.cb_mlpos
+	}
+	*/
+END
+
+INCLUDE ifin
+INCLUDE weights_f
+INCLUDE addplot
+INCLUDE gyaxis
+INCLUDE gxaxis
+INCLUDE gtitle
+INCLUDE gcaption
+INCLUDE glegend
+INCLUDE gregion
+INCLUDE gby
+
+SCRIPT all_tabs_enable
+BEGIN
+	script gby_enable
+	script gyaxis_enable
+	script gxaxis_enable
+	script gtitle_enable
+	script gcaption_enable
+	script glegend_enable
+	script gregion_enable
+END
+
+SCRIPT all_tabs_disable
+BEGIN
+	script gby_disable
+	script gyaxis_disable
+	script gxaxis_disable
+	script gtitle_disable
+	script gcaption_disable
+	script glegend_disable
+	script gregion_disable
+END
+
+PROGRAM command
+BEGIN
+	put "sunflower"
+
+	// require x first but take the arg for y first
+	require main.vn_xvar
+	varlist main.vn_yvar
+	varlist main.vn_xvar
+
+	INCLUDE _weights_pr
+	INCLUDE _ifin_pr
+	beginoptions
+		put " " /program main_control_opts
+		put " " /program main_bin_petal_display_opts
+		put " " /program main_marker_opts
+		put " " /program addplot_output
+		put " " /program gyaxis_output
+		put " " /program gxaxis_output
+		put " " /program gtitle_output
+		put " " /program gcaption_output
+		put " " /program glegend_output
+		put " " /program gregion_output
+		put " " /program gby_output
+	endoptions
+END

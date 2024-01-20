@@ -1,0 +1,126 @@
+/*
+    _varstable_common_9.idlg
+
+*!  VERSION 1.1.2  28aug2006 (deprecated)
+
+*/
+
+  GROUPBOX gb_var            _lft      _top      _iwd      _ht6h,
+  RADIO    rb_curres         _ilft     _ss       _cwd1     ., first	///
+		label("Use active results")
+  RADIO    rb_use            @         _ss       @         ., last	///
+		label("Use alternative results:")			///
+		onclickon(gaction main.cb_estimates.enable)		///
+		onclickoff(gaction main.cb_estimates.disable)
+DEFINE y @y
+  COMBOBOX cb_estimates      _indent2  _ss       _vnwd     .,		///
+		dropdown						///
+		option(estimates)					///
+		contents(estimates)					///
+		label("Alternative results")
+
+  CHECKBOX ck_amat           _ilft2     y         _cwd3    .,		///
+		label("Save the companion matrix as:")			///
+		onclickon(gaction main.ed_amat.enable)			///
+		onclickoff(gaction main.ed_amat.disable)
+  EDIT     ed_amat           _indent2  _ss       _vnwd     .,		///
+		option(amat)						///
+		max(32)							///
+		label("Save the companion matrix as")
+
+  CHECKBOX ck_graph          _lft      _xls      _iwd       _ht20h,	///
+  		label("Graph eigenvalues of the companion matrix")	///
+  		onclickon(script main_graph_on)				///
+  		onclickoff(script main_graph_off)			///
+  		option(graph) groupbox
+
+  GROUPBOX gb_label          _igft     _ss       _cwd1gb   _ht6,	///
+  		label("Labels")
+DEFINE y @y
+  RADIO    rb_nolabel        _indent   _ss       _gwd3     ., 		///
+  		first label("Do not label eigenvalues")
+  RADIO    rb_dlabel         @         _ss       @         .,		///
+  		option(dlabel)						///
+  		label("Label eigenvalues with the distance from the unit circle")
+  RADIO    rb_modlabel       @         _ss       @         .,		///
+  		option(modlabel) last					///
+  		label("Label eigenvalues with the modulus")
+
+
+
+  GROUPBOX gb_reference      _igft     +35       _cwd1gb   _ht8h,	///
+  		label("Reference unit circle")
+  TEXT     tx_ccol           _indent   _ss       _txwd     .,		///
+  		label("Color:")
+DEFINE y2 @y
+DEFINE x  @x
+  COMBOBOX cb_ccol           @         _ss       _tcr4gi   .,		///
+  		option(lcolor) dropdownlist				///
+  		contents(colors) onselchangelist(rlopts_color_ccol)
+
+  COLOR    cl_ccol           _tcr4gisep @        _colorwd  .,		///
+  		option(lcolor)
+  TEXT     tx_clwid          x         _ms       _txwd     .,		///
+  		label("Width:")
+  COMBOBOX cb_clwid          @         _ss       _txr4gi   .,		///
+  		label("Connect width") dropdownlist			///
+  		contents(linewidths)					///
+  		option(lwidth)
+
+  TEXT     tx_clpat          _lft4_2   y2        _txwd     .,		///
+  		label("Pattern:")
+  COMBOBOX cb_clpat          @         _ss       _txr4gi   .,		///
+  		label("Pattern") dropdownlist contents(linepatterns) 	///
+  		 option(lpattern)
+  TEXT     tx_conn           @         _ms       _txwd     .,		///
+  		label("Type:")
+  COMBOBOX cb_conn           @         _ss       _txr4gi   .,   	///
+  		label("Connect type") option(connect) 			///
+  		dropdownlist contents(connecttypes)
+
+  GROUPBOX gb_pgrid          _lft2g    y         _cwd1     _ht18,	///
+  		label("Polar grid circles")
+
+  RADIO    rb_default  	     _indent   _ms       _inwd     .,		///
+  		first 							///
+  		onclickon(script main_grid_default_on)			///
+  		label("Use default polar grid circles")
+  RADIO    rb_nogrid         @         _ss       @         .,		///
+  		option(nogrid)						///
+  		onclickon(script main_nogrid_on)			///
+  		label("Suppress polar grid circles")
+  RADIO    rb_pgrid          @         _ss       @         .,		///
+  		last 							///
+  		onclickon(script main_pgrid_on)				///
+  		label("Override default radii of polar grid circles")
+DEFINE x2 @x
+  EDIT     ed_pgrid          _indent2  _ss       _vnwd     .,		///
+  		label("Override default radii of polar grid circles")	///
+  		error("Radii of polar grid circles")
+
+  TEXT     tx_pcol           x2        y2        _txwd     .,		///
+  		label("Color:")
+DEFINE x  @x
+  COMBOBOX cb_pcol           @         _ss       _tcr4gi   .,		///
+  		option(lcolor) dropdownlist				///
+  		contents(colors) onselchangelist(polar_color_pcol)
+
+  COLOR    cl_pcol           _tcr4gisep @        _colorwd  .,		///
+  		option(lcolor)
+  TEXT     tx_plwid          x         _ms       _txwd     .,		///
+  		label("Width:")
+  COMBOBOX cb_plwid          @         _ss       _txr4gi   .,		///
+  		label("Connect width") dropdownlist			///
+  		contents(linewidths)					///
+  		option(lwidth)
+
+  TEXT     tx_plpat          _lft4_4   y2        _txwd     .,		///
+  		label("Pattern:")
+  COMBOBOX cb_plpat          @         _ss       _txr4gi   .,		///
+  		label("Pattern") dropdownlist contents(linepatterns) 	///
+  		 option(lpattern)
+  TEXT     tx_pconn          @         _ms       _txwd     .,		///
+  		label("Type:")
+  COMBOBOX cb_pconn          @         _ss       _txr4gi   .,   	///
+  		label("Connect type") option(connect) 			///
+  		dropdownlist contents(connecttypes)

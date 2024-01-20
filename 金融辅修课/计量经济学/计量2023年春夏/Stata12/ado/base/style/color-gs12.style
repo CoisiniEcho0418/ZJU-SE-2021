@@ -1,0 +1,4 @@
+*! version 1.0.0  22dec2002
+sequence 4204
+label "Gray 12"
+set rgb "192 192 192"

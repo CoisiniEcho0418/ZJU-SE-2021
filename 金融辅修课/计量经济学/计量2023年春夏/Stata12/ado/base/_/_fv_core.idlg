@@ -1,0 +1,153 @@
+ /* _fv_core.idlg
+ 
+ *!  VERSION 1.0.0  08apr2009
+ 
+ */
+
+ 
+  TEXT		tx_term 	_ilft	holdy	_ilw80	.,		///
+	label("Term:")
+  COMBOBOX	cb_term		@	_ss	@ 	.,		///
+	label("Term") dropdownlist onselchange(program check_term)	///
+	contents(term_list) values(term_values)
+
+  TEXT		tx_variables	95	_ls	115	.,		///
+	label("Variables") center
+  TEXT 		tx_base		225	@	80	.,		///
+	label("Base") center
+  TEXT		tx_cont		310	@	25	.,		///
+	label("c.") center
+  TEXT		tx_timeop	340	@	90	.,		///
+	label("Time operators")
+
+DEFINE x1   20
+DEFINE cx1  70
+
+DEFINE x2   95
+DEFINE cx2  115
+
+DEFINE x3   225
+DEFINE cx3  80
+
+DEFINE x4   315
+DEFINE cx4  20
+
+DEFINE x5   340
+DEFINE cx5  75
+DEFINE x6   420
+DEFINE cx6  20
+
+DEFINE x7   340
+DEFINE cx7  50
+DEFINE x8   395
+DEFINE cx8  45
+
+  TEXT 		tx_fv1		x1	_ss	cx1	.,		///
+	label("Variable 1:") right
+  VARNAME 	vn_fv1		x2	@	cx2	.,		///
+	label("Variable 1")
+  COMBOBOX	cb_base1	x3	@	cx3	.,		///
+	dropdown contents(base_list) values(base_values)
+  CHECKBOX 	ck_cont1	x4	@	cx4	.,		///
+	label("") tooltip("Continuous") 				///
+	onclickon(program check_continuous_1)				///
+	onclickoff(program check_continuous_1)
+  EDIT		ed_ts1		x5	@	cx5	.,
+  BUTTON	bu_ts1		x6	@	cx6	.,		///
+	label("...") onpush(program show_child_ts1)
+  SPINNER	sp_lag1		x7	@	cx7	.,		///
+	default(0) min(-500) max(500)
+  TEXT		tx_lag1		x8	@	cx8	.,		///
+	label("Lag")
+//
+  TEXT 		tx_fv2		x1	_ms	cx1	.,		///
+	label("Variable 2:") right
+  VARNAME 	vn_fv2		x2	@	cx2	.,		///
+	label("Variable 2")
+  COMBOBOX	cb_base2	x3	@	cx3	.,		///
+	dropdown contents(base_list) values(base_values)
+  CHECKBOX 	ck_cont2	x4	@	cx4	.,		///
+	label("") tooltip("Continuous") 				///
+	onclickon(program check_continuous_2)				///
+	onclickoff(program check_continuous_2)
+  EDIT		ed_ts2		x5	@	cx5	.,
+  BUTTON	bu_ts2		x6	@	cx6	.,		///
+	label("...") onpush(program show_child_ts2)
+  SPINNER	sp_lag2		x7	@	cx7	.,		///
+	default(0) min(-500) max(500)
+  TEXT		tx_lag2		x8	@	cx8	.,		///
+	label("Lag")
+//
+  TEXT 		tx_fv3		x1	_ms	cx1	.,		///
+	label("Variable 3:") right
+  VARNAME 	vn_fv3		x2	@	cx2	.,		///
+	label("Variable 3")
+  COMBOBOX	cb_base3	x3	@	cx3	.,		///
+	dropdown contents(base_list) values(base_values)
+  CHECKBOX 	ck_cont3	x4	@	cx4	.,		///
+	label("") tooltip("Continuous") 				///
+	onclickon(program check_continuous_3)				///
+	onclickoff(program check_continuous_3)
+  EDIT		ed_ts3		x5	@	cx5	.,
+  BUTTON	bu_ts3		x6	@	cx6	.,		///
+	label("...") onpush(program show_child_ts3)
+  SPINNER	sp_lag3		x7	@	cx7	.,		///
+	default(0) min(-500) max(500)
+  TEXT		tx_lag3		x8	@	cx8	.,		///
+	label("Lag")
+//
+  TEXT 		tx_fv4		x1	_ms	cx1	.,		///
+	label("Variable 4:") right
+  VARNAME 	vn_fv4		x2	@	cx2	.,		///
+	label("Variable 4")
+  COMBOBOX	cb_base4	x3	@	cx3	.,		///
+	dropdown contents(base_list) values(base_values)
+  CHECKBOX 	ck_cont4	x4	@	cx4	.,		///
+	label("") tooltip("Continuous") 				///
+	onclickon(program check_continuous_4)				///
+	onclickoff(program check_continuous_4)
+  EDIT		ed_ts4		x5	@	cx5	.,
+  BUTTON	bu_ts4		x6	@	cx6	.,		///
+	label("...") onpush(program show_child_ts4)
+  SPINNER	sp_lag4		x7	@	cx7	.,		///
+	default(0) min(-500) max(500)
+  TEXT		tx_lag4		x8	@	cx8	.,		///
+	label("Lag")	
+//
+  TEXT 		tx_fv5		x1	_ms	cx1	.,		///
+	label("Variable 5:") right
+  VARNAME 	vn_fv5		x2	@	cx2	.,		///
+	label("Variable 5")
+  COMBOBOX	cb_base5	x3	@	cx3	.,		///
+	dropdown contents(base_list) values(base_values)
+  CHECKBOX 	ck_cont5	x4	@	cx4	.,		///
+	label("") tooltip("Continuous") 				///
+	onclickon(program check_continuous_5)				///
+	onclickoff(program check_continuous_5)
+  EDIT		ed_ts5		x5	@	cx5	.,
+  BUTTON	bu_ts5		x6	@	cx6	.,		///
+	label("...") onpush(program show_child_ts5)
+  SPINNER	sp_lag5		x7	@	cx7	.,		///
+	default(0) min(-500) max(500)
+  TEXT		tx_lag5		x8	@	cx8	.,		///
+	label("Lag")
+//
+  TEXT 		tx_fv6		x1	_ms	cx1	.,		///
+	label("Variable 6:") right
+  VARNAME 	vn_fv6		x2	@	cx2	.,		///
+	label("Variable 6")
+  COMBOBOX	cb_base6	x3	@	cx3	.,		///
+	dropdown contents(base_list) values(base_values)
+  CHECKBOX 	ck_cont6	x4	@	cx4	.,		///
+	label("") tooltip("Continuous") 				///
+	onclickon(program check_continuous_6)				///
+	onclickoff(program check_continuous_6)
+  EDIT		ed_ts6		x5	@	cx5	.,
+  BUTTON	bu_ts6		x6	@	cx6	.,		///
+	label("...") onpush(program show_child_ts6)
+  SPINNER	sp_lag6		x7	@	cx7	.,		///
+	default(0) min(-500) max(500)
+  TEXT		tx_lag6		x8	@	cx8	.,		///
+	label("Lag")
+
+/* end _fv_core.idlg */

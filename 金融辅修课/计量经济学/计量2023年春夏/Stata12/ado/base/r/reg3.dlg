@@ -1,0 +1,232 @@
+/*
+  reg3.dlg
+
+*!  VERSION 1.1.5  23aug2010
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_large
+DEFINE _dlght 340
+INCLUDE header
+
+HELP hlp1, view("help reg3")
+RESET res1
+
+DIALOG main, 								///
+	label("reg3 - Three-stage estimation for systems of simultaneous equations") ///
+	tabtitle("Model")
+BEGIN
+  DEFINE _y _top
+  INCLUDE _equations
+
+  RADIO    rb_1step    _lft2       -15       _cwd2       .,		///
+  		label("Three-stage estimator") first 			///
+  		onclickon(script max_disable)
+  RADIO    rb_iterate  @           _ss       _cwd2       .,		///
+  		label("Iterated three-stage estimator")			///
+  		last							///
+  		onclickon(script max_enable) option(ireg3)
+
+  DEFINE _x _ilft
+  DEFINE _y _ms
+  DEFINE _cx _ilw80
+  DEFINE _bux _islw80
+  INCLUDE _constraints
+
+  // -noheader-, -notable-, -nofooter- programmer options not implemented */
+END
+
+INCLUDE _constraints_sc 
+
+SCRIPT POSTINIT
+BEGIN
+	script max_setLTolNotAllowed
+END
+
+INCLUDE _equations_sc
+
+DIALOG model2, tabtitle("Model 2")
+BEGIN
+  RADIO    rb_exog     _lft        _top      _iwd        .,		///
+  		label("Exogenous variables not specified in system equations:")	///
+		first							///
+		onclickon(script exog_on)
+  VARLIST  vl_exog     _rbsep      _ss       _inwd       .,		///
+		label("Exogenous variables not specified in system equations") ///
+		option(exog) ts fv
+
+  TEXT     tx_endog    @           _ls       @           .,		///
+		label("Additional RHS endogenous variables:")
+  VARLIST  vl_endog    @           _ss       @           .,		///
+		label("Additional RHS endogenous variables")		///
+		option("endog") ts
+
+  RADIO    rb_inst     _lft        _ls       _iwd        .,		///
+		label("Full list of exogenous variables:")		///
+		onclickon(script inst_on)				///
+		last
+
+  VARLIST  vl_inst     _rbsep      _ss       _inwd       .,		///
+		label("Full list of exogenous variables")		///
+		option(inst) ts
+
+
+  CHECKBOX ck_allex    _lft        _xls      _cwd1       .,		///
+		label("All RHS variables are exogenous")		///
+		option(allexog)
+
+  CHECKBOX ck_nocons   @           _ms       @           .,		///
+		label("Suppress constant from instrument list")		///
+		option(noconstant)
+END
+
+SCRIPT exog_on
+BEGIN
+	model2.vl_exog.enable
+	model2.vl_endog.enable
+	model2.vl_inst.disable
+END
+
+SCRIPT inst_on
+BEGIN
+	model2.vl_exog.disable
+	model2.vl_endog.disable
+	model2.vl_inst.enable
+END
+
+DIALOG est, tabtitle("Est. method")
+BEGIN
+  GROUPBOX gb_method   _lft        _top      _iwd        _ht10,		///
+		label("Estimation method")
+
+  RADIO    rb_3sls     _ilft       _ss       _ibwd       .,		///
+		label("Three-stage least squares [3sls]")		///
+		first							///
+		option(NONE)
+
+  RADIO    rb_2sls     @           _ss       @           .,		///
+		label("Two-stage least squares [2sls]")			///
+		option("2sls")
+
+  RADIO    rb_ols      _ilft       _ss       @           .,		///
+		label("Ordinary least squares [ols]")			///
+		option("ols")
+
+  RADIO    rb_sure     @           _ss       @           .,		///
+		label("Seemingly unrelated regression [sure]")		///
+		option("sure")
+
+  RADIO    rb_mvreg    @           _ss       @           .,		///
+		last							///
+		option("mvreg")						///
+		label("SURE with OLS degree-of-freedom adjustment [mvreg]")
+
+  CHECKBOX ck_corr     _lft        _xls      _iwd        _ht2h,		///
+  		groupbox						///
+  		onclickon(script est_corr_on)				///
+  		onclickoff(script est_corr_off)				///
+		label("Override default disturbance covariance structure")
+
+  RADIO    rb_unstr    _ilft       _ms       _cwd2       .,		///
+		label("Unstructured")					///
+		first							///
+		option("corr(unstructured)")
+
+  RADIO    rb_ind      _lft2       @         @           .,		///
+		label("Independent")					///
+		last 							///
+		option("corr(independent)")
+END
+
+SCRIPT est_corr_on
+BEGIN
+	est.rb_unstr.enable
+	est.rb_ind.enable
+END
+
+SCRIPT est_corr_off
+BEGIN
+	est.rb_unstr.disable
+	est.rb_ind.disable
+END
+
+INCLUDE byifin
+INCLUDE weights_fa
+INCLUDE df_adj
+
+SCRIPT rpt_POSTINIT
+BEGIN
+	create STRING rpt_bu_fmtcoefResults
+	program rpt_bu_fmtcoef_ckResults
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr2
+  DEFINE _y _top
+  INCLUDE _sp_level
+  CHECKBOX ck_first    _lft        _ls       _cwd1       .,		///
+		label("Report first-stage regression")			///
+		option(first)
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _nocnsreport
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _noomitted
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _vsquish
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _factor_vars_reporting
+
+  DEFINE _x _lft
+  DEFINE _y _xxxls
+  INCLUDE _bu_coef_table_reporting
+END
+
+INCLUDE fmt_coef_table_reporting_pr
+
+INCLUDE max_internal
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "reg3 "
+	put /program _equations_output
+	INCLUDE _weights_pr
+	INCLUDE _ifin_pr
+	beginoptions
+		INCLUDE _constraints_main_pr
+		option main.rb_iterate
+		optionarg model2.vl_exog
+		optionarg model2.vl_endog
+		optionarg model2.vl_inst
+		option model2.ck_allex
+		option model2.ck_nocons
+		option radio(est rb_ols rb_mvreg rb_sure rb_2sls rb_3sls)
+		option est.rb_ind
+		option est.rb_unstr
+		put " " /program df_adj_output
+		optionarg /hidedefault rpt.sp_level
+		option rpt.ck_first
+		INCLUDE _nocnsreport_pr
+		INCLUDE _noomitted_pr
+		INCLUDE _vsquish_pr
+		INCLUDE _factor_vars_reporting_pr
+		put " " rpt_bu_fmtcoefResults
+		put " " /program max_output
+	endoptions
+END

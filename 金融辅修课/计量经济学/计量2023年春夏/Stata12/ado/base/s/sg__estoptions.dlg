@@ -1,0 +1,705 @@
+/*
+	sg__estoptions
+
+*!  VERSION 1.0.2  13jul2011
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_large
+DEFINE _dlght 480
+POSITION . . _dlgwd _dlght
+
+HELP hlp1, view("help sem")
+
+OK ok1, label("OK")
+CANCEL can1, label("Cancel")
+SUBMIT sub1, label("Submit")
+
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	create STRING OBJ
+	program setupOBJECT
+
+	script se_createAsSEM_ML
+	
+	create STRING CMD_PREFIX
+	create STRING CMD_COVSTRUCT
+	create STRING CMD_SUFFIXOPT
+
+	create STRING SSD_MARKER
+	create STRING SSD_GROUPVAR
+	program setupDialog
+
+	/* covstructure */
+	create STRING main_covs_tmp
+	create STRING main_covs_tmp2
+	create STRING main_covs_childdlg
+	create STRING main_covs_child_result
+	create STRING main_covs_cmd_output
+
+	create ARRAY main_covs_list
+
+	create SVECTOR mainCOVSCommandDisplayList
+	create SVECTOR mainCOVSCommandList
+	create SVECTOR mainCOVSCommandValues
+	create SVECTOR mainCOVSStatusList
+	create SVECTOR mainCOVSChildDialogList
+
+	create DOUBLE main_covs_count
+	create DOUBLE main_covs_position
+	create DOUBLE main_covs_arraysize
+
+	main.bu_covs_edit.disable
+	main.bu_covs_disable.disable
+	main.bu_covs_enable.disable
+END
+
+PROGRAM setupOBJECT
+BEGIN
+	if ! __MESSAGE {
+		stopbox stop 	///
+			"An unexpected error has occurred." "Object not found."
+		exit 198
+	}
+	call OBJ.setvalue class __MESSAGE.value
+END
+
+PROGRAM setupDialog
+BEGIN
+	call CMD_PREFIX.setvalue class __SEMG.dbsettings.cmd
+	call CMD_COVSTRUCT.setvalue class __SEMG.dbsettings.covstruct
+	call CMD_SUFFIXOPT.setvalue class __SEMG.dbsettings.options
+
+	call SSD_MARKER.setvalue char _dta[ssd_marker]
+	call SSD_GROUPVAR.setvalue char _dta[ssd_groupvar]
+
+	if SSD_MARKER.iseq("SSD") {
+		if SSD_GROUPVAR.isneq("_group") {
+			call group.rb_group.enable
+			if group.rb_group {
+				call script group_group_on
+			}
+			else {
+				call script group_group_off
+			}
+			call SSD_GROUPVAR.withvalue group.vn_group.insert "@"
+		}
+		else {
+			call group.rb_group.disable
+			call script group_group_off
+		}
+		call group.gb_ssd.enable
+		call group.tx_select.enable
+		call group.ed_select.enable
+		call group.ck_forcecorr.enable
+		call script ifin_disable
+	}
+	else {
+		call group.gb_ssd.disable
+		call group.tx_select.disable
+		call group.ed_select.disable
+		call group.ck_forcecorr.disable
+		call script ifin_enable
+	}
+END
+
+SCRIPT POSTINIT
+BEGIN
+        mainCOVSCommandDisplayList.copyToArray main_covs_list
+        main.lb_covsBuild.repopulate
+	script max_from_hide
+END
+
+SCRIPT main_POSTINIT
+BEGIN
+	create STRING main_bu_satoptsResults
+	program main_bu_satopts_ckResults
+
+	create STRING main_bu_baseoptsResults
+	program main_bu_baseopts_ckResults
+END
+
+DIALOG group, label("SEM estimation options") tabtitle("Group")
+BEGIN
+  RADIO rb_nogroup		_lft	_top	_iwd	., first	///
+	onclickon(script group_group_off)				///
+	label("Standard analysis (no groups)")
+  RADIO rb_group		@	_ss	@	., last		///
+	onclickon(program group_group_on)				///
+	label("Group analysis")
+  TEXT tx_group			_lft	_ss	_vnwd	.,		///
+	label("Group variable:")
+  VARNAME vn_group		@	_ss	@	.,		///
+	option(group)							///
+	label("Group variable")
+  TEXT tx_type			_cwd3_0	-20	_lft3_03	.,	///
+	label("Parameters that are equal across groups:")
+  COMBOBOX cb_ginvariant	@	_ss	@	.,		///
+	option(ginvariant)						///
+	dropdown							///
+	append								///
+	contents(group_ginvariant_list)					///
+	values(group_ginvariant_values)					///
+	label("Parameters that are equal across groups")
+
+  GROUPBOX gb_ssd		_lft	+45	_iwd	_ht7,		///
+	label("Summary statistic data options")
+  TEXT tx_select		_indent	_ss	_inwd	.,		///
+	label("Select summary groups:")
+  EDIT ed_select		@	_ss	@	.,		///
+	option(select)							///
+	label("Select summary groups")
+  CHECKBOX ck_forcecorr		@	_ls	_inwd	.,		///
+	option(forcecorrelations)					///
+	label("Allow groups and pooling of SSD correlations")
+END
+
+PROGRAM group_group_on
+BEGIN
+	call group.tx_group.enable
+	if SSD_MARKER.isneq("SSD") {
+		call group.vn_group.enable
+	}
+	call group.tx_type.enable
+	call group.cb_ginvariant.enable
+END
+
+SCRIPT group_group_off
+BEGIN
+	group.tx_group.disable
+	group.vn_group.disable
+	group.tx_type.disable
+	group.cb_ginvariant.disable
+END
+
+SCRIPT main_nomeans_on
+BEGIN
+	main.ck_nocons.disable
+END
+
+SCRIPT main_nomeans_off
+BEGIN
+	main.ck_nocons.enable
+END
+
+LIST group_ginvariant_list
+BEGIN
+	Structural coefficients
+	Structural intercepts
+	Measurement coefficients
+	Measurement intercepts
+	Covariances of structural errors
+	Covariances of measurement errors
+	Covariances between structural and measurement errors
+	Means of exogenous variables
+	Covariances of exogenous variables
+	All of the above
+	None of the above
+END
+
+LIST group_ginvariant_values
+BEGIN
+	scoef
+	scons
+	mcoef
+	mcons
+	serrvar
+	merrvar
+	smerrcov
+	meanex
+	covex
+	all
+	none
+END
+
+PROGRAM group_output
+BEGIN
+	if group.rb_group {
+		put /hidden " " "group(" group.vn_group ")"
+		optionarg group.cb_ginvariant
+	}
+	if group.ed_select.isenabled() {
+		optionarg group.ed_select
+		option group.ck_forcecorr
+	}
+END
+
+DIALOG main, tabtitle("Model")
+BEGIN
+  GROUPBOX gb_method		_lft	_top	_iwd	_ht5h,		///
+	label("Method")
+  RADIO rb_ml			_indent	_ss	_inwd	., first	///
+	onclickon("program main_ml_on")					///
+	label("Maximum likelihood")
+  RADIO rb_mlmv			@	_ss	@	.,		///
+	option(method(mlmv))						///
+	onclickon("program main_mlmv_on")				///
+	label("Maximum likelihood with missing values")
+  RADIO rb_adf			@	_ss	@	., last		///
+	option(method(adf))						///
+	onclickon("program main_adf_on")				///
+	label("Asymptotic distribution free")
+
+  TEXT tx_covsBuild		_lft	_xls	@	.,		///
+	label("Covariance structure:")
+  LISTBOX lb_covsBuild		@	_ss	200	95,		///
+	contents(main_covs_list) 					///
+	ondblclick(program main_covs_edit)				///
+	onselchange(program main_covs_sel_changed)			///
+	nomemory
+  BUTTON bu_covs_new		+210	@	80	.,		///
+	onpush(program main_covs_create)				///
+	tooltip("Create covariance restriction")			///
+	label("Create...")
+  BUTTON bu_covs_edit		@	_ms	@	.,		///
+	onpush(program main_covs_edit)  				///
+	tooltip("Edit covariance restriction")				///
+	label("Edit")
+  BUTTON bu_covs_disable	@	_ms	@	.,		///
+	onpush(program main_covs_disable)				///
+	tooltip("Click to disable an covariance restriction")		///
+	label("Disable")
+  BUTTON bu_covs_enable		@	_ms	@	.,		///
+	onpush(program main_covs_enable)				///
+tooltip("Click to enable a previously disabled covariance restriction")	///
+	label("Enable")
+  TEXTBOX tb_covs_note		_lft	+25	_iwd	_tb2,		///
+	label(`"Press "Create" to define a covariance restriction"')
+  CHECKBOX ck_nomeans		_lft	_ls	_cwd1	.,		///
+	option(nomeans)							///
+	onclickon("script main_nomeans_on")				///
+	onclickoff("script main_nomeans_off")				///
+	label("Do not fit means or intercepts")
+  CHECKBOX ck_noanchor		_lft2	@	@	.,		///
+	option(noanchor)						///
+	label("Do not apply default anchoring")
+  CHECKBOX ck_nocons		_lft	_ms	_cwd1	.,		///
+	option(nocons)							///
+	label("Do not fit intercepts")
+
+  GROUPBOX gb_advanced		_lft	_ls	_iwd	_ht13,		///
+	label("Advanced options")
+  CHECKBOX ck_allmissing	_indent	_ss	_inwd	.,		///
+	option(allmissing)						///
+	label("Include extended missing values in the estimation sample")
+  CHECKBOX ck_noxconditional	@	_ms	@	.,		///
+	option(noxconditional)						///
+	label("Do not condition on the exogenous variables")
+  CHECKBOX ck_nm1		@	_ms	@	.,		///
+	option(nm1)							///
+	label("Compute sample variance rather than ML variance")
+  CHECKBOX ck_noivstart		@	_ms	@	.,		///
+	option(noivstart)						///
+	label("Skip calculation of starting values")
+  BUTTON bu_satopts		@	_ls	200	.,		///
+	onpush(program main_show_satopts_maxml)				///
+	tooltip("Control the maximization process for saturated model")	///
+	label("Saturated model options  ")
+  BUTTON bu_baseopts		_lft2	@	200	.,		///
+	onpush(program main_show_baseopts_maxml)			///
+	tooltip("Control the maximization process for baseline model")	///
+	label("Baseline model options  ")
+END
+
+PROGRAM main_ml_on
+BEGIN
+	call script se_createAsSEM_ML
+	call main.ck_allmissing.disable
+END
+
+PROGRAM main_mlmv_on
+BEGIN
+	call script se_createAsSEM_ML
+	call main.ck_allmissing.enable
+END
+
+PROGRAM main_adf_on
+BEGIN
+	call script se_createAsSEM_ADF
+	call main.ck_allmissing.disable
+END
+
+/* covariance restriction list box */
+PROGRAM main_covs_create
+BEGIN
+	call main_covs_count.setvalue class mainCOVSChildDialogList.size
+	call main_covs_count.increment
+	call main_covs_count.withvalue main_covs_childdlg.setvalue	///
+		"main_covs@"
+	call program main_show_covs_child
+END
+
+PROGRAM main_covs_edit
+BEGIN
+	call mainCOVSCommandDisplayList.findstr class main.lb_covsBuild.value
+	call main_covs_position.setvalue class 				///
+		mainCOVSCommandDisplayList.position
+	call main_covs_position.withvalue main_covs_childdlg.setvalue	///
+		class mainCOVSChildDialogList.values[@]
+
+	call program main_show_covs_child_edit
+END
+
+PROGRAM main_show_covs_child
+BEGIN
+	call main_covs_childdlg.withvalue create CHILD sg__opts_newcovs AS @
+	call main_covs_childdlg.withvalue @.setExitString 		///
+		"main_covs_child_result"
+	call main_covs_childdlg.withvalue @.setExitAction		///
+		"program main_covs_child_done"
+
+	call main_covs_count.withvalue main_covs_tmp.setvalue		///
+		"Covariance Structure @"
+	call main_covs_childdlg.withvalue main_covs_tmp2.setvalue "@.settitle"
+	call main_covs_tmp2.append `" ""'
+	call main_covs_tmp2.append class main_covs_tmp.value
+	call main_covs_tmp2.append `"""'
+	call main_covs_tmp2.withvalue @
+END
+
+PROGRAM main_show_covs_child_edit
+BEGIN
+	call main_covs_childdlg.withvalue create CHILD sg__opts_newcovs AS @
+	call main_covs_childdlg.withvalue @.setExitString 		///
+		"main_covs_child_result"
+	call main_covs_childdlg.withvalue @.setExitAction		///
+		"program main_covs_child_done"
+
+	call main_covs_position.withvalue main_covs_tmp.setvalue	///
+		class mainCOVSCommandDisplayList.values[@]
+	call main_covs_childdlg.withvalue main_covs_tmp2.setvalue "@.settitle"
+	call main_covs_tmp2.append `" ""'
+	call main_covs_tmp2.append class main_covs_tmp.value
+	call main_covs_tmp2.append `"""'
+	call main_covs_tmp2.withvalue @
+END
+
+PROGRAM main_covs_child_done
+BEGIN
+	call mainCOVSChildDialogList.findstr class main_covs_childdlg.value
+	call main_covs_position.setvalue class mainCOVSChildDialogList.position
+	if main_covs_position {
+		call main_covs_position.withvalue main_covs_tmp.setvalue ///
+			class mainCOVSStatusList.values[@]
+		if main_covs_tmp.iseq("active") {
+			call main_covs_position.withvalue		///
+				mainCOVSCommandDisplayList.store class	///
+				main_covs_position.value		///
+				"Covariance Structure @"
+			call mainCOVSCommandValues.store class		///
+				main_covs_position.value class		///
+				main_covs_child_result.value
+			call main_covs_position.withvalue		///
+				main_covs_tmp2.setvalue			///
+				"Covariance Structure @"
+		}
+		else {
+			call main_covs_position.withvalue		///
+				main_covs_tmp2.setvalue			///
+				"Covariance Structure @"
+
+			call main_covs_tmp2.withvalue			///
+				mainCOVSCommandDisplayList.store	///
+				class main_covs_position.value "@ (disabled)"
+		}
+
+		call mainCOVSCommandList.store class			///
+			main_covs_position.value class 			///
+			main_covs_child_result.value
+
+		call mainCOVSCommandDisplayList.copyToArray main_covs_list
+		call main.lb_covsBuild.repopulate
+		call main.lb_covsBuild.setvalue class main_covs_tmp2.value
+	}
+	else {
+		call main_covs_arraysize.setvalue class 		///
+			mainCOVSChildDialogList.size
+		call main_covs_arraysize.increment
+
+		/* Store child dialog name */
+		call mainCOVSChildDialogList.store class		///
+			main_covs_arraysize.value class			///
+			main_covs_childdlg.value
+
+		/* Store listbox display covariance restriction string */
+		call main_covs_arraysize.withvalue			///
+			mainCOVSCommandDisplayList.store class		///
+			main_covs_arraysize.value "Covariance Structure @"
+
+		/* Store child dialog result string */
+		call mainCOVSCommandList.store class			///
+			main_covs_arraysize.value 			///
+			class main_covs_child_result.value
+
+		/* Store child dialog result string for final command
+		   For disable/enable */
+		call mainCOVSCommandValues.store class			///
+			main_covs_arraysize.value class 		///
+			main_covs_child_result.value
+
+		/* Store disable/enable status */
+		call mainCOVSStatusList.store				///
+			class main_covs_arraysize.value "active"
+
+		call mainCOVSCommandDisplayList.copyToArray main_covs_list
+		call main.lb_covsBuild.repopulate
+		call main_covs_arraysize.withvalue			///
+			main.lb_covsBuild.setvalue "Covariance Structure @"
+	}
+END
+
+PROGRAM main_covs_sel_changed
+BEGIN
+	call mainCOVSCommandDisplayList.findstr class main.lb_covsBuild.value
+	call main_covs_position.setvalue class 				///
+		mainCOVSCommandDisplayList.position
+	call main_covs_position.withvalue main_covs_tmp.setvalue	///
+		class mainCOVSStatusList.values[@]
+	if main_covs_position {
+		call main.bu_covs_edit.enable
+		call main_covs_position.withvalue			///
+			main.tb_covs_note.setlabel			///
+			class mainCOVSCommandList.values[@]
+	}
+
+	if main_covs_tmp.iseq("disable") {
+		call main.bu_covs_enable.enable
+		call main.bu_covs_disable.disable
+	}
+	if main_covs_tmp.iseq("active") {
+		call main.bu_covs_enable.disable
+		call main.bu_covs_disable.enable
+	}
+END
+
+PROGRAM main_covs_disable
+BEGIN
+	call mainCOVSCommandDisplayList.findstr class main.lb_covsBuild.value
+	call main_covs_position.setvalue class				///
+		mainCOVSCommandDisplayList.position
+
+	call main_covs_tmp.setvalue class main.lb_covsBuild.value
+	call mainCOVSStatusList.store class main_covs_position.value "disable"
+	call mainCOVSCommandValues.store class main_covs_position.value ""
+	call main_covs_tmp.withvalue mainCOVSCommandDisplayList.store	///
+		class main_covs_position.value "@ (disabled)"
+
+	call mainCOVSCommandDisplayList.copyToArray main_covs_list
+	call main_covs_tmp.withvalue main_covs_tmp2.setvalue "@ (disabled)"
+	call main.lb_covsBuild.repopulate
+	call main.lb_covsBuild.setvalue class main_covs_tmp2.value
+END
+
+PROGRAM main_covs_enable
+BEGIN
+	call mainCOVSCommandDisplayList.findstr class main.lb_covsBuild.value
+	call main_covs_position.setvalue class 				///
+		mainCOVSCommandDisplayList.position
+
+	call mainCOVSStatusList.store class main_covs_position.value "active"
+	call main_covs_position.withvalue mainCOVSCommandValues.store	///
+		class main_covs_position.value class 			///
+		mainCOVSCommandList.values[@]
+
+	call main_covs_position.withvalue 				///
+		mainCOVSCommandDisplayList.store			///
+		class main_covs_position.value "Covariance Structure @"
+
+	call mainCOVSCommandDisplayList.copyToArray main_covs_list
+	call main_covs_position.withvalue main_covs_tmp2.setvalue class	///
+		mainCOVSCommandDisplayList.values[@]
+	call main.lb_covsBuild.repopulate
+	call main.lb_covsBuild.setvalue class main_covs_tmp2.value
+END
+
+PROGRAM main_lb_covsBuild_output
+BEGIN
+	call mainCOVSCommandValues.copyToString main_covs_cmd_output
+	call main_covs_arraysize.setvalue class mainCOVSStatusList.size
+	if main_covs_cmd_output & main.lb_covsBuild.isvisible() {
+		put main_covs_cmd_output
+	}
+END
+
+PROGRAM main_show_satopts_maxml
+BEGIN
+	call create CHILD max_ml AS main_bu_satopts
+	call main_bu_satopts.setExitString main_bu_satoptsResults
+	call main_bu_satopts.setExitAction "program main_bu_satopts_ckResults"
+END
+
+PROGRAM main_bu_satopts_ckResults
+BEGIN
+	if main_bu_satoptsResults {
+		call main.bu_satopts.setlabel "Saturated model options *"
+	}
+	else {
+		call main.bu_satopts.setlabel "Saturated model options  "
+	}
+END
+
+PROGRAM main_show_baseopts_maxml
+BEGIN
+	call create CHILD max_ml AS main_bu_baseopts
+	call main_bu_baseopts.setExitString main_bu_baseoptsResults
+	call main_bu_baseopts.setExitAction "program main_bu_baseopts_ckResults"
+END
+
+PROGRAM main_bu_baseopts_ckResults
+BEGIN
+	if main_bu_baseoptsResults {
+		call main.bu_baseopts.setlabel "Baseline model options *"
+	}
+	else {
+		call main.bu_baseopts.setlabel "Baseline model options  "
+	}
+END
+
+PROGRAM model_output
+BEGIN
+	option radio(main rb_mlmv rb_adf)
+	put " " /program main_lb_covsBuild_output
+
+	option main.ck_nomeans
+	option main.ck_nocons
+	option main.ck_noanchor
+	
+	option main.ck_allmissing
+	option main.ck_noxconditional
+	option main.ck_nm1
+	option main.ck_noivstart
+	if main_bu_satoptsResults {
+		put " satopts(" main_bu_satoptsResults ")"
+	}
+
+	if main_bu_baseoptsResults {
+		put " baseopts(" main_bu_baseoptsResults ")"
+	}
+END
+
+INCLUDE sub_by_ifin_over_subpop
+INCLUDE weights_fpi
+INCLUDE se
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr2b
+  DEFINE _y _top
+  INCLUDE _sp_level
+
+  CHECKBOX ck_standardized	_lft	_ls	_iwd	.,		///
+	option(standardized)						///
+	label("Display standardized coefficients and values")
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _nocnsreport
+
+  CHECKBOX ck_nodescribe	@	_ms	@	.,		///
+	option(nodescribe)						///
+	label("Suppresses display of the variable classification table")
+  CHECKBOX ck_noheader		@	_ms	@	.,		///
+	option(noheader)						///
+	label("Suppresses the header above the parameter table")
+  CHECKBOX ck_nofootnote	@	_ms	@	.,		///
+	option(nofootnote)						///
+	label("Suppresses the footnotes displayed below the parameter table")
+  CHECKBOX ck_notable		@	_ms	@	.,		///
+	option(notable)							///
+	label("Suppresses the parameter table")
+  CHECKBOX ck_showginvariant	@	_ms	@	.,		///
+	option(showginvariant)						///
+	label("Show each group invariant parameter separately")
+  SPINNER sp_wrap		@	_ls	_spwd	.,		///
+	option(wrap)							///
+	default(0)							///
+	min(0)								///
+	max(10)								///
+	label("Allows long group labels to wrap the first # lines ")
+  TEXT tx_wrap			_spsep	@	300	.,		///
+	label("Allows long group labels to wrap the first # lines")
+END
+
+PROGRAM rpt_output
+BEGIN
+	optionarg /hidedefault rpt.sp_level
+	option rpt.ck_standardized
+	INCLUDE _nocnsreport_pr
+	option rpt.ck_nodescribe
+	option rpt.ck_noheader
+	option rpt.ck_nofootnote
+	option rpt.ck_notable
+	option rpt.ck_showginvariant
+	optionarg /hidedefault rpt.sp_wrap
+END
+
+INCLUDE max_ml
+
+PROGRAM __command
+BEGIN
+	put "mata: sg__global.signal("
+	put `"""' OBJ `"""'		// "SEM_1"
+	put ", " 			// ,
+	put `"""' "EstOptions" `"""'	// "EstOptions"
+	put ", "
+
+	// put out compound quotes
+	put "`" `"""'
+
+	put /program se_prefix_output
+	put ","
+	put " " /program ifin_output
+	put " " /program weights_output
+	put ","
+	put " " /program group_output
+	put " " /program model_output
+	put " " /program se_output
+	put " " /program rpt_output
+	put " " /program max_output
+
+	// put out compound quotes
+	put `"""' "'"
+
+	put ", " 			// ,
+	put `"""' `"""'			// ""
+	put ")"
+
+	stata hidden queue
+END
+
+PROGRAM command
+BEGIN
+	put "capture noisily {"
+	stata hidden queue
+
+	put /program se_prefix_output " "
+
+	put CMD_PREFIX
+
+	put " " /program ifin_output
+	put " " /program weights_output
+	beginoptions
+		put " " CMD_COVSTRUCT
+		put " " /program group_output
+		put " " /program model_output
+		put " " /program se_output
+		put " " /program rpt_output
+		put " " /program max_output
+		put " " CMD_SUFFIXOPT
+	endoptions
+	stata
+
+	put "}"
+	stata hidden queue
+	
+	put "local sg__rc = _rc"
+	stata hidden queue
+	
+	put /program __command
+END

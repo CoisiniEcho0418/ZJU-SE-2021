@@ -1,0 +1,15 @@
+/*
+	manage constraints
+
+*!  VERSION 1.0.0  09aug2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_medium
+DEFINE _dlght 260
+POSITION . . _dlgwd _dlght
+CANCEL can1, label("Close")
+
+INCLUDE constraint_include

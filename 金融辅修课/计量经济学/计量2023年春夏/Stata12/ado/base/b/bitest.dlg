@@ -1,0 +1,53 @@
+/*
+	bitest
+
+*!  VERSION 1.1.1  17mar2011
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_medium
+INCLUDE header
+HELP hlp1, view("help bitest")
+RESET res1
+
+DIALOG main, label("bitest - Binomial probability test") tabtitle("Main")
+BEGIN
+  TEXT     tx_var	_lft	_top	_iwd	., 	///
+	label("Binomial variable:")
+  VARNAME  vn_var	@	_ss	_vnwd	.,	///
+	label("Binomial variable")
+
+  TEXT     tx_prob	_lft	_ls	_iwd	., 	///	
+	label("Probability of success:")
+  EDIT     ed_prob	@	_ss	_en7wd	.,	///
+	numonly default(literal "0.5")			///
+	label("Probability of success")
+END
+
+INCLUDE byifin
+INCLUDE weights_f
+
+DIALOG adv, label("bitesti - Binomial prob. test") tabtitle("Advanced")
+BEGIN
+  CHECKBOX ck_detail     _lft      _top    _iwd        ., /*
+		*/ option(detail)			  /*
+                */ label("Show additional details")
+END
+
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "bitest "
+	varlist main.vn_var
+	put " == "
+	put main.ed_prob
+	INCLUDE _weights_pr
+	INCLUDE _ifin_pr
+	beginoptions
+		option adv.ck_detail
+	endoptions
+END
+

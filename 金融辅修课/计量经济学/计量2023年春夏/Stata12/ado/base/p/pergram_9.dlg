@@ -1,0 +1,59 @@
+/*
+	pergram_9
+
+*!  VERSION 1.1.1  08aug2006  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+HELP hlp1, view("help pergram")
+RESET res1
+
+DIALOG	main, label("pergram - Periodogram") tabtitle("Main")
+BEGIN
+  DEFINE _x _xsetbu
+  DEFINE _y _top
+  INCLUDE _bu_tsset
+  TEXT     tx_var		_lft	_top	_cwd2	.,	///
+	label("Variable:")
+  VARNAME  vn_var		@	_ss	_vnwd	.,	///
+	label("Variable") allowts
+
+  CHECKBOX ck_generate		@	+35 	_cwd1	.,	///
+	label("Generate new variable:")				///
+	onclickon(main.ed_generate.enable)			///
+	onclickoff(main.ed_generate.disable)
+  EDIT	   ed_generate	_indent2	_ss	_vnwd	.,	///
+	label("Generate new variable") max(32) option(generate)
+END
+
+
+INCLUDE ifin
+INCLUDE p1_opts
+INCLUDE addplot
+INCLUDE gr_twoway
+
+SCRIPT PREINIT
+BEGIN
+	script p1_opts_createAsNoRange
+	script p1_opts_setDefaultConnected
+END
+
+PROGRAM command
+BEGIN
+	put "pergram"
+	varlist main.vn_var
+	INCLUDE _ifin_pr
+	beginoptions
+		if main.ck_generate {
+			optionarg main.ed_generate
+		}
+		put " " /program p1_opts_output
+		put " " /program addplot_output
+		put " " /program gr_twoway_output
+	endoptions
+END
+/* end */

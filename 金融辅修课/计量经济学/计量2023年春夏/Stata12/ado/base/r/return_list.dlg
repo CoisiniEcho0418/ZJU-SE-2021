@@ -1,0 +1,39 @@
+/*
+	"return list" and "ereturn list"
+
+*!  VERSION 2.0.1  23mar2011
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_small
+DEFINE _dlght 90
+INCLUDE header
+
+HELP hlp1, view("help return list")
+RESET res1
+
+DIALOG main, label("return/ereturn - List returned results") tabtitle("Main")
+BEGIN
+  RADIO rb_return 		_lft	_top	_iwd	., first	///
+	option("return")						///
+	label("List r-class (regular command) results")
+  RADIO rb_ereturn		@	_ss	@	., last		///
+	option("ereturn")						///
+	label("List e-class (estimation command) results")
+  CHECKBOX ck_all		_lft	_ls	_iwd	.,		///
+	option("all")							///
+	label("Show all saved results")
+END
+
+
+PROGRAM command
+BEGIN
+	option radio(main rb_return rb_ereturn)
+	put " list"
+	beginoptions
+		option main.ck_all
+	endoptions
+END
+

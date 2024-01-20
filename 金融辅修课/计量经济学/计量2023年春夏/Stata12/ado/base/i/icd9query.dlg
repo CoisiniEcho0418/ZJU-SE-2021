@@ -1,0 +1,50 @@
+/*
+	icd9[p] query
+
+	VERSION 1.0.0  21dec2002
+*/
+
+VERSION 8.0
+
+INCLUDE _std_small
+INCLUDE _ht150
+INCLUDE header
+HELP hlp1, view("help icd9")
+RESET res1
+
+DIALOG main, /*
+	*/ label("icd9[p] query - Display ICD-9 code source") /*
+	*/ tabtitle("Main")
+BEGIN
+  TEXT     tx_msg1   _lft      _top      _iwd      .,		/*
+		*/ label("icd9[p] query displays the identity of the source")
+
+  TEXT     tx_msg2   @         _vss      @         .,		/*
+ 		*/ label("from which the ICD9-codes were obtained and")
+
+  TEXT     tx_msg3   @         _vss      @         .,		/*
+		*/ label("the textual description that icd9[p] uses")
+
+  TEXT     tx_query  @         _ls       @         .,		/*
+		*/ label("Query:")
+
+  RADIO    rb_diag   @         _ss       _cwd1     .,		/*
+		*/ first					/*
+		*/ label("Diagnostic codes")
+
+  RADIO    rb_proc   _lft2     @         @         .,		/*
+		*/ last						/*
+		*/ label("Procedure codes")
+END
+
+
+PROGRAM command
+BEGIN
+	if main.rb_diag {
+		put "icd9 query"
+	}
+	if main.rb_proc {
+		put "icd9p query"
+	}
+END
+

@@ -1,0 +1,23 @@
+/*
+  _mi_impute_rpt.idlg
+
+*!  VERSION 1.0.0  01apr2011
+
+  To be included within a DIALOG.
+
+ ** NOTES:
+  	Macros _x, _cx, and _y must already be defined.
+
+*/
+  CHECKBOX ck_dots		_x	_y	_cx	.,		///
+	option(dots)							///
+	label("Display dots as imputations are performed")
+
+  DEFINE _y _ms
+  INCLUDE _mi_impute_noisily
+
+  CHECKBOX ck_nolegend		@	_ms	@	.,		///
+	option(nolegend)						///
+	label("Suppress all table legends")
+	
+// END: _mi_impute_rpt.idlg

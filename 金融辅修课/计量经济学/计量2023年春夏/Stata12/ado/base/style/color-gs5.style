@@ -1,0 +1,4 @@
+*! version 1.0.0  22dec2002
+sequence 4211
+label "Gray 5"
+set rgb "80 80 80"

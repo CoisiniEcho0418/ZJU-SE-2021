@@ -1,0 +1,135 @@
+/*
+    fcast_graph_9.dlg
+
+*!  VERSION 1.1.1  11aug2006  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+
+HELP hlp1, view("help fcast_graph")
+RESET res1
+
+DIALOG main, tabtitle("Main") ///
+    label("fcast graph - Graph forecasts of variables computed by fcast compute")
+BEGIN
+  TEXT     tx_dv             _lft      _top      _cwd1     .,		///
+		label("Variables: (use variables created by fcast compute)")
+  VARLIST  vl_dv             @         _ss       _cwd1     .,		///
+		label("Variables")
+
+  GROUPBOX gb_opts	     _lft      _xls      _cwd1     _ht8h,	///
+		label("Common options")
+DEFINE y @y
+  CHECKBOX ck_differences    _ilft     _ss       _inwd     .,		///
+  		onclickon(script main_differences_on)			///
+  		onclickoff(script main_differences_off)			///
+  		option(differences)					///
+  		label("Graph forecasts of the first-differenced variables")
+DEFINE xwd @xsize
+  TEXT     tx_differences    _indent2  _vss      _inwd     .,		///
+  		label("(only valid with forecasts computed after VEC)")
+  CHECKBOX ck_noci	     _ilft     _ms       xwd       .,		///
+		onclickon(program noci_check)				///
+		onclickoff(program noci_check)				///
+		option(noci)						///
+		label("Suppress confidence bands")
+
+  CHECKBOX ck_observed	     _ilft     _ms       _cwd3     .,          	///
+		option(observed)					///
+		onclickon(script p3_opts_enable)			///
+		onclickoff(script p3_opts_disable)			///
+		label("Include observed values of the predicted variables")
+END
+
+PROGRAM noci_check
+BEGIN
+	if main.ck_noci | main.ck_differences {
+		call script p2_opts_disable
+	}
+	if ! (main.ck_noci | main.ck_differences) {
+		call script p2_opts_enable
+	}
+END
+
+SCRIPT main_differences_on
+BEGIN
+	main.ck_noci.disable
+	program noci_check
+END
+
+SCRIPT main_differences_off
+BEGIN
+	main.ck_noci.enable
+	program noci_check
+END
+
+INCLUDE ifin
+
+INCLUDE p1_opts
+INCLUDE p2_opts
+INCLUDE p3_opts
+
+SCRIPT PREINIT
+BEGIN
+	script p1_opts_createAsNoRange
+	script p1_opts_setDefaultLine
+	script p2_opts_createAsRange
+	script p2_opts_setDefaultRarea
+	script p3_opts_createAsNoRange
+	script p3_opts_setDefaultLine
+END
+
+SCRIPT POSTINIT
+BEGIN
+	p1_opts.settabtitle "Forecast plot"
+	script p2_opts_setTabtitleCi
+	p3_opts.settabtitle "Observed plot"
+	script gby_setViewByopts
+END
+
+INCLUDE gyaxis
+INCLUDE gtaxis
+INCLUDE gtitle
+INCLUDE gcaption
+INCLUDE glegend
+INCLUDE gregion
+INCLUDE gby
+
+PROGRAM twoway_output
+BEGIN
+	put " " /program gyaxis_output
+	put " " /program gtaxis_output
+	put " " /program gtitle_output
+	put " " /program gcaption_output
+	put " " /program glegend_output
+	put " " /program gregion_output
+END
+
+PROGRAM varfcast_graph_output
+BEGIN
+	varlist main.vl_dv
+	INCLUDE _ifin_pr
+	beginoptions
+		// entry for cilines not included intentionally because it
+		//   is a command line utility.
+		option main.ck_differences
+		option main.ck_noci
+        	option main.ck_observed
+
+		put " " /program p1_opts_output
+		put " " /program p2_opts_ci_output
+		put " " /program p3_opts_ob_output
+		put " " /program twoway_output
+		put " " /program gby_byopts_output
+	endoptions
+END
+
+PROGRAM command
+BEGIN
+	put "fcast graph "
+	put /program varfcast_graph_output
+END

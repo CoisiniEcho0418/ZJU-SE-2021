@@ -1,0 +1,262 @@
+/*
+	mdsconfig_9.dlg
+
+*!  VERSION 1.0.2  08sep2006  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+
+HELP hlp1, view("help mdsconfig")
+RESET res1
+
+DIALOG main, label("mdsconfig - Multidimensional scaling configuration plot") ///
+		tabtitle("Main")
+BEGIN
+  GROUPBOX gb_dim		_lft	_top	_cwd1	_ht6,	///
+  		label("Dimensions")
+  RADIO    rb_default_dim	_ilft	_ss	_cwd3	.,	///
+  		first label("Plot first and second dimensions")	///
+  		onclickon(script main_dim_off)
+  RADIO    rb_dim		@	_ss	@	.,	///
+		last label("Specify other dimensions to plot")	///
+		onclickon(script main_dim_on)
+  EDIT     ed_dim		_indent2 _ss	_en7wd	.,	///
+  		label("Two dimensions to plot") option(dimensions) ///
+  		default("2  1")
+  TEXT     tx_dim		_en7sep	@	200	.,	///
+  		label("Two dimensions to plot (y x)")
+
+  CHECKBOX ck_xnegate		_lft	+45	_cwd1	.,	///
+  		label("Negate the data relative to the x-axis")	///
+  		option(xnegate)
+  CHECKBOX ck_ynegate		@	_ms	@	.,	///
+  		label("Negate the data relative to the y-axis")	///
+  		option(ynegate)
+
+  CHECKBOX ck_autoaspect	@	_ms	@	.,	///
+  		option(autoaspect)				///
+  		label("Automatically adjust the aspect ratio based on the data")
+
+  SPINNER  sp_maxlength		@	_ms	_spwd	.,	///
+  		default(12) min(1) max(32) option(maxlength)
+  TEXT     tx_maxlength		_spsep	@	_spr2	.,	///
+  		label("Maximum number of characters displayed for labels")
+
+/**** BEGIN -- Scatter options ****/
+  GROUPBOX gb_marker   _gft2       _top      _gwd1         _ht15,	///
+	label("Markers (Scatter options)")
+
+  TEXT     tx_msymbol  _igft2      _ss       _txwd         .,		///
+	label("Symbol:") right
+  COMBOBOX cb_msymbol  _txsep      @         _txr4gi       .,		///
+	option(msymbol)							///
+	dropdownlist							///
+	contents(symbols)
+
+  TEXT     tx_mcolor   _igft2      _ls       _txwd         .,		///
+	label("Color:") right
+  COMBOBOX cb_mcolor   _txsep      @         _tcr4gi       .,		///
+	option(mcolor)							///
+	dropdownlist							///
+	contents(colors)						///
+	onselchangelist(main_color_mcolor)
+  COLOR    cl_mcolor   _tcr4gisep  @         _btwd         .,		///
+	option(mcolor)
+
+  TEXT     tx_msize    _lft4_4gi   @         _txwd         .,		///
+	label("Size:") right
+  COMBOBOX cb_msize    _txsep      @         _txr4gi       .,		///
+	option(msize)							///
+	dropdownlist 							///
+	contents(symbolsizes)
+
+  CHECKBOX ck_mlabel   _igft2      +35       _gwd2	   85,		///
+	label("Marker labels") groupbox					///
+	onclickon(script main_mlabel_1_enable)				///
+	onclickoff(script main_mlabel_1_disable)
+
+  TEXT     tx_mlabel   _iigft2     _ss       _txswd        .,		///
+	label("Variables:") right
+  VARNAME  vn_mlabel   _txssep     @         _txr4gi       .,		///
+  	option(mlabel)
+
+  TEXT     tx_mlcolor  _lft4_4gi   @         _txswd	   .,		///
+	label("Color:") right
+  COMBOBOX cb_mlcolor  _txssep     @         _tcr4gi       .,		///
+	option(mlabcolor)						///
+	dropdownlist							///
+	contents(colors)						///
+	onselchangelist(main_color_mlcolor)
+  COLOR    cl_mlcolor  _tcr4gisep  @         _btwd         .,		///
+	option(mlabcolor)
+
+  TEXT     tx_mlsize   _iigft2     _ls       _txswd        .,		///
+	label("Size:") right
+  COMBOBOX cb_mlsize   _txssep     @         _txr4gi       .,		///
+	option(mlabsize) 						///
+	dropdownlist							///
+	contents(textsizes)
+
+  TEXT     tx_mlposition _lft4_4gi @         _txswd        .,		///
+	label("Position:") right
+  COMBOBOX cb_mlposition _txssep   @         _txr4gi       .,		///
+	option(mlabposition) 						///
+	dropdownlist							///
+	contents(clockpos)
+/**** END   -- Scatter options  ****/
+
+/****  -- Line options ****/
+  CHECKBOX ck_line           _gft2      _xxls    _gwd1     _ht6,	///
+  		label("Connect marker points") option(connect(direct))	///
+  		onclickon(script main_line_on)				///
+  		onclickoff(script main_line_off) groupbox
+  TEXT     tx_ccol           _lft4_3gi _ms       _txwd     .,		///
+  		label("Line color:") right
+DEFINE y @y
+  COMBOBOX cb_ccol           _txsep    @         _tcr2b4g  .,		///
+  		dropdownlist option(lcolor) 				///
+  		contents(colors) onselchangelist(main_line_color_ccol)
+  COLOR    cl_ccol           _tcr2b4gsep @       _colorwd  .,		///
+  		option(lcolor)
+
+  TEXT     tx_clpat          _lft4_3gi _ls       _txwd     .,		///
+  		label("Pattern:") right
+  COMBOBOX cb_clpat          _txsep    @         _txr2b4g  .,		///
+  		dropdownlist contents(linepatterns) option(lpattern)
+
+  TEXT     tx_clwid          _igft4_4  y         _txwd     .,		///
+  		label("Line width:") right
+  COMBOBOX cb_clwid          _txsep    @         _txr2b4g  .,		///
+  		dropdownlist contents(linewidths) option(lwidth)
+END
+
+SCRIPT main_dim_on
+BEGIN
+	main.ed_dim.enable
+	main.tx_dim.enable
+END
+SCRIPT main_dim_off
+BEGIN
+	main.ed_dim.disable
+	main.tx_dim.disable
+END
+
+LIST main_color_mcolor
+BEGIN
+	main.cl_mcolor.hide
+	main.cl_mcolor.show
+	main.cl_mcolor.hide
+END
+
+LIST main_color_mlcolor
+BEGIN
+	main.cl_mlcolor.hide
+	main.cl_mlcolor.show
+	main.cl_mlcolor.hide
+END
+
+SCRIPT main_mlabel_1_enable
+BEGIN
+	main.tx_mlabel.enable
+	main.vn_mlabel.enable
+	main.tx_mlsize.enable
+	main.cb_mlsize.enable
+	main.tx_mlcolor.enable
+	main.cb_mlcolor.enable
+	main.cl_mlcolor.enable
+	main.tx_mlposition.enable
+	main.cb_mlposition.enable
+END
+
+SCRIPT main_mlabel_1_disable
+BEGIN
+	main.tx_mlabel.disable
+	main.vn_mlabel.disable
+	main.tx_mlsize.disable
+	main.cb_mlsize.disable
+	main.tx_mlcolor.disable
+	main.cb_mlcolor.disable
+	main.cl_mlcolor.disable
+	main.tx_mlposition.disable
+	main.cb_mlposition.disable
+END
+
+LIST main_line_color_ccol
+BEGIN
+	main.cl_ccol.hide
+	main.cl_ccol.show
+	main.cl_ccol.hide
+END
+
+SCRIPT main_line_off
+BEGIN
+	main.tx_ccol.disable
+	main.cb_ccol.disable
+	main.cl_ccol.disable
+	main.tx_clwid.disable
+	main.cb_clwid.disable
+	main.tx_clpat.disable
+	main.cb_clpat.disable
+END
+
+SCRIPT main_line_on
+BEGIN
+	main.tx_ccol.enable
+	main.cb_ccol.enable
+	main.cl_ccol.enable
+	main.tx_clwid.enable
+	main.cb_clwid.enable
+	main.tx_clpat.enable
+	main.cb_clpat.enable
+END
+
+INCLUDE gr_twoway
+
+PROGRAM command
+BEGIN
+	put "mdsconfig "
+	beginoptions
+		if main.rb_dim {
+			require main.ed_dim
+			optionarg main.ed_dim
+		}
+		option main.ck_xnegate
+		option main.ck_ynegate
+		option main.ck_autoaspect
+		optionarg /hidedefault main.sp_maxlength
+
+		optionarg main.cb_msymbol
+		if !Hcc(main.cb_mcolor) {
+			optionarg /hidedefault main.cb_mcolor
+		}
+		if Hcc(main.cb_mcolor) {
+			optionarg /quoted main.cl_mcolor
+		}
+		optionarg main.cb_msize
+		optionarg main.vn_mlabel
+		optionarg main.cb_mlsize
+		if !Hcc(main.cb_mlcolor) {
+			optionarg /hidedefault main.cb_mlcolor
+		}
+		if Hcc(main.cb_mlcolor) {
+			optionarg /quoted main.cl_mlcolor
+		}
+		optionarg main.cb_mlposition
+		option main.ck_line
+		if main.ck_line {
+			if H(main.cl_ccol) {
+				optionarg /hidedefault main.cb_ccol
+			}
+			if !H(main.cl_ccol) {
+				optionarg /quoted main.cl_ccol
+			}
+			optionarg /hidedefault main.cb_clwid
+			optionarg /hidedefault main.cb_clpat
+		}
+		put " " /program gr_twoway_output
+	endoptions
+END

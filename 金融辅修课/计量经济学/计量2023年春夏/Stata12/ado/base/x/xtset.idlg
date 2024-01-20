@@ -1,0 +1,374 @@
+/*
+  xtset INCLUDE file
+
+*!  VERSION 1.0.1  22jun2009
+
+*/
+
+  TEXT     tx_i		_lft	_top	_cwd1	.,		///
+	label("Panel ID variable:")
+  VARNAME  vn_i		@	_ss	_vnwd	.,		///
+	option(i)						///
+	default(char _dta[iis])					///
+	nomemory						///
+	label("Panel ID variable")
+
+  CHECKBOX ck_t		_lft2	_top	_cwd1	.,		///
+	onclickon(program time_check)				///
+	onclickoff(program time_check)				///
+	label("Time variable:")
+  TEXT     tx_t		@	@	@	.,		///
+	label("Time variable:")
+		
+  VARNAME  vn_t		@	_ss	_vnwd	.,		///
+	option(t)						///
+	default(char _dta[tis])					///
+	nomemory						///
+	label("Time variable")
+
+  GROUPBOX gb_format	_lft	_ls	_iwd	_ht14,		///
+	label("Time unit and display format for the time variable")
+  RADIO    rb_none	_ilft	_ss	_cwd2	.,		///
+	first							///
+	label("Use format of time variable")			///
+	onclickon(program format_check)				///
+	option(NONE)
+  RADIO    rb_time	_ilft	_ss	_cwd2	.,		///
+	label("Clock")						///
+	onclickon(program format_check) 			///
+	option(clocktime)
+DEFINE y @y
+  RADIO    rb_day	@	_ss	@	.,		///
+	label("Daily")						///
+	onclickon(program format_check)				///
+	option(daily)
+  RADIO    rb_week	@	_ss	@	.,		///
+	label("Weekly")						///
+	onclickon(program format_check)				///
+	option(weekly)
+  RADIO    rb_month	@	_ss	@	.,		///
+	label("Monthly")					///
+	onclickon(program format_check)				///
+	option(monthly)
+  RADIO    rb_quart	_lft2	y	@	.,		///
+	label("Quarterly")					///
+	onclickon(program format_check)				///
+	option(quarterly)
+  RADIO    rb_half	@	_ss	@	.,		///
+	label("Half-yearly")					///
+	onclickon(program format_check)				///
+	option(halfyearly)
+  RADIO    rb_year	@	_ss	@	.,		///
+	label("Yearly")						///
+	onclickon(program format_check)				///
+	option(yearly)
+  RADIO    rb_gen	@	_ss	@	.,		///
+	label("Generic")					///
+	onclickon(program format_check)				///
+	option(generic) last
+
+  EDIT     ed_format	_ilft	+35	_lw120	.,		///
+	option(format)						///
+	nomemory						///
+	label("Custom format")
+  BUTTON   bu_format	_slw120	@	100	.,		///
+	label("Customize...")					///
+	onpush(program showFormatDialog)
+
+  BUTTON   bu_clear	_lft	+50	130	.,		///
+	label("Clear xt settings")				///
+	onpush(program clear_settings)
+
+  GROUPBOX gb_note	_lft	+30	_iwd	70,		///
+	label("Note")
+  TEXTBOX  tb_note	_ilft	+18	_ibwd	_tb3,
+END
+
+PROGRAM check_time_var
+BEGIN
+	if main.vn_t {
+		call main.ck_t.seton
+		call program time_check
+	}
+END
+
+PROGRAM time_check
+BEGIN
+	if main.ck_t.isvisible() {
+		if main.ck_t  {
+			call main.vn_t.enable
+			call program format_on
+		}
+		else {
+			call main.vn_t.disable
+			call program format_off
+		}
+	}
+	else {
+		call main.vn_t.enable
+		call program format_on
+	}
+END
+
+PROGRAM showFormatDialog
+BEGIN
+	call create STRING formatString
+	call create CHILD format_chooser
+	call format_chooser.setExitString formatString
+	call format_chooser.setExitAction "main.ed_format.setvalue class formatString.value"
+	if main.rb_time {
+		call format_chooser.callthru "script setFormatClock"
+	}
+	if main.rb_day {
+		call format_chooser.callthru "script setFormatDaily"
+	}
+	if main.rb_week {
+		call format_chooser.callthru "script setFormatWeekly"
+	}
+	if main.rb_month {
+		call format_chooser.callthru "script setFormatMonthly"
+	}
+	if main.rb_quart {
+		call format_chooser.callthru "script setFormatQuarterly"
+	}
+	if main.rb_half {
+		call format_chooser.callthru "script setFormatHalfYear"
+	}
+	if main.rb_year {
+		call format_chooser.callthru "script setFormatAnnual"
+	}
+	if main.rb_year {
+		call format_chooser.callthru "script setFormatAnnual"
+	}
+END
+
+PROGRAM format_check
+BEGIN
+	call script deltaHideLists
+	if main.rb_none {
+		call main.ed_format.disable
+		call main.bu_format.disable
+		call main.ed_format.setvalue ""
+		call delta.cb_generic.show
+	}
+	if main.rb_time {
+		call main.ed_format.enable
+		call main.bu_format.enable
+		call main.ed_format.setvalue "%tc"
+		call main.ed_format.setdefault "%tc"
+		call delta.cb_time.show
+	}
+	if main.rb_day {
+		call main.ed_format.enable
+		call main.bu_format.enable
+		call main.ed_format.setvalue "%td"
+		call main.ed_format.setdefault "%td"
+		call delta.cb_day.show
+	}
+	if main.rb_week {
+		call main.ed_format.enable
+		call main.bu_format.enable
+		call main.ed_format.setvalue "%tw"
+		call main.ed_format.setdefault "%tw"
+		call delta.cb_week.show
+	}
+	if main.rb_month {
+		call main.ed_format.enable
+		call main.bu_format.enable
+		call main.ed_format.setvalue "%tm"
+		call main.ed_format.setdefault "%tm"
+		call delta.cb_month.show
+	}
+	if main.rb_quart {
+		call main.ed_format.enable
+		call main.bu_format.enable
+		call main.ed_format.setvalue "%tq"
+		call main.ed_format.setdefault "%tq"
+		call delta.cb_quarterly.show
+	}
+	if main.rb_half {
+		call main.ed_format.enable
+		call main.bu_format.enable
+		call main.ed_format.setvalue "%th"
+		call main.ed_format.setdefault "%th"
+		call delta.cb_half.show
+	}
+	if main.rb_year {
+		call main.ed_format.enable
+		call main.bu_format.enable
+		call main.ed_format.setvalue "%ty"
+		call main.ed_format.setdefault "%ty"
+		call delta.cb_year.show
+	}
+	if main.rb_gen {
+		call main.ed_format.disable
+		call main.bu_format.disable
+		call main.ed_format.setvalue "%tg"
+		call main.ed_format.setdefault "%tg"
+		call delta.cb_generic.show
+	}
+END
+
+PROGRAM clear_settings
+BEGIN
+	if isMI {
+		put "mi "
+	}
+	put "xtset, clear"
+	stata
+
+	call main.vn_t.setvalue ""
+	call main.vn_i.setvalue ""
+END
+
+DIALOG delta, tabtitle("Delta")
+BEGIN
+  GROUPBOX gb_delta	_lft	_top	_iwd	_ht3,		///
+	label("Delta for time variable")
+
+  TEXT     tx_value	_ilft	_ms	60	.,		///
+	label("Period:") right
+  SPINNER  sp_value	+65	@	_spwd	.,		///
+	min(1) max(10000000) default(1)
+
+  TEXT     tx_unit	_spsep	@	90	.,		///
+	label("Delta units:") right
+  COMBOBOX cb_time	+95	@	_vnwd	.,		///
+	dropdownlist contents(clockList) values(clockValues)
+  COMBOBOX cb_day	@	@	@	.,		///
+	dropdownlist contents(dayList)
+  COMBOBOX cb_week	@	@	@	.,		///
+	dropdownlist contents(weekList)
+  COMBOBOX cb_month	@	@	@	.,		///
+	dropdownlist contents(monthList)
+  COMBOBOX cb_quarterly	@	@	@	.,		///
+	dropdownlist contents(quarterlyList)
+  COMBOBOX cb_half	@	@	@	.,		///
+	dropdownlist contents(halfList)
+  COMBOBOX cb_year	@	@	@	.,		///
+	dropdownlist contents(yearList)
+  COMBOBOX cb_generic	@	@	@	.,		///
+	dropdownlist contents(genericList)
+END
+
+SCRIPT deltaHideLists
+BEGIN
+	delta.cb_generic.hide
+	delta.cb_time.hide
+	delta.cb_day.hide
+	delta.cb_week.hide
+	delta.cb_month.hide
+	delta.cb_quarterly.hide
+	delta.cb_half.hide
+	delta.cb_year.hide
+END
+
+LIST clockList
+BEGIN
+	Milliseconds
+	Seconds
+	Minutes
+	Hours
+	Days
+	Weeks
+END
+
+LIST clockValues
+BEGIN
+	""
+	seconds
+	minutes
+	hours
+	days
+	weeks
+END
+
+LIST dayList
+BEGIN
+	Days
+END
+
+LIST weekList
+BEGIN
+	Weeks
+END
+
+LIST monthList
+BEGIN
+	Months
+END
+
+LIST quarterlyList
+BEGIN
+	Quarter years
+END
+
+LIST halfList
+BEGIN
+	Half years
+END
+
+LIST yearList
+BEGIN
+	Years
+END
+
+LIST genericList
+BEGIN
+	Time unit
+END
+
+PROGRAM delta_on
+BEGIN
+	call delta.tx_value.enable
+	call delta.sp_value.enable
+	call delta.tx_unit.enable
+	call delta.cb_unit.enable
+END
+
+PROGRAM delta_off
+BEGIN
+	call delta.tx_value.disable
+	call delta.sp_value.disable
+	call delta.tx_unit.disable
+	call delta.cb_unit.disable
+END
+
+PROGRAM delta_output
+BEGIN
+	put delta.sp_value 
+	put " " delta.cb_unit
+END
+
+PROGRAM command
+BEGIN
+	if isMI {
+		put "mi "
+	}
+	put "xtset "
+	varlist main.vn_i
+	if main.ck_t | timeRequired {
+		varlist main.vn_t
+	}
+	beginoptions
+		if main.ed_format & main.ed_format.isenabled() 	 	///
+				  & ! main.ed_format.isdefault() 	///
+		{
+			optionarg main.ed_format
+		}
+		else {
+			option radio(main 				///
+			rb_none rb_time rb_day rb_week rb_month 	///
+			rb_quart rb_half rb_year rb_gen)
+		}
+
+		if ( ! delta.sp_value.isdefault() 			///
+			| (delta.cb_time.isvisible() & delta.cb_time)) 	///
+		{
+			put " delta("
+			put /program delta_output
+			put ") "
+		}
+	endoptions
+	stata
+END

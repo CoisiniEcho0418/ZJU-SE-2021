@@ -1,0 +1,123 @@
+/*
+  suest
+
+*! VERSION 1.2.4  09jun2011
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_large
+DEFINE _dlght 360
+INCLUDE header
+
+HELP hlp1, view("help suest")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	script se_createAsSvyClRobust
+END
+
+DIALOG main, label("suest - Seemingly unrelated estimation") /*
+		*/ tabtitle("Model")
+BEGIN
+  TEXT     tx_name         _lft      _top       _iwd     .,		/*
+  		*/label(`"Models:  (type "." for current model)"')
+  COMBOBOX cb_name         @         _ss        @        .,		/*
+  		*/label("Models")					/*
+  		*/contents(estimates)					/*
+		*/append dropdown
+
+END
+
+INCLUDE se
+
+SCRIPT sub_set_svy_on
+BEGIN
+	// empty script required by se.idlg
+END
+SCRIPT sub_set_svy_off
+BEGIN
+	// empty script required by se.idlg
+END
+SCRIPT svy_is_on
+BEGIN
+	se.tx_type.hide
+	se.lb_svyvcetype.hide
+END
+SCRIPT svy_is_off
+BEGIN
+	se.tx_type.show
+END
+
+SCRIPT rpt_POSTINIT
+BEGIN
+	create STRING rpt_bu_fmtcoefResults
+	program rpt_bu_fmtcoef_ckResults
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _y _top
+  DEFINE _cx _sprb
+  INCLUDE _sp_level
+
+  CHECKBOX ck_dir          _lft      _ls        _iwd     .,		///
+  	label("Display a table describing the models")			///
+  	option(dir)
+
+  TEXT     tx_eform        _lft      _ms        _iwd     .,		///
+	label("Report exponentiated coefficients and use this table header:")
+  EDIT     vl_eform        @         _ss        _vnwd    .,		///
+	option(eform)							///
+	label("Report exponentiated coefficients and use this table header")
+
+  DEFINE _x _lft
+  DEFINE _y _ls
+  DEFINE _cx _iwd
+  INCLUDE _noomitted
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _vsquish
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _factor_vars_reporting
+
+  DEFINE _x _lft
+  DEFINE _y _xxxls
+  INCLUDE _bu_coef_table_reporting
+END
+
+INCLUDE fmt_coef_table_reporting_pr
+
+PROGRAM command
+BEGIN
+	put "suest "
+	require main.cb_name
+	put main.cb_name
+	beginoptions
+		if se.ck_svy {
+			call program _se_notes_for_svy
+			if se_svyset.equals("") {
+				stopbox stop 		///
+`"Survey estimation commands require survey settings."' ///
+`"See the "Survey settings" button on the "SE/Robust" tab."'
+			}
+			put " " "svy"
+		}
+		put " " /program se_output
+		optionarg /hidedefault rpt.sp_level
+		option rpt.ck_dir
+		optionarg rpt.vl_eform
+		INCLUDE _noomitted_pr
+		INCLUDE _vsquish_pr
+		INCLUDE _factor_vars_reporting_pr
+		put " " rpt_bu_fmtcoefResults
+	endoptions
+END

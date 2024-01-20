@@ -1,0 +1,68 @@
+/*
+	symmi
+
+*! VERSION 1.2.0  23may2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help symmi")
+RESET res1
+
+PROGRAM POSTINIT_PROGRAM
+BEGIN
+	if __MESSAGE.iseq("-exact-") {
+		call main.ck_exact.seton
+	}
+END
+
+DIALOG main, label("symmi - Symmetry and marginal homogeneity tests")	/*
+		*/ tabtitle("Main")
+BEGIN
+
+  TEXT     tx_numbers     _lft      _top     _iwd        .,		/*
+*/ label("Table values:  (rows separated by \, example: 3 5\ 5 4)")
+  EDIT     ed_numbers        @       _ss        @        .,		/*
+		*/ label("Table values")
+
+  CHECKBOX ck_notable        @      _xls        @        ., 		/*
+		*/ option("notable")					/*
+  		*/ label("Suppress output of contingency table")
+  CHECKBOX ck_contrib        @       _ms        @        ., 		/*
+		*/ option("contrib")					/*
+  		*/ label("Report contribution of each off-diagonal cell pair")
+  CHECKBOX ck_exact          @       _ms        @        ., 		/*
+		*/ option("exact")					/*
+  		*/ label("Perform exact test of table symmetry")
+  CHECKBOX ck_mh             @       _ms        @        ., 		/*
+		*/ option("mh")						/*
+  		*/ label("Perform two marginal homogeneity tests")
+  CHECKBOX ck_trend          @       _ms        @        ., 		/*
+		*/ option("trend")					/*
+  		*/ clickon("gaction main.ck_cc.enable")			/*
+		*/ clickoff("gaction main.ck_cc.disable")		/*
+    */ label("Perform a test for linear trend in the (log) relative risk (RR)")
+  CHECKBOX ck_cc   	     @       _ms        @        ., 		/*
+		*/ option("cc")						/*
+  */ label("Use continuity correction when calculating test for linear trend")
+END
+
+
+PROGRAM command
+BEGIN
+	put "symmi "
+        require main.ed_numbers
+	put main.ed_numbers
+	beginoptions
+		option main.ck_notable
+		option main.ck_contrib
+		option main.ck_exact
+		option main.ck_mh
+		option main.ck_trend
+		option main.ck_cc
+	endoptions
+END

@@ -1,0 +1,73 @@
+/*
+    irf_set.dlg
+
+*!  VERSION 1.0.0  17jun2004
+
+*/
+
+VERSION 8.0
+
+INCLUDE _std_small
+INCLUDE _ht150
+INCLUDE header
+
+HELP hlp1, view("help irf_set")
+RESET res1
+
+DIALOG main, label("irf set - Set active IRF file") tabtitle("Main")
+BEGIN
+  RADIO     rb_set           _lft      _top      _iwd      ., 		///
+  		first							///
+		onclickon(script set_on)				///
+		option(NONE)						///
+		label("Set active IRF file:")
+  RADIO     rb_clear         _lft      +80       @         ., 		///
+  		last							///
+		onclickon(script set_off)				///
+		option(clear)						///
+		label("Clear the active IRF file setting")
+
+  FILE      fi_set           _indent2  -60       _inwd     .,		///
+		default(global S_vrffile) nomemory			///
+		label("Browse...")					///
+		error("Set active IRF file")				///
+		option(set)						///
+		filter("IRF Files (*.irf)|*.irf|All Files (*.*)|*.*")	///
+		defext(vrf)
+
+  CHECKBOX  ck_replace       @         _ms       @         .,		///
+		option(replace)	nomemory				///
+		label("Replace any existing file with an empty file")
+
+
+END
+
+SCRIPT set_on
+BEGIN
+	main.fi_set.enable
+	main.ck_replace.enable
+END
+
+SCRIPT set_off
+BEGIN
+	main.fi_set.disable
+	main.ck_replace.disable
+END
+
+
+PROGRAM command
+BEGIN
+	put "irf set "
+	/* not doing replay mode since current file will appear in edit field */
+	if main.rb_set {
+		require main.fi_set
+		put `"""'
+		put main.fi_set
+		put `"""'
+	}
+	beginoptions
+		/* not doing -new- opt (no need, right thing happens anyway) */
+		option radio(main rb_set rb_clear)
+		option main.ck_replace
+	endoptions
+END

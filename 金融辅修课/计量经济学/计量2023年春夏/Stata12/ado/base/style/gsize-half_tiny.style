@@ -1,0 +1,6 @@
+*! version 1.0.0  22dec2002
+sequence 2510
+label "Half tiny"
+set val .6944
+
+* 2 pt based on a 4 inch high graph

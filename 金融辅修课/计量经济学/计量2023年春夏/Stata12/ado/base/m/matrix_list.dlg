@@ -1,0 +1,115 @@
+/*
+  matrix list
+
+*!  VERSION 1.2.0  06feb2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_small
+DEFINE _dlght 250
+INCLUDE header
+
+HELP hlp1, view("help matrix utility")
+RESET res1
+
+DIALOG main, label("matrix list - List contents of matrix") tabtitle("Main")
+BEGIN
+  TEXT     tx_mname     _lft      _top      _iwd      .,		/*
+		*/ label("Matrix:")
+  LISTBOX  lb_mname     @         _ss       @         _ht13,		/*
+		*/ contents(matrix)					/*
+		*/ label("Matrix")
+END
+
+
+DIALOG opt, tabtitle("Options")
+BEGIN
+  GROUPBOX gb_title	_lft	_top	_iwd	_ht8h,		///
+	label("Title")
+  RADIO    rb_headdef   _ilft	_ss	_ibwd	., first	///
+	option(NONE)						///
+	onclickon(opt.ed_title.disable)				///
+	label("Use default")
+  RADIO    rb_noheader	@	_ss	@	.,		///
+	option(noheader)					///
+	onclickon(opt.ed_title.disable)				///
+	label("Suppress title")
+  RADIO    rb_title	@	_ss	@	., last		///
+	option(NONE)  						///
+	onclickon(opt.ed_title.enable)				///
+	label("User specified title:")
+  EDIT     ed_title	+20	_ss	250	.,		///
+	option(title) label("User specified title")
+
+  CHECKBOX ck_format    _lft	+50	_iwd	.,		///
+	onclickon(script format_on)				///
+	onclickoff(script format_off)				///
+	label("Overide display format for matrix elements")
+  EDIT     ed_format	+20	_ss	175	.,		///
+	option(format)						///
+	label("Display format")
+  BUTTON   bu_format	+180	@	80	.,		///
+	label("Create...")					///
+	onpush(script showFormatDialog)				///
+	tooltip("Create display format")
+
+  RADIO    rb_half	_lft	+35	_iwd	., first	///
+	option(NONE)						///
+	label("Display lower triangle if symmetric matrix")
+  RADIO    rb_nohalf	@	_ss	@	., last		///
+	option(nohalf)						///
+	label("Display full matrix")
+END
+
+SCRIPT showFormatDialog
+BEGIN
+	create STRING formatString
+	create CHILD format_chooser
+	format_chooser.setExitString formatString
+	format_chooser.setExitAction "opt.ed_format.setvalue class formatString.value"
+END
+
+SCRIPT format_on
+BEGIN
+  	opt.ed_format.enable
+  	opt.bu_format.enable
+END
+
+SCRIPT format_off
+BEGIN
+  	opt.ed_format.disable
+	opt.bu_format.disable
+END
+
+
+DIALOG adv, tabtitle("Advanced")
+BEGIN
+  CHECKBOX ck_nodotz    _lft      _top      _iwd      .,		/*
+		*/ option(nodotz)					/*
+		*/ label("List .z missing values as blanks")
+  CHECKBOX ck_nonames   @         _ms       @         .,		/*
+		*/ option(nonames)					/*
+		*/ label("Suppress display of row and column names")
+  CHECKBOX ck_noblank   @         _ms       @         .,		/*
+		*/ option(noblank)					/*
+		*/ label("Suppress printing a blank line before matrix")
+END
+
+
+PROGRAM command
+BEGIN
+	put "matrix list " main.lb_mname
+	beginoptions
+		option radio(opt rb_headdef rb_noheader rb_title)
+		if opt.rb_title {
+			optionarg opt.ed_title
+		}
+		optionarg opt.ed_format
+		option radio(opt rb_half rb_nohalf)
+		option adv.ck_nodotz
+		option adv.ck_nonames
+		option adv.ck_noblank
+	endoptions
+END

@@ -1,0 +1,63 @@
+/*
+  gr_ed_pieslice.dlg
+
+*!  VERSION 1.0.0  18jan2007
+
+*/
+
+VERSION 10.0
+MODAL
+
+INCLUDE _std_vsmall
+DEFINE _dlght 330
+INCLUDE header_gr_ed
+
+DEFINE _clwd	15
+DEFINE _wd	120
+DEFINE _sep	+125
+DEFINE _wd2	110
+DEFINE _sep2	+115
+DEFINE _cbwd	120
+DEFINE _cbsep	+125
+
+SCRIPT PREINIT
+BEGIN
+	create STRING G
+	create STRING J
+	create STRING style
+	create ARRAY  ARGS
+	program setupGOBJECT
+
+	create STRING thisname
+	thisname.setvalue class _dlg_rsrcname
+
+	create DOUBLE index
+END
+
+PROGRAM setupGOBJECT
+BEGIN
+	if ! __MESSAGE {
+		stopbox stop 	///
+			"An unexpected error has occurred." "Object not found."
+		exit 198
+	}
+	call G.setvalue class __MESSAGE.value
+	call __MESSAGE.tokenize ARGS
+	call G.setvalue class ARGS[1]
+	call J.setvalue class ARGS[2]
+END
+
+INCLUDE gr_ed_pieslice
+
+PROGRAM command
+BEGIN
+	put "_gm_dlg_edits"
+	beginoptions
+		put " object(" G ") "
+		put " " /program pie_output
+		put " epilog(_gedi toolbar pieslice " G ") "
+		if J {
+			put "jindex(" J ") "
+		}
+	endoptions
+END

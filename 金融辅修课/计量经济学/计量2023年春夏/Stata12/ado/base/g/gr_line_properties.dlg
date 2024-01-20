@@ -1,0 +1,66 @@
+/*
+    gr_line_properties.dlg
+    
+    Similar to gr_line_options.dlg without connecting method
+    
+*!  VERSION 1.0.0  18jan2007
+
+	// SCRIPTS and PROGRAMS for external use
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_vsmall
+DEFINE _dlght 130
+INCLUDE header_gr_child
+
+DEFINE _clwd	15
+DEFINE _wd	130
+DEFINE _sep	+135
+DEFINE _cbwd	130
+DEFINE _cbsep	+135
+
+HELP hlp1, view("help line_options")
+RESET res1
+
+DIALOG main, label("Line properties")
+BEGIN
+  TEXT     tx_clr	_lft	20	_wd	.,		///
+	label("Color:") right
+  COMBOBOX cb_clr	_sep	@	_cbwd	.,		///
+	dropdownlist contents(colors) option(lcolor)		///
+	onselchangelist(main_cl_clr_sel)
+  COLOR    cl_clr	_cbsep	@	_clwd	., option(lcolor)
+  
+  TEXT     tx_width	_lft	 _mls	_wd	.,		///
+	label("Width:") right
+  COMBOBOX cb_width	_sep	@	_cbwd	.,		///
+	dropdown option(lwidth)					///
+	contents(linewidths)
+
+  TEXT     tx_pattern	_lft	_mls	_wd	.,		///
+	label("Pattern:") right
+  COMBOBOX cb_pattern	_sep	@	_cbwd	.,		///
+	dropdownlist option(lpattern)				///
+	contents(linepatterns)
+END
+
+LIST main_cl_clr_sel
+BEGIN
+	main.cl_clr.hide
+	main.cl_clr.show
+	main.cl_clr.hide
+END
+
+PROGRAM command
+BEGIN
+	if main.cl_clr.isvisible() {
+		optionarg /quoted main.cl_clr
+	}
+	if ! main.cl_clr.isvisible() {
+		optionarg /hidedefault main.cb_clr
+	}
+	optionarg /hidedefault main.cb_width
+	optionarg /hidedefault main.cb_pattern
+END

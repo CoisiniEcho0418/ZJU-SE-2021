@@ -1,0 +1,43 @@
+/*
+	estimates use
+
+*!  VERSION 1.0.3  17mar2009
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_small
+DEFINE _dlght 90
+INCLUDE header
+
+HELP hlp1, view("help estimates_save")
+RESET res1
+
+DIALOG main, label("estimates use - Load estimation results")		///
+	tabtitle("Main")
+BEGIN
+  TEXT tx_fn		_lft	_top	80	.,			///
+	label("Filename:")
+  FILE fi_fn     	@	_ss	_iwd	.,			///
+	label("Browse...")						///
+	filter("Stata Estimates File (*.ster)|*.ster|All (*.*)|*.*")	/// 
+	defext(ster)							///
+	error("Filename")
+  SPINNER sp_number	_lft	_ms	_spwd	.,			///
+	option(number)							///
+	min(1) max(10000000) default(1)
+  TEXT tx_number	_spsep	@	_iwd	.,			///
+	label("Estimates set to use")
+
+END
+
+PROGRAM command
+BEGIN
+	require main.fi_fn
+        put "estimates use "
+	put  `"""' main.fi_fn `"""'
+	beginoptions
+		optionarg /hidedefault main.sp_number
+	endoptions
+END

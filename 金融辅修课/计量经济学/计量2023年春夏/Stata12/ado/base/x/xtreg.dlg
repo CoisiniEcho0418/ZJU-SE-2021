@@ -1,0 +1,333 @@
+/*
+  xtreg
+
+*!  VERSION 1.4.0  23aug2010
+
+  keyword:  eclass
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_wide
+INCLUDE _ht320
+INCLUDE header
+
+HELP hlp1, view("help xtreg")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	program parseMessage
+	script se_createAsGEE
+END
+
+PROGRAM parseMessage
+BEGIN
+	if __MESSAGE.contains("__MI__") {
+		call script se_setMI_on
+		call main.bu_xtset.hide
+	}
+	else {
+		call main.bu_mi_xtset.hide
+	}
+END
+
+SCRIPT POSTINIT
+BEGIN
+	program check_bytab
+	script se_setRGF_on
+	program check_se_status
+	corr.ck_force.show
+	script max_internalFrom_on
+	script max_internal_disable
+	script weights_disable
+	script weights_setLayout_fpi
+END
+
+PROGRAM check_bytab
+BEGIN
+	if __MESSAGE.contains("__MI__") {
+		call script byifin_set_by_off
+	}
+END
+
+SCRIPT show_xtset
+BEGIN
+	create STRING note
+	note.setvalue `"For a population-averaged model,"'
+	note.append   `" correlation structures other than"'
+	note.append   `" "exchangeable" and "independent""'
+	note.append   `" require that a time variable be specified."'
+	note.withvalue create CHILD xtset, message(`"" " `"@"'"')
+END
+
+DIALOG main, tabtitle("Model")	///
+	label("xtreg - Fixed-, between-, random-effects, and population-averaged linear models")
+BEGIN
+  BUTTON   bu_xtset	_xsetbu	_top	_setbuwd .,		///
+	onpush(script show_xtset)				///
+	label("Panel settings...")
+  BUTTON   bu_mi_xtset  _xsetbu	_top	_setbuwd	.,		///
+	onpush("view dialog mi_xtset")					///
+	label("Panel settings...")
+
+  TEXT tx_dv 		_lft	_topph	_vnwd	.,			///
+	label("Dependent variable:")
+  VARNAME vn_dv		@ 	_ss	@	.,			///
+	ts								///
+	label("Dependent variable")
+
+  TEXT tx_iv		_vlx	_topph	160	.,			///
+	label("Independent variables:")
+  VARLIST vl_iv		@	_ss	_vlwd	.,			///
+	fv ts								///
+	allowcat							///
+	label("Independent variables")
+
+  CHECKBOX ck_nocons   @           _ms       @           .,		///
+		label("Suppress constant term")				///
+		option(noconstant)
+
+  GROUPBOX gb_model    _lft        _ls       _iwd        _ht4,		///
+		label("Model type (affects which options are available)")
+
+  RADIO    rb_re       _ilft       _ss       _cwd3_2     .,		///
+		label("GLS random-effects")				///
+		onclickon(script re_opts)				///
+		first							///
+		option(re)
+
+  RADIO    rb_be       _ilft3_2    @         @           .,		///
+		label("Between-effects")				///
+		onclickon(script be_opts)				///
+		option(be)
+
+  RADIO    rb_fe       _ilft3_3    @         @           .,		///
+		label("Fixed-effects")					///
+		onclickon(script fe_opts)				///
+		option(fe)
+
+  RADIO    rb_ml       _ilft       _ss       @           .,		///
+		label("ML random-effects")				///
+		onclickon(script ml_opts)				///
+		option(mle)
+
+  RADIO    rb_pa       _ilft3_2    @         @           .,		///
+		label("Population-averaged")				///
+		onclickon(script pa_opts)				///
+		last							///
+		option(pa)
+
+  GROUPBOX gb_opts    _lft      _xls      _iwd      _ht10,		///
+		label("Options")
+
+  TEXT     tx_offset _ilft     _ss       _cwd2     .,			///
+		label("Offset variable:")
+
+  VARNAME  vn_offset @         _ss       _vnwd     .,			///
+		label("Offset variable")				///
+		option(offset)
+
+  CHECKBOX ck_sa     @         _ls       _cwd2     .,			///
+		label("Use the Swamy-Arora estimator")			///
+		option(sa)
+
+  CHECKBOX ck_wls    @         _ms       @         .,			///
+		label("Use weighted least squares")			///
+		option(wls)
+END
+
+SCRIPT re_opts
+BEGIN
+	main.tx_offset.disable
+	main.vn_offset.disable
+	main.ck_nocons.disable
+	main.ck_sa.enable
+	rpt.ck_theta.enable
+	main.ck_wls.disable
+	program check_se_status
+	program disable_xtgee_common
+	script max_internalFrom_on
+	script max_internal_disable
+	script weights_disable
+	script weights_setLayout_fpi
+END
+
+SCRIPT be_opts
+BEGIN
+	main.tx_offset.disable
+	main.vn_offset.disable
+	main.ck_nocons.disable
+	main.ck_sa.disable
+	rpt.ck_theta.disable
+	main.ck_wls.enable
+	program check_se_status
+	program disable_xtgee_common
+	script max_internalFrom_on
+	script max_internal_disable
+	script weights_disable
+	script weights_setLayout_fpi
+END
+
+SCRIPT fe_opts
+BEGIN
+	main.tx_offset.disable
+	main.vn_offset.disable
+	main.ck_nocons.disable
+	main.ck_sa.disable
+	rpt.ck_theta.disable
+	main.ck_wls.disable
+	program check_se_status
+	program disable_xtgee_common
+	script max_internalFrom_on
+	script max_internal_disable
+	script weights_enable
+	script weights_setLayout_fpa
+END
+
+SCRIPT ml_opts
+BEGIN
+	main.tx_offset.disable
+	main.vn_offset.disable
+	main.ck_nocons.enable
+	main.ck_sa.disable
+	rpt.ck_theta.disable
+	main.ck_wls.disable
+	program check_se_status
+	program disable_xtgee_common
+	script max_pa_hide
+	script max_internalFrom_on
+	script max_internal_enable
+	script weights_enable
+	script weights_setLayout_i
+END
+
+SCRIPT pa_opts
+BEGIN
+	main.tx_offset.enable
+	main.vn_offset.enable
+	main.ck_nocons.enable
+	main.ck_sa.disable
+	rpt.ck_theta.disable
+	main.ck_wls.disable
+	program check_se_status
+	program enable_xtgee_common
+	script max_pa_on
+	script weights_enable
+	script weights_setLayout_fpi
+END
+
+INCLUDE xtgee_common
+INCLUDE byifin
+INCLUDE weights
+INCLUDE se
+
+PROGRAM check_se_status
+BEGIN
+	if main.rb_pa {
+		call script se_setIOIM_off
+		call script se_setGLS_off
+		call script se_setNONEST_off
+		call script se_setDFADJ_off
+		call script se_setGEE_on
+	}
+	if !main.rb_pa {
+		call script se_setConventional_off
+		call script se_setIOIM_off
+		if main.rb_re {
+			call script se_setGEE_off_robustOK
+			call script se_setGLS_off
+			call script se_setConventional_on
+			call script se_setNONEST_off	// option is now undocumented
+			call script se_setDFADJ_off
+			call script se_setClRobust_on
+		}
+		if main.rb_fe {
+			call script se_setGEE_off_robustOK
+			call script se_setConventional_on
+			call script se_setNONEST_off	// option is now undocumented
+			call script se_setDFADJ_off	// option is now undocumented
+			call script se_setClRobust_on
+		}
+		if ! main.rb_fe & ! main.rb_re {
+			call script se_setGEE_off
+			if main.rb_ml {
+				call script se_setIOIM_on
+			}
+			if main.rb_be {
+				call script se_setConventional_on
+			}
+		}
+	}
+END
+
+SCRIPT rpt_POSTINIT
+BEGIN
+	create STRING rpt_bu_fmtcoefResults
+	program rpt_bu_fmtcoef_ckResults
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr2
+  DEFINE _y _top
+  INCLUDE _sp_level
+
+  CHECKBOX ck_theta    _lft        _ls        _iwd       .,		///
+		label("Report theta (only available with random-effects)") ///
+		option(theta)
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _noomitted
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _vsquish
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _factor_vars_reporting
+
+  DEFINE _x _lft
+  DEFINE _y _xxxls
+  INCLUDE _bu_coef_table_reporting
+END
+
+INCLUDE fmt_coef_table_reporting_pr
+
+INCLUDE max_ml
+
+PROGRAM command
+BEGIN
+	put /program by_output " "
+	put "xtreg "
+	varlist main.vn_dv [main.vl_iv]
+	if !main.vl_iv & main.ck_nocons & !D(main.ck_nocons) {
+	  stopbox stop `""Suppress constant term" is selected without independent variables."'
+	}
+	put " " /program ifin_output
+	put " " /program weights_output
+	beginoptions
+		option main.ck_nocons
+		option radio(main rb_re rb_be rb_fe rb_ml rb_pa)
+		optionarg main.vn_offset
+		option main.ck_sa
+		option main.ck_wls
+		put " " /program xtgee_common_output
+		put " " /program se_output
+		optionarg /hidedefault rpt.sp_level
+		option rpt.ck_theta
+		INCLUDE _noomitted_pr
+		INCLUDE _vsquish_pr
+		INCLUDE _factor_vars_reporting_pr
+		put " " rpt_bu_fmtcoefResults
+
+		put " " /program max_output
+	endoptions
+END

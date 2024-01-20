@@ -1,0 +1,6 @@
+*! version 1.0.0  22dec2002
+sequence 3560
+
+set width    scheme refmarker
+set color    scheme refmarkline
+set pattern  scheme refmarker

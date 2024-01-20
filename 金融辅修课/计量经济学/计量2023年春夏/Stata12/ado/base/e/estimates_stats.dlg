@@ -1,0 +1,54 @@
+/*
+	estimates stats
+
+*!  VERSION 1.1.4  03jun2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_medium
+INCLUDE _ht250
+INCLUDE header
+HELP hlp1, view("help estimates_stats")
+RESET res1
+
+DIALOG main, label("estimates stats - Model comparison fit statistics")	///
+	tabtitle("Main")
+BEGIN
+  RADIO rb_all		_lft	_top	_iwd	., 			///
+	first								///
+	onclickon( main.cb_elist.disable)				///
+	label("Report comparison fit statistics for all stored estimation results")
+  RADIO rb_elist	@	_ss	@	., 			///
+	last								///
+	onclickon(main.cb_elist.enable)					///
+	label("Report comparison fit statistics for:")
+  COMBOBOX cb_elist	_indent2 _ms	_inwd	_ht10, 			///
+	append								///
+	contents(estimates)						///
+	error("List estimation results for")
+  
+  CHECKBOX ck_n		_lft	_vs10	_iwd	.,			///
+	onclickon(main.sp_n.enable)					///
+	onclickoff(main.sp_n.disable)					///
+	label("Number of observations for calculating BIC")
+
+  SPINNER sp_n		_indent2 _ss	_spwd	.,			///
+	default(c(N)) min(1) max(e(N))					///
+	option(n)
+END
+
+PROGRAM command
+BEGIN
+	put "estimates stats "
+	if main.rb_elist {
+		require main.cb_elist
+		put main.cb_elist
+	}
+	beginoptions
+		if main.ck_n {
+			optionarg main.sp_n
+		}
+	endoptions
+END

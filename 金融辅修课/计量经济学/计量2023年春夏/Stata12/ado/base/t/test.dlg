@@ -1,0 +1,1594 @@
+/*
+  test
+
+*!  VERSION 1.2.0  14apr2011
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_glm
+INCLUDE _ht340
+INCLUDE header
+
+HELP hlp1, view("help test")
+RESET res1
+
+DIALOG main, label("test - Test linear hypotheses after estimation") 	/*
+		*/ tabtitle("Main")
+BEGIN
+  TEXT     tx_list         _lft      _top       _cwd3_1  .,		/*
+  		*/label("Specifications:")
+  LISTBOX  lb_spec         _lft      _ss        _cwd3_1  _ht8,		/*
+  		*/label("Specifications")				/*
+  		*/contents(spec_list) onselchangelist(spec_change)
+  DEFINE yrp @y
+
+  GROUPBOX gb_test         _lft3_2   _top       _comb3_1 _ht10,		/*
+  		*/label("Test type for this specification")
+  RADIO    rb_test2a       _indent    yrp       _comb3_3 .,		/*
+  		*/label("Skip this specification")			/*
+  		*/first clickon(program hide_all)
+DEFINE x @x
+  RADIO    rb_test2b       @         _ss        @        .,		/*
+  		*/label("Coefficients are 0")				/*
+  		*/clickon(script coef0_2)
+  RADIO    rb_test2c       @         _ss        @        .,		/*
+  		*/label("Linear expressions are equal")			/*
+  		*/clickon(script expeq_2)
+  RADIO    rb_test2d       @         _ss        @        .,		/*
+  		*/label("Coefficients in specific equation are 0")	/*
+  		*/clickon(script eqncoef0_2)
+  RADIO    rb_test2e       @         _ss        @        .,		/*
+  		*/label("Coefficients equal between equations")		/*
+  		*/clickon(script eqeqncoef_2) last
+  RADIO    rb_test3a       @         yrp        @        .,		/*
+  		*/label("Skip this specification")			/*
+  		*/first clickon(program hide_all)
+  RADIO    rb_test3b       @         _ss        @        .,		/*
+  		*/label("Coefficients are 0")				/*
+  		*/clickon(script coef0_3)
+  RADIO    rb_test3c       @         _ss        @        .,		/*
+  		*/label("Linear expressions are equal")			/*
+  		*/clickon(script expeq_3)
+  RADIO    rb_test3d       @         _ss        @        .,		/*
+  		*/label("Coefficients in specific equation are 0")	/*
+  		*/clickon(script eqncoef0_3)
+  RADIO    rb_test3e       @         _ss        @        .,		/*
+  		*/label("Coefficients equal between equations")		/*
+  		*/clickon(script eqeqncoef_3) last
+  RADIO    rb_test4a     @           yrp        @        .,		/*
+  		*/label("Skip this specification")			/*
+  		*/first clickon(program hide_all)
+  RADIO    rb_test4b     @           _ss        @        .,		/*
+  		*/label("Coefficients are 0")				/*
+  		*/clickon(script coef0_4)
+  RADIO    rb_test4c       @         _ss        @        .,		/*
+  		*/label("Linear expressions are equal")			/*
+  		*/clickon(script expeq_4)
+  RADIO    rb_test4d       @         _ss        @        .,		/*
+  		*/label("Coefficients in specific equation are 0")	/*
+  		*/clickon(script eqncoef0_4)
+  RADIO    rb_test4e       @         _ss        @        .,		/*
+  		*/label("Coefficients equal between equations")		/*
+  		*/clickon(script eqeqncoef_4) last
+  RADIO    rb_test5a       @           yrp      @        .,		/*
+  		*/label("Skip this specification")			/*
+  		*/first clickon(program hide_all)
+  RADIO    rb_test5b       @           _ss      @        .,		/*
+  		*/label("Coefficients are 0")				/*
+  		*/clickon(script coef0_5)
+  RADIO    rb_test5c       @          _ss       @        .,		/*
+  		*/label("Linear expressions are equal")			/*
+  		*/clickon(script expeq_5)
+  RADIO    rb_test5d       @          _ss       @        .,		/*
+  		*/label("Coefficients in specific equation are 0")	/*
+  		*/clickon(script eqncoef0_5)
+  RADIO    rb_test5e       @          _ss       @        .,		/*
+  		*/label("Coefficients equal between equations")		/*
+  		*/clickon(script eqeqncoef_5) last
+  RADIO    rb_test6a       @          yrp       @        .,		/*
+  		*/label("Skip this specification")			/*
+  		*/first clickon(program hide_all)
+  RADIO    rb_test6b       @          _ss       @        .,		/*
+  		*/label("Coefficients are 0")				/*
+  		*/clickon(script coef0_6)
+  RADIO    rb_test6c       @         _ss        @        .,		/*
+  		*/label("Linear expressions are equal")			/*
+  		*/clickon(script expeq_6)
+  RADIO    rb_test6d       @         _ss        @        .,		/*
+  		*/label("Coefficients in specific equation are 0")	/*
+  		*/clickon(script eqncoef0_6)
+  RADIO    rb_test6e       @         _ss        @        .,		/*
+  		*/label("Coefficients equal between equations")		/*
+  		*/clickon(script eqeqncoef_6) last
+  RADIO    rb_test1a       x         yrp      _comb3_3   .,		/*
+  		*/label("Coefficients are 0")				/*
+  		*/first clickon(script coef0_1)
+  RADIO    rb_test1b       @         _ss        @        .,		/*
+  		*/label("Linear expressions are equal")			/*
+  		*/clickon(script expeq_1)
+  RADIO    rb_test1c       @         _ss        @        .,		/*
+  		*/label("Coefficients in specific equation are 0")	/*
+  		*/clickon(script eqncoef0_1)
+  RADIO    rb_test1d       @         _ss        @        .,		/*
+  		*/label("Coefficients equal between equations")		/*
+  		*/clickon(script eqeqncoef_1) last
+
+  BUTTON   bu_example      _lft4_4   _xxxls    _cwd4_1  .,	        /*
+                    */ label("Example...")                              /*
+                    */ push("script example")
+  DEFINE yb @y
+/* Equation 1 programming */
+  TEXT     tx_spec         _lft      @          _cwd1    .,		/*
+  		*/label("Specification 1, test these coefficients:")
+  VARLIST  vl_coef1        @         _ms        _iwd     .,		/*
+  		*/label("Specification 1, test these coefficients")
+  VARLIST  vl_coef1a       @         @          _iwd     .,		/*
+  		*/label("Specification 1, test these coefficients")
+  DEFINE yf @y
+  TEXT     tx_coef1b      @         _ms        _iwd     .,		/*
+  */label("Specification 1, test these coefficients: (leave blank for all)")
+  VARLIST  vl_coef1b      @         _ss        _iwd     .,		/*
+  		*/label("Specification 1, test these coefficients")
+  TEXT     tx_spec1b     _lft2     yb         _cwd1    .,		/*
+  		*/label("Specification 1, equation 2: (required)")
+  COMBOBOX cb_eqn1a       _lft      _ss        _cwd1    .,		/*
+  		*/label("Specification 1, equation 1")	 		/*
+  		*/contents(ereturn eqnames) dropdown
+  COMBOBOX cb_eqn1b       _lft2     @          @        .,		/*
+  		*/label("Specification 1, equation 2")			/*
+  		*/contents(list _dclst_0) dropdown
+  TEXT     tx_spec1c      _lft      _ms        @        .,		/*
+  		*/label("Specification 1, equation 3:")
+  TEXT     tx_spec1d      _lft2     @          @        .,		/*
+  		*/label("Specification 1, equation 4:")
+  COMBOBOX cb_eqn1c       _lft      _ss        @        .,		/*
+  		*/label("Specification 1, equation 3:")			/*
+  		*/contents(list _dclst_0) dropdown
+  COMBOBOX cb_eqn1d       _lft2     @          @        .,		/*
+  		*/label("Specification 1, equation 4:")			/*
+  		*/contents(list _dclst_0) dropdown
+  TEXT     tx_spec1e      _lft      _ms        @        .,		/*
+  		*/label("Specification 1, equation 5:")
+  TEXT     tx_spec1f      _lft2     @          @        .,		/*
+  		*/label("Specification 1, equation 6:")
+  COMBOBOX cb_eqn1e       _lft      _ss        @        .,		/*
+  		*/label("Specification 1, equation 5:")	 		/*
+  		*/contents(list _dclst_0) dropdown
+  COMBOBOX cb_eqn1f       _lft2     @          @        .,		/*
+  		*/label("Specification 1, equation 6:") 		/*
+  		*/contents(list _dclst_0) dropdown
+  TEXT     tx_coef1c      _lft      _ms        _iwd     .,		/*
+  */label("Specification 1, test these coefficients: (leave blank for all)")
+  VARLIST  vl_coef1c      @         _ss        @        .,		/*
+  	*/label("Specification 1, test these coefficients")
+
+/* Equation 2 programming */
+  VARLIST  vl_coef2        @         yf        _iwd     .,		/*
+  	*/label("Specification 2, test these coefficients")
+  VARLIST  vl_coef2a       @         yf        _iwd     .,		/*
+  	*/label("Specification 2, test these coefficients")
+  TEXT     tx_coef2b      @         _ms        _iwd     .,		/*
+  */label("Specification 2, test these coefficients: (leave blank for all)")
+  VARLIST  vl_coef2b      @         _ss        _iwd     .,		/*
+  		*/label("Specification 2, test these coefficients")
+  TEXT     tx_spec2b     _lft2     yb         _cwd1    .,		/*
+  		*/label("Specification 2, equation 2: (required)")
+  COMBOBOX cb_eqn2a       _lft      _ss        _cwd1    .,		/*
+  		*/label("Specification 2, equation 1")	 		/*
+  		*/contents(list _dclst_0) dropdown
+  COMBOBOX cb_eqn2b       _lft2     @          @        .,		/*
+  		*/label("Specification 2, equation 2")			/*
+  		*/contents(list _dclst_0) dropdown
+  TEXT     tx_spec2c      _lft      _ms        @        .,		/*
+  		*/label("Specification 2, equation 3:")
+  TEXT     tx_spec2d      _lft2     @          @        .,		/*
+  		*/label("Specification 2, equation 4:")
+  COMBOBOX cb_eqn2c       _lft      _ss        @        .,		/*
+  		*/label("Specification 2, equation 3:")			/*
+  		*/contents(list _dclst_0) dropdown
+  COMBOBOX cb_eqn2d       _lft2     @          @        .,		/*
+  		*/label("Specification 2, equation 4:")			/*
+  		*/contents(list _dclst_0) dropdown
+  TEXT     tx_spec2e      _lft      _ms        @        .,		/*
+  		*/label("Specification 2, equation 5:")
+  TEXT     tx_spec2f      _lft2     @          @        .,		/*
+  		*/label("Specification 2, equation 6:")
+  COMBOBOX cb_eqn2e       _lft      _ss        @        .,		/*
+  		*/label("Specification 2, equation 5:")	 		/*
+  		*/contents(list _dclst_0) dropdown
+  COMBOBOX cb_eqn2f       _lft2     @          @        .,		/*
+  		*/label("Specification 2, equation 6:") 		/*
+  		*/contents(list _dclst_0) dropdown
+  TEXT     tx_coef2c      _lft      _ms        _iwd     .,		/*
+  */label("Specification 2, test these coefficients: (leave blank for all)")
+  VARLIST  vl_coef2c      @         _ss        @        .,		/*
+  	*/label("Specification 2, test these coefficients")
+
+/* Equation 3 programming */
+  VARLIST  vl_coef3        @         yf        _iwd     .,		/*
+  */label("Specification 3, test these coefficients")
+  VARLIST  vl_coef3a       @         yf        _iwd     .,		/*
+  */label("Specification 3, test these coefficients")
+  TEXT     tx_coef3b      @         _ms        _iwd     .,		/*
+  */label("Specification 3, test these coefficients: (leave blank for all)")
+  VARLIST  vl_coef3b      @         _ss        _iwd     .,		/*
+  */label("Specification 3, test these coefficients")
+  TEXT     tx_spec3b     _lft2     yb         _cwd1    .,		/*
+  		*/label("Specification 3, equation 2: (required)")
+  COMBOBOX cb_eqn3a       _lft      _ss        _cwd1    .,		/*
+  		*/label("Specification 3, equation 1")	 		/*
+  		*/contents(list _dclst_0) dropdown
+  COMBOBOX cb_eqn3b       _lft2     @          @        .,		/*
+  		*/label("Specification 3, equation 2")			/*
+  		*/contents(list _dclst_0) dropdown
+  TEXT     tx_spec3c      _lft      _ms        @        .,		/*
+  		*/label("Specification 3, equation 3:")
+  TEXT     tx_spec3d      _lft2     @          @        .,		/*
+  		*/label("Specification 3, equation 4:")
+  COMBOBOX cb_eqn3c       _lft      _ss        @        .,		/*
+  		*/label("Specification 3, equation 3:")			/*
+  		*/contents(list _dclst_0) dropdown
+  COMBOBOX cb_eqn3d       _lft2     @          @        .,		/*
+  		*/label("Specification 3, equation 4:")			/*
+  		*/contents(list _dclst_0) dropdown
+  TEXT     tx_spec3e      _lft      _ms        @        .,		/*
+  		*/label("Specification 3, equation 5:")
+  TEXT     tx_spec3f      _lft2     @          @        .,		/*
+  		*/label("Specification 3, equation 6:")
+  COMBOBOX cb_eqn3e       _lft      _ss        @        .,		/*
+  		*/label("Specification 3, equation 5:")	 		/*
+  		*/contents(list _dclst_0) dropdown
+  COMBOBOX cb_eqn3f       _lft2     @          @        .,		/*
+  		*/label("Specification 3, equation 6:") 		/*
+  		*/contents(list _dclst_0) dropdown
+  TEXT     tx_coef3c      _lft      _ms        _iwd     .,		/*
+  */label("Specification 3, test these coefficients: (leave blank for all)")
+  VARLIST  vl_coef3c      @         _ss        @        .,		/*
+  	*/label("Specification 3, test these coefficients")
+
+/* Equation 4 programming */
+  VARLIST  vl_coef4        @         yf        _iwd     .,		/*
+  	*/label("Specification 4, test these coefficients")
+  VARLIST  vl_coef4a       @         yf        _iwd     .,		/*
+  	*/label("Specification 4, test these coefficients")
+  TEXT     tx_coef4b      @         _ms        _iwd     .,		/*
+  */label("Specification 4, test these coefficients: (leave blank for all)")
+  VARLIST  vl_coef4b      @         _ss        _iwd     .,		/*
+  		*/label("Specification 4, test these coefficients")
+  TEXT     tx_spec4b     _lft2     yb         _cwd1    .,		/*
+  		*/label("Specification 4, equation 2: (required)")
+  COMBOBOX cb_eqn4a       _lft      _ss        _cwd1    .,		/*
+  		*/label("Specification 4, equation 1")	 		/*
+  		*/contents(list _dclst_0) dropdown
+  COMBOBOX cb_eqn4b       _lft2     @          @        .,		/*
+  		*/label("Specification 4, equation 2")			/*
+  		*/contents(list _dclst_0) dropdown
+  TEXT     tx_spec4c      _lft      _ms        @        .,		/*
+  		*/label("Specification 4, equation 3:")
+  TEXT     tx_spec4d      _lft2     @          @        .,		/*
+  		*/label("Specification 4, equation 4:")
+  COMBOBOX cb_eqn4c       _lft      _ss        @        .,		/*
+  		*/label("Specification 4, equation 3:")			/*
+  		*/contents(list _dclst_0) dropdown
+  COMBOBOX cb_eqn4d       _lft2     @          @        .,		/*
+  		*/label("Specification 4, equation 4:")			/*
+  		*/contents(list _dclst_0) dropdown
+  TEXT     tx_spec4e      _lft      _ms        @        .,		/*
+  		*/label("Specification 4, equation 5:")
+  TEXT     tx_spec4f      _lft2     @          @        .,		/*
+  		*/label("Specification 4, equation 6:")
+  COMBOBOX cb_eqn4e       _lft      _ss        @        .,		/*
+  		*/label("Specification 4, equation 5:")	 		/*
+  		*/contents(list _dclst_0) dropdown
+  COMBOBOX cb_eqn4f       _lft2     @          @        .,		/*
+  		*/label("Specification 4, equation 6:") 		/*
+  		*/contents(list _dclst_0) dropdown
+  TEXT     tx_coef4c      _lft      _ms        _iwd     .,		/*
+  */label("Specification 4, test these coefficients: (leave blank for all)")
+  VARLIST  vl_coef4c      @         _ss        @        .,		/*
+  	*/label("Specification 4, test these coefficients")
+
+/* Equation 5 programming */
+  VARLIST  vl_coef5        @         yf        _iwd     .,		/*
+  		*/label("Specification 5, test these coefficients")
+  VARLIST  vl_coef5a       @         yf        _iwd     .,		/*
+  		*/label("Specification 5, test these coefficients")
+  TEXT     tx_coef5b      @         _ms        _iwd     .,		/*
+  */label("Specification 5, test these coefficients: (leave blank for all)")
+  VARLIST  vl_coef5b      @         _ss        _iwd     .,		/*
+  		*/label("Specification 5, test these coefficients")
+  TEXT     tx_spec5b     _lft2     yb         _cwd1    .,		/*
+  		*/label("Specification 5, equation 2: (required)")
+  COMBOBOX cb_eqn5a       _lft      _ss        _cwd1    .,		/*
+  		*/label("Specification 5, equation 1")	 		/*
+  		*/contents(list _dclst_0) dropdown
+  COMBOBOX cb_eqn5b       _lft2     @          @        .,		/*
+  		*/label("Specification 5, equation 2")			/*
+  		*/contents(list _dclst_0) dropdown
+  TEXT     tx_spec5c      _lft      _ms        @        .,		/*
+  		*/label("Specification 5, equation 3:")
+  TEXT     tx_spec5d      _lft2     @          @        .,		/*
+  		*/label("Specification 5, equation 4:")
+  COMBOBOX cb_eqn5c       _lft      _ss        @        .,		/*
+  		*/label("Specification 5, equation 3:")			/*
+  		*/contents(list _dclst_0) dropdown
+  COMBOBOX cb_eqn5d       _lft2     @          @        .,		/*
+  		*/label("Specification 5, equation 4:")			/*
+  		*/contents(list _dclst_0) dropdown
+  TEXT     tx_spec5e      _lft      _ms        @        .,		/*
+  		*/label("Specification 5, equation 5:")
+  TEXT     tx_spec5f      _lft2     @          @        .,		/*
+  		*/label("Specification 5, equation 6:")
+  COMBOBOX cb_eqn5e       _lft      _ss        @        .,		/*
+  		*/label("Specification 5, equation 5:")	 		/*
+  		*/contents(list _dclst_0) dropdown
+  COMBOBOX cb_eqn5f       _lft2     @          @        .,		/*
+  		*/label("Specification 5, equation 6:") 		/*
+  		*/contents(list _dclst_0) dropdown
+  TEXT     tx_coef5c      _lft      _ms        _iwd     .,		/*
+*/label("Specification 5, test these coefficients: (leave blank for all)")
+  VARLIST  vl_coef5c      @         _ss        @        .,		/*
+  	*/label("Specification 5, test these coefficients")
+
+/* Equation 6 programming */
+  VARLIST  vl_coef6        @         yf        _iwd     .,		/*
+  		*/label("Specification 6, test these coefficients")
+  VARLIST  vl_coef6a       @         yf        _iwd     .,		/*
+  		*/label("Specification 6, test these coefficients")
+  TEXT     tx_coef6b      @         _ms        _iwd     .,		/*
+  */label("Specification 6, test these coefficients: (leave blank for all)")
+  VARLIST  vl_coef6b      @         _ss        _iwd     .,		/*
+  		*/label("Specification 6, test these coefficients")
+  TEXT     tx_spec6b     _lft2     yb         _cwd1    .,		/*
+  		*/label("Specification 6, equation 2: (required)")
+  COMBOBOX cb_eqn6a       _lft      _ss        _cwd1    .,		/*
+  		*/label("Specification 6, equation 1")	 		/*
+  		*/contents(list _dclst_0) dropdown
+  COMBOBOX cb_eqn6b       _lft2     @          @        .,		/*
+  		*/label("Specification 6, equation 2")			/*
+  		*/contents(list _dclst_0) dropdown
+  TEXT     tx_spec6c      _lft      _ms        @        .,		/*
+  		*/label("Specification 6, equation 3:")
+  TEXT     tx_spec6d      _lft2     @          @        .,		/*
+  		*/label("Specification 6, equation 4:")
+  COMBOBOX cb_eqn6c       _lft      _ss        @        .,		/*
+  		*/label("Specification 6, equation 3:")			/*
+  		*/contents(list _dclst_0) dropdown
+  COMBOBOX cb_eqn6d       _lft2     @          @        .,		/*
+  		*/label("Specification 6, equation 4:")			/*
+  		*/contents(list _dclst_0) dropdown
+  TEXT     tx_spec6e      _lft      _ms        @        .,		/*
+  		*/label("Specification 6, equation 5:")
+  TEXT     tx_spec6f      _lft2     @          @        .,		/*
+  		*/label("Specification 6, equation 6:")
+  COMBOBOX cb_eqn6e       _lft      _ss        @        .,		/*
+  		*/label("Specification 6, equation 5:")	 		/*
+  		*/contents(list _dclst_0) dropdown
+  COMBOBOX cb_eqn6f       _lft2     @          @        .,		/*
+  		*/label("Specification 6, equation 6:") 		/*
+  		*/contents(list _dclst_0) dropdown
+  TEXT     tx_coef6c      _lft      _ms        _iwd     .,		/*
+*/label("Specification 6, test these coefficients: (leave blank for all)")
+  VARLIST  vl_coef6c      @         _ss        @        .,		/*
+  	*/label("Specification 6, test these coefficients")
+
+END
+DIALOG opt, label("") /*
+		*/ tabtitle("Options")
+BEGIN
+  /*--+----1----+----2----+----3----+----4----+----5----+----6----+----7----+*/
+  CHECKBOX ck_mtest        _lft      _top       _cwd3_1  _ht10, 	/*
+  		*/label("Do multiple testing") groupbox			/*
+  		*/clickon(script mtest_on) clickoff(script mtest_off)
+  TEXT     tx_mtest2       _ilft     _ss        _cwd3_4  .,		/*
+  		*/label("Adjust p-values by:")
+  RADIO    rb_noad         @         _ss        @        .,		/*
+  		*/label("No adjustment") first option(mtest(noadjust))
+  RADIO    rb_bonf         @         _ss        @        .,		/*
+  		*/label("Bonferroni") option(mtest(bonferroni))
+  RADIO    rb_holm         @         _ss        @        .,		/*
+  		*/label("Holm") option(mtest(holm))
+  RADIO    rb_sidak        @         _ss        @        .,		/*
+  		*/label("Sidak") option(mtest(sidak)) last
+  CHECKBOX ck_coef         _lft3_2   _top       _comb3_1    .,		/*
+  		*/label("Display estimated constrained coefficients")	/*
+  		*/option(coef)
+  CHECKBOX ck_accum        @         _ms        @        .,		/*
+  	*/label("Test hypothesis jointly with previously tested hypotheses")/*
+  		*/option(accumulate)
+  CHECKBOX ck_notest       @         _ms        @        .,		/*
+  		*/label("Suppress the output") option(notest)
+  CHECKBOX ck_common       @         _ms        @        .,		/*
+  		*/label("Test only variables common to all the equations")/*
+  		*/option(common)
+  CHECKBOX ck_const        @         _ms        @        .,		/*
+  		*/label("Include the constant in coefficients to be tested")/*
+  		*/option(constant)
+  CHECKBOX ck_nosvy        _lft      _xls       _iwd     .,		/*
+*/label("Compute unadjusted Wald tests for survey results")/*
+		*/option(nosvyadjust)
+  CHECKBOX ck_min          _lft      _ls        _iwd     .,		/*
+*/label("Perform test with the constant, then drop terms until the test becomes")/*
+  		*/option(minimum)
+  TEXT     tx_min          _cksep    _vss       _inwd    .,		/*
+*/label("nonsingular, then test without the constant on the remaining terms")
+
+/* matvlc() option omitted as it is a programmers option") */
+
+END
+
+SCRIPT example
+BEGIN
+  view help test_example##|_new
+END
+
+SCRIPT mtest_on
+BEGIN
+	opt.tx_mtest2.enable
+	opt.rb_noad.enable
+	opt.rb_bonf.enable
+	opt.rb_holm.enable
+	opt.rb_sidak.enable
+	opt.ck_accum.disable
+END
+
+SCRIPT mtest_off
+BEGIN
+	opt.tx_mtest2.disable
+	opt.rb_noad.disable
+	opt.rb_bonf.disable
+	opt.rb_holm.disable
+	opt.rb_sidak.disable
+	opt.ck_accum.enable
+END
+
+PROGRAM hide_all
+  BEGIN
+  	call gaction main.bu_example.hide
+	call gaction main.tx_spec.hide
+    	if !H(main.vl_coef1) | !H(main.vl_coef1a) | !H(main.cb_eqn1a)  {
+    		call gaction main.vl_coef1.hide
+    		call gaction main.vl_coef1a.hide
+		call gaction main.tx_coef1b.hide
+		call gaction main.vl_coef1b.hide
+		call gaction main.tx_spec1b.hide
+		call gaction main.cb_eqn1a.hide
+		call gaction main.cb_eqn1b.hide
+		call gaction main.tx_spec1c.hide
+		call gaction main.tx_spec1d.hide
+		call gaction main.cb_eqn1c.hide
+		call gaction main.cb_eqn1d.hide
+		call gaction main.tx_spec1e.hide
+		call gaction main.tx_spec1f.hide
+		call gaction main.cb_eqn1e.hide
+		call gaction main.cb_eqn1f.hide
+		call gaction main.tx_coef1c.hide
+		call gaction main.vl_coef1c.hide
+    	}
+    	if !H(main.vl_coef2) | !H(main.vl_coef2a) | !H(main.cb_eqn2a)  {
+    		call gaction main.vl_coef2.hide
+    		call gaction main.vl_coef2a.hide
+		call gaction main.tx_coef2b.hide
+		call gaction main.vl_coef2b.hide
+		call gaction main.tx_spec2b.hide
+		call gaction main.cb_eqn2a.hide
+		call gaction main.cb_eqn2b.hide
+		call gaction main.tx_spec2c.hide
+		call gaction main.tx_spec2d.hide
+		call gaction main.cb_eqn2c.hide
+		call gaction main.cb_eqn2d.hide
+		call gaction main.tx_spec2e.hide
+		call gaction main.tx_spec2f.hide
+		call gaction main.cb_eqn2e.hide
+		call gaction main.cb_eqn2f.hide
+		call gaction main.tx_coef2c.hide
+		call gaction main.vl_coef2c.hide
+    	}
+    	if !H(main.vl_coef3) | !H(main.vl_coef3a) | !H(main.cb_eqn3a)  {
+    		call gaction main.vl_coef3.hide
+    		call gaction main.vl_coef3a.hide
+		call gaction main.tx_coef3b.hide
+		call gaction main.vl_coef3b.hide
+		call gaction main.tx_spec3b.hide
+		call gaction main.cb_eqn3a.hide
+		call gaction main.cb_eqn3b.hide
+		call gaction main.tx_spec3c.hide
+		call gaction main.tx_spec3d.hide
+		call gaction main.cb_eqn3c.hide
+		call gaction main.cb_eqn3d.hide
+		call gaction main.tx_spec3e.hide
+		call gaction main.tx_spec3f.hide
+		call gaction main.cb_eqn3e.hide
+		call gaction main.cb_eqn3f.hide
+		call gaction main.tx_coef3c.hide
+		call gaction main.vl_coef3c.hide
+    	}
+    	if !H(main.vl_coef4) | !H(main.vl_coef4a) | !H(main.cb_eqn4a)  {
+    		call gaction main.vl_coef4.hide
+    		call gaction main.vl_coef4a.hide
+		call gaction main.tx_coef4b.hide
+		call gaction main.vl_coef4b.hide
+		call gaction main.tx_spec4b.hide
+		call gaction main.cb_eqn4a.hide
+		call gaction main.cb_eqn4b.hide
+		call gaction main.tx_spec4c.hide
+		call gaction main.tx_spec4d.hide
+		call gaction main.cb_eqn4c.hide
+		call gaction main.cb_eqn4d.hide
+		call gaction main.tx_spec4e.hide
+		call gaction main.tx_spec4f.hide
+		call gaction main.cb_eqn4e.hide
+		call gaction main.cb_eqn4f.hide
+		call gaction main.tx_coef4c.hide
+		call gaction main.vl_coef4c.hide
+    	}
+    	if !H(main.vl_coef5) | !H(main.vl_coef5a) | !H(main.cb_eqn5a)  {
+    		call gaction main.vl_coef5.hide
+    		call gaction main.vl_coef5a.hide
+		call gaction main.tx_coef5b.hide
+		call gaction main.vl_coef5b.hide
+		call gaction main.tx_spec5b.hide
+		call gaction main.cb_eqn5a.hide
+		call gaction main.cb_eqn5b.hide
+		call gaction main.tx_spec5c.hide
+		call gaction main.tx_spec5d.hide
+		call gaction main.cb_eqn5c.hide
+		call gaction main.cb_eqn5d.hide
+		call gaction main.tx_spec5e.hide
+		call gaction main.tx_spec5f.hide
+		call gaction main.cb_eqn5e.hide
+		call gaction main.cb_eqn5f.hide
+		call gaction main.tx_coef5c.hide
+		call gaction main.vl_coef5c.hide
+    	}
+    	if !H(main.vl_coef6) | !H(main.vl_coef6a) | !H(main.cb_eqn6a)  {
+    		call gaction main.vl_coef6.hide
+    		call gaction main.vl_coef6a.hide
+		call gaction main.tx_coef6b.hide
+		call gaction main.vl_coef6b.hide
+		call gaction main.tx_spec6b.hide
+		call gaction main.cb_eqn6a.hide
+		call gaction main.cb_eqn6b.hide
+		call gaction main.tx_spec6c.hide
+		call gaction main.tx_spec6d.hide
+		call gaction main.cb_eqn6c.hide
+		call gaction main.cb_eqn6d.hide
+		call gaction main.tx_spec6e.hide
+		call gaction main.tx_spec6f.hide
+		call gaction main.cb_eqn6e.hide
+		call gaction main.cb_eqn6f.hide
+		call gaction main.tx_coef6c.hide
+		call gaction main.vl_coef6c.hide
+	}
+  END
+
+LIST test_change_1
+  BEGIN
+    script coef0_1
+    script expeq_1
+    script eqncoef0_1
+    script eqeqncoef_1
+  END
+
+SCRIPT expeq_1
+  BEGIN
+    program hide_all
+    main.tx_spec.setlabel "Specification 1, linear expression:"
+    main.tx_spec.show
+    main.bu_example.show
+    main.vl_coef1a.setlabel "Specification 1, linear expression"
+    main.vl_coef1a.show
+  END
+
+SCRIPT eqncoef0_1
+  BEGIN
+    program hide_all
+    main.tx_spec.setlabel "Specification 1, equation: (required)"
+    main.tx_spec.show
+    main.cb_eqn1a.show
+    main.tx_coef1b.show
+    main.vl_coef1b.show
+  END
+
+SCRIPT eqeqncoef_1
+  BEGIN
+    program hide_all
+    main.tx_spec.setlabel "Specification 1, equation 1: (required)"
+    main.tx_spec.show
+    main.tx_spec1b.show
+    main.cb_eqn1a.show
+    main.cb_eqn1b.show
+    main.tx_spec1c.show
+    main.tx_spec1d.show
+    main.cb_eqn1c.show
+    main.cb_eqn1d.show
+    main.tx_spec1e.show
+    main.tx_spec1f.show
+    main.cb_eqn1e.show
+    main.cb_eqn1f.show
+    main.tx_coef1c.show
+    main.vl_coef1c.show
+  END
+
+SCRIPT coef0_1
+  BEGIN
+    program hide_all
+    main.vl_coef1.show
+    main.tx_spec.setlabel "Specification 1, test these coefficients:"
+    main.tx_spec.show
+  END
+
+LIST test_change_2
+  BEGIN
+    script coef0_2
+    script expeq_2
+    script eqncoef0_2
+    script eqeqncoef_2
+  END
+
+SCRIPT expeq_2
+  BEGIN
+    program hide_all
+    main.tx_spec.setlabel "Specification 2, linear expression:"
+    main.tx_spec.show
+    main.bu_example.show
+    main.vl_coef2a.setlabel "Specification 2, linear expression"
+    main.vl_coef2a.show
+  END
+
+SCRIPT eqncoef0_2
+  BEGIN
+    program hide_all
+    main.tx_spec.setlabel "Specification 2, equation: (required)"
+    main.tx_spec.show
+    main.cb_eqn2a.show
+    main.tx_coef2b.show
+    main.vl_coef2b.show
+  END
+
+SCRIPT eqeqncoef_2
+  BEGIN
+    program hide_all
+    main.tx_spec.setlabel "Specification 2, equation 1: (required)"
+    main.tx_spec.show
+    main.tx_spec2b.show
+    main.cb_eqn2a.show
+    main.cb_eqn2b.show
+    main.tx_spec2c.show
+    main.tx_spec2d.show
+    main.cb_eqn2c.show
+    main.cb_eqn2d.show
+    main.tx_spec2e.show
+    main.tx_spec2f.show
+    main.cb_eqn2e.show
+    main.cb_eqn2f.show
+    main.tx_coef2c.show
+    main.vl_coef2c.show
+  END
+
+SCRIPT coef0_2
+  BEGIN
+    program hide_all
+    main.tx_spec.setlabel "Specification 2, test these coefficients:"
+    main.vl_coef2.show
+    main.tx_spec.show
+  END
+
+LIST test_change_3
+  BEGIN
+    script coef0_3
+    script expeq_3
+    script eqncoef0_3
+    script eqeqncoef_3
+  END
+
+SCRIPT expeq_3
+  BEGIN
+    program hide_all
+    main.tx_spec.setlabel "Specification 3, linear expression:"
+    main.tx_spec.show
+    main.bu_example.show
+    main.vl_coef3a.setlabel "Specification 3, linear expression"
+    main.vl_coef3a.show
+  END
+
+SCRIPT eqncoef0_3
+  BEGIN
+    program hide_all
+    main.tx_spec.setlabel "Specification 3, equation: (required)"
+    main.tx_spec.show
+    main.cb_eqn3a.show
+    main.tx_coef3b.show
+    main.vl_coef3b.show
+  END
+
+SCRIPT eqeqncoef_3
+  BEGIN
+    program hide_all
+    main.tx_spec.setlabel "Specification 3, equation 1: (required)"
+    main.tx_spec.show
+    main.tx_spec3b.show
+    main.cb_eqn3a.show
+    main.cb_eqn3b.show
+    main.tx_spec3c.show
+    main.tx_spec3d.show
+    main.cb_eqn3c.show
+    main.cb_eqn3d.show
+    main.tx_spec3e.show
+    main.tx_spec3f.show
+    main.cb_eqn3e.show
+    main.cb_eqn3f.show
+    main.tx_coef3c.show
+    main.vl_coef3c.show
+  END
+
+SCRIPT coef0_3
+  BEGIN
+    program hide_all
+    main.tx_spec.setlabel "Specification 3, test these coefficients:"
+    main.vl_coef3.show
+    main.tx_spec.show
+  END
+
+LIST test_change_4
+  BEGIN
+    script coef0_4
+    script expeq_4
+    script eqncoef0_4
+    script eqeqncoef_4
+  END
+
+SCRIPT expeq_4
+  BEGIN
+    program hide_all
+    main.tx_spec.setlabel "Specification 4, linear expression:"
+    main.tx_spec.show
+    main.bu_example.show
+    main.vl_coef4a.setlabel "Specification 4, linear expression"
+    main.vl_coef4a.show
+  END
+
+SCRIPT eqncoef0_4
+  BEGIN
+    program hide_all
+    main.tx_spec.setlabel "Specification 4, equation: (required)"
+    main.tx_spec.show
+    main.cb_eqn4a.show
+    main.tx_coef4b.show
+    main.vl_coef4b.show
+  END
+
+SCRIPT eqeqncoef_4
+  BEGIN
+    program hide_all
+    main.tx_spec.setlabel "Specification 4, equation 1: (required)"
+    main.tx_spec.show
+    main.tx_spec4b.show
+    main.cb_eqn4a.show
+    main.cb_eqn4b.show
+    main.tx_spec4c.show
+    main.tx_spec4d.show
+    main.cb_eqn4c.show
+    main.cb_eqn4d.show
+    main.tx_spec4e.show
+    main.tx_spec4f.show
+    main.cb_eqn4e.show
+    main.cb_eqn4f.show
+    main.tx_coef4c.show
+    main.vl_coef4c.show
+  END
+
+SCRIPT coef0_4
+  BEGIN
+    program hide_all
+    main.tx_spec.setlabel "Specification 4, test these coefficients:"
+    main.vl_coef4.show
+    main.tx_spec.show
+  END
+
+LIST test_change_5
+  BEGIN
+    script coef0_5
+    script expeq_5
+    script eqncoef0_5
+    script eqeqncoef_5
+  END
+
+SCRIPT expeq_5
+  BEGIN
+    program hide_all
+    main.tx_spec.setlabel "Specification 5, linear expression:"
+    main.tx_spec.show
+    main.bu_example.show
+    main.vl_coef5a.setlabel "Specification 5, linear expression"
+    main.vl_coef5a.show
+  END
+
+SCRIPT eqncoef0_5
+  BEGIN
+    program hide_all
+    main.tx_spec.setlabel "Specification 5, equation: (required)"
+    main.tx_spec.show
+    main.cb_eqn5a.show
+    main.tx_coef5b.show
+    main.vl_coef5b.show
+  END
+
+SCRIPT eqeqncoef_5
+  BEGIN
+    program hide_all
+    main.tx_spec.setlabel "Specification 5, equation 1: (required)"
+    main.tx_spec.show
+    main.tx_spec5b.show
+    main.cb_eqn5a.show
+    main.cb_eqn5b.show
+    main.tx_spec5c.show
+    main.tx_spec5d.show
+    main.cb_eqn5c.show
+    main.cb_eqn5d.show
+    main.tx_spec5e.show
+    main.tx_spec5f.show
+    main.cb_eqn5e.show
+    main.cb_eqn5f.show
+    main.tx_coef5c.show
+    main.vl_coef5c.show
+  END
+
+SCRIPT coef0_5
+  BEGIN
+    program hide_all
+    main.tx_spec.setlabel "Specification 5, test these coefficients:"
+    main.vl_coef5.show
+    main.tx_spec.show
+  END
+
+LIST test_change_6
+  BEGIN
+    script coef0_6
+    script expeq_6
+    script eqncoef0_6
+    script eqeqncoef_6
+  END
+
+SCRIPT expeq_6
+  BEGIN
+    program hide_all
+    main.tx_spec.setlabel "Specification 6, linear expression:"
+    main.tx_spec.show
+    main.bu_example.show
+    main.vl_coef6a.setlabel "Specification 6, linear expression"
+    main.vl_coef6a.show
+  END
+
+SCRIPT eqncoef0_6
+  BEGIN
+    program hide_all
+    main.tx_spec.setlabel "Specification 6, equation: (required)"
+    main.tx_spec.show
+    main.cb_eqn6a.show
+    main.tx_coef6b.show
+    main.vl_coef6b.show
+  END
+
+SCRIPT eqeqncoef_6
+  BEGIN
+    program hide_all
+    main.tx_spec.setlabel "Specification 6, equation 1: (required)"
+    main.tx_spec.show
+    main.tx_spec6b.show
+    main.cb_eqn6a.show
+    main.cb_eqn6b.show
+    main.tx_spec6c.show
+    main.tx_spec6d.show
+    main.cb_eqn6c.show
+    main.cb_eqn6d.show
+    main.tx_spec6e.show
+    main.tx_spec6f.show
+    main.cb_eqn6e.show
+    main.cb_eqn6f.show
+    main.tx_coef6c.show
+    main.vl_coef6c.show
+  END
+
+SCRIPT coef0_6
+  BEGIN
+    program hide_all
+    main.tx_spec.setlabel "Specification 6, test these coefficients:"
+    main.vl_coef6.show
+    main.tx_spec.show
+  END
+
+LIST spec_list
+  BEGIN
+  	Specification 1 (required)
+	Specification 2
+	Specification 3
+	Specification 4
+	Specification 5
+	Specification 6
+  END
+
+LIST spec_change
+  BEGIN
+  	script spec1
+	script spec2
+	script spec3
+	script spec4
+	script spec5
+	script spec6
+  END
+
+SCRIPT hide_rb
+  BEGIN
+	main.gb_test.hide
+	main.rb_test1a.hide
+	main.rb_test1b.hide
+	main.rb_test1c.hide
+	main.rb_test1d.hide
+	main.rb_test2a.hide
+	main.rb_test2b.hide
+	main.rb_test2c.hide
+	main.rb_test2d.hide
+	main.rb_test2e.hide
+	main.rb_test2e.hide
+	main.rb_test3a.hide
+	main.rb_test3b.hide
+	main.rb_test3c.hide
+	main.rb_test3d.hide
+	main.rb_test3e.hide
+	main.rb_test4a.hide
+	main.rb_test4b.hide
+	main.rb_test4c.hide
+	main.rb_test4d.hide
+	main.rb_test4e.hide
+	main.rb_test5a.hide
+	main.rb_test5b.hide
+	main.rb_test5c.hide
+	main.rb_test5d.hide
+	main.rb_test5e.hide
+	main.rb_test6a.hide
+	main.rb_test6b.hide
+	main.rb_test6c.hide
+	main.rb_test6d.hide
+	main.rb_test6e.hide
+  END
+
+SCRIPT spec6
+  BEGIN
+  	script hide_rb
+	main.gb_test.setlabel "Test type for specification 6"
+	main.gb_test.show
+	main.rb_test6a.show
+	main.rb_test6b.show
+	main.rb_test6c.show
+	main.rb_test6d.show
+	main.rb_test6e.show
+	program spec6_show
+END
+
+SCRIPT spec5
+  BEGIN
+  	script hide_rb
+	main.gb_test.setlabel "Test type for specification 5"
+	main.gb_test.show
+	main.rb_test5a.show
+	main.rb_test5b.show
+	main.rb_test5c.show
+	main.rb_test5d.show
+	main.rb_test5e.show
+	program spec5_show
+  END
+
+SCRIPT spec4
+  BEGIN
+  	script hide_rb
+	main.gb_test.setlabel "Test type for specification 4"
+	main.gb_test.show
+	main.rb_test4a.show
+	main.rb_test4b.show
+	main.rb_test4c.show
+	main.rb_test4d.show
+	main.rb_test4e.show
+	program spec4_show
+  END
+
+SCRIPT spec3
+  BEGIN
+  	script hide_rb
+	main.gb_test.setlabel "Test type for specification 3"
+	main.gb_test.show
+	main.rb_test3a.show
+	main.rb_test3b.show
+	main.rb_test3c.show
+	main.rb_test3d.show
+	main.rb_test3e.show
+	program spec3_show
+  END
+
+SCRIPT spec2
+  BEGIN
+  	script hide_rb
+	main.gb_test.setlabel "Test type for specification 2"
+	main.gb_test.show
+	main.rb_test2a.show
+	main.rb_test2b.show
+	main.rb_test2c.show
+	main.rb_test2d.show
+	main.rb_test2e.show
+	program spec2_show
+  END
+
+SCRIPT spec1
+  BEGIN
+  	script hide_rb
+	main.gb_test.setlabel "Test type for specification 1"
+	main.gb_test.show
+	main.rb_test1a.show
+	main.rb_test1b.show
+	main.rb_test1c.show
+	main.rb_test1d.show
+	program spec1_show
+  END
+
+PROGRAM spec6_show
+BEGIN
+  	if main.rb_test6a {
+    		call program hide_all
+    	}
+  	if main.rb_test6b {
+    		call script coef0_6
+    	}
+   	if main.rb_test6c {
+		call script expeq_6
+	}
+	if main.rb_test6d {
+		call script eqncoef0_6
+	}
+	if main.rb_test6e {
+		call script eqeqncoef_6
+	}
+END
+
+PROGRAM spec5_show
+BEGIN
+  	if main.rb_test5a {
+    		call program hide_all
+    	}
+  	if main.rb_test5b {
+    		call script coef0_5
+    	}
+   	if main.rb_test5c {
+		call script expeq_5
+	}
+	if main.rb_test5d {
+		call script eqncoef0_5
+	}
+	if main.rb_test5e {
+		call script eqeqncoef_5
+	}
+END
+
+PROGRAM spec4_show
+BEGIN
+  	if main.rb_test4a {
+    		call program hide_all
+    	}
+  	if main.rb_test4b {
+    		call script coef0_4
+    	}
+   	if main.rb_test4c {
+		call script expeq_4
+	}
+	if main.rb_test4d {
+		call script eqncoef0_4
+	}
+	if main.rb_test4e {
+		call script eqeqncoef_4
+	}
+END
+
+PROGRAM spec3_show
+BEGIN
+  	if main.rb_test3a {
+    		call program hide_all
+    	}
+  	if main.rb_test3b {
+    		call script coef0_3
+    	}
+   	if main.rb_test3c {
+		call script expeq_3
+	}
+	if main.rb_test3d {
+		call script eqncoef0_3
+	}
+	if main.rb_test3e {
+		call script eqeqncoef_3
+	}
+END
+
+PROGRAM spec2_show
+BEGIN
+  	if main.rb_test2a {
+    		call program hide_all
+    	}
+  	if main.rb_test2b {
+    		call script coef0_2
+    	}
+   	if main.rb_test2c {
+		call script expeq_2
+	}
+	if main.rb_test2d {
+		call script eqncoef0_2
+	}
+	if main.rb_test2e {
+		call script eqeqncoef_2
+	}
+END
+
+PROGRAM spec1_show
+BEGIN
+  	if main.rb_test1a {
+    		call script coef0_1
+    	}
+   	if main.rb_test1b {
+		call script expeq_1
+	}
+	if main.rb_test1c {
+		call script eqncoef0_1
+	}
+	if main.rb_test1d {
+		call script eqeqncoef_1
+	}
+END
+
+PROGRAM prog_spec1
+BEGIN
+	put "("
+	if main.rb_test1a {
+		if !main.vl_coef1 {
+		  stopbox stop `""Specification 1, test these coefficients""' /*
+		  */ `"must be filled in"'
+		}
+		put /hidden main.vl_coef1
+	}
+	if main.rb_test1b {
+		if !main.vl_coef1a {
+		  stopbox stop `""Specification 1, linear expression""' /*
+		  */ `"must be filled in"'
+		}
+		put /hidden main.vl_coef1a
+	}
+	if main.rb_test1c{
+		if !main.cb_eqn1a {
+		  stopbox stop `""Specification 1, equation""' /*
+		  */ `"must be filled in"'
+		}
+		put "["
+		put /hidden main.cb_eqn1a
+		put "]"
+		if main.vl_coef1b {
+			put ":"
+			put /hidden main.vl_coef1b
+		}
+	}
+	if main.rb_test1d{
+		if !main.cb_eqn1a {
+		  stopbox stop `""Specification 1, equation 1""' /*
+		  */ `"must be filled in"'
+		}
+		if !main.cb_eqn1b {
+		  stopbox stop `""Specification 1, equation 2""' /*
+		  */ `"must be filled in"'
+		}
+		put "["
+		put /hidden main.cb_eqn1a
+		put "="
+		put /hidden main.cb_eqn1b
+		if main.cb_eqn1c {
+			put "="
+			put /hidden main.cb_eqn1c
+		}
+		if main.cb_eqn1d {
+			put "="
+			put /hidden main.cb_eqn1d
+		}
+		if main.cb_eqn1e {
+			put "="
+			put /hidden main.cb_eqn1e
+		}
+		if main.cb_eqn1f {
+			put "="
+			put /hidden main.cb_eqn1f
+		}
+		put "]"
+		if main.vl_coef1c {
+			put ":"
+			put /hidden main.vl_coef1c
+		}
+	}
+	put ") "
+END
+
+PROGRAM prog_spec2
+BEGIN
+	if main.rb_test2b {
+		if !main.vl_coef2 {
+		  stopbox stop `""Specification 2, test these coefficients""' /*
+	 	  */ `"must be filled in"'
+		}
+		put "("
+		put /hidden main.vl_coef2
+		put ") "
+	}
+	if main.rb_test2c {
+		if !main.vl_coef2a {
+		  stopbox stop `""Specification 2, linear expression""' /*
+	 	  */ `"must be filled in"'
+		}
+		put "("
+		put /hidden main.vl_coef2a
+		put ") "
+	}
+	if main.rb_test2d{
+		if !main.cb_eqn2a {
+		  stopbox stop `""Specification 2, equation""' /*
+	 	  */ `"must be filled in"'
+		}
+		put "(["
+		put /hidden main.cb_eqn2a
+		put "]"
+		if main.vl_coef2b {
+			put ":"
+			put /hidden main.vl_coef2b
+		}
+		put ") "
+	}
+	if main.rb_test2e{
+		if !main.cb_eqn2a {
+		  stopbox stop `""Specification 2, equation 1""' /*
+	 	  */ `"must be filled in"'
+		}
+		if !main.cb_eqn2b {
+		  stopbox stop `""Specification 2, equation 2""' /*
+	 	  */ `"must be filled in"'
+		}
+		put "(["
+		put /hidden main.cb_eqn2a
+		put "="
+		put /hidden main.cb_eqn2b
+		if main.cb_eqn2c {
+			put "="
+			put /hidden main.cb_eqn2c
+		}
+		if main.cb_eqn2d {
+			put "="
+			put /hidden main.cb_eqn2d
+		}
+		if main.cb_eqn2e {
+			put "="
+			put /hidden main.cb_eqn2e
+		}
+		if main.cb_eqn2f {
+			put "="
+			put /hidden main.cb_eqn2f
+		}
+		put "]"
+		if main.vl_coef2c {
+			put ":"
+			put /hidden main.vl_coef2c
+		}
+		put ") "
+	}
+END
+
+PROGRAM prog_spec3
+BEGIN
+	if main.rb_test3b {
+		if !main.vl_coef3 {
+		  stopbox stop `""Specification 3, test these coefficients""' /*
+	 	  */ `"must be filled in"'
+		}
+		put "("
+		put /hidden main.vl_coef3
+		put ") "
+	}
+	if main.rb_test3c {
+		if !main.vl_coef3a {
+		  stopbox stop `""Specification 3, linear expression""' /*
+	 	  */ `"must be filled in"'
+		}
+		put "("
+		put /hidden main.vl_coef3a
+		put ") "
+	}
+	if main.rb_test3d{
+		if !main.cb_eqn3a {
+		  stopbox stop `""Specification 3, equation""' /*
+	 	  */ `"must be filled in"'
+		}
+		put "(["
+		put /hidden main.cb_eqn3a
+		put "]"
+		if main.vl_coef3b {
+			put /hidden ":" main.vl_coef3b
+		}
+		put ") "
+	}
+	if main.rb_test3e{
+		if !main.cb_eqn3a {
+		  stopbox stop `""Specification 3, equation 1""' /*
+	 	  */ `"must be filled in"'
+		}
+		if !main.cb_eqn3b {
+		  stopbox stop `""Specification 3, equation 2""' /*
+	 	  */ `"must be filled in"'
+		}
+		put "(["
+		put /hidden main.cb_eqn3a
+		put "="
+		put /hidden main.cb_eqn3b
+		if main.cb_eqn3c {
+			put "="
+			put /hidden main.cb_eqn3c
+		}
+		if main.cb_eqn3d {
+			put "="
+			put /hidden main.cb_eqn3d
+		}
+		if main.cb_eqn3e {
+			put "="
+			put /hidden main.cb_eqn3e
+		}
+		if main.cb_eqn3f {
+			put "="
+			put /hidden main.cb_eqn3f
+		}
+		put "]"
+		if main.vl_coef3c {
+			put ":"
+			put /hidden main.vl_coef3c
+		}
+		put ") "
+	}
+END
+
+PROGRAM prog_spec4
+BEGIN
+	if main.rb_test4b {
+		if !main.vl_coef4 {
+		  stopbox stop `""Specification 4, test these coefficients""' /*
+	 	  */ `"must be filled in"'
+		}
+		put "("
+		put /hidden main.vl_coef4
+		put ") "
+	}
+	if main.rb_test4c {
+		if !main.vl_coef4a {
+		  stopbox stop `""Specification 4, linear expression""' /*
+	 	  */ `"must be filled in"'
+		}
+		put "("
+		put /hidden main.vl_coef4a
+		put ") "
+	}
+	if main.rb_test4d{
+		if !main.cb_eqn4a {
+		  stopbox stop `""Specification 4, equation""' /*
+	 	  */ `"must be filled in"'
+		}
+		put "(["
+		put /hidden main.cb_eqn4a
+		put "]"
+		if main.vl_coef4b {
+			put ":"
+			put /hidden "main.vl_coef4b
+		}
+		put ") "
+	}
+	if main.rb_test4e{
+		if !main.cb_eqn4a {
+		  stopbox stop `""Specification 4, equation 1""' /*
+	 	  */ `"must be filled in"'
+		}
+		if !main.cb_eqn4b {
+		  stopbox stop `""Specification 4, equation 2""' /*
+	 	  */ `"must be filled in"'
+		}
+		put "(["
+		put /hidden main.cb_eqn4a
+		put "="
+		put /hidden main.cb_eqn4b
+		if main.cb_eqn4c {
+			put "="
+			put /hidden main.cb_eqn4c
+		}
+		if main.cb_eqn4d {
+			put "="
+			put /hidden main.cb_eqn4d
+		}
+		if main.cb_eqn4e {
+			put "="
+			put /hidden main.cb_eqn4e
+		}
+		if main.cb_eqn4f {
+			put "="
+			put /hidden main.cb_eqn4f
+		}
+		put "]"
+		if main.vl_coef4c {
+			put ":"
+			put /hidden main.vl_coef4c
+		}
+		put ") "
+	}
+END
+
+PROGRAM prog_spec5
+BEGIN
+	if main.rb_test5b {
+		if !main.vl_coef5 {
+		  stopbox stop `""Specification 5, test these coefficients""' /*
+	 	  */ `"must be filled in"'
+		}
+		put "("
+		put /hidden main.vl_coef5
+		put ") "
+	}
+	if main.rb_test5c {
+		if !main.vl_coef5a {
+		  stopbox stop `""Specification 5, linear expression""' /*
+	 	  */ `"must be filled in"'
+		}
+		put "("
+		put /hidden main.vl_coef5a
+		put ") "
+	}
+	if main.rb_test5d {
+		if !main.cb_eqn5a {
+		  stopbox stop `""Specification 5, equation""' /*
+	 	  */ `"must be filled in"'
+		}
+		put "(["
+		put /hidden main.cb_eqn5a
+		put "]"
+		if main.vl_coef5b {
+			put ":"
+			put /hidden main.vl_coef5b
+		}
+		put ") "
+	}
+	if main.rb_test5e {
+		if !main.cb_eqn5a {
+		  stopbox stop `""Specification 5, equation 1""' /*
+	 	  */ `"must be filled in"'
+		}
+		if !main.cb_eqn5b {
+		  stopbox stop `""Specification 5, equation 2""' /*
+	 	  */ `"must be filled in"'
+		}
+		put "(["
+		put /hidden main.cb_eqn5a
+		put "="
+		put /hidden main.cb_eqn5b
+		if main.cb_eqn5c {
+			put "="
+			put /hidden main.cb_eqn5c
+		}
+		if main.cb_eqn5d {
+			put "="
+			put /hidden main.cb_eqn5d
+		}
+		if main.cb_eqn5e {
+			put "="
+			put /hidden main.cb_eqn5e
+		}
+		if main.cb_eqn5f {
+			put "="
+			put /hidden main.cb_eqn5f
+		}
+		put "]"
+		if main.vl_coef5c {
+			put ":"
+			put /hidden main.vl_coef5c
+		}
+		put ") "
+	}
+END
+
+PROGRAM prog_spec6
+BEGIN
+	if main.rb_test6b {
+		if !main.vl_coef6 {
+		  stopbox stop `""Specification 6, test these coefficients""' /*
+	 	  */ `"must be filled in"'
+		}
+		put "("
+		put /hidden main.vl_coef6
+		put ") "
+	}
+	if main.rb_test6c {
+		if !main.vl_coef6a {
+		  stopbox stop `""Specification 6, linear expression""' /*
+	 	  */ `"must be filled in"'
+		}
+		put "("
+		put /hidden main.vl_coef6a
+		put ") "
+	}
+	if main.rb_test6d {
+		if !main.cb_eqn6a {
+		  stopbox stop `""Specification 6, equation""' /*
+	 	  */ `"must be filled in"'
+		}
+		put "(["
+		put /hidden main.cb_eqn6a
+		put "]"
+		if main.vl_coef6b {
+			put ":"
+			put /hidden main.vl_coef6b
+		}
+		put ") "
+	}
+	if main.rb_test6e {
+		if !main.cb_eqn6a {
+		  stopbox stop `""Specification 6, equation 1""' /*
+	 	  */ `"must be filled in"'
+		}
+		if !main.cb_eqn6b {
+		  stopbox stop `""Specification 6, equation 2""' /*
+	 	  */ `"must be filled in"'
+		}
+		put "(["
+		put /hidden main.cb_eqn6a
+		put "="
+		put /hidden main.cb_eqn6b
+		if main.cb_eqn6c {
+			put "="
+			put /hidden main.cb_eqn6c
+		}
+		if main.cb_eqn6d {
+			put "="
+			put /hidden main.cb_eqn6d
+		}
+		if main.cb_eqn6e {
+			put "="
+			put /hidden main.cb_eqn6e
+		}
+		if main.cb_eqn6f {
+			put "="
+			put /hidden main.cb_eqn6f
+		}
+		put "]"
+		if main.vl_coef6c {
+			put ":"
+			put /hidden main.vl_coef6c
+		}
+		put ") "
+	}
+END
+
+PROGRAM command
+BEGIN
+	put "test "
+	put " " /program prog_spec1
+	put " " /program prog_spec2
+	put " " /program prog_spec3
+	put " " /program prog_spec4
+	put " " /program prog_spec5
+	put " " /program prog_spec6
+        beginoptions
+		if opt.ck_mtest {
+			option radio(opt rb_noad rb_bonf rb_holm rb_sidak)
+		}
+		option opt.ck_coef
+		option opt.ck_accum
+		option opt.ck_notest
+		option opt.ck_common
+		option opt.ck_const
+		option opt.ck_nosvy
+		option opt.ck_min
+	endoptions
+END

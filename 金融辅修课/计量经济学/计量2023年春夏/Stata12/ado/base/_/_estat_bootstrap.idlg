@@ -1,0 +1,53 @@
+/*
+  _estat_bootstrap
+
+*!  VERSION 1.0.1  03nov2005
+
+	// Use with _estat_bootstrap_pr
+	// estat dialogs that use this file should be at least 340 pixels tall
+
+*/
+
+  // bootstrap
+  TEXT     _tx_bs		_lft	holdy	_iwd	., 		///
+	label("Bootstrap estimation results are not available.")
+  GROUPBOX _gb_ci		_lft	holdy	_iwd	_ht12, 		///
+	label("Bootstrap confidence intervals")
+  CHECKBOX _ck_all		_indent	_ss	_ibwd	.,		///
+	label("Display all available CIs")				///
+	onclickon(program _bs_check_all)				///
+	onclickoff(program _bs_check_all)				///
+	option(all)
+  CHECKBOX _ck_bc    		@	_ms	@	.,		///
+	label("Display bias-corrected CIs (default)")			///
+	option(bc)
+  CHECKBOX _ck_bca    		@	_ms	@	.,		///
+	label("Display bias-corrected and accelerated CIs")		///
+	option(bca)
+  CHECKBOX _ck_norm		@	_ms	@	.,		///
+	label("Display normal based CIs")				///
+	option(normal)
+  CHECKBOX _ck_p		@	_ms	@	.,		///
+	label("Display percentile CIs")					///
+	option(percentile)
+
+  CHECKBOX _ck_verbose 		_lft	+40	_cwd1	.,		///
+	label("Display the full table legend")				///
+	option(verbose) 						///
+	onclickon(program _bs_verbose_check)				///
+	onclickoff(program _bs_verbose_check)
+  CHECKBOX _ck_noheader		_lft2	@	@	.,		///
+	label("Suppress the table header")				///
+	onclickon(main._ck_nolegend.disable)				///
+	onclickoff(main._ck_nolegend.enable)				///
+	option(noheader)
+  CHECKBOX _ck_nolegend  	@	_ms	@	.,		///
+	label("Suppress the table legend")				///
+	option(nolegend)
+
+  TEXT     _tx_title		_lft	+10	_cwd1	.,		///
+	label("Title:")
+  EDIT     _ed_title		@	_ss	_iwd	.,		///
+	label("Title") option(title)
+
+  EDIT _ed_prefix 0 0 0 0, default(e(prefix))

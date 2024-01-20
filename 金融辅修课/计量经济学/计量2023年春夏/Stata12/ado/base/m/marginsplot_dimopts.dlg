@@ -1,0 +1,88 @@
+/*
+  marginsplot_dimopts.dlg
+
+*!  VERSION 1.0.2  11feb2011
+
+  keyword:  eclass
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_medium
+DEFINE _dlght 310
+INCLUDE header
+
+RESET res1
+
+DIALOG main, tabtitle("Main")
+BEGIN
+  TEXT tx_note			_lft	_top	_iwd	.,		///
+	label("Note: These settings will over-ride the defaults and Label tab settings")
+
+  TEXT tx_labels		@	_ls	@	.,		///
+	label("List of quoted strings to label each level of the dimension")
+  EDIT ed_labels		@	_ss	@	.,		///
+	option(labels)							///
+	label("List of quoted strings to label each level of the dimension")
+
+  TEXT tx_elabels		@	_ls	@	.,		///
+	label(`"List of enumerated labels, e.g. 1 "one" 2 "two" ..."')
+  EDIT ed_elabels		@	_ss	@	.,		///
+	option(elabels)							///
+	label(`"List of enumerated labels, e.g. 1 "one" 2 "two" ..."')
+
+  CHECKBOX ck_nolabels		@	_ls	@	.,		///
+	option(nolabels)						///
+	label("Label groups with their values, not their labels")
+  CHECKBOX ck_allsimplelabels	@	_ms	@	.,		///
+	onclickon("main.ck_nosimplelabels.disable")			///
+	onclickoff("main.ck_nosimplelabels.enable")			///
+	option(allsimplelabels)						///
+	label("Forgo variable name and equal signs in all labels")
+  CHECKBOX ck_nosimplelabels	@	_ms	@	.,		///
+	onclickon("main.ck_allsimplelabels.disable")			///
+	onclickoff("main.ck_allsimplelabels.enable")			///
+	option(nosimplelabels)						///
+	label("Include variable name and equal signs in all labels")
+
+  CHECKBOX ck_separator		@	_ls	@	_ht2,		///
+	groupbox							///
+	onclickon("script main_separator_on")				///
+	onclickoff("script main_separator_off")			///
+	label("Separator for labels when multiple variables are specified")
+  EDIT ed_separator		_indent	_ss	_inwd	.,		///
+	option(separator)						///
+	label("Separator for labels when multiple variables are specified")
+  CHECKBOX ck_noseparator	_lft	_xls	_iwd	.,		///
+	onclickon("main.ck_separator.disable")			///
+	onclickoff("main.ck_separator.enable")			///
+	option(noseparator)						///
+	label("Do not use a separator between labels")
+END
+
+SCRIPT main_separator_on
+BEGIN
+	main.ed_separator.enable
+	main.ck_noseparator.disable
+END
+
+SCRIPT main_separator_off
+BEGIN
+	main.ed_separator.disable
+	main.ck_noseparator.enable
+END
+
+PROGRAM command
+BEGIN
+	optionarg main.ed_labels
+	optionarg main.ed_elabels
+	option main.ck_nolabels
+	option main.ck_allsimplelabels
+	option main.ck_nosimplelabels
+	if main.ck_separator {
+		require main.ed_separator
+		optionarg main.ed_separator
+	}
+	option main.ck_noseparator
+END

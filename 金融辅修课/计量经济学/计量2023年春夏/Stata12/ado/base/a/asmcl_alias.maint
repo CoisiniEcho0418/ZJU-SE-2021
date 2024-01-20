@@ -1,0 +1,357 @@
+asgsmsession               {vieweralsosee "[GSM] 1 Introducing Stata---sample session" "mansection GSM 1IntroducingStata---samplesession"}{...}
+asgsmgui                   {vieweralsosee "[GSM] 2 The Stata user interface" "mansection GSM 2TheStatauserinterface"}{...}
+asgsmviewer                {vieweralsosee "[GSM] 3 Using the Viewer" "mansection GSM 3UsingtheViewer"}{...}
+asgsmhelp                  {vieweralsosee "[GSM] 4 Getting help" "mansection GSM 4Gettinghelp"}{...}
+asgsmload                  {vieweralsosee "[GSM] 5 Opening and saving Stata datasets" "mansection GSM 5OpeningandsavingStatadatasets"}{...}
+asgsmedit                  {vieweralsosee "[GSM] 6 Using the Data Editor" "mansection GSM 6UsingtheDataEditor"}{...}
+asgsmvarman                {vieweralsosee "[GSM] 7 Using the Variables Manager" "mansection GSM 7UsingtheVariablesManager"}{...}
+asgsmimport                {vieweralsosee "[GSM] 8 Importing data" "mansection GSM 8Importingdata"}{...}
+asgsmlabel                 {vieweralsosee "[GSM] 9 Labeling data" "mansection GSM 9Labelingdata"}{...}
+asgsmlist                  {vieweralsosee "[GSM] 10 Listing data and basic command syntax" "mansection GSM 10Listingdataandbasiccommandsyntax"}{...}
+asgsmgen                   {vieweralsosee "[GSM] 11 Creating new variables" "mansection GSM 11Creatingnewvariables"}{...}
+asgsmdrop                  {vieweralsosee "[GSM] 12 Deleting variables and observations" "mansection GSM 12Deletingvariablesandobservations"}{...}
+asgsmdoedit                {vieweralsosee "[GSM] 13 Using the Do-file Editor---automating Stata" "mansection GSM 13UsingtheDo-fileEditor---automatingStata"}{...}
+asgsmgraph                 {vieweralsosee "[GSM] 14 Graphing data" "mansection GSM 14Graphingdata"}{...}
+asgsmgraphed               {vieweralsosee "[GSM] 15 Editing graphs" "mansection GSM 15Editinggraphs"}{...}
+asgsmlogprint              {vieweralsosee "[GSM] 16 Saving and printing results by using logs" "mansection GSM 16Savingandprintingresultsbyusinglogs"}{...}
+asgsmfonts                 {vieweralsosee "[GSM] 17 Setting font and window preferences" "mansection GSM 17Settingfontandwindowpreferences"}{...}
+asgsmlearn                 {vieweralsosee "[GSM] 18 Learning more about Stata" "mansection GSM 18LearningmoreaboutStata"}{...}
+asgsmusinginternet         {vieweralsosee "[GSM] 19 Updating and extending Stata---Internet functionality" "mansection GSM 19UpdatingandextendingStata---Internetfunctionality"}{...}
+asgsmtrouble               {vieweralsosee "[GSM] A Troubleshooting Stata" "mansection GSM ATroubleshootingStata"}{...}
+asgsmnostart               {vieweralsosee "[GSM] A.1 If Stata does not start" "mansection GSM A.1IfStatadoesnotstart"}{...}
+asgsmmemory                {vieweralsosee "[GSM] B Managing memory" "mansection GSM BManagingmemory"}{...}
+asgsmmemoryconsid          {vieweralsosee "[GSM] B.1 Memory size considerations" "mansection GSM B.1Memorysizeconsiderations"}{...}
+asgsmmac                   {vieweralsosee "[GSM] C Advanced Stata usage" "mansection GSM CAdvancedStatausage"}{...}
+asgsmprofile               {vieweralsosee "[GSM] C.1 Executing commands every time Stata is started" "mansection GSM C.1ExecutingcommandseverytimeStataisstarted"}{...}
+asgsmmoredoubleclick       {vieweralsosee "[GSM] C.2 Other ways to launch Stata" "mansection GSM C.2OtherwaystolaunchStata"}{...}
+asgsmbatch                 {vieweralsosee "[GSM] C.3 Stata batch mode" "mansection GSM C.3Statabatchmode"}{...}
+asgsmmore                  {vieweralsosee "[GSM] D More on Stata for Mac" "mansection GSM DMoreonStataforMac"}{...}
+asgsmmacdt                 {vieweralsosee "[GSM] D.1 Using Stata datasets and graphs created on other platforms" "mansection GSM D.1UsingStatadatasetsandgraphscreatedonotherplatforms"}{...}
+asgsmmoregraphexport       {vieweralsosee "[GSM] D.2 Exporting a Stata graph to another document" "mansection GSM D.2ExportingaStatagraphtoanotherdocument"}{...}
+asgsmmoremacnotify         {vieweralsosee "[GSM] D.3 Stata and the Notification Manager" "mansection GSM D.3StataandtheNotificationManager"}{...}
+asgsmmoremaceol            {vieweralsosee "[GSM] D.4 Setting the default end-of-line delimiter" "mansection GSM D.4Settingthedefaultend-of-linedelimiter"}{...}
+asgsmmoremacconsole        {vieweralsosee "[GSM] D.5 Stata(console) for Mac OS X" "mansection GSM D.5Stata(console)forMacOSX"}{...}
+asgsusession               {vieweralsosee "[GSU] 1 Introducing Stata---sample session" "mansection GSU 1IntroducingStata---samplesession"}{...}
+asgsugui                   {vieweralsosee "[GSU] 2 The Stata user interface" "mansection GSU 2TheStatauserinterface"}{...}
+asgsuviewer                {vieweralsosee "[GSU] 3 Using the Viewer" "mansection GSU 3UsingtheViewer"}{...}
+asgsuhelp                  {vieweralsosee "[GSU] 4 Getting help" "mansection GSU 4Gettinghelp"}{...}
+asgsuload                  {vieweralsosee "[GSU] 5 Opening and saving Stata datasets" "mansection GSU 5OpeningandsavingStatadatasets"}{...}
+asgsuedit                  {vieweralsosee "[GSU] 6 Using the Data Editor" "mansection GSU 6UsingtheDataEditor"}{...}
+asgsuvarman                {vieweralsosee "[GSU] 7 Using the Variables Manager" "mansection GSU 7UsingtheVariablesManager"}{...}
+asgsuimport                {vieweralsosee "[GSU] 8 Importing data" "mansection GSU 8Importingdata"}{...}
+asgsulabel                 {vieweralsosee "[GSU] 9 Labeling data" "mansection GSU 9Labelingdata"}{...}
+asgsulist                  {vieweralsosee "[GSU] 10 Listing data and basic command syntax" "mansection GSU 10Listingdataandbasiccommandsyntax"}{...}
+asgsugen                   {vieweralsosee "[GSU] 11 Creating new variables" "mansection GSU 11Creatingnewvariables"}{...}
+asgsudrop                  {vieweralsosee "[GSU] 12 Deleting variables and observations" "mansection GSU 12Deletingvariablesandobservations"}{...}
+asgsudoedit                {vieweralsosee "[GSU] 13 Using the Do-file Editor---automating Stata" "mansection GSU 13UsingtheDo-fileEditor---automatingStata"}{...}
+asgsugraph                 {vieweralsosee "[GSU] 14 Graphing data" "mansection GSU 14Graphingdata"}{...}
+asgsugraphed               {vieweralsosee "[GSU] 15 Editing graphs" "mansection GSU 15Editinggraphs"}{...}
+asgsulogprint              {vieweralsosee "[GSU] 16 Saving and printing results by using logs" "mansection GSU 16Savingandprintingresultsbyusinglogs"}{...}
+asgsufonts                 {vieweralsosee "[GSU] 17 Setting font and window preferences" "mansection GSU 17Settingfontandwindowpreferences"}{...}
+asgsulearn                 {vieweralsosee "[GSU] 18 Learning more about Stata" "mansection GSU 18LearningmoreaboutStata"}{...}
+asgsuusinginternet         {vieweralsosee "[GSU] 19 Updating and extending Stata---Internet functionality" "mansection GSU 19UpdatingandextendingStata---Internetfunctionality"}{...}
+asgsutrouble               {vieweralsosee "[GSU] A Troubleshooting Stata" "mansection GSU ATroubleshootingStata"}{...}
+asgsunostart               {vieweralsosee "[GSU] A.1 If Stata(GUI) and Stata(console) do not start" "mansection GSU A.1IfStata(GUI)andStata(console)donotstart"}{...}
+asgsumemory                {vieweralsosee "[GSU] B Managing memory" "mansection GSU BManagingmemory"}{...}
+asgsumemoryconsid          {vieweralsosee "[GSU] B.1 Memory size considerations" "mansection GSU B.1Memorysizeconsiderations"}{...}
+asgsuunix                  {vieweralsosee "[GSU] C Advanced Stata usage" "mansection GSU CAdvancedStatausage"}{...}
+asgsuprofile               {vieweralsosee "[GSU] C.1 Executing commands every time Stata is started" "mansection GSU C.1ExecutingcommandseverytimeStataisstarted"}{...}
+asgsumoreadvstart          {vieweralsosee "[GSU] C.2 Advanced starting of Stata for Unix" "mansection GSU C.2AdvancedstartingofStataforUnix"}{...}
+asgsubatch                 {vieweralsosee "[GSU] C.3 Stata batch mode" "mansection GSU C.3Statabatchmode"}{...}
+asgsumorexwindows          {vieweralsosee "[GSU] C.4 Using X Windows remotely" "mansection GSU C.4UsingXWindowsremotely"}{...}
+asgsumoreenvironment       {vieweralsosee "[GSU] C.5 Summary of environment variables" "mansection GSU C.5Summaryofenvironmentvariables"}{...}
+asgsumanpage               {vieweralsosee "[GSU] D Stata manual pages for Unix" "mansection GSU DStatamanualpagesforUnix"}{...}
+asgswsession               {vieweralsosee "[GSW] 1 Introducing Stata---sample session" "mansection GSW 1IntroducingStata---samplesession"}{...}
+asgswgui                   {vieweralsosee "[GSW] 2 The Stata user interface" "mansection GSW 2TheStatauserinterface"}{...}
+asgswviewer                {vieweralsosee "[GSW] 3 Using the Viewer" "mansection GSW 3UsingtheViewer"}{...}
+asgswhelp                  {vieweralsosee "[GSW] 4 Getting help" "mansection GSW 4Gettinghelp"}{...}
+asgswload                  {vieweralsosee "[GSW] 5 Opening and saving Stata datasets" "mansection GSW 5OpeningandsavingStatadatasets"}{...}
+asgswedit                  {vieweralsosee "[GSW] 6 Using the Data Editor" "mansection GSW 6UsingtheDataEditor"}{...}
+asgswvarman                {vieweralsosee "[GSW] 7 Using the Variables Manager" "mansection GSW 7UsingtheVariablesManager"}{...}
+asgswimport                {vieweralsosee "[GSW] 8 Importing data" "mansection GSW 8Importingdata"}{...}
+asgswlabel                 {vieweralsosee "[GSW] 9 Labeling data" "mansection GSW 9Labelingdata"}{...}
+asgswlist                  {vieweralsosee "[GSW] 10 Listing data and basic command syntax" "mansection GSW 10Listingdataandbasiccommandsyntax"}{...}
+asgswgen                   {vieweralsosee "[GSW] 11 Creating new variables" "mansection GSW 11Creatingnewvariables"}{...}
+asgswdrop                  {vieweralsosee "[GSW] 12 Deleting variables and observations" "mansection GSW 12Deletingvariablesandobservations"}{...}
+asgswdoedit                {vieweralsosee "[GSW] 13 Using the Do-file Editor---automating Stata" "mansection GSW 13UsingtheDo-fileEditor---automatingStata"}{...}
+asgswgraph                 {vieweralsosee "[GSW] 14 Graphing data" "mansection GSW 14Graphingdata"}{...}
+asgswgraphed               {vieweralsosee "[GSW] 15 Editing graphs" "mansection GSW 15Editinggraphs"}{...}
+asgswlogprint              {vieweralsosee "[GSW] 16 Saving and printing results by using logs" "mansection GSW 16Savingandprintingresultsbyusinglogs"}{...}
+asgswfonts                 {vieweralsosee "[GSW] 17 Setting font and window preferences" "mansection GSW 17Settingfontandwindowpreferences"}{...}
+asgswlearn                 {vieweralsosee "[GSW] 18 Learning more about Stata" "mansection GSW 18LearningmoreaboutStata"}{...}
+asgswusinginternet         {vieweralsosee "[GSW] 19 Updating and extending Stata---Internet functionality" "mansection GSW 19UpdatingandextendingStata---Internetfunctionality"}{...}
+asgswtrouble               {vieweralsosee "[GSW] A Troubleshooting Stata" "mansection GSW ATroubleshootingStata"}{...}
+asgswnostart               {vieweralsosee "[GSW] A.1 If Stata does not start" "mansection GSW A.1IfStatadoesnotstart"}{...}
+asgswmemory                {vieweralsosee "[GSW] B Managing memory" "mansection GSW BManagingmemory"}{...}
+asgswmemoryconsid          {vieweralsosee "[GSW] B.1 Memory size considerations" "mansection GSW B.1Memorysizeconsiderations"}{...}
+asgswwin                   {vieweralsosee "[GSW] C Advanced Stata usage" "mansection GSW CAdvancedStatausage"}{...}
+asgswpsw                   {vieweralsosee "[GSW] C.1 The Windows Properties Sheet" "mansection GSW C.1TheWindowsPropertiesSheet"}{...}
+asgswmoreshortcut          {vieweralsosee "[GSW] C.2 Making shortcuts" "mansection GSW C.2Makingshortcuts"}{...}
+asgswprofile               {vieweralsosee "[GSW] C.3 Executing commands every time Stata is started" "mansection GSW C.3ExecutingcommandseverytimeStataisstarted"}{...}
+asgswmoredoubleclick       {vieweralsosee "[GSW] C.4 Other ways to launch Stata" "mansection GSW C.4OtherwaystolaunchStata"}{...}
+asgswbatch                 {vieweralsosee "[GSW] C.5 Stata batch mode" "mansection GSW C.5Statabatchmode"}{...}
+asgswmoresimultaneous      {vieweralsosee "[GSW] C.6 Running simultaneous Stata sessions" "mansection GSW C.6RunningsimultaneousStatasessions"}{...}
+asgswmore                  {vieweralsosee "[GSW] D More on Stata for Windows" "mansection GSW DMoreonStataforWindows"}{...}
+asmoredatagraph            {vieweralsosee "[GSW] D.1 Using Stata datasets and graphs created on other platforms" "mansection GSW D.1UsingStatadatasetsandgraphscreatedonotherplatforms"}{...}
+asgswmoregraphexport       {vieweralsosee "[GSW] D.2 Exporting a Stata graph to another document" "mansection GSW D.2ExportingaStatagraphtoanotherdocument"}{...}
+asgswnetwork               {vieweralsosee "[GSW] D.3 Installing Stata for Windows on a network drive" "mansection GSW D.3InstallingStataforWindowsonanetworkdrive"}{...}
+asig installall            {vieweralsosee "[IG]  Installation" "mansection IG Installation"}{...}
+asigwininstall             {vieweralsosee "[IG]  Installing Stata for Windows" "mansection IG InstallingStataforWindows"}{...}
+asigmacinstall             {vieweralsosee "[IG]  Installing Stata for Mac" "mansection IG InstallingStataforMac"}{...}
+asigunixinstall            {vieweralsosee "[IG]  Installing Stata for Unix" "mansection IG InstallingStataforUnix"}{...}
+asig platflav              {vieweralsosee "[IG]  Platforms and Flavors" "mansection IG PlatformsandFlavors"}{...}
+asig docs                  {vieweralsosee "[IG]  Documentation" "mansection IG Documentation"}{...}
+assemsfmm                  {vieweralsosee "[SEM] example 1" "mansection SEM example1"}{...}
+assemssd                   {vieweralsosee "[SEM] example 2" "mansection SEM example2"}{...}
+assemtfmm                  {vieweralsosee "[SEM] example 3" "mansection SEM example3"}{...}
+assemgof                   {vieweralsosee "[SEM] example 4" "mansection SEM example4"}{...}
+assemmindices              {vieweralsosee "[SEM] example 5" "mansection SEM example5"}{...}
+assemreg                   {vieweralsosee "[SEM] example 6" "mansection SEM example6"}{...}
+assemnrsm                  {vieweralsosee "[SEM] example 7" "mansection SEM example7"}{...}
+assembequal                {vieweralsosee "[SEM] example 8" "mansection SEM example8"}{...}
+assemmc                    {vieweralsosee "[SEM] example 9" "mansection SEM example9"}{...}
+assemmimic                 {vieweralsosee "[SEM] example 10" "mansection SEM example10"}{...}
+assemframework             {vieweralsosee "[SEM] example 11" "mansection SEM example11"}{...}
+assemsureg                 {vieweralsosee "[SEM] example 12" "mansection SEM example12"}{...}
+assemeqtest                {vieweralsosee "[SEM] example 13" "mansection SEM example13"}{...}
+assempredict               {vieweralsosee "[SEM] example 14" "mansection SEM example14"}{...}
+assemhcfa                  {vieweralsosee "[SEM] example 15" "mansection SEM example15"}{...}
+assemcorr                  {vieweralsosee "[SEM] example 16" "mansection SEM example16"}{...}
+assemcu                    {vieweralsosee "[SEM] example 17" "mansection SEM example17"}{...}
+assemlgm                   {vieweralsosee "[SEM] example 18" "mansection SEM example18"}{...}
+assemssdg                  {vieweralsosee "[SEM] example 19" "mansection SEM example19"}{...}
+assemtfmmg                 {vieweralsosee "[SEM] example 20" "mansection SEM example20"}{...}
+assemggof                  {vieweralsosee "[SEM] example 21" "mansection SEM example21"}{...}
+assemginv                  {vieweralsosee "[SEM] example 22" "mansection SEM example22"}{...}
+assemcnsg                  {vieweralsosee "[SEM] example 23" "mansection SEM example23"}{...}
+assemrel                   {vieweralsosee "[SEM] example 24" "mansection SEM example24"}{...}
+assemssdbuild              {vieweralsosee "[SEM] example 25" "mansection SEM example25"}{...}
+assemmlmv                  {vieweralsosee "[SEM] example 26" "mansection SEM example26"}{...}
+asfrbegin                  {vieweralsosee "[U] 1 Read this---it will help" "mansection U 1Readthis---itwillhelp"}{...}
+asfrstart                  {vieweralsosee "[U] 1.1 Getting Started with Stata" "mansection U 1.1GettingStartedwithStata"}{...}
+asfrfman                   {vieweralsosee "[U] 1.2 The User's Guide and the Reference manuals" "mansection U 1.2TheUsersGuideandtheReferencemanuals"}{...}
+asfrtutorials              {vieweralsosee "[U] 1.2.2 Example datasets" "mansection U 1.2.2Exampledatasets"}{...}
+asfrwhatsnew               {vieweralsosee "[U] 1.3 What's new" "mansection U 1.3Whatsnew"}{...}
+asfrhilites                {vieweralsosee "[U] 1.3.1 What's new (highlights)" "mansection U 1.3.1Whatsnew(highlights)"}{...}
+asfrwhatsmore              {vieweralsosee "[U] 1.3.14 What's more" "mansection U 1.3.14Whatsmore"}{...}
+asfrbrief                  {vieweralsosee "[U] 2 A brief description of Stata" "mansection U 2AbriefdescriptionofStata"}{...}
+asfrres                    {vieweralsosee "[U] 3 Resources for learning and using Stata" "mansection U 3ResourcesforlearningandusingStata"}{...}
+asfrinternet               {vieweralsosee "[U] 3.2 Stata on the Internet (www.stata.com and other resources)" "mansection U 3.2StataontheInternet(www.stata.comandotherresources)"}{...}
+asfrwww                    {vieweralsosee "[U] 3.2.1 The Stata website (www.stata.com)" "mansection U 3.2.1TheStatawebsite(www.stata.com)"}{...}
+asfrblog                   {vieweralsosee "[U] 3.2.2 The Stata Blog---Not Elsewhere Classified" "mansection U 3.2.2TheStataBlog---NotElsewhereClassified"}{...}
+asfrfb                     {vieweralsosee "[U] 3.2.3 Stata on Twitter and Facebook" "mansection U 3.2.3StataonTwitterandFacebook"}{...}
+asfrwwwother               {vieweralsosee "[U] 3.2.4 Other Internet resources on Stata" "mansection U 3.2.4OtherInternetresourcesonStata"}{...}
+asfrstatapress             {vieweralsosee "[U] 3.3 Stata Press" "mansection U 3.3StataPress"}{...}
+asfrstatalist              {vieweralsosee "[U] 3.4 The Stata listserver" "mansection U 3.4TheStatalistserver"}{...}
+asfrstb                    {vieweralsosee "[U] 3.5 The Stata Journal" "mansection U 3.5TheStataJournal"}{...}
+asfrweb                    {vieweralsosee "[U] 3.6 Updating and adding features from the web" "mansection U 3.6Updatingandaddingfeaturesfromtheweb"}{...}
+asfrnetcourse              {vieweralsosee "[U] 3.7.2 NetCourses" "mansection U 3.7.2NetCourses"}{...}
+asfrpublictrain            {vieweralsosee "[U] 3.7.3 Public training courses" "mansection U 3.7.3Publictrainingcourses"}{...}
+asfronsitetrain            {vieweralsosee "[U] 3.7.4 On-site training courses" "mansection U 3.7.4On-sitetrainingcourses"}{...}
+asfrbooks                  {vieweralsosee "[U] 3.8 Books and other support materials" "mansection U 3.8Booksandothersupportmaterials"}{...}
+asfrtechsupport            {vieweralsosee "[U] 3.9 Technical support" "mansection U 3.9Technicalsupport"}{...}
+asfrhelp                   {vieweralsosee "[U] 4 Stata's help and search facilities" "mansection U 4Statashelpandsearchfacilities"}{...}
+asfrmlookup                {vieweralsosee "[U] 4.6 More on search" "mansection U 4.6Moreonsearch"}{...}
+asfrlookup                 {vieweralsosee "[U] 4.9 search: All the details" "mansection U 4.9search:Allthedetails"}{...}
+asfrflavors                {vieweralsosee "[U] 5 Flavors of Stata" "mansection U 5FlavorsofStata"}{...}
+asfrmemory                 {vieweralsosee "[U] 6 Managing memory" "mansection U 6Managingmemory"}{...}
+asfrmemcmd                 {vieweralsosee "[U] 6.5 The memory command" "mansection U 6.5Thememorycommand"}{...}
+asfrmore                   {vieweralsosee "[U] 7 --more-- conditions" "mansection U 7--more--conditions"}{...}
+asfrrc                     {vieweralsosee "[U] 8 Error messages and return codes" "mansection U 8Errormessagesandreturncodes"}{...}
+asfrbreak                  {vieweralsosee "[U] 9 The Break key" "mansection U 9TheBreakkey"}{...}
+asfrkeyboard               {vieweralsosee "[U] 10 Keyboard use" "mansection U 10Keyboarduse"}{...}
+asfrfkeys                  {vieweralsosee "[U] 10.2 F-keys" "mansection U 10.2F-keys"}{...}
+asfredit                   {vieweralsosee "[U] 10.5 Editing previous lines in Stata" "mansection U 10.5EditingpreviouslinesinStata"}{...}
+asfrtabexp                 {vieweralsosee "[U] 10.6 Tab expansion of variable names" "mansection U 10.6Tabexpansionofvariablenames"}{...}
+asfrsyntax                 {vieweralsosee "[U] 11 Language syntax" "mansection U 11Languagesyntax"}{...}
+asfrsynvl                  {vieweralsosee "[U] 11.1.1 varlist" "mansection U 11.1.1varlist"}{...}
+asfrbyv                    {vieweralsosee "[U] 11.1.2 by varlist:" "mansection U 11.1.2byvarlist:"}{...}
+asfrif                     {vieweralsosee "[U] 11.1.3 if exp" "mansection U 11.1.3ifexp"}{...}
+asfrinrange                {vieweralsosee "[U] 11.1.4 in range" "mansection U 11.1.4inrange"}{...}
+asfrequalexp               {vieweralsosee "[U] 11.1.5 =exp" "mansection U 11.1.5=exp"}{...}
+asfrsyntaxwt               {vieweralsosee "[U] 11.1.6 weight" "mansection U 11.1.6weight"}{...}
+asfrsyntaxop               {vieweralsosee "[U] 11.1.7 options" "mansection U 11.1.7options"}{...}
+asfrnumlist                {vieweralsosee "[U] 11.1.8 numlist" "mansection U 11.1.8numlist"}{...}
+asfrdatelist               {vieweralsosee "[U] 11.1.9 datelist" "mansection U 11.1.9datelist"}{...}
+asfrprefix                 {vieweralsosee "[U] 11.1.10 Prefix commands" "mansection U 11.1.10Prefixcommands"}{...}
+asfrabbrev                 {vieweralsosee "[U] 11.2 Abbreviation rules" "mansection U 11.2Abbreviationrules"}{...}
+asfrvarabbrev              {vieweralsosee "[U] 11.2.3 Variable-name abbreviation" "mansection U 11.2.3Variable-nameabbreviation"}{...}
+asfrnames                  {vieweralsosee "[U] 11.3 Naming conventions" "mansection U 11.3Namingconventions"}{...}
+asfrvarlists               {vieweralsosee "[U] 11.4 varlists" "mansection U 11.4varlists"}{...}
+asfrvarold                 {vieweralsosee "[U] 11.4.1 Lists of existing variables" "mansection U 11.4.1Listsofexistingvariables"}{...}
+asfrvarnew                 {vieweralsosee "[U] 11.4.2 Lists of new variables" "mansection U 11.4.2Listsofnewvariables"}{...}
+asfrfvvarlists             {vieweralsosee "[U] 11.4.3 Factor variables" "mansection U 11.4.3Factorvariables"}{...}
+asfrfvvarlistsop           {vieweralsosee "[U] 11.4.3.1 Factor-variable operators" "mansection U 11.4.3.1Factor-variableoperators"}{...}
+asfrfvvarlistsbl           {vieweralsosee "[U] 11.4.3.2 Base levels" "mansection U 11.4.3.2Baselevels"}{...}
+asfrfvvarlistsfvset        {vieweralsosee "[U] 11.4.3.3 Setting base levels permanently" "mansection U 11.4.3.3Settingbaselevelspermanently"}{...}
+asfrfvvarlistslev          {vieweralsosee "[U] 11.4.3.4 Selecting levels" "mansection U 11.4.3.4Selectinglevels"}{...}
+asfrfvvarlistsparen        {vieweralsosee "[U] 11.4.3.5 Applying operators to a group of variables" "mansection U 11.4.3.5Applyingoperatorstoagroupofvariables"}{...}
+asfrfvvarliststs           {vieweralsosee "[U] 11.4.3.6 Using factor variables with time-series operators" "mansection U 11.4.3.6Usingfactorvariableswithtime-seriesoperators"}{...}
+asfrtsvarlists             {vieweralsosee "[U] 11.4.4 Time-series varlists" "mansection U 11.4.4Time-seriesvarlists"}{...}
+asfrby                     {vieweralsosee "[U] 11.5 by varlist: construct" "mansection U 11.5byvarlist:construct"}{...}
+asfrfilenames              {vieweralsosee "[U] 11.6 Filenaming conventions" "mansection U 11.6Filenamingconventions"}{...}
+asfrdatatypes              {vieweralsosee "[U] 12 Data" "mansection U 12Data"}{...}
+asfrnum                    {vieweralsosee "[U] 12.2 Numbers" "mansection U 12.2Numbers"}{...}
+asfrmiss                   {vieweralsosee "[U] 12.2.1 Missing values" "mansection U 12.2.1Missingvalues"}{...}
+asfrnumtypes               {vieweralsosee "[U] 12.2.2 Numeric storage types" "mansection U 12.2.2Numericstoragetypes"}{...}
+asfrstr                    {vieweralsosee "[U] 12.4 Strings" "mansection U 12.4Strings"}{...}
+asfrstrtypes               {vieweralsosee "[U] 12.4.4 String storage types" "mansection U 12.4.4Stringstoragetypes"}{...}
+asfrformats                {vieweralsosee "[U] 12.5 Formats: Controlling how data are displayed" "mansection U 12.5Formats:Controllinghowdataaredisplayed"}{...}
+asfrformatnum              {vieweralsosee "[U] 12.5.1 Numeric formats" "mansection U 12.5.1Numericformats"}{...}
+asfrforeuro                {vieweralsosee "[U] 12.5.2 European numeric formats" "mansection U 12.5.2Europeannumericformats"}{...}
+asfrformatdatetime         {vieweralsosee "[U] 12.5.3 Date and time formats" "mansection U 12.5.3Dateandtimeformats"}{...}
+asfrlabels                 {vieweralsosee "[U] 12.6 Dataset, variable, and value labels" "mansection U 12.6Dataset,variable,andvaluelabels"}{...}
+asfrdatalab                {vieweralsosee "[U] 12.6.1 Dataset labels" "mansection U 12.6.1Datasetlabels"}{...}
+asfrvarlab                 {vieweralsosee "[U] 12.6.2 Variable labels" "mansection U 12.6.2Variablelabels"}{...}
+asfrvallab                 {vieweralsosee "[U] 12.6.3 Value labels" "mansection U 12.6.3Valuelabels"}{...}
+asfrvallang                {vieweralsosee "[U] 12.6.4 Labels in other languages" "mansection U 12.6.4Labelsinotherlanguages"}{...}
+asfrnotes                  {vieweralsosee "[U] 12.7 Notes attached to data" "mansection U 12.7Notesattachedtodata"}{...}
+asfrchars                  {vieweralsosee "[U] 12.8 Characteristics" "mansection U 12.8Characteristics"}{...}
+asfrexp                    {vieweralsosee "[U] 13 Functions and expressions" "mansection U 13Functionsandexpressions"}{...}
+asfroperators              {vieweralsosee "[U] 13.2 Operators" "mansection U 13.2Operators"}{...}
+asfrrel                    {vieweralsosee "[U] 13.2.3 Relational operators" "mansection U 13.2.3Relationaloperators"}{...}
+asfroplog                  {vieweralsosee "[U] 13.2.4 Logical operators" "mansection U 13.2.4Logicaloperators"}{...}
+asfrfunctions              {vieweralsosee "[U] 13.3 Functions" "mansection U 13.3Functions"}{...}
+asfrusvars                 {vieweralsosee "[U] 13.4 System variables (_variables)" "mansection U 13.4Systemvariables(_variables)"}{...}
+asfrcoefficients           {vieweralsosee "[U] 13.5 Accessing coefficients and standard errors" "mansection U 13.5Accessingcoefficientsandstandarderrors"}{...}
+asfrmulteq                 {vieweralsosee "[U] 13.5.2 Multiple-equation models" "mansection U 13.5.2Multiple-equationmodels"}{...}
+asfraccres                 {vieweralsosee "[U] 13.6 Accessing results from Stata commands" "mansection U 13.6AccessingresultsfromStatacommands"}{...}
+asfrsubscripts             {vieweralsosee "[U] 13.7 Explicit subscripting" "mansection U 13.7Explicitsubscripting"}{...}
+asfrlag                    {vieweralsosee "[U] 13.7.1 Generating lags and leads" "mansection U 13.7.1Generatinglagsandleads"}{...}
+asfrfvind                  {vieweralsosee "[U] 13.8 Indicator values for levels of factor variables" "mansection U 13.8Indicatorvaluesforlevelsoffactorvariables"}{...}
+asfrtsops                  {vieweralsosee "[U] 13.9 Time-series operators" "mansection U 13.9Time-seriesoperators"}{...}
+asfrtslag                  {vieweralsosee "[U] 13.9.1 Generating lags, leads, and differences" "mansection U 13.9.1Generatinglags,leads,anddifferences"}{...}
+asfrexpvallab              {vieweralsosee "[U] 13.10 Label values" "mansection U 13.10Labelvalues"}{...}
+asfrprecision              {vieweralsosee "[U] 13.11 Precision and problems therein" "mansection U 13.11Precisionandproblemstherein"}{...}
+asfrprecisionshort         {vieweralsosee "[U] 13.11 Precision" "mansection U 13.11Precision"}{...}
+asfrmatexp                 {vieweralsosee "[U] 14 Matrix expressions" "mansection U 14Matrixexpressions"}{...}
+asfrmatrow                 {vieweralsosee "[U] 14.2 Row and column names" "mansection U 14.2Rowandcolumnnames"}{...}
+asfrrowcolnames            {vieweralsosee "[U] 14.2.4 Obtaining row and column names" "mansection U 14.2.4Obtainingrowandcolumnnames"}{...}
+asfraccessmats             {vieweralsosee "[U] 14.5 Accessing matrices created by Stata commands" "mansection U 14.5AccessingmatricescreatedbyStatacommands"}{...}
+asfrmatfunc                {vieweralsosee "[U] 14.8 Matrix functions" "mansection U 14.8Matrixfunctions"}{...}
+asfrlogs                   {vieweralsosee "[U] 15 Saving and printing output---log files" "mansection U 15Savingandprintingoutput---logfiles"}{...}
+asfrlogcomments            {vieweralsosee "[U] 15.2 Placing comments in logs" "mansection U 15.2Placingcommentsinlogs"}{...}
+asfrdofiles                {vieweralsosee "[U] 16 Do-files" "mansection U 16Do-files"}{...}
+asfrdoversion              {vieweralsosee "[U] 16.1.1 Version" "mansection U 16.1.1Version"}{...}
+asfrdocomments             {vieweralsosee "[U] 16.1.2 Comments and blank lines in do-files" "mansection U 16.1.2Commentsandblanklinesindo-files"}{...}
+asfrdolonglines            {vieweralsosee "[U] 16.1.3 Long lines in do-files" "mansection U 16.1.3Longlinesindo-files"}{...}
+asfrdoerr                  {vieweralsosee "[U] 16.1.4 Error handling in do-files" "mansection U 16.1.4Errorhandlingindo-files"}{...}
+asfrdomore                 {vieweralsosee "[U] 16.1.6 Preventing --more-- conditions" "mansection U 16.1.6Preventing--more--conditions"}{...}
+asfrrun                    {vieweralsosee "[U] 16.4.2 Suppressing output" "mansection U 16.4.2Suppressingoutput"}{...}
+asfrado                    {vieweralsosee "[U] 17 Ado-files" "mansection U 17Ado-files"}{...}
+asfradowhat                {vieweralsosee "[U] 17.2 What is an ado-file?" "mansection U 17.2Whatisanado-file?"}{...}
+asfradowhich               {vieweralsosee "[U] 17.3 How can I tell if a command is built in or an ado-file?" "mansection U 17.3HowcanItellifacommandisbuiltinoranado-file?"}{...}
+asfradolook                {vieweralsosee "[U] 17.5 Where does Stata look for ado-files?" "mansection U 17.5WheredoesStatalookforado-files?"}{...}
+asfrpersonal               {vieweralsosee "[U] 17.5.2 Where is my personal ado-directory?" "mansection U 17.5.2Whereismypersonalado-directory?"}{...}
+asfrotherinstall           {vieweralsosee "[U] 17.6 How do I install an addition?" "mansection U 17.6HowdoIinstallanaddition?"}{...}
+asfrmyown                  {vieweralsosee "[U] 17.7 How do I add my own ado-files?" "mansection U 17.7HowdoIaddmyownado-files?"}{...}
+asfroffinstall             {vieweralsosee "[U] 17.8 How do I install official updates?" "mansection U 17.8HowdoIinstallofficialupdates?"}{...}
+asfruserinstall            {vieweralsosee "[U] 17.9 How do I install updates to user-written additions?" "mansection U 17.9HowdoIinstallupdatestouser-writtenadditions?"}{...}
+asfrprograms               {vieweralsosee "[U] 18 Programming Stata" "mansection U 18ProgrammingStata"}{...}
+asfrrelation               {vieweralsosee "[U] 18.2 Relationship between a program and a do-file" "mansection U 18.2Relationshipbetweenaprogramandado-file"}{...}
+asfrmacros                 {vieweralsosee "[U] 18.3 Macros" "mansection U 18.3Macros"}{...}
+asfrlocal                  {vieweralsosee "[U] 18.3.1 Local macros" "mansection U 18.3.1Localmacros"}{...}
+asfrglobal                 {vieweralsosee "[U] 18.3.2 Global macros" "mansection U 18.3.2Globalmacros"}{...}
+asfrmacrosexp              {vieweralsosee "[U] 18.3.4 Macros and expressions" "mansection U 18.3.4Macrosandexpressions"}{...}
+asfrdoubleq                {vieweralsosee "[U] 18.3.5 Double quotes" "mansection U 18.3.5Doublequotes"}{...}
+asfrexmacfuncs             {vieweralsosee "[U] 18.3.6 Extended macro functions" "mansection U 18.3.6Extendedmacrofunctions"}{...}
+asfrmacadv                 {vieweralsosee "[U] 18.3.7 Macro increment and decrement functions" "mansection U 18.3.7Macroincrementanddecrementfunctions"}{...}
+asfradvlmac                {vieweralsosee "[U] 18.3.9 Advanced local macro manipulation" "mansection U 18.3.9Advancedlocalmacromanipulation"}{...}
+asfrwinmacnm               {vieweralsosee "[U] 18.3.11 Constructing Windows filenames by using macros" "mansection U 18.3.11ConstructingWindowsfilenamesbyusingmacros"}{...}
+asfrrefchar                {vieweralsosee "[U] 18.3.13 Referring to characteristics" "mansection U 18.3.13Referringtocharacteristics"}{...}
+asfrarguments              {vieweralsosee "[U] 18.4 Program arguments" "mansection U 18.4Programarguments"}{...}
+asfrparse                  {vieweralsosee "[U] 18.4.4 Parsing standard Stata syntax" "mansection U 18.4.4ParsingstandardStatasyntax"}{...}
+asfrparsens                {vieweralsosee "[U] 18.4.6 Parsing nonstandard syntax" "mansection U 18.4.6Parsingnonstandardsyntax"}{...}
+asfrscamat                 {vieweralsosee "[U] 18.5 Scalars and matrices" "mansection U 18.5Scalarsandmatrices"}{...}
+asfrtempdes                {vieweralsosee "[U] 18.6 Temporarily destroying the data in memory" "mansection U 18.6Temporarilydestroyingthedatainmemory"}{...}
+asfrtemp                   {vieweralsosee "[U] 18.7 Temporary objects" "mansection U 18.7Temporaryobjects"}{...}
+asfrtempvar                {vieweralsosee "[U] 18.7.1 Temporary variables" "mansection U 18.7.1Temporaryvariables"}{...}
+asfrtempsca                {vieweralsosee "[U] 18.7.2 Temporary scalars and matrices" "mansection U 18.7.2Temporaryscalarsandmatrices"}{...}
+asfrtempfile               {vieweralsosee "[U] 18.7.3 Temporary files" "mansection U 18.7.3Temporaryfiles"}{...}
+asfrresult                 {vieweralsosee "[U] 18.8 Accessing results calculated by other programs" "mansection U 18.8Accessingresultscalculatedbyotherprograms"}{...}
+asfrresest                 {vieweralsosee "[U] 18.9 Accessing results calculated by estimation commands" "mansection U 18.9Accessingresultscalculatedbyestimationcommands"}{...}
+asfrsr                     {vieweralsosee "[U] 18.10 Saving results" "mansection U 18.10Savingresults"}{...}
+asfrdefest                 {vieweralsosee "[U] 18.10.2 Saving results in e()" "mansection U 18.10.2Savingresultsine()"}{...}
+asfradoprog                {vieweralsosee "[U] 18.11 Ado-files" "mansection U 18.11Ado-files"}{...}
+asfrversion                {vieweralsosee "[U] 18.11.1 Version" "mansection U 18.11.1Version"}{...}
+asfradocomllines           {vieweralsosee "[U] 18.11.2 Comments and long lines in ado-files" "mansection U 18.11.2Commentsandlonglinesinado-files"}{...}
+asfradodebug               {vieweralsosee "[U] 18.11.3 Debugging ado-files" "mansection U 18.11.3Debuggingado-files"}{...}
+asfradosamp                {vieweralsosee "[U] 18.11.5 Development of a sample ado-command" "mansection U 18.11.5Developmentofasampleado-command"}{...}
+asfradohelp                {vieweralsosee "[U] 18.11.6 Writing online help" "mansection U 18.11.6Writingonlinehelp"}{...}
+asfrprogcomp               {vieweralsosee "[U] 18.12 A compendium of useful commands for programmers" "mansection U 18.12Acompendiumofusefulcommandsforprogrammers"}{...}
+asfrimmediate              {vieweralsosee "[U] 19 Immediate commands" "mansection U 19Immediatecommands"}{...}
+asfrestimate               {vieweralsosee "[U] 20 Estimation and postestimation commands" "mansection U 20Estimationandpostestimationcommands"}{...}
+asfrreplayingresults       {vieweralsosee "[U] 20.3 Replaying prior results" "mansection U 20.3Replayingpriorresults"}{...}
+asfrsamp                   {vieweralsosee "[U] 20.6 Specifying the estimation subsample" "mansection U 20.6Specifyingtheestimationsubsample"}{...}
+asfrlevel                  {vieweralsosee "[U] 20.7 Specifying the width of confidence intervals" "mansection U 20.7Specifyingthewidthofconfidenceintervals"}{...}
+asfrcoeftable              {vieweralsosee "[U] 20.8 Formatting the coefficient table" "mansection U 20.8Formattingthecoefficienttable"}{...}
+asfrvarcov                 {vieweralsosee "[U] 20.9 Obtaining the variance-covariance matrix" "mansection U 20.9Obtainingthevariance-covariancematrix"}{...}
+asfrpv                     {vieweralsosee "[U] 20.10 Obtaining predicted values" "mansection U 20.10Obtainingpredictedvalues"}{...}
+asfrpvin                   {vieweralsosee "[U] 20.10.2 Making in-sample predictions" "mansection U 20.10.2Makingin-samplepredictions"}{...}
+asfrpvout                  {vieweralsosee "[U] 20.10.3 Making out-of-sample predictions" "mansection U 20.10.3Makingout-of-samplepredictions"}{...}
+asfraccesscoef             {vieweralsosee "[U] 20.11 Accessing estimated coefficients" "mansection U 20.11Accessingestimatedcoefficients"}{...}
+asfrht                     {vieweralsosee "[U] 20.12 Performing hypothesis tests on the coefficients" "mansection U 20.12Performinghypothesistestsonthecoefficients"}{...}
+asfrtestany                {vieweralsosee "[U] 20.12.2 Using test" "mansection U 20.12.2Usingtest"}{...}
+asfrlrtest                 {vieweralsosee "[U] 20.12.3 Likelihood-ratio tests" "mansection U 20.12.3Likelihood-ratiotests"}{...}
+asfrnonlinear              {vieweralsosee "[U] 20.12.4 Nonlinear Wald tests" "mansection U 20.12.4NonlinearWaldtests"}{...}
+asfrlincom                 {vieweralsosee "[U] 20.13 Obtaining linear combinations of coefficients" "mansection U 20.13Obtaininglinearcombinationsofcoefficients"}{...}
+asfrnlcom                  {vieweralsosee "[U] 20.14 Obtaining nonlinear combinations of coefficients" "mansection U 20.14Obtainingnonlinearcombinationsofcoefficients"}{...}
+asfrmargins                {vieweralsosee "[U] 20.15 Obtaining marginal means, adjusted predictions, and predictive margins" "mansection U 20.15Obtainingmarginalmeans,adjustedpredictions,andpredictivemargins"}{...}
+asfremm                    {vieweralsosee "[U] 20.15.1 Obtaining estimated marginal means" "mansection U 20.15.1Obtainingestimatedmarginalmeans"}{...}
+asfradjpred                {vieweralsosee "[U] 20.15.2 Obtaining adjusted predictions" "mansection U 20.15.2Obtainingadjustedpredictions"}{...}
+asfrpredmarg               {vieweralsosee "[U] 20.15.3 Obtaining predictive margins" "mansection U 20.15.3Obtainingpredictivemargins"}{...}
+asfrmfx                    {vieweralsosee "[U] 20.16 Obtaining conditional and average marginal effects" "mansection U 20.16Obtainingconditionalandaveragemarginaleffects"}{...}
+asfrcondmfx                {vieweralsosee "[U] 20.16.1 Obtaining conditional marginal effects" "mansection U 20.16.1Obtainingconditionalmarginaleffects"}{...}
+asfravgmfx                 {vieweralsosee "[U] 20.16.2 Obtaining average marginal effects" "mansection U 20.16.2Obtainingaveragemarginaleffects"}{...}
+asfrpairws                 {vieweralsosee "[U] 20.17 Obtaining pairwise comparisons" "mansection U 20.17Obtainingpairwisecomparisons"}{...}
+asfrcontrasts              {vieweralsosee "[U] 20.18 Obtaining contrasts, tests of interactions, and main effects" "mansection U 20.18Obtainingcontrasts,testsofinteractions,andmaineffects"}{...}
+asfrrobust                 {vieweralsosee "[U] 20.20 Obtaining robust variance estimates" "mansection U 20.20Obtainingrobustvarianceestimates"}{...}
+asfrscore                  {vieweralsosee "[U] 20.21 Obtaining scores" "mansection U 20.21Obtainingscores"}{...}
+asfrwest                   {vieweralsosee "[U] 20.22 Weighted estimation" "mansection U 20.22Weightedestimation"}{...}
+asfrwestf                  {vieweralsosee "[U] 20.22.1 Frequency weights" "mansection U 20.22.1Frequencyweights"}{...}
+asfrwesta                  {vieweralsosee "[U] 20.22.2 Analytic weights" "mansection U 20.22.2Analyticweights"}{...}
+asfrwestp                  {vieweralsosee "[U] 20.22.3 Sampling weights" "mansection U 20.22.3Samplingweights"}{...}
+asfrwesti                  {vieweralsosee "[U] 20.22.4 Importance weights" "mansection U 20.22.4Importanceweights"}{...}
+asfrpostest                {vieweralsosee "[U] 20.23 A list of postestimation commands" "mansection U 20.23Alistofpostestimationcommands"}{...}
+asfrdatain                 {vieweralsosee "[U] 21 Inputting and importing data" "mansection U 21Inputtingandimportingdata"}{...}
+asfreight                  {vieweralsosee "[U] 21.2 Determining which input method to use" "mansection U 21.2Determiningwhichinputmethodtouse"}{...}
+asfrmemout                 {vieweralsosee "[U] 21.3 If you run out of memory" "mansection U 21.3Ifyourunoutofmemory"}{...}
+asfrtransfer               {vieweralsosee "[U] 21.4 Transfer programs" "mansection U 21.4Transferprograms"}{...}
+asfrodbc                   {vieweralsosee "[U] 21.5 ODBC sources" "mansection U 21.5ODBCsources"}{...}
+asfrcombine                {vieweralsosee "[U] 22 Combining datasets" "mansection U 22Combiningdatasets"}{...}
+asfrstrings                {vieweralsosee "[U] 23 Working with strings" "mansection U 23Workingwithstrings"}{...}
+asfrencode                 {vieweralsosee "[U] 23.2 Categorical string variables" "mansection U 23.2Categoricalstringvariables"}{...}
+asfrdatetime               {vieweralsosee "[U] 24 Working with dates and times" "mansection U 24Workingwithdatesandtimes"}{...}
+asfrdatetimeinput          {vieweralsosee "[U] 24.2 Inputting dates and times" "mansection U 24.2Inputtingdatesandtimes"}{...}
+asfrdatetimedisplay        {vieweralsosee "[U] 24.3 Displaying dates and times" "mansection U 24.3Displayingdatesandtimes"}{...}
+asfrdatetimeliterals       {vieweralsosee "[U] 24.4 Typing dates and times (datetime literals)" "mansection U 24.4Typingdatesandtimes(datetimeliterals)"}{...}
+asfrdatetimecomponents     {vieweralsosee "[U] 24.5 Extracting components of dates and times" "mansection U 24.5Extractingcomponentsofdatesandtimes"}{...}
+asfrdatetimeconversion     {vieweralsosee "[U] 24.6 Converting between date and time values" "mansection U 24.6Convertingbetweendateandtimevalues"}{...}
+asfrcatvars                {vieweralsosee "[U] 25 Working with categorical data and factor variables" "mansection U 25Workingwithcategoricaldataandfactorvariables"}{...}
+asfrconttocat              {vieweralsosee "[U] 25.1.2 Converting continuous variables to categorical variables" "mansection U 25.1.2Convertingcontinuousvariablestocategoricalvariables"}{...}
+asfrcatfvi                 {vieweralsosee "[U] 25.2.1 Including factor variables" "mansection U 25.2.1Includingfactorvariables"}{...}
+asfrcatfvbase              {vieweralsosee "[U] 25.2.2 Specifying base levels" "mansection U 25.2.2Specifyingbaselevels"}{...}
+asfrcatfvset               {vieweralsosee "[U] 25.2.3 Setting base levels permanently" "mansection U 25.2.3Settingbaselevelspermanently"}{...}
+asfrcatfvtest              {vieweralsosee "[U] 25.2.4 Testing significance of a main effect" "mansection U 25.2.4Testingsignificanceofamaineffect"}{...}
+asfrcatdum                 {vieweralsosee "[U] 25.2.5 Specifying indicator (dummy) variables as factor variables" "mansection U 25.2.5Specifyingindicator(dummy)variablesasfactorvariables"}{...}
+asfrcatfvx                 {vieweralsosee "[U] 25.2.6 Including interactions" "mansection U 25.2.6Includinginteractions"}{...}
+asfrcatfvxtest             {vieweralsosee "[U] 25.2.7 Testing significance of interactions" "mansection U 25.2.7Testingsignificanceofinteractions"}{...}
+asfrcatfvfact              {vieweralsosee "[U] 25.2.8 Including factorial specifications" "mansection U 25.2.8Includingfactorialspecifications"}{...}
+asfrcatfvpoly              {vieweralsosee "[U] 25.2.9 Including squared terms and polynomials" "mansection U 25.2.9Includingsquaredtermsandpolynomials"}{...}
+asfrcatfvxc                {vieweralsosee "[U] 25.2.10 Including interactions with continuous variables" "mansection U 25.2.10Includinginteractionswithcontinuousvariables"}{...}
+asfrcatfvparen             {vieweralsosee "[U] 25.2.11 Parentheses binding" "mansection U 25.2.11Parenthesesbinding"}{...}
+asfrcatfvlevel             {vieweralsosee "[U] 25.2.12 Including indicators for single levels" "mansection U 25.2.12Includingindicatorsforsinglelevels"}{...}
+asfrcatfvsel               {vieweralsosee "[U] 25.2.13 Including subgroups of levels" "mansection U 25.2.13Includingsubgroupsoflevels"}{...}
+asfrcatfvts                {vieweralsosee "[U] 25.2.14 Combining factor variables and time-series operators" "mansection U 25.2.14Combiningfactorvariablesandtime-seriesoperators"}{...}
+asfrcatfvempty             {vieweralsosee "[U] 25.2.15 Treatment of empty cells" "mansection U 25.2.15Treatmentofemptycells"}{...}
+asfrestadv                 {vieweralsosee "[U] 26 Overview of Stata estimation commands" "mansection U 26OverviewofStataestimationcommands"}{...}
+asfreestanova              {vieweralsosee "[U] 26.4 ANOVA, ANCOVA, MANOVA, and MANCOVA" "mansection U 26.4ANOVA,ANCOVA,MANOVA,andMANCOVA"}{...}
+asfrglm                    {vieweralsosee "[U] 26.5 Generalized linear models" "mansection U 26.5Generalizedlinearmodels"}{...}
+asfrexact                  {vieweralsosee "[U] 26.11 Exact estimators" "mansection U 26.11Exactestimators"}{...}
+asfrestts                  {vieweralsosee "[U] 26.16 Models with time-series data" "mansection U 26.16Modelswithtime-seriesdata"}{...}
+asfrlrpd                   {vieweralsosee "[U] 26.17.1 Linear regression with panel data" "mansection U 26.17.1Linearregressionwithpaneldata"}{...}
+asfrglmpd                  {vieweralsosee "[U] 26.17.3 Generalized linear models with panel data" "mansection U 26.17.3Generalizedlinearmodelswithpaneldata"}{...}
+asfrallknow                {vieweralsosee "[U] 27 Commands everyone should know" "mansection U 27Commandseveryoneshouldknow"}{...}
+asfrcomby                  {vieweralsosee "[U] 27.2 The by construct" "mansection U 27.2Thebyconstruct"}{...}
+asfrupdate                 {vieweralsosee "[U] 28 Using the Internet to keep up to date" "mansection U 28UsingtheInternettokeepuptodate"}{...}
+asfrdownload               {vieweralsosee "[U] 28.5 Making your own download site" "mansection U 28.5Makingyourowndownloadsite"}{...}

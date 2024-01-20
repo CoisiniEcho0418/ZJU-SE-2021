@@ -1,0 +1,159 @@
+/*
+  stcox_estat_phtest_9
+
+*!  VERSION 1.0.4  03aug2006  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+HELP hlp1, view("help estat phtest")
+RESET res1
+
+DIALOG main, tabtitle("Main")						///
+	label("estat phtest - Test proportional-hazards assumption")
+BEGIN
+  GROUPBOX gb_opt          _lft      _top      _iwd        _ht26h,	///
+		label("Options")
+  GROUPBOX gb_time         _indent   _ms       _ibwd       _ht8h,	///
+		label("Time-scaling function")
+  RADIO    rb_none         _indent   _ss       _cwd3_3     .,		///
+		label("None, use identity")				///
+		first option(NONE) onclickon(script time_off)
+  DEFINE holdx @x
+  RADIO    rb_km           _lft3_2   @         _comb3_3    .,		///
+		label("1 minus Kaplan-Meier product-limit estimate")	///
+		option(km) onclickon(script time_off)
+  RADIO    rb_log          holdx     _ss       _cwd3_3     .,		///
+		label("Natural logarithm")				///
+		option(log) onclickon(script time_off)
+  RADIO    rb_rank         _lft3_2   @         _comb3_3    .,		///
+		label("Rank of analysis time")				///
+		option(rank) onclickon(script time_off)
+  RADIO    rb_time	   holdx     _ss       _expifwd    .,		///
+ 		last option(NONE) onclickon(script time_on)		///
+		label("Use variable containing a monotone transformation of analysis time:")
+
+  VARNAME  vn_time         _indent2  _ss       _vnwd       .,		///
+  		option(time)						///
+		label("Use variable containing a monotone transformation of analysis time")
+
+  CHECKBOX ck_plot         _ilft     _xxls     _ibwd       _ht6h,	///
+		groupbox						///
+  		onclickon(script graph_on)				///
+  		onclickoff(script graph_off)				///
+		label("Plot smoothed, scaled Schoenfeld residuals versus time")
+  VARNAME  vn_plot         _indent   _ms       _vnwd       .,		///
+  		option(plot)						///
+		label("Covariate")
+  DEFINE x @x
+  TEXT     tx_plot         _vnsep    @         _cken7r2bb  .,		///
+		label("Covariate")
+
+  CHECKBOX ck_bwidth       x         +35       _ckwd       .,		///
+		onclickon(program bwidth_check)				///
+		onclickoff(program bwidth_check)
+  EDIT     en_bwidth       _cksep    @         _en7wd      .,		///
+		label("Bandwidth for the smooth")			///
+		default("literal 0.8")					///
+		numonly							///
+		option(bwidth)
+  TEXT     tx_bwidth       _en7sep   @         _cken7r2bb  .,		///
+		label("Bandwidth for the smooth")
+
+  CHECKBOX ck_detail       _ilft     +45       _ibwd       .,		///
+  		option(detail)						///
+		label("Test proportional hazard assumption separately for each covariate")
+END
+
+PROGRAM bwidth_check
+BEGIN
+	if main.ck_bwidth {
+		call gaction main.en_bwidth.enable
+	}
+	if !main.ck_bwidth {
+		call gaction main.en_bwidth.disable
+	}
+END
+
+SCRIPT graph_on
+BEGIN
+	main.vn_plot.enable
+	main.tx_plot.enable
+	main.ck_bwidth.enable
+	program bwidth_check
+	main.tx_bwidth.enable
+
+	script p1_opts_enable
+	script line_opts_enable
+	script gr_twoway_enable
+END
+
+SCRIPT graph_off
+BEGIN
+	main.vn_plot.disable
+	main.tx_plot.disable
+	main.ck_bwidth.disable
+	main.en_bwidth.disable
+	main.tx_bwidth.disable
+
+	script p1_opts_disable
+	script line_opts_disable
+	script gr_twoway_disable
+END
+
+SCRIPT time_on
+BEGIN
+	main.vn_time.enable
+END
+
+SCRIPT time_off
+BEGIN
+	main.vn_time.disable
+END
+
+INCLUDE p1_opts
+INCLUDE line_opts
+
+SCRIPT PREINIT
+BEGIN
+	script p1_opts_createAsNoRange
+	script p1_opts_setDefaultScatter
+END
+
+SCRIPT POSTINIT
+BEGIN
+	p1_opts.settabtitle "Scatterplot"
+	line_opts.settabtitle "Smoothed line"
+END
+
+INCLUDE gr_twoway
+
+PROGRAM command
+BEGIN
+	put "estat phtest "
+	beginoptions
+		option radio(main rb_none rb_km rb_log rb_rank rb_time)
+		if main.rb_time {
+			require main.vn_time
+			optionarg main.vn_time
+		}
+		if main.ck_plot{
+			require main.vn_plot
+			optionarg main.vn_plot
+		}
+		option main.ck_detail
+		if main.ck_bwidth {
+			optionarg main.en_bwidth
+		}
+
+		put " " /program p1_opts_output
+		if main.ck_plot {
+			put " " /program line_opts_lineopts_output
+		}
+		put " " /program gr_twoway_output
+
+	endoptions
+END

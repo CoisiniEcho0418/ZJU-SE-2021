@@ -1,0 +1,66 @@
+/*
+ 	quadchk	
+
+*!  VERSION 1.1.0  03feb2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_medium
+DEFINE _dlgwd 440
+DEFINE _dlght 180
+INCLUDE header
+
+HELP hlp1, view("help quadchk")
+RESET res1
+
+DIALOG main, 	///
+	title("quadchk - Check sensitivity of quadrature approximation")
+BEGIN
+  RADIO    rb_default		_lft	_top	_iwd	.,	///
+	first							///
+	onclickon(script quadoff)				///
+	label("Use default quadrature points (2n/3,  4n/3)")
+  RADIO    rb_specify		_lft	_ss	_iwd	.,	///
+	last							///
+	onclickon(script quadon)				///
+	label("Specify 1 or 2 quadrature points")
+  EDIT     en_quad1		+20	_ss	_en7wd	.,	///
+	label("Specify 1 or 2 quadrature points") 		///
+	numonly
+  EDIT     en_quad2		_en7sep	@	_en7wd	.,	///
+	label("Specify 2nd quadrature point")			///
+	numonly
+  CHECKBOX ck_noout		_lft	+35	_iwd	.,	///
+	option(nooutput)					///
+	label("Suppress the iteration log and output of the refitted models")
+  CHECKBOX ck_nofrom		_lft	_ms	_iwd	.,	///
+	option(nofrom)						///
+	label("Force refitted models to start from scratch")
+END
+
+SCRIPT quadon
+BEGIN
+	  main.en_quad1.enable
+	  main.en_quad2.enable
+END
+
+SCRIPT quadoff
+BEGIN
+	  main.en_quad1.disable
+	  main.en_quad2.disable
+END
+
+PROGRAM command
+BEGIN
+	put "quadchk "
+	if main.rb_specify {
+		require main.en_quad1
+		put main.en_quad1 " " main.en_quad2
+	}
+	beginoptions
+		option main.ck_noout
+		option main.ck_nofrom
+	endoptions
+END

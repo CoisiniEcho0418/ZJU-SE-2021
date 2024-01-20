@@ -1,0 +1,14 @@
+*! version 1.0.2  19dec2004
+sequence 4001
+
+set symbol     scheme p#
+set size       scheme p#
+set fillcolor  scheme p#markfill
+set linestyle  scheme p#mark
+set angle      scheme p#mark
+
+set backsymbol  scheme p#back
+set backsize    scheme p#back
+set backcolor   scheme p#markbkfill
+set backline    scheme p#markback
+set backangle   scheme p#backmark

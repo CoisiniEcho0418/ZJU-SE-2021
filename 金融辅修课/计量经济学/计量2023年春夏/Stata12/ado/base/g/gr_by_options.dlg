@@ -1,0 +1,167 @@
+/*
+    gr_by_options.dlg
+    
+*!  VERSION 1.0.0  26dec2006
+
+	// SCRIPTS and PROGRAMS for external use
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_medium
+DEFINE _dlght 300
+INCLUDE header_gr_child
+
+DEFINE _clwd	15
+DEFINE _wd	130
+DEFINE _sep	+135
+DEFINE _wd2	120
+DEFINE _sep2	+125
+DEFINE _cbwd	120
+DEFINE _cbsep	+125
+
+HELP hlp1, view("help by_option")
+RESET res1
+
+DIALOG main, label("Subgraph organization") tabtitle("Main")
+BEGIN
+  GROUPBOX gp_organization	_lft	_top	_iwd	_ht16,	///
+	label("Organization and spacing")
+
+  TEXT	   tx_style		_ilft	_ss	_wd	.,	///
+	label("Style:") right
+  COMBOBOX cb_style		_sep	@	_cbwd	.,	///
+	dropdown contents(bygraph) option(style)
+
+  TEXT	   tx_margin		_ilft	_mls	_wd	.,	///
+	label("Margins:") right
+  COMBOBOX cb_margin		_sep	@	_cbwd	.,	///
+	dropdown contents(margin) option(imargin)
+	
+  TEXT		tx_layout	_ilft	_mls	_wd	.,	///
+	label("Rows/Columns:") right
+  COMBOBOX	cb_layout	_sep	@	_cbwd	.,	///
+	dropdownlist 						///
+	contents(rows_columns) values(rows_columns_val)		///
+	onselchangelist(rows_columns_sel)
+  SPINNER	sp_rowcol	_cbsep	@	50	.,	///
+	default(1) min(1)
+  TEXT		tx_rowcol	+55	@	60	.,	///
+	label("Rows")
+	
+  CHECKBOX ck_colfirst		_ilft	_ls	_ibwd	.,	///
+	option(colfirst)					///
+	label("Order groups by column (by default groups are ordered by row)")
+	
+  CHECKBOX ck_holes		@	_ms	@	.,	///
+	label("Force holes in the placement of graphs")		///
+	onclickon(script by_holes_on)				///
+	onclickoff(script by_holes_off)
+  BUTTON   bu_holes		+20	_ms	_clwd	.,	///
+	label("?") 						///
+	tooltip("Help - Holes")					///
+	onpush(view help numlist##|_new)  
+  EDIT     ed_holes		+20	@	80	.,	///
+	option(holes) label("Holes")
+  TEXT     tx_holes    		+85	@	100	.,	///
+	label("Holes")
+	
+  GROUPBOX gb_other		_lft	_xls	_iwd	80,	///
+	label("Scaling")
+  CHECKBOX ck_iscale		+10	_ss	_ibwd	.,	///
+	onclickon(script by_iscale_on)				///
+	onclickoff(script by_iscale_off)			///
+	label("Scale text and markers of all individual graphs")
+  EDIT     ed_iscale		+20	_ms	80	.,	///
+	label("Scale multiplier")
+  TEXT     tx_iscale		+85	@	200	.,	///
+	label("Scale multiplier")
+END
+
+//**
+LIST rows_columns
+BEGIN
+	"Default"
+	"Rows"
+	"Columns"
+END
+LIST rows_columns_val
+BEGIN
+	""
+	"rows"
+	"cols"
+END
+LIST rows_columns_sel
+BEGIN
+	script row_col_value_hide
+	script row_value_show
+	script col_value_show
+END
+SCRIPT row_col_value_hide
+BEGIN
+	main.sp_rowcol.disable
+	main.tx_rowcol.disable
+	main.tx_rowcol.hide
+END
+SCRIPT row_value_show
+BEGIN
+	main.sp_rowcol.enable
+	main.tx_rowcol.enable
+	main.tx_rowcol.show
+	main.tx_rowcol.setlabel "Rows"
+END
+SCRIPT col_value_show
+BEGIN
+	main.sp_rowcol.enable
+	main.tx_rowcol.enable
+	main.tx_rowcol.show
+	main.tx_rowcol.setlabel "Columns"
+END
+//--
+
+SCRIPT by_holes_on
+BEGIN
+	main.bu_holes.enable
+	main.ed_holes.enable
+	main.tx_holes.enable
+END
+SCRIPT by_holes_off
+BEGIN
+	main.bu_holes.disable
+	main.ed_holes.disable
+	main.tx_holes.disable
+END
+
+SCRIPT by_iscale_on
+BEGIN
+	main.ed_iscale.enable
+	main.tx_iscale.enable
+END
+SCRIPT by_iscale_off
+BEGIN
+	main.ed_iscale.disable
+	main.tx_iscale.disable
+END
+
+PROGRAM command
+BEGIN
+	optionarg main.cb_style
+	optionarg main.cb_margin
+	if main.cb_layout & main.cb_layout.isvisible() {
+		put " " main.cb_layout "("
+		put main.sp_rowcol
+		put ") "
+	}
+	option main.ck_colfirst
+	if main.ck_holes {
+		require main.ed_holes
+		optionarg main.ed_holes
+	}
+	if main.ck_iscale {
+		require main.ed_iscale
+		put " iscale(*"
+		put main.ed_iscale
+		put ") "
+	}
+END

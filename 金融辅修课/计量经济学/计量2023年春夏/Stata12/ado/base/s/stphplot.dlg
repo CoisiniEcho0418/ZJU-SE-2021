@@ -1,0 +1,165 @@
+/*
+	stphplot
+
+*!  VERSION 2.0.3  07mar2011
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_large
+DEFINE _dlght 300
+INCLUDE header
+
+HELP hlp1, view("help stphplot")
+RESET res1
+
+SCRIPT POSTINIT
+BEGIN
+	script gr_plots_setDefaultConnected
+	script gr_plots_setMultiView_on
+END
+
+DIALOG main, tabtitle("Main") ///
+	title("stphplot - Log-log plot of survival")
+BEGIN
+  RADIO    rb_invar      _lft       _top      _cwd1       .,  first	///
+	label("Fit separate Cox models")				///
+	onclickon(script strat_off)
+  RADIO    rb_strvar     _lft       _ss       @           .,  last	///
+	label("Fit stratified Cox model")				///
+	onclickon(script strat_on)
+
+  TEXT     tx_var	 @          _ms       @           .,
+  VARNAME  vn_invar      @          _ss       _vnwd       .,		///
+	label("Independent variable") option(by)
+  VARNAME  vn_strvar     @          @         @           .,		///
+	label("Strata variable") option(strata)
+
+  CHECKBOX ck_adjust      _lft      +35       _iwd        _ht9,		///
+	groupbox onclickon(script adjust_on) onclickoff(script adjust_off)
+
+  TEXT     tx_adjvar1     _ilft     _ss       _inwd       .,		///
+	label("Adjustment variables:")
+  VARLIST  vl_adjvar      @         _ss       @           .,		///
+	label("Adjustment variables") option(adjust)
+  RADIO    rb_avgval      _ilft     _ls       @           .,		///
+	label("Adjust to average values of adjustment variables")	///
+	first option(NONE)
+  RADIO    rb_zeroval     @         _ss       @           .,		///
+	label("Adjust to zero values of adjustment variables")		///
+	last option(zero)
+  DEFINE _x _xsetbu
+  DEFINE _y _top
+  INCLUDE _bu_stset
+END
+
+INCLUDE if
+
+DIALOG opt, tabtitle("Options")
+BEGIN
+  GROUPBOX gb_noneg       _lft      _top      _iwd        _ht4,
+  RADIO    rb_lnneg       _indent   _ss       _inwd       .,		///
+	label("Plot -ln(-ln(survival))") first option(NONE)
+  RADIO    rb_ln          @         _ss       @           .,		///
+	label("Plot ln(-ln(survival))") last option(nonegative)
+
+  GROUPBOX gb_plot        _lft      _xls      _iwd        _ht4,
+  RADIO    rb_lntime      _ilft     _ss       _inwd       .,		///
+	label("Plot curves against ln(analysis time)") 			///
+	first option(NONE)
+  RADIO    rb_time        _ilft     _ss       @           .,		///
+	label("Plot curves against analysis time") last option(nolntime)
+
+  CHECKBOX  ck_noshow     _lft      +45       _iwd        .,		///
+	label("Do not show st setting information") option(noshow)
+END
+
+SCRIPT zero_off
+BEGIN
+	main.rb_zeroval.disable
+	main.rb_avgval.disable
+END
+
+SCRIPT zero_on
+BEGIN
+        main.rb_zeroval.enable
+        main.rb_avgval.enable
+END
+
+
+SCRIPT adjust_on
+BEGIN
+	main.tx_adjvar1.enable
+	main.vl_adjvar.enable
+	script zero_on
+END
+
+SCRIPT adjust_off
+BEGIN
+	main.tx_adjvar1.disable
+        main.vl_adjvar.disable
+        script zero_off
+END
+
+
+SCRIPT strat_off
+BEGIN
+	main.vn_strvar.hide
+	main.vn_invar.show
+	main.tx_var.setlabel "Independent variable:"
+	main.ck_adjust.setlabel "Adjust estimates"
+END
+
+SCRIPT strat_on
+BEGIN
+	main.vn_invar.hide
+        main.vn_strvar.show
+        main.tx_var.setlabel "Strata variable:"
+        main.ck_adjust.setlabel "Adjust estimates (required)"
+END
+
+INCLUDE gr_plots
+INCLUDE gr_addplots_2
+INCLUDE gr_yaxis
+INCLUDE gr_xaxis
+INCLUDE gr_titles
+INCLUDE gr_legend
+INCLUDE gr_overall
+
+PROGRAM command
+BEGIN
+	if main.rb_invar {
+		require main.vn_invar
+	}
+	if main.rb_strvar {
+		require main.vn_strvar
+		if ! main.ck_adjust {
+			stopbox stop `"On the "Main" tab,"'	///
+			`""Adjustment estimates" must be specified when "Fit stratified Cox model" is selected."'
+		}
+	}
+	if main.ck_adjust {
+		require main.vl_adjvar
+	}
+	put "stphplot "
+	put " " /program if_output
+	beginoptions
+		optionarg main.vn_invar
+		optionarg main.vn_strvar
+		optionarg main.vl_adjvar
+		option radio(opt rb_lnneg rb_ln)
+		option radio(opt rb_time rb_lntime)
+		if main.ck_adjust {
+			option radio(main rb_avgval rb_zeroval)
+		}
+		option opt.ck_noshow
+
+		put " " /program gr_plots_output
+		put " " /program gr_addplots_output
+		put " " /program gr_yaxis_output
+		put " " /program gr_xaxis_output
+		put " " /program gr_titles_output
+		put " " /program gr_overall_output
+	endoptions
+END

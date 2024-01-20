@@ -1,0 +1,190 @@
+/*
+    dotplot_9.dlg
+
+*!  VERSION 1.1.1  04oct2006  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+
+HELP hlp1, view("help dotplot")
+RESET res1
+
+DIALOG main, label("dotplot - Comparative scatterplots") tabtitle("Main")
+BEGIN
+  GROUPBOX gb_varchoice  _lft     _top    _cwd2     _ht7,		/*
+		*/ label("Variables to plot")
+  RADIO    rb_vn      _indent      _ss  _cwd5_1        .,    		/*
+		*/ first 						/*
+		*/ clickon(program vn_clickon)				/*
+		*/ label("Plot single variable")
+  RADIO    rb_vl     _ilft5_2        @  _cwd4_0        .,    		/*
+		*/ last							/*
+		*/ clickon("script vl_clickon")				/*
+		*/ label("Plot multiple variables")
+
+  TEXT     tx_var       _ilft      _ms    _vnwd        .,		/*
+  		*/ label("Variable:")
+  TEXT     tx_vars          @        @        @        .,		/*
+  		*/ label("Variables:")
+  VARNAME  vn_var           @      _ss        @        .,		/*
+		*/ label("Variable") error("Variable to plot")
+  VARLIST  vl_var           @        @    _cwd4        .,		/*
+		*/ label("Variables") error("Variables to plot")
+
+  GROUPBOX gb_opt        _lft    _xxls     _iwd    _ht18,		/*
+		*/ label("Options")
+
+  CHECKBOX ck_byopt   _indent      _ss    _cwd2    _ht4h,		/*
+		*/ label("Show columnar dotplots")			/*
+		*/ clickon(script main_byopt_on)			/*
+		*/ clickoff(script main_byopt_off)			/*
+		*/ groupbox
+  DEFINE   holdy @y
+  TEXT     tx_byopt   _indent      _ss    _vnwd        .,		/*
+  		*/ label("Variable:")
+  VARNAME  vn_byopt         @      _ss    _vnwd        .,		/*
+		*/ option(over)						/*
+		*/ label("Variable for columnar dotplot")
+
+  SPINNER  sp_nx        _ilft     _xxls   _spwd        .,   		/*
+		*/ option("nx")
+  TEXT     tx_nx       _spsep        @  _ckspr2        .,   		/*
+		*/ label("Horizontal dot density  (default = 0)")
+
+  SPINNER  sp_ny       _ilft       _ls    _spwd        .,   		/*
+		*/ option("ny")	default(35)				/*
+		*/ label("")
+  TEXT     tx_ny       _spsep        @  _ckspr2        .,   		/*
+		*/ label("Vertical dot density (default = 35)")
+
+  SPINNER  sp_incr      _ilft      _ls    _spwd        .,   		/*
+		*/ option("incr")					/*
+		*/ label("") default(1)
+  TEXT     tx_incr     _spsep        @  _ckspr2        .,   		/*
+		*/ label("Label every Nth group (default = 1)")
+
+  CHECKBOX ck_pluses    _lft2    holdy    _cwd2    _ht4h,		/*
+		*/ label("Plot horizontal line")			/*
+		*/ clickon("script pluses_on")				/*
+		*/ clickoff("script pluses_off")			/*
+		*/ groupbox
+  RADIO    rb_mean    _indent      _ms    _inwd        ., 		/*
+		*/ first						/*
+		*/ option("mean")					/*
+		*/ label("At mean")
+  RADIO    rb_median        @      _ss        @        ., 		/*
+		*/ last							/*
+		*/ option("median")					/*
+		*/ label("At median")
+  CHECKBOX ck_bounded   _lft2     _xls    _cwd2        .,		/*
+		*/ option("bounded")					/*
+		*/ label("Use min and max as boundaries")
+  CHECKBOX ck_bar           @      _ms        @        .,		/*
+		*/ option("bar")					/*
+		*/ label("Plot horizontal dashed lines at shoulders of each group")
+  CHECKBOX ck_nogroup       @      _ms        @        .,		/*
+		*/ option("nogroup")					/*
+		*/ label("Use the actual values of yvar")
+  CHECKBOX ck_center        @      _ms        @        .,		/*
+		*/ option("center")					/*
+		*/ label("Center the dot for each column")
+END
+
+SCRIPT pluses_on
+BEGIN
+  main.rb_mean.enable
+  main.rb_median.enable
+END
+
+SCRIPT pluses_off
+BEGIN
+  main.rb_mean.disable
+  main.rb_median.disable
+END
+
+PROGRAM vn_clickon
+BEGIN
+  call main.tx_var.show
+  call main.tx_vars.hide
+  call main.vl_var.hide
+  call main.vn_var.show
+  call main.ck_bounded.enable
+  call main.ck_byopt.enable
+  if main.ck_byopt {
+  	call script main_byopt_on
+  }
+END
+
+SCRIPT vl_clickon
+BEGIN
+  main.tx_var.hide
+  main.tx_vars.show
+  main.vl_var.show
+  main.vn_var.hide
+  main.ck_byopt.disable
+  script main_byopt_off
+  main.ck_bounded.disable
+END
+
+SCRIPT main_byopt_on
+BEGIN
+	main.tx_byopt.enable
+	main.vn_byopt.enable
+END
+
+SCRIPT main_byopt_off
+BEGIN
+	main.tx_byopt.disable
+	main.vn_byopt.disable
+END
+
+INCLUDE ifin
+INCLUDE p1_opts
+INCLUDE gr_twoway
+
+SCRIPT PREINIT
+BEGIN
+	script p1_opts_createAsNoRange
+	script p1_opts_setDefaultScatter
+END
+
+PROGRAM command
+BEGIN
+	put "dotplot "
+	if main.rb_vl {
+		varlist main.vl_var
+	}
+	if main.rb_vn {
+		varlist main.vn_var
+	}
+	INCLUDE _ifin_pr
+	beginoptions
+		if main.rb_vn {
+			if main.ck_byopt {
+				optionarg main.vn_byopt
+			}
+		}
+		optionarg /hidedefault main.sp_nx
+		optionarg /hidedefault main.sp_ny
+		optionarg /hidedefault main.sp_incr
+
+
+		if main.ck_pluses {
+			option radio(main rb_mean rb_median)
+		}
+
+		option main.ck_bounded
+		option main.ck_bar
+		option main.ck_nogroup
+		option main.ck_center
+
+		put " " /program p1_opts_recast_output
+		put " " /program gr_twoway_output
+
+	endoptions
+END
+/* end */

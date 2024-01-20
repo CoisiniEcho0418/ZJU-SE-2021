@@ -1,0 +1,53 @@
+/*
+  gmm_new_der.dlg
+
+*!  VERSION 1.0.2  12nov2010
+
+  keyword:  eclass
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_large
+DEFINE _dlght 220
+INCLUDE header
+
+RESET res1
+
+DIALOG main, tabtitle("Main")
+BEGIN
+  TEXT tx_eqn		_lft	_top	_cwd1	.,			///
+	label("Equation name: (optional)")
+  EDIT ed_eqn		@	_ss	_vnwd	.,			///
+	label("Equation name")
+
+  TEXT tx_parn		@	_ls	@	.,			///
+	label("Parameter name:")
+  EDIT ed_parn		@	_ss	@	.,			///
+	label("Parameter name")
+
+  TEXT tx_subexpr	@	_ls	_iwd	.,			///
+	label("* Substitutable expression:")
+  EXP ex_subexpr	@	_ss	@	.,			///
+	error("Substitutable expression")				///
+	parameter							///
+	label("Create...")
+  TEXT tx_note1		@	+40	@	.,			///
+	center								///
+	label("* Note: In expression bind parameters to be estimated in curley braces.  For example:")
+  TEXT tx_note2		@	_ss	@	.,			///
+	label("y1=({B1}*mpg/{B2})") center
+END
+
+PROGRAM command
+BEGIN
+	require main.ed_parn
+	require main.ex_subexpr
+	put "derivative("
+	if main.ed_eqn {
+		put main.ed_eqn 
+	}
+	put "/" main.ed_parn " = " main.ex_subexpr
+	put ")"
+END

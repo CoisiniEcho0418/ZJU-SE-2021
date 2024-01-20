@@ -1,0 +1,186 @@
+/*
+  mcaplot
+
+*!  VERSION 1.0.0  09mar2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_xlarge
+DEFINE _dlght 350
+INCLUDE header
+HELP hlp1, view("help mca_postestimation")
+RESET res1
+
+INCLUDE gr_mcaplot_build
+
+SCRIPT opts_PREINIT
+BEGIN
+	create STRING graphCombineResults
+	create STRING originResults
+END
+SCRIPT opts_POSTINIT
+BEGIN
+	program checkgraphCombineResults
+	program checkOriginResults
+END
+
+DIALOG opts, tabtitle("Options")
+BEGIN
+  GROUPBOX gb_overlay	_lft	_top	_iwd	_ht7,	///
+	label("Organization")
+  RADIO    rb_sep	_ilft	_ss	_ibwd	.,	///
+	first						///
+	onclickon(opts.bu_combine.enable)		///
+	label("Graph each MCA variable separately and combine into one graph")
+  BUTTON   bu_combine	+20	_ss	150	.,	///
+	label("Graph combine options")			///
+	onpush(script show_graph_combine_dialog)
+
+  RADIO    rb_overlay	_ilft	_mls	_ibwd	.,	///
+	last						///
+	option(overlay)					///
+	onclickon(opts.bu_combine.disable)		///
+	label("Overlay MCA variables on the same graph")
+
+  GROUPBOX gb_dim	_lft	_xls	_cwd1	_ht6,	///
+	label("Dimensions")
+DEFINE y @y
+  RADIO rb_default_dim	_indent	_ss	_inwd	.,	///
+	first 						///
+	label("Plot first and second dimensions")	///
+	onclickon(script opt_dim_off)
+  RADIO rb_dim		@	_ss	@	.,	///
+	last 						///
+	label("Specify other dimensions to plot")	///
+	onclickon(script opt_dim_on)
+  EDIT ed_dim		+20	_ss	_en7wd	.,	///
+	label("Two dimensions to plot") option(dim)	///
+	default("2  1")
+  TEXT tx_dim		_en7sep	@	150	.,	///
+	label("Two dimensions to plot")
+
+  GROUPBOX gb_norm	_lft2	y	_cwd1	_ht6,	///
+	label("Normalization of the coordinates")
+  RADIO rb_norm_default	_indent	_ss	_inwd	.,	///
+	first 						///
+	label("Use default")
+  RADIO rb_norm_std	@	_ss	@	.,	///	
+	label("Display standard coordinates")		///
+	option(normalize(standard))
+  RADIO rb_norm_princ	@	_ss	@	.,	///
+	last						///
+	option(normalize(principal))			///
+	label("Display principal coordinates")
+
+  SPINNER sp_maxlength	_lft	_xls	_spwd	.,	///
+	default(12) min(1) max(32) option(maxlength)
+  TEXT    tx_maxlength	_spsep	@	_spr	.,	///
+	label("Maximum number of characters displayed for labels")
+
+  CHECKBOX ck_xneg	_lft	_ls	_iwd	.,	///
+	option(xnegate)					///
+	label("Negate the coordinates relative to the x axis")
+  CHECKBOX ck_yneg	_lft	_ms	_iwd	.,	///
+	option(ynegate)					///
+	label("Negate the coordinates relative to the y axis")
+  CHECKBOX ck_origin	_lft	_ms	_iwd	.,	///
+	option(origin)					///
+	onclickon(opts.bu_origin.enable)		///
+	onclickoff(opts.bu_origin.disable)		///
+	label("Mark the origin and draw origin axes")
+  BUTTON   bu_origin	+20	_ss	120	.,	///
+	label("Line properties  ")			///
+	onpush(script show_origin_dialog)
+END
+
+SCRIPT show_graph_combine_dialog
+BEGIN
+	create CHILD gr_combine_options AS graph_combine_opts, 	///
+		allowsubmit message(set_mcaplot_options)
+	graph_combine_opts.setExitString graphCombineResults
+	graph_combine_opts.settitle "Graph combine options"
+	graph_combine_opts.setExitAction "program checkgraphCombineResults"
+	graph_combine_opts.setSubmitAction "program GraphCombineSubmit"
+END
+PROGRAM checkgraphCombineResults
+BEGIN
+	if graphCombineResults {
+		call opts.bu_combine.setlabel "Graph combine options *"
+	}
+	else {
+		call opts.bu_combine.setlabel "Graph combine options  "
+	}
+END
+PROGRAM GraphCombineSubmit
+BEGIN
+	call program checkgraphCombineResults
+	call Submit
+END
+
+SCRIPT show_origin_dialog
+BEGIN
+	create CHILD gr_line_properties AS originDLG, allowsubmit
+	originDLG.setExitString originResults
+	originDLG.settitle "Line properties for origin"
+	originDLG.setExitAction "program checkOriginResults"
+	originDLG.setSubmitAction "program submitOrigin"
+END
+PROGRAM checkOriginResults
+BEGIN
+	if originResults {
+		call opts.bu_origin.setlabel "Line properties *"
+	}
+	else {
+		call opts.bu_origin.setlabel "Line properties  "
+	}
+END
+PROGRAM submitOrigin
+BEGIN
+	call program checkOriginResults
+	call Submit
+END
+
+SCRIPT opt_dim_on
+BEGIN
+	opts.ed_dim.enable
+	opts.tx_dim.enable
+END
+SCRIPT opt_dim_off
+BEGIN
+	opts.ed_dim.disable
+	opts.tx_dim.disable
+END
+
+
+INCLUDE gr_yaxis
+INCLUDE gr_xaxis
+INCLUDE gr_titles
+INCLUDE gr_legend
+INCLUDE gr_overall
+
+PROGRAM command
+BEGIN
+	put "mcaplot "
+	put " " /program gr_mcaplot_build_output
+	beginoptions
+		option opts.rb_overlay
+		put " " graphCombineResults " "
+		optionarg opts.ed_dim
+		option opts.rb_norm_std
+		option opts.rb_norm_princ
+		option opts.ck_xneg
+		option opts.ck_yneg
+		option opts.ck_origin
+		if opts.ck_origin & originResults {
+			put "originlopts(" originResults ") "
+		}
+		optionarg /hidedefault opts.sp_maxlength
+		put " " /program gr_yaxis_output
+		put " " /program gr_xaxis_output
+		put " " /program gr_titles_output
+		put " " /program gr_legend_output
+		put " " /program gr_overall_output
+	endoptions
+END

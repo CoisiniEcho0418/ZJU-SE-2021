@@ -1,0 +1,49 @@
+/*
+	prtest
+
+*!  VERSION 1.0.3  23mar2011
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help prtest")
+RESET res1
+
+DIALOG main, label("prtest - One-sample test of proportion") 	/*
+		*/ tabtitle("Main")
+BEGIN
+  TEXT     tx_var     _lft      _top       _iwd         .,		/*
+		*/ label("Variable:")
+  VARNAME  vn_var        @       _ss      _vnwd         .,		/*
+		*/ label("Variable")
+  TEXT     tx_val        @       _ls       _iwd         .,		/*
+		*/ label("Hypothesized proportion:")
+  EDIT     en_val        @       _ss    _en14wd         .,		/*
+		*/ label("Hypothesized proportion")			/*
+		*/ numonly
+  DEFINE _x @x
+  DEFINE _cx _spr
+  DEFINE _y _xls
+  INCLUDE _sp_level
+END
+
+INCLUDE byifin
+
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "prtest "
+	varlist main.vn_var
+	put " == "
+	require main.en_val
+	put main.en_val
+	INCLUDE _ifin_pr
+	beginoptions
+		INCLUDE _level_main_pr
+	endoptions
+END

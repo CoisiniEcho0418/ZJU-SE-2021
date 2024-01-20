@@ -1,0 +1,26 @@
+/*
+  _constraints.idlg
+
+*!  VERSION 1.1.0  13aug2007
+
+  To be included within a DIALOG.
+
+ ** NOTES:
+  	Macros _x, _cx, _bux, and _y must already be defined.
+  	Must also include _constraints_sc.  
+
+*/
+
+  TEXT     tx_constr 	_x	_y	_cx	.,			///
+	label("Constraints:")
+  COMBOBOX cb_constr 	@	_ss	@	.,			///
+	append								///
+	dropdown							///
+	contents(constraint)						///
+	label("Constraints")						///
+	option(constraints)
+  BUTTON   bu_constr	_bux	@	80	.,			///
+	label("Manage...")						///
+	onpush(script show_constraint_dialog)
+	
+// END: _constraints.idlg

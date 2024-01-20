@@ -1,0 +1,89 @@
+/*
+  Include file for the common scripts found in -corr2data- and -drawnorm-
+
+*! VERSION 1.1.1  18aug2006
+
+*/
+
+INCLUDE _type_list_fd
+
+SCRIPT ck_means_on
+BEGIN
+	main.cb_means.enable
+END
+
+SCRIPT ck_means_off
+BEGIN
+	main.cb_means.disable
+END
+
+SCRIPT ck_corr_on
+BEGIN
+	main.rb_corr.enable
+	main.rb_cov.enable
+  	main.cb_corr.enable
+  	main.tx_cstorage.enable
+  	main.cb_cstorage.enable
+	program sds_check
+	main.ck_forcepsd.enable
+END
+
+PROGRAM sds_check
+BEGIN
+	if main.rb_corr {
+		call script sds_on
+	}
+	if main.rb_cov {
+		call script sds_off
+	}
+END
+
+SCRIPT ck_corr_off
+BEGIN
+	main.rb_corr.disable
+	main.rb_cov.disable
+  	main.cb_corr.disable
+  	main.tx_cstorage.disable
+  	main.cb_cstorage.disable
+	script sds_on
+	main.ck_forcepsd.disable
+END
+
+SCRIPT sds_on
+BEGIN
+  main.tx_sds.enable
+  main.cb_sds.enable
+END
+
+SCRIPT sds_off
+BEGIN
+  main.tx_sds.disable
+  main.cb_sds.disable
+END
+
+SCRIPT c_off
+BEGIN
+  main.cb_corr.disable
+  script sds_on
+END
+
+SCRIPT cr_on
+BEGIN
+  script sds_on
+END
+
+SCRIPT cv_on
+BEGIN
+  script sds_off
+END
+
+LIST cstorage_list
+BEGIN
+	full
+	lower
+	upper
+END
+
+
+
+

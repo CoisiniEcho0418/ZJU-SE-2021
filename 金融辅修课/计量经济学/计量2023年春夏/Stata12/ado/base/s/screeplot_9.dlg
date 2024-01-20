@@ -1,0 +1,298 @@
+/*
+    screeplot_9.dlg
+
+*!  VERSION 1.0.2  04oct2006  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+
+HELP hlp1, view("help screeplot")
+RESET res1
+
+DEFINE cbwd 130
+DEFINE cbclwd 112
+DEFINE cbclsep +114
+DIALOG main, tabtitle("Main")	///
+	label("screeplot - Scree plot of eigenvalues after factor, pca, etc")
+BEGIN
+  GROUPBOX gb_eigen          _lft      _top      _iwd      _ht4,	///
+  		label("Eigenvalues")
+  RADIO    rb_none           _indent   _ss       _cwd2     .,		///
+  		first							///
+  		onclickon(program main_eigen_off)			///
+  		label("Obtain eigenvalues from previous estimation command")
+  RADIO    rb_eigen          @         _ss       @         .,		///
+  		last							///
+  		onclickon(script main_eigen_on)				///
+  		label("Eigenvalues specified as a vector")
+
+  TEXT     tx_eigen          _lft2     -20       _cwd2     .,		///
+  		label("Eigenvalues: (vector)")
+  COMBOBOX cb_eigen          @         _ss       _vnwd     .,		///
+  		dropdown						///
+  		contents(vector)					///
+  		label("Eigenvalues (vector)")
+
+  GROUPBOX gb_options        _lft      _xls      _iwd      _ht22h,	///
+  		label("Options")
+  CHECKBOX ck_neigen         _ilft     _ss       _cwd2     _ht2h,	///
+  		groupbox						///
+  		onclickon(script main_neigen_on)			///
+  		onclickoff(script main_neigen_off)			///
+  		label("Graph only largest eigenvalues")
+DEFINE holdy @y
+  SPINNER  sp_neigen         _indent   _ms       _spwd     .,		///
+  		default(5) min(2) option(neigen)
+  TEXT     tx_neigen         _spsep    @         200       .,		///
+  		label("Largest")
+
+  CHECKBOX ck_mean           _ilft     _xls      _cwd2     _ht13h,	///
+  		groupbox option(mean)					///
+  		onclickon(script meanlopts_enable)			///
+  		onclickoff(script meanlopts_disable)			///
+  		label("Graph horizontal line at the mean of the eigenvalues")
+
+  TEXT     tx_ccol           _indent   _ms       _txwd     .,		///
+  		label("Color:")
+DEFINE y @y
+DEFINE x @x
+  COMBOBOX cb_ccol           @         _ss       cbclwd    .,		///
+  		option(lcolor) 						///
+  		dropdownlist						///
+  		contents(colors) 					///
+  		onselchangelist(main_color_ccol)
+  COLOR    cl_ccol           cbclsep   @         _colorwd  .,		///
+  		option(lcolor)
+
+  TEXT     tx_clpat          x         _ls       cbwd      .,		///
+  		label("Pattern:")
+  COMBOBOX cb_clpat          @         _ss       cbwd      .,		///
+  		label("Pattern") 					///
+  		dropdownlist 						///
+  		contents(linepatterns) 					///
+  		option(lpattern)
+
+  TEXT     tx_clwid          _ilft4_2  y         cbwd      .,		///
+  		label("Width:")
+  COMBOBOX cb_clwid          @         _ss       cbwd      .,		///
+  		dropdownlist						///
+  		contents(linewidths) 					///
+  		option(lwidth)
+
+  CHECKBOX ck_ci             _lft2    holdy      _cwd2     _ht20,	///
+  		groupbox 						///
+  		onclickoff(script ci_opts_disable)			///
+  		onclickon(script ci_opts_enable)			///
+  		label("Graph confidence intervals (valid after pca only)")
+  GROUPBOX gb_cimethod       _indent  _ms        _cwd4     _ht6,
+  RADIO    rb_asymptotic     _indent  _ss        _cwd6     .,		///
+  		onclickon(program main_bootstrap_check)			///
+  		first option(asymptotic)				///
+  		label("Asymptotic confidence intervals")
+  RADIO    rb_heteroskedastic @       _ss        @         .,		///
+  		onclickon(program main_bootstrap_check)			///
+  		option(heteroskedastic)					///
+  		label("Heteroskedastic confidence intervals")
+  RADIO    rb_homoskedastic  @        _ss        @         .,		///
+  		onclickon(program main_bootstrap_check)			///
+  		last option(homoskedastic)				///
+  		label("Homoskedastic confidence intervals")
+  CHECKBOX ck_table          _ilft2   _xls        _cwd4     .,		///
+  		option(table)						///
+  		label("Produce a table of confidence intervals")
+
+  DEFINE _x _ilft2
+  DEFINE _cx 200
+  DEFINE _y _ms
+  INCLUDE _sp_level
+
+  SPINNER  sp_reps           _ilft2   _ms        _spwd     .,		///
+  		default(200) min(1) max(1000000) option(reps)		///
+  		label("Number of simulations")
+  TEXT     tx_reps           _spsep   @          200       .,		///
+  		label("Number of simulations")
+
+  SPINNER  sp_seed           _ilft2   _ms        _spwd     .,		///
+  		default(0) min(0) max(1000000)	option(seed)		///
+  		label("Random number seed")
+  TEXT     tx_seed           _spsep   @          200       .,		///
+  		label("Random number seed")
+END
+
+INCLUDE p1_opts
+INCLUDE p2_opts
+INCLUDE addplot
+INCLUDE gr_twoway
+
+SCRIPT PREINIT
+BEGIN
+	script p1_opts_createAsNoRange
+	script p1_opts_setDefaultConnected
+	script p2_opts_createAsRange
+	script p2_opts_setDefaultRarea
+END
+
+SCRIPT POSTINIT
+BEGIN
+	script p2_opts_setTabtitleCi
+END
+
+SCRIPT main_neigen_on
+BEGIN
+	main.sp_neigen.enable
+	main.tx_neigen.enable
+END
+
+SCRIPT main_neigen_off
+BEGIN
+	main.sp_neigen.disable
+	main.tx_neigen.disable
+END
+
+LIST main_color_ccol
+BEGIN
+	main.cl_ccol.hide
+	main.cl_ccol.show
+	main.cl_ccol.hide
+END
+
+SCRIPT meanlopts_disable
+BEGIN
+	main.tx_ccol.disable
+	main.cb_ccol.disable
+	main.cl_ccol.disable
+	main.tx_clwid.disable
+	main.cb_clwid.disable
+	main.tx_clpat.disable
+	main.cb_clpat.disable
+END
+
+SCRIPT meanlopts_enable
+BEGIN
+	main.tx_ccol.enable
+	main.cb_ccol.enable
+	main.cl_ccol.enable
+	main.tx_clwid.enable
+	main.cb_clwid.enable
+	main.tx_clpat.enable
+	main.cb_clpat.enable
+END
+
+SCRIPT main_eigen_on
+BEGIN
+	main.tx_eigen.enable
+	main.cb_eigen.enable
+	main.ck_ci.disable
+	script ci_opts_disable
+END
+
+PROGRAM main_eigen_off
+BEGIN
+	call main.tx_eigen.disable
+	call main.cb_eigen.disable
+	call main.ck_ci.enable
+	if main.ck_ci {
+		call script ci_opts_enable
+	}
+END
+
+PROGRAM main_bootstrap_check
+BEGIN
+	if main.rb_heteroskedastic | main.rb_homoskedastic {
+		call main.sp_reps.enable
+		call main.tx_reps.enable
+		call main.sp_seed.enable
+		call main.tx_seed.enable
+	}
+	if main.rb_asymptotic {
+		call main.sp_reps.disable
+		call main.tx_reps.disable
+		call main.sp_seed.disable
+		call main.tx_seed.disable
+	}
+END
+
+SCRIPT ci_opts_disable
+BEGIN
+	main.rb_asymptotic.disable
+	main.rb_heteroskedastic.disable
+	main.rb_homoskedastic.disable
+	main.ck_table.disable
+	main.sp_level.disable
+	main.tx_level.disable
+	main.sp_reps.disable
+	main.tx_reps.disable
+	main.sp_seed.disable
+	main.tx_seed.disable
+	script p2_opts_disable
+END
+
+SCRIPT ci_opts_enable
+BEGIN
+	main.rb_asymptotic.enable
+	main.rb_heteroskedastic.enable
+	main.rb_homoskedastic.enable
+	main.ck_table.enable
+	main.sp_level.enable
+	main.tx_level.enable
+	program main_bootstrap_check
+	script p2_opts_enable
+END
+
+PROGRAM lopts_output
+BEGIN
+	if H(main.cl_ccol) {
+		optionarg /hidedefault main.cb_ccol
+	}
+	if !H(main.cl_ccol) {
+		optionarg /quoted main.cl_ccol
+	}
+	optionarg /hidedefault main.cb_clwid
+	optionarg /hidedefault main.cb_clpat
+END
+
+PROGRAM ci_opts_output
+BEGIN
+	option main.rb_asymptotic
+	option main.rb_heteroskedastic
+	option main.rb_homoskedastic
+	option main.ck_table
+	optionarg /hidedefault main.sp_level
+	optionarg /hidedefault main.sp_reps
+	optionarg /hidedefault main.sp_seed
+	put /program " " p2_opts_recast_output
+END
+
+PROGRAM command
+BEGIN
+	put "screeplot "
+	if main.rb_eigen {
+		require main.cb_eigen
+		put main.cb_eigen " "
+	}
+	beginoptions
+		optionarg main.sp_neigen
+		option main.ck_mean
+		if !H(main.cl_ccol)	| ///
+		   (main.cb_ccol	& !H(main.cb_ccol))	| ///
+		   (main.cb_clwid	& !H(main.cb_clwid))	| ///
+		   (main.cb_clpat	& !H(main.cb_clpat))	  ///
+		{
+			put "meanlopts("
+			put /program lopts_output
+			put ")"
+		}
+		put " " /program p1_opts_output
+		if main.ck_ci {
+			put "ci("
+			put /program ci_opts_output
+			put ")" " "
+		}
+		put " " /program addplot_output
+		put " " /program gr_twoway_output
+	endoptions
+END

@@ -1,0 +1,68 @@
+/*
+    mi_append
+
+*!  VERSION 1.0.2  03jul2009
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_mlarge
+DEFINE _dlght 265
+INCLUDE header
+HELP hlp1, view("help mi_append")
+RESET res1
+
+DIALOG main,label("mi append - Append mi data")  tabtitle("Main")
+BEGIN
+  GROUPBOX gb_using	_lft	_top	_iwd	_ht4h,			///
+	label("Append datasets on disk to current dataset")
+  TEXT tx_using		_ilft	_ss	_ibwd	.,			///
+	label("Filename of dataset on disk:")
+  FILE fi_filename	@	_ss	@	.,			///
+	filter("Stata Dataset (*.dta)|*.dta|All (*.*)|*.*")		///
+	defext(dta)							///
+	error("Filename of dataset on disk")				///
+	label("Browse...")
+
+  GROUPBOX gb_opt	_lft	+45	_iwd	_ht12h,	 		///
+	label("Options")
+  TEXT tx_generate	_ilft	_ss	_inwd	.,			///
+	label("Name of new variable to mark results:")
+  DEFINE holdcx @cx
+  EDIT ed_generate	@	_ss	_vnwd	.,			///
+	max(32)	option(generate)			 		///
+	label("Name of new variable to mark merge results")
+
+  CHECKBOX ck_nolabel	_ilft	_ls	_ibwd	.,			///
+	option(nolabel)							///
+	label("Do not copy value label definitions from dataset on disk")
+  CHECKBOX ck_nonotes	@	_ms	@	.,			///
+	option(nonotes)							///
+	label("Do not copy notes from dataset on disk")
+  CHECKBOX ck_force	@	_ms	@	.,			///
+	option(force)							///
+	label("Append string variables to numeric or numeric to string without error")
+END
+
+PROGRAM command
+BEGIN
+	if !main.fi_filename {
+		stopbox stop `"On the "Main" tab,"'     ///
+			`"A dataset on disk must be selected""'
+	}
+
+	put "mi append using "
+	if main.fi_filename {
+		put `"""'
+		put main.fi_filename
+		put `"""' " "
+	}
+
+	beginoptions
+		optionarg main.ed_generate
+		option main.ck_nolabel
+		option main.ck_nonotes
+		option main.ck_force
+	endoptions
+END

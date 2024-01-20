@@ -1,0 +1,100 @@
+/*
+  tabulate2
+
+*!  VERSION 1.1.1  09oct2008
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_glm
+INCLUDE _ht350
+INCLUDE header
+
+HELP hlp1, view("help tabulate_twoway")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	main.ck_first.hide
+END
+
+PROGRAM POSTINIT_PROGRAM
+BEGIN
+	if __MESSAGE.iseq("-exact-") {
+		call script main_exact_seton
+	}
+END
+
+DIALOG main, label("tabulate2 - Two-way tables") tabtitle("Main")
+BEGIN
+  /*--+----1----+----2----+----3----+----4----+----5----+----6----+----7----+*/
+  TEXT     tx_var1   _lft      _top      _cwd1     .,			/*
+		*/ label("Row variable:")				/*
+		*/
+  VARNAME  vn_var1   @         _ss       _vnwd     .,			/*
+		*/ label("Row variable")				/*
+		*/
+  TEXT     tx_var2   _lft2     _top      _cwd1     .,			/*
+		*/ label("Column variable:")				/*
+		*/
+  VARNAME  vn_var2   @         _ss       _vnwd     .,			/*
+		*/ label("Column variable")				/*
+		*/
+
+  DEFINE _y _ls
+  INCLUDE _tab2
+END
+
+INCLUDE byifin
+INCLUDE weights_fai
+
+DIALOG adv, label("") tabtitle("Advanced")
+BEGIN
+  /*--+----1----+----2----+----3----+----4----+----5----+----6----+----7----+*/
+  TEXT     tx_matcel _lft      _top      _iwd      .,			/*
+		*/ label("Generate a matrix with the cell frequencies:")/*
+		*/
+  EDIT     ed_matcel _lft      _ss       _vnwd     .,			/*
+		*/ label("Matrix of cell frequencies")			/*
+		*/ max(32)						/*
+		*/ option("matcell")					/*
+		*/
+
+  TEXT     tx_matrow _lft      _ls       _iwd      .,			/*
+		*/ label("Generate a matrix with the row values:")	/*
+		*/
+  EDIT     ed_matrow _lft      _ss       _vnwd     .,			/*
+		*/ label("Matrix of row values")			/*
+		*/ max(32)						/*
+		*/ option("matrow")					/*
+		*/
+
+  TEXT     tx_matcol _lft      _ls       _iwd      .,			/*
+		*/ label("Generate a matrix with the column values:")	/*
+		*/
+  EDIT     ed_matcol _lft      _ss       _vnwd     .,			/*
+		*/ label("Matrix of column values")			/*
+		*/ max(32)						/*
+		*/ option("matcol")					/*
+		*/
+
+END
+
+INCLUDE _tab2_pr
+
+PROGRAM command
+BEGIN
+	put /program by_output " "
+	put "tabulate "
+	varlist main.vn_var1 main.vn_var2
+	put " " /program weights_output
+	put " " /program ifin_output
+	beginoptions
+		put /program _tab2_opts_output
+		optionarg adv.ed_matcel
+		optionarg adv.ed_matrow
+		optionarg adv.ed_matcol
+	endoptions
+END
+

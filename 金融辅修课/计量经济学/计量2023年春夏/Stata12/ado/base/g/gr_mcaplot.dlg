@@ -1,0 +1,154 @@
+/*
+    gr_mcaplot.dlg
+
+*!  VERSION 1.0.0  22feb2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_mlarge
+DEFINE _dlght 260
+INCLUDE header_gr_child
+
+HELP hlp1, view("help mca_postestimation")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	create STRING markerResults
+	create STRING labelResults
+	script gr_overall_setName_off
+	script gr_overall_setAspect_off
+END
+
+SCRIPT POSTINIT
+BEGIN
+	program checkMarkerResults
+	program checkLabelResults
+END
+
+DIALOG main, tabtitle("Main")
+BEGIN
+  TEXT     tx_var	_lft	_top	_vnwd	.,	///
+	label("MCA variable:")
+  COMBOBOX cb_var	@	_ss	@	.,	///
+	dropdown contents(e(names)) label("MCA variable")
+
+  BUTTON bu_marker	_lft	_xls	120	.,	///
+	label("Marker properties  ")			///
+	onpush(script show_marker_dialog)
+  BUTTON bu_label	+140	@	120	.,	///
+	label("Labels properties  ")			///
+	onpush(script show_label_dialog)
+
+  CHECKBOX ck_label	_lft	_ls	_iwd	.,	///
+  	label("Override default marker labels") 	///
+	onclickon(script override_label_on)		///
+	onclickoff(script override_label_off)
+  VARNAME  vn_label	+20	_ss	_vnwd	.,	///
+  	label("Variable containing labels")		///
+	option(mlabel)
+  TEXT     tx_label	_vnsep	@	200	.,	///
+  	label("Variable containing labels")
+END
+
+SCRIPT override_label_on
+BEGIN
+	main.vn_label.enable
+	main.tx_label.enable
+END
+
+SCRIPT override_label_off
+BEGIN
+	main.vn_label.disable
+	main.tx_label.disable
+END
+
+//Buttons
+SCRIPT show_marker_dialog
+BEGIN
+	create CHILD gr_marker_nolabel_options AS marker, allowsubmit
+	marker.setExitString markerResults
+	marker.settitle "Marker properties"
+	marker.setExitAction "program checkMarkerResults"
+	marker.setSubmitAction "program markerSubmit"
+END
+PROGRAM checkMarkerResults
+BEGIN
+	if markerResults {
+		call main.bu_marker.setlabel "Marker properties *"
+	}
+	else {
+		call main.bu_marker.setlabel "Marker properties  "
+	}
+END
+PROGRAM markerSubmit
+BEGIN
+	call program checkMarkerResults
+	call Submit
+END
+
+SCRIPT show_label_dialog
+BEGIN
+	create CHILD gr_markerlabel_options AS label, allowsubmit
+	label.setExitString labelResults
+	label.settitle "Label properties"
+	label.setExitAction "program checkLabelResults"
+	label.setSubmitAction "program labelSubmit"
+END
+PROGRAM checkLabelResults
+BEGIN
+	if labelResults {
+		call main.bu_label.setlabel "Label properties *"
+	}
+	else {
+		call main.bu_label.setlabel "Label properties  "
+	}
+END
+PROGRAM labelSubmit
+BEGIN
+	call program checkLabelResults
+	call Submit
+END
+
+
+PROGRAM output_wrk
+BEGIN
+	put main.cb_var
+	beginoptions
+		put " " markerResults " "
+		put " " labelResults " "
+		if main.ck_label {
+			require main.vn_label
+			optionarg main.vn_label
+		}
+		put " " /program gr_yaxis_output
+		put " " /program gr_xaxis_output
+		put " " /program gr_titles_output
+		put " " /program gr_legend_output
+		put " " /program gr_overall_output
+	endoptions
+END
+
+INCLUDE gr_yaxis
+INCLUDE gr_xaxis
+INCLUDE gr_titles
+INCLUDE gr_legend
+INCLUDE gr_overall
+
+PROGRAM command
+BEGIN
+	call create STRING output
+	call output.setvalue ""
+	
+	require main.cb_var
+	put "("
+	put /program output_wrk
+	put ")"
+	
+	call output.append "("
+	call output.append class main.cb_var.value
+	call output.append ")"
+	call output.withvalue PARENT.callthru `"mcabuild_CMD.setvalue `"@"'"'
+END

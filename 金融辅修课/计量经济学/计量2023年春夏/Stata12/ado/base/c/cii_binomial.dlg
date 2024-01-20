@@ -1,0 +1,70 @@
+/*
+  cii_binomial
+
+*!  VERSION 1.1.0  01mar2005
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+INCLUDE header
+HELP hlp1, view("help cii")
+RESET res1
+
+
+DIALOG main, label("cii - Binomial confidence intervals and standard errors") /*
+		*/ tabtitle("Main")
+BEGIN
+  SPINNER  sp_obs          _lft      _top      _spwd     .,             /*
+  		*/ label("Sample size")                                 /*
+  		*/ min(1)						/*
+		*/ max(10000000)					/*
+		*/ default(100)
+  TEXT     tx_obs          _spsep   @          _spr      .,		/*
+		*/label("Sample size")
+  SPINNER  sp_suc          _lft      _ls       _spwd     .,             /*
+  		*/label("Successes")					/*
+  		*/min(1)						/*
+		*/max(10000000)						/*
+		*/default(100)
+  TEXT     tx_suc          _spsep    @         _spr      .,		/*
+		*/label("Successes")
+  DEFINE _x _lft
+  DEFINE _y _ls
+  DEFINE _cx _sprb
+  INCLUDE _sp_level
+
+  GROUPBOX gb_biopts       _lft      _ls       _iwd      _ht10,		/*
+  		*/ label("Binomial confidence interval")
+  RADIO    rb_exact        _indent   _ss       _inwd     .,		/*
+  		*/ label("Exact") 					/*
+  		*/ first
+  RADIO    rb_wald	   @	     _ss       @         .,		/*
+  		*/ label("Wald") option(wald)
+  RADIO    rb_wilson       @         _ss       @         .,		/*
+  		*/ label("Wilson") 					/*
+  		*/ option("wilson")
+  RADIO    rb_agresti      @         _ss       @         .,		/*
+  		*/ label("Agresti-Coull") option("agresti")
+  RADIO    rb_jeffreys     @         _ss       @         .,		/*
+  		*/ label("Jeffreys") 					/*
+  		*/ last							/*
+  		*/ option("jeffreys")
+END
+
+PROGRAM command
+BEGIN
+	put "cii "
+	put main.sp_obs
+	put " "
+	put main.sp_suc
+	put " "
+	beginoptions
+		INCLUDE _level_main_pr
+		option main.rb_wald
+		option main.rb_wilson
+		option main.rb_agresti
+		option main.rb_jeffreys
+	endoptions
+END

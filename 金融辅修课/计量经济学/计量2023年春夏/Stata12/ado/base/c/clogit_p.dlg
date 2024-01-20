@@ -1,0 +1,93 @@
+/*
+	predict (after clogit)
+
+*!  VERSION 1.2.1  21jan2007
+
+*/
+
+VERSION 10
+
+INCLUDE _std_large
+DEFINE _dlght 375
+INCLUDE header
+
+HELP hlp1, view("help clogit postestimation")
+RESET res1
+
+DIALOG main, label("predict - Prediction after estimation") tabtitle("Main")
+BEGIN
+  INCLUDE  _p_gentype
+
+  GROUPBOX gb_opts       _lft	_ls	_iwd	_ht24,		///
+	label("Produce:")
+  RADIO    rb_pc1	_indent	_ss	_inwd	., 		///
+	first 							///
+	option(pc1)						///
+	onclickon(script _p_gentype_score_off)			///
+	label("Probability of a positive outcome")
+  RADIO    rb_pu0	@	_ss	@	.,		///
+	option(pu0)						///
+	onclickon(script _p_gentype_score_off)			///
+	label("Probability of a positive outcome, assuming fixed effect is zero")
+  RADIO    rb_xb	@	_ss	@	.,		///
+	option(xb)						///
+	onclickon(script _p_gentype_score_off)			///
+	label("Linear prediction")
+  RADIO    rb_stdp	@	_ss	@	.,		///
+	option(stdp)						///
+	onclickon(script _p_gentype_score_off)			///
+	label("Standard error of the linear prediction")		
+  RADIO    rb_dbeta	@	_ss	@	.,		///
+	option(dbeta)						///
+	onclickon(script _p_gentype_score_off)			///
+	label("Delta-b influence statistic")
+  RADIO    rb_dx2	@	_ss	@	.,		///
+	option(dx2)						///
+	onclickon(script _p_gentype_score_off)			///
+	label("Delta chi-squared lack-of-fit statistic")
+  RADIO    rb_gdbeta	@	_ss	@	.,		///
+	option(gdbeta)						///
+	onclickon(script _p_gentype_score_on)			///
+	label("Delta-b influence statistic for each group")
+  RADIO    rb_gdx2	@	_ss	@	.,		///
+	option(gdx2)						///
+	onclickon(script _p_gentype_score_on)			///
+	label("Delta chi-squared lack-of-fit statistic for each group")
+  RADIO    rb_hat	@	_ss	@	.,		///
+	option(hat)						///
+	onclickon(script _p_gentype_score_on)			///
+	label("Hosmer and Lemeshow leverage")
+  RADIO    rb_residuals	@	_ss	@	.,		///
+	option(residuals)					///
+	onclickon(script _p_gentype_score_off)			///
+	label("Pearson residuals")
+  RADIO    rb_rstandard	@	_ss	@	.,		///
+	option(rstandard)					///
+	onclickon(script _p_gentype_score_on)			///
+	label("Standardized Pearson residuals")
+  RADIO    rb_score	@	_ss	@	., 		///
+	last							///
+	option(score)						///
+	onclickon(script _p_gentype_score_on)			///
+	label("Equation-level scores")
+
+  INCLUDE  _p_nooffset
+END
+
+INCLUDE _p_gentype_sc
+INCLUDE ifin
+
+INCLUDE _type_list_fd
+
+PROGRAM command
+BEGIN
+	put "predict "
+	put " " /program _p_gentype_output
+	INCLUDE _ifin_pr
+	beginoptions
+		option radio(main rb_pc1 rb_pu0 rb_xb rb_stdp 	///
+			rb_dbeta rb_dx2 rb_gdbeta rb_gdx2	///
+			rb_hat rb_residuals rb_rstandard rb_score)
+	endoptions
+	INCLUDE _p_nooffset_pr
+END

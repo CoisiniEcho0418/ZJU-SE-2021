@@ -1,0 +1,36 @@
+/*
+	mi_erase
+
+*!  VERSION 1.0.1  12jun2009
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_vsmall
+DEFINE _dlght 100
+INCLUDE header
+
+HELP hlp1, view("help mi_erase")
+RESET res1
+
+DIALOG main, label("mi erase - Erase mi datasets") tabtitle("Main")
+BEGIN
+
+  TEXT tx_name		_lft	_top	_iwd	.,			///
+	label("Name to erase:")
+  EDIT ed_name		@	_ss	@	., 			///
+	label("Name to erase")
+  CHECKBOX ck_clear	@	_ls	@	.,			///
+	option(clear)							///
+	label("Clear data in memory")
+END
+
+PROGRAM command
+BEGIN
+	put "mi erase "
+	put main.ed_name
+	beginoptions
+		option main.ck_clear
+	endoptions
+END

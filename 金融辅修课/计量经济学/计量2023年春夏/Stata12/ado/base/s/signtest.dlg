@@ -1,0 +1,42 @@
+/*
+	signtest
+
+*!  VERSION 1.1.0  10jan2005
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help signtest")
+RESET res1
+
+DIALOG main, label("signtest - Sign test of matched pairs") tabtitle("Main")
+BEGIN
+  TEXT     tx_var         _lft      _top    _cwd3_1       .,		///
+		label("Variable:")
+  VARNAME  vn_var            @       _ms      _vnwd       .,		///
+		label("Variable")
+  TEXT     tx_equals   _eqxpos         @      _eqwd       .,		///
+		center							///
+		label("=")
+  TEXT     tx_exp      _lft3_2      _top   _comb3_1       .,		///
+		label("Expression:")
+  EXP      ex_exp      _lft3_2      _ms      _vlwd        .,		///
+		label("Create...")					///
+		error("Expression")
+END
+
+INCLUDE byifin
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "signtest "
+	varlist main.vn_var
+	put " = "
+	varlist main.ex_exp
+	INCLUDE _ifin_pr
+END

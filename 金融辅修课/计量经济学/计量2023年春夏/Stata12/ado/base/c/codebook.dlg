@@ -1,0 +1,180 @@
+/*
+	codebook
+
+*!  VERSION 1.1.2  19sep2005
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+INCLUDE header
+HELP hlp1, view("help codebook")
+RESET res1
+
+DIALOG main, label("codebook - Describe data contents") tabtitle("Main")
+BEGIN
+  TEXT     tx_var		_lft	_top	_iwd	 .,	///
+	label("Variables: (leave empty for all)")
+
+  VARLIST  vl_var		@	_ss	@	 .,	///
+	label("Variables")
+
+  TEXT     tx_exp		@	_ms	_cwd1	 .,	///
+	label("Examples:")
+  TEXT     tx_xy		_indent	_vss	_cwd4_2	 .,	///
+	label("yr*")
+  DEFINE holdx @x
+
+  TEXT     tx_all		_lft4_2	@	_comb4_2 .,	///
+	label(`"all variables starting with "yr""')
+  TEXT     tx_abc		holdx	_vss	_cwd4_2	 .,	///
+	label("xyz-abc")
+  TEXT     tx_xyz		_lft4_2	@	_comb4_2 .,	///
+	label("all variables between xyz and abc")
+
+END
+
+INCLUDE ifin
+
+DIALOG opt, label("codebook - Describes contents of data")	///
+	tabtitle("Options")
+BEGIN
+  CHECKBOX ck_all		_lft	_top	_iwd	 .,	///
+	label("Print complete report without missing values") 	///
+	onclickon(script ck_all_on)				///
+	onclickoff(script ck_all_off)				///
+	option(all)
+  CHECKBOX ck_header		@	_ms	@	 .,	///
+	label("Print dataset name and last saved date")		///
+	option(header)
+
+  CHECKBOX ck_notes		@	_ms	@	 .,	///
+	label("Print any notes attached to variables")		///
+	option(notes)
+  CHECKBOX ck_mv		@	_ms	@	 .,	///
+	label("Report pattern of missing values") option(mv)
+
+  CHECKBOX ck_tabulate		@	_ms	_ckwd	 .,	///
+	onclickon(opt.sp_tabulate.enable)			///
+	onclickoff(opt.sp_tabulate.disable)
+
+  DEFINE holdx	@x
+
+  SPINNER  sp_tabulate		_cksep	@	_spwd	 .,	///
+	label("Set tables/summary statistics threshold")	///
+	min(1) max(100) default(9) option(tabulate)
+
+  TEXT	    tx_tabulate		_spsep	@	_cksprb	 .,	///
+	label("Set tables/summary statistics threshold")
+
+  CHECKBOX ck_problems		holdx	_ms	_iwd	 .,	///
+	label("Report potential problems in dataset")		///
+	onclickon(opt.ck_detail.enable)				///
+	onclickoff(opt.ck_detail.disable)			///
+	option(problems)
+
+   CHECKBOX ck_detail		@	_ms	@	 .,	///
+	label("Display detailed report on the variables") 	///
+	option(detail)
+
+   CHECKBOX ck_compact		@	_ms	@	 .,	///
+	label("Display compact report on the variables") 	///
+	onclickon(script ck_compact_on)			///
+	onclickoff(program ck_compact_off)			///
+	option(compact)
+
+   CHECKBOX ck_dots		@	_ms	@	 .,	///
+	label("Display a dot for each variable processed") 	///
+	option(dots)
+END
+
+SCRIPT ck_all_on
+BEGIN
+	opt.ck_header.disable
+	opt.ck_notes.disable
+END
+
+SCRIPT ck_all_off
+BEGIN
+	opt.ck_header.enable
+	opt.ck_notes.enable
+END
+
+SCRIPT ck_compact_on
+BEGIN
+	opt.ck_dots.enable
+	opt.ck_all.disable
+	opt.ck_header.disable
+	opt.ck_notes.disable
+	opt.ck_mv.disable
+	opt.ck_tabulate.disable
+	opt.ck_problems.disable
+	opt.ck_detail.disable
+	lang.rb_current.disable
+	lang.rb_all.disable
+	lang.rb_sel.disable
+	lang.cb_sel.disable
+END
+
+PROGRAM ck_compact_off
+BEGIN
+	call opt.ck_dots.disable
+	call opt.ck_all.enable
+	if !opt.ck_all {
+		call opt.ck_header.enable
+		call opt.ck_notes.enable
+	}
+	call opt.ck_mv.enable
+	call opt.ck_tabulate.enable
+	call opt.ck_problems.enable
+	if opt.ck_problems {
+		call opt.ck_detail.enable
+	}
+	call lang.rb_current.enable
+	call lang.rb_all.enable
+	call lang.rb_sel.enable
+	if lang.rb_sel {
+		call lang.cb_sel.enable
+	}
+END
+
+DIALOG lang, tabtitle("Languages")
+BEGIN
+  RADIO    rb_current  _lft        _top      _iwd        .,	///
+	label("Use currently selected language") first		///
+	onclickon(lang.cb_sel.disable)
+  RADIO    rb_all      @           _ss       @           .,	///
+	label("Use all defined languages")			///
+	onclickon(lang.cb_sel.disable)				///
+	option(languages)
+  RADIO    rb_sel      @           _ss       @           .,	///
+	label("Use selected languages") last			///
+	onclickon(lang.cb_sel.enable)
+  COMBOBOX cb_sel      @           _ss       _iwd        _ht6,	///
+	label("Use selected languages")				///
+	contents(char _dta[_lang_list]) append option(languages)
+END
+
+PROGRAM command
+BEGIN
+	put "codebook "
+	varlist [main.vl_var]
+	INCLUDE _ifin_pr
+	beginoptions
+		option opt.ck_all
+		option opt.ck_notes
+		option opt.ck_mv
+		optionarg opt.sp_tabulate
+		option opt.ck_header
+		option opt.ck_problems
+		option opt.ck_detail
+		option lang.rb_all
+		if lang.rb_sel {
+			require lang.cb_sel
+			optionarg lang.cb_sel
+		}
+		option opt.ck_compact
+		option opt.ck_dots
+	endoptions
+END

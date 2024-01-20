@@ -1,0 +1,350 @@
+*! version 1.1.0  30oct2008
+
+version 10
+
+/* base abstract class for all models				*/
+class _model {
+	instance:
+		string dep
+		array vars
+		/* touse variable from -markout-		*/
+		string touse
+
+		/* weight type, and variable			*/
+		string wtype
+		_numericvar weight
+
+		/* 0/1 for constant 				*/
+		double const
+		/* score variable 				*/
+		_numericvar scvar
+}
+
+program .new 
+	if (`"`0'"'=="") exit
+	local vv : display "version " string(_caller()) ":"
+
+	`vv' ///
+	._set `0'
+end
+
+program .oncopy
+
+	di as err "_model.oncopy not implemented"
+	exit 498
+end
+
+program ._set 
+	syntax [varlist(default=none numeric)] [fw iw pw],              ///
+		touse(varname numeric) [ const(integer 0) wtobj(string) ///
+		COLlinear ]
+
+	.dep = ""
+	.vars.Arrdropall
+	.const = `const'
+	.wtype = ""
+
+	cap confirm byte variable `touse'
+	if _rc {
+		/* programmer error: should not happen */
+		di as err "{p}touse() variable for _model class program " ///
+		 ".set must be a byte variable{p_end}"
+		exit 198
+	}
+	.touse = "`touse'"
+
+	if "`weight'" != "" {
+		if "`wtobj'" != "" {
+			/* programmer error: should not happen 	*/
+			di as err "[`weight'`exp'] and wtobj() cannot " ///
+			 "be used together"
+			exit 198
+		}
+		.wtype = "`weight'"
+		tempname wgtv
+		gettoken tok wexp : exp, parse("=")
+
+		if ("`weight'"=="fweight") local type long
+		else local type double 
+
+		.weight = ._numericvar.new `type' `wexp' if `touse'
+	}
+	else if "`wtobj'" != "" {
+		/* shared _numericvar object			*/
+		._setweight `wtobj'
+	}
+	else if "`.weight.varname'" != "" {
+		/* clear old weight 				*/
+		.weight = ._numericvar.new
+	}
+
+	if ("`varlist'" == "") exit
+
+	gettoken dep varlist : varlist
+	.dep = "`dep'"
+
+	if ("`varlist'" == "") exit
+
+	if "`collinear'" == "" {
+		/* drop collinear variables */
+		if (!`const') local conopt noconstant
+
+		_rmcoll `varlist' if `touse', `conopt'
+		local varlist `r(varlist)'
+		if ("`varlist'" == "") exit
+	}
+	else {
+		local dups : list dups varlist
+		if "`dups'" != "" {
+			local varlist : list uniq varlist
+			
+			if (`:word count `dups'' > 1) ///
+				local mes variables `dups' are
+			else local mes variable `dups' is
+			
+			di as err "{p}`mes' specified twice in the model " ///
+			 "specification{p_end}"
+			exit 198
+		}
+	}
+
+	foreach var of varlist `varlist' {
+		.vars.Arrpush "`var'"
+	}
+end
+
+program ._setweight
+	args wtype wtobj
+
+	local wspec fweight iweight pweight aweight
+	local ok : list posof "`wtype'" in wspec
+	if !`ok' | "`wtobj'"=="" {
+		/* programmer error: should not happen */
+		di as err "_model._set: wtobj(`wtype' `wtobj') option " ///
+		 "is improperly specified'"
+		exit 198
+	}
+	.wtype = "`wtype'"
+	local wtobj : list retokenize wtobj
+	cap local ok = `.`wtobj'.isofclass _numericvar'
+	if _rc | `ok'==0 {
+		/* programmer error: should not happen */
+		di as err "_model_set: wtobj() option does not specify " ///
+		 "an object of class _mumericvar" 
+		exit 198
+	}
+	else {
+		.weight.ref = .`wtobj'.ref
+	}
+end
+
+program .evaleq
+	syntax newvarlist(max=1), b(name) [ eq(name) ] 
+
+	if `.kvars'>0 {
+		if ("`eq'" != "") local eqopt eq(`eq')
+
+		mat score double `varlist' = `b' if `.touse', `eqopt'
+	}
+	else {
+		qui gen double `varlist' = 0 if `.touse'
+	}
+end	
+
+/* compute quadratic form using Cholesky matrix R */
+program .evalxRRx
+	syntax newvarlist(max=1), r(name) [ eq(name) ] 
+
+	qui gen double `varlist' = 0 if `.touse'
+	if `.kvars'>0 {
+		if ("`eq'" != "") local eqopt eq(`eq')
+
+		local nr = rowsof(`r')
+		tempvar t 
+		tempname v
+		forvalues i=1/`nr' {
+			mat `v' = `r'[1...,`i']'
+			mat score double `t' = `v' if `.touse', `eqopt'
+			qui replace `varlist' = `varlist'+`t'*`t' if `.touse'
+			qui drop `t'
+		}
+	}
+end	
+
+program .evalscrs, rclass
+	syntax [newvarlist], [ g(name) ]
+
+	local kvars = `.kvars'
+	if `kvars' == 0 {
+		return scalar k = 0
+		exit
+	}
+
+	local kscrs : word count `varlist'
+	local bg = ("`g'"!="")
+	if (`kscrs'==0 & !`bg') {
+		/* programmer error */
+		di as err "_model.evalscrs, require either a varlist " ///
+		 "or the g() option"
+		exit 499
+	}
+	if `kscrs' > 0 {
+		if `kscrs' < `kvars' {
+			di as err "insufficient number of variables"
+			exit 489
+		}
+		local scores `varlist'
+	}
+	else tempvar sc
+
+	local sa `.scvar.varname'
+
+	if `bg' & "`.wtype'" != "" {
+		if ("`.wtype'"=="pweight") ///
+			local wopt [iweight=`.weight.varname']
+		else local wopt [`.wtype'=`.weight.varname']
+	}
+	forvalues i=1/`kvars' {
+		if `kscrs' > 0 {
+			local sc: word `i' of `scores' 
+			if "`sc'" == "" {
+				di as err `scerr'
+				exit 498
+			}
+		}
+		qui gen double `sc' = `sa'*`.vars[`i']' if `.touse'
+
+		if `bg' {
+			summarize `sc' `wopt' if `.touse', meanonly
+			mat `g' = (nullmat(`g'),r(sum))
+			qui drop `sc'
+		}
+	}
+	return scalar k = `kvars'
+end
+
+program .genscvar
+
+	.scvar = ._numericvar.new double 0
+end
+
+program .dropscvar
+	if `.scvar.isvalid' {
+		.scvar = ._numericvar.new
+	}
+end
+
+program .kvars 
+
+	class exit `.vars.arrnels'
+end
+
+program .dropvar
+	args i
+
+	/* Arrdropel # does not seem to work */ 
+	forvalues j=`=`i'+1'/`.kvars' {
+		.vars[`=`j'-1'] = "`.vars[`j']'"
+	}
+	.vars.Arrpop
+end
+
+program .strvars
+	forvalues i=1/`.vars.arrnels' {
+		local vars `vars' `.vars[`i']'
+	}
+	class exit `"`vars'"'
+end
+
+program .eretpost, eclass
+	syntax, [ index(integer -1) ]
+
+	if "`e(b)'" != "matrix" {
+		ereturn post
+	}
+	if (`index'<0) local index
+	if `.kvars' != 0 {
+		ereturn scalar k_indvars`index' = `.kvars' 
+		ereturn local indvars`index' `"`.strvars'"'
+	}
+	else if "`index'" == "" {
+		ereturn scalar k_indvars = `.kvars' 
+	}
+	ereturn scalar const`index' = `.const'
+	if ("`.dep'"!="") ereturn local depvar`index' "`.dep'"
+end
+
+program .eretget
+	syntax, touse(varname) [ index(integer -1)  weight(string) ]
+
+	.vars.Arrdropall
+	.wtype = ""
+	if (`index' < 0) local index
+
+	if `.weight.isvalid' {
+		.weight = ._numericvar.new
+	}
+	.touse = "`touse'"
+
+	cap local kv = e(k_indvars`index')
+	if ("`index'"=="" & `kv'>=.) exit 322
+
+	if 0<`kv' & `kv'<. {
+		local k = 0
+		foreach var of varlist `e(indvars`index')' {
+			.vars[`++k'] = "`var'"
+		}
+		if `.vars.arrnels' != `kv' {
+			di as err "expected `kv' variables in " ///
+			 "e(indvars`index') but got `vars.arrnels'"
+			exit 322
+		}
+	}
+	if ("`e(depvar)'"!="") .dep = "`e(depvar)'"
+
+	.const = e(const`index')
+	if (`.const'>=.) .const = 0
+
+	if "`weight'" != "" { 
+		._setweight `weight'
+	}
+	else if "`e(wtype)'" != "" {
+		local wexp `"`e(wexp)'"'
+		gettoken tok wexp : wexp, parse("=")
+
+		if "`e(wtype)'" == "fweight" {
+			.weight = ._numericvar.new long `wexp'
+		}
+		else {
+			.weight = ._numericvar.new double `wexp'
+		}
+		.wtype = "`e(wtype)'"
+	}
+end
+
+/* markout using elements of eclass known by this object		*/
+/* called before initialization using .eretget, touse(`touse')		*/
+program ._eretmarkout 
+	syntax varname(numeric), [ index(integer -1) depvar ]
+
+	local touse `varlist'
+	if (`index' < 0) local index
+
+	cap local kv = e(k_indvars`index')
+	if ("`index'"=="" & `kv'>=.) exit 322
+
+	if (0<`kv' & `kv'<.) markout `touse' `e(indvars`index')'
+
+	if ("`depvar'"!="" & "`e(depvar)'"!="")	markout `touse' `e(depvar)'
+end
+
+program .summary
+	di as txt _n "_model class:"
+	if `.kvars' > 0 {
+		di as txt "{p}variables: `.strvars'{p_end}"
+		local n 
+	}
+	di as txt "constant = `.const'"
+end
+
+exit

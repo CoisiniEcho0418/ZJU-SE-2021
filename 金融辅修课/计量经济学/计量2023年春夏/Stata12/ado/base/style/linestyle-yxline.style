@@ -1,0 +1,6 @@
+*! version 1.0.0  22dec2002
+sequence 3551
+
+set width    scheme xyline 
+set color    scheme xyline 
+set pattern  scheme xyline 

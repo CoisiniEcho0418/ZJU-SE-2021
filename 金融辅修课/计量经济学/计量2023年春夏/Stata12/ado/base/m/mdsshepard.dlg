@@ -1,0 +1,109 @@
+/*
+	mdsshepard
+
+*!  VERSION 2.0.1  18apr2011
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_mlarge
+INCLUDE header
+
+HELP hlp1, view("help mdsshepard")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	create STRING markerResults
+END
+
+SCRIPT POSTINIT
+BEGIN
+	program check_markerResults
+END
+
+DIALOG main, label("mdsshepard - Multidimensional scaling Shepard plot") ///
+		tabtitle("Main")
+BEGIN
+  CHECKBOX ck_notransform	_lft	_top	_iwd	.,	///
+  		option(notransform)				///
+  		label("Use dissimilarities instead of disparities")
+
+  CHECKBOX ck_autoaspect	@	_ms	@	.,	///
+  		option(autoaspect)				///
+  		label("Automatically adjust the aspect ratio based on the data")
+  CHECKBOX ck_separate		@	_ms	@	.,	///
+  		option(separate)				///
+  		onclickon(script main_by_on)			///
+  		onclickoff(script main_by_off)			///
+  		label("Draw separate Shepard diagrams for each object")
+
+  BUTTON bu_markers		_lft	+30	120	.,	///
+	label("Marker properties  ")				///
+	onpush(script main_show_markers_dialog)
+END
+
+SCRIPT main_by_on
+BEGIN
+	script gr_legend_setByoptsContext_on
+	script gr_titles_setByoptsContext_on
+	script gr_yaxis_setByoptsContext_on
+	script gr_xaxis_setByoptsContext_on
+	script gr_overall_setByoptsContext_on
+END
+
+SCRIPT main_by_off
+BEGIN
+	script gr_legend_setByoptsContext_off
+	script gr_titles_setByoptsContext_off
+	script gr_yaxis_setByoptsContext_off
+	script gr_xaxis_setByoptsContext_off
+	script gr_overall_setByoptsContext_off
+END
+
+SCRIPT main_show_markers_dialog
+BEGIN
+	create CHILD gr_marker_nolabel_options AS markers, allowsubmit
+	markers.setExitString markerResults
+	markers.settitle "Marker properties"
+	markers.setExitAction "program check_markerResults"
+	markers.setSubmitAction "script markerSubmit"
+END
+PROGRAM check_markerResults
+BEGIN
+	if markerResults {
+		call main.bu_markers.setlabel "Marker properties *"
+	}
+	else {
+		call main.bu_markers.setlabel "Marker properties  "
+	}
+END
+SCRIPT markerSubmit
+BEGIN
+	program check_markerResults
+	Submit
+END
+
+INCLUDE gr_yaxis
+INCLUDE gr_xaxis
+INCLUDE gr_titles
+INCLUDE gr_legend
+INCLUDE gr_overall
+
+PROGRAM command
+BEGIN
+	put "mdsshepard "
+	beginoptions
+		option main.ck_separate
+		option main.ck_notransform
+		option main.ck_autoaspect
+		put " " markerResults " "
+
+		put " " /program gr_yaxis_output
+		put " " /program gr_xaxis_output
+		put " " /program gr_titles_output
+		put " " /program gr_legend_output
+		put " " /program gr_overall_output
+	endoptions
+END

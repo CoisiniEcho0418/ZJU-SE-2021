@@ -1,0 +1,6 @@
+*! version 1.0.0  22dec2002
+sequence 3840
+
+set width    scheme legend
+set color    scheme legend_line
+set pattern  scheme legend

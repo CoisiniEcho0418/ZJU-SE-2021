@@ -1,0 +1,974 @@
+/*
+  sg__variables.dlg
+
+*!  VERSION 1.0.2  21jul2011
+
+*/
+
+VERSION 12.0
+MODAL
+
+INCLUDE _std_msmall
+DEFINE _dlght 250
+INCLUDE header_sem_ed
+
+DEFINE _clwd	15
+DEFINE _wd	160
+DEFINE _sep	+165
+DEFINE _wd2	120
+DEFINE _sep2	+125
+DEFINE _cbwd	100
+DEFINE _cbsep	+105
+
+INCLUDE sg__common_output		/* routines necessary for output */
+
+SCRIPT PREINIT
+BEGIN
+	script sg__common_output_init 	/* initialize output globals */
+
+	create STRING OBJ
+	program setupOBJECT
+
+	create STRING sTemp
+	create DOUBLE dTemp
+	create DOUBLE nSelected 
+	create BOOLEAN bLatent		/* latent only 		*/
+	create BOOLEAN bObserved	/* observed only 	*/
+	create BOOLEAN bExogenous	/* exogenous only 	*/
+	create BOOLEAN bEndogenous	/* endogenous only	*/
+
+	program global_get_defaults
+END
+
+PROGRAM setupOBJECT
+BEGIN
+	if ! __MESSAGE {
+		stopbox stop 	///
+			"An unexpected error has occurred." "Object not found."
+		exit 198
+	}
+	call OBJ.setvalue class __MESSAGE.value
+END
+
+PROGRAM global_get_defaults
+BEGIN
+	call nSelected.setvalue class .__SEMG.dbsettings.n_selected
+	if (!nSelected) {
+		call nSelected.setvalue 0
+	}
+
+	call bLatent.setfalse
+	call bObserved.setfalse
+	call sTemp.setvalue class .__SEMG.dbsettings.type
+	// 1=observed, 2=latent, <multiple>
+	if (sTemp.iseq("1")) { 
+		call bObserved.settrue
+	}
+	if (sTemp.iseq("2")) {
+		call bLatent.settrue
+	}
+
+	call bExogenous.setfalse
+	call bEndogenous.setfalse
+	call sTemp.setvalue class .__SEMG.dbsettings.isexog
+	// 1=exogenous, 0=endogenous, <multiple>
+	if (sTemp.iseq("1")) { 
+		call bExogenous.settrue
+	}
+	if (sTemp.iseq("0")) {
+		call bEndogenous.settrue
+	}
+END
+
+SCRIPT variable_PREINIT
+BEGIN
+	create STRING sVarname
+	create STRING sLname
+	create STRING sLabel
+	create STRING sXpos
+	create STRING sYpos
+	create STRING sCnsMean		/* constraint mean 	*/
+	create STRING sCnsCons		/* constraint intercept	*/
+	create STRING sCnsVar		/* constraint variance	*/
+	create STRING sEstMean
+
+	program variable_get_defaults
+END
+
+SCRIPT variable_POSTINIT
+BEGIN
+	program variable_initialize_controls
+END
+
+PROGRAM variable_get_defaults
+BEGIN
+	call sVarname.setvalue class .__SEMG.dbsettings.varname
+	call sVarname.withvalue variable.vn_var.setdefault "@"
+
+	call sLname.setvalue class .__SEMG.dbsettings.lname
+	call sLname.withvalue variable.ed_lname.setdefault "@"
+
+	call sLabel.setvalue class .__SEMG.dbsettings.label
+	call sLabel.withvalue variable.ed_label.setdefault "@"
+	call sLabel.withvalue variable.ed_label_alt.setdefault "@"
+
+	call sXpos.setvalue class .__SEMG.dbsettings.x
+	call sXpos.withvalue variable.ed_xpos.setdefault "@"
+
+	call sYpos.setvalue class .__SEMG.dbsettings.y
+	call sYpos.withvalue variable.ed_ypos.setdefault "@"
+
+	call sCnsMean.setvalue class .__SEMG.dbsettings.cns_mean
+	call sCnsMean.withvalue variable.ed_cnsmean.setdefault "@"
+
+	call sCnsCons.setvalue class .__SEMG.dbsettings.cns_cons
+	call sCnsCons.withvalue variable.ed_cnscons.setdefault "@"
+
+	call sCnsVar.setvalue class .__SEMG.dbsettings.cns_var
+	call sCnsVar.withvalue variable.ed_cnsvar.setdefault "@"
+
+	call sEstMean.setvalue class .__SEMG.dbsettings.estmean
+	if sEstMean.iseq("1") {
+		call variable.ck_estmean.setdefault 1
+	}
+	else {
+		call variable.ck_estmean.setdefault 0
+	}
+	
+END
+
+PROGRAM variable_initialize_controls
+BEGIN
+	/* bLatent and bObserved are mutually exclusive */
+	if ((bLatent | bObserved) & !nSelected.isgt(1)) {
+		if (bLatent) {
+			call variable.tx_var.hide
+			call variable.vn_var.hide
+			call variable.tx_lname.show
+			call variable.ed_lname.show
+		}
+		if (bObserved) {
+			call variable.tx_var.show
+			call variable.vn_var.show
+			call variable.tx_lname.hide
+			call variable.ed_lname.hide
+		}
+		call variable.tx_label_alt.hide
+		call variable.ed_label_alt.hide
+		call variable.tx_label.show
+		call variable.ed_label.show
+	}
+	else {
+		call variable.tx_label_alt.show
+		call variable.ed_label_alt.show
+		call variable.tx_label.hide
+		call variable.ed_label.hide
+		call variable.tx_var.hide
+		call variable.vn_var.hide
+		call variable.tx_lname.hide
+		call variable.ed_lname.hide
+	}
+
+
+	if (bExogenous | bEndogenous) { /* mutually exclusive */
+		if (bExogenous) {
+			call variable.tx_cnsmean.show
+			call variable.ed_cnsmean.show
+			call variable.bu_cnsmean.show
+			call variable.tx_cnsvar.show
+			call variable.ed_cnsvar.show
+			call variable.bu_cnsvar.show
+
+			call variable.tx_cnscons.hide
+			call variable.ed_cnscons.hide
+			call variable.bu_cnscons.hide
+			
+			if (bLatent) {
+				call variable.ck_estmean.show
+				call variable.gb_cons.setposition . . . 110
+			}
+			else {
+				call variable.ck_estmean.hide
+				call variable.gb_cons.setposition . . . 85
+			}
+
+		}
+		else {
+			call variable.tx_cnsmean.hide
+			call variable.ed_cnsmean.hide
+			call variable.bu_cnsmean.hide
+			call variable.tx_cnsvar.hide
+			call variable.ed_cnsvar.hide
+			call variable.bu_cnsvar.hide
+
+			call variable.tx_cnscons.show
+			call variable.ed_cnscons.show
+			call variable.bu_cnscons.show
+
+			call variable.ck_estmean.hide
+			call variable.gb_cons.setposition . . . 55
+		}
+
+		call variable.gb_cons.show
+
+	}
+	else {
+		call variable.tx_cnsvar.hide
+		call variable.ed_cnsvar.hide
+		call variable.bu_cnsvar.hide
+
+		call variable.tx_cnsmean.hide
+		call variable.ed_cnsmean.hide
+		call variable.bu_cnsmean.hide
+		call variable.tx_cnscons.hide
+		call variable.ed_cnscons.hide
+		call variable.bu_cnscons.hide
+		
+		call variable.gb_cons.hide
+	}
+
+	call variable.vn_var.setvalue class sVarname.value
+	call variable.ed_lname.setvalue class sLname.value
+	call variable.ed_label.setvalue class sLabel.value
+	call variable.ed_label_alt.setvalue class sLabel.value
+	call variable.ed_xpos.setvalue class sXpos.value
+	call variable.ed_ypos.setvalue class sYpos.value
+
+	call variable.ed_cnsmean.setvalue class sCnsMean.value
+	call variable.ed_cnscons.setvalue class sCnsCons.value
+	call variable.ed_cnsvar.setvalue class sCnsVar.value
+
+	if sEstMean.iseq("1") | sEstMean.iseq("0") {
+		if sEstMean.iseq("1") {
+			call variable.ck_estmean.seton
+		}
+		else {
+			call variable.ck_estmean.setoff
+		}
+		call variable.ck_estmean.setlabel "Estimate mean"
+		call variable.ck_estmean.enable
+	}
+	else {
+		call variable.ck_estmean.setlabel "Estimate mean (multiple)"
+		call variable.ck_estmean.disable
+		call variable.ck_estmean.setoff
+	}
+END
+
+DIALOG variable, label("Variable properties") tabtitle("Variable")
+BEGIN
+  TEXT     tx_var	_lft	_top	_vnwd	.,		///
+	label("Variable:")
+  VARNAME  vn_var	@	_ss	@	., nomemory
+
+  TEXT     tx_lname	_lft	_top	@	.,		///
+	label("Name:")
+  EDIT     ed_lname	@	_ss	@	., nomemory
+
+  TEXT     tx_label	_vlx	_top	_vlwd	.,		///
+	label("Label:")
+  EDIT     ed_label	@	_ss	@	., nomemory
+
+  /* alternate version used when no variable or name shown. */
+  TEXT     tx_label_alt	_lft	_top	_iwd	.,		///
+	label("Label:")
+  EDIT     ed_label_alt	@	_ss	@	., nomemory
+
+
+
+  GROUPBOX gb_pos	_lft	+35	_iwd	55,		///
+	label("Position") 
+  TEXT     tx_xpos	80	_ss	25	.,		///
+	label("x:") right 
+  EDIT     ed_xpos	+30	@	75	., nomemory
+  TEXT     tx_ypos	+80	@	25	.,		///
+	label("y:") right 
+  EDIT     ed_ypos	+30	@	75	., nomemory
+
+  GROUPBOX gb_cons	_lft	+45	_iwd	85,		///
+	label("Constraints")
+  TEXT     tx_cnsmean	_ilft	_ss	_wd2	.,		///
+	label("Mean:") right
+  EDIT     ed_cnsmean	_sep2	@	_cbwd	., nomemory
+  BUTTON   bu_cnsmean	_cbsep	@	_clwd	.,		///
+	label("?") onpush(view help sg__constraints##|_new)
+
+  TEXT     tx_cnscons	_ilft	@	_wd2	.,		///
+	label("Intercept:") right
+  EDIT     ed_cnscons	_sep2	@	_cbwd	., nomemory
+  BUTTON   bu_cnscons	_cbsep	@	_clwd	.,		///
+	label("?") onpush(view help sg__constraints##|_new)
+
+  TEXT     tx_cnsvar	_ilft	_ls	_wd2	.,		///
+	label("Variance:") right
+  EDIT     ed_cnsvar	_sep2	@	_cbwd	., nomemory
+DEFINE x @x
+  BUTTON   bu_cnsvar	_cbsep	@	_clwd	.,		///
+	label("?") onpush(view help sg__constraints##|_new)
+
+  CHECKBOX ck_estmean	x	_ls	180	.,		///
+	label("Estimate mean")
+END
+
+PROGRAM variable_output
+BEGIN
+	call program variable_get_defaults
+
+	if variable.vn_var.isvisible() & ! variable.vn_var.isdefault() {
+		if ! variable.vn_var.isvalidname() {
+			stopbox stop `"On the "Variable" tab,"'	///
+			`"the "Variable" name you entered is invalid."' 
+		}
+		call sg__PARAM2.setvalue "SetVariable"
+		call sg__ARG_00.setvalue class variable.vn_var.value
+		put /program sg__do_output_arg0_sub
+	}
+
+	if variable.ed_lname.isvisible() & !variable.ed_lname.isdefault() {
+		if ! variable.ed_lname.isvalidname() {
+			stopbox stop `"On the "Variable" tab,"'	///
+			`"the "Name" you entered is invalid."'
+		}
+		call sg__PARAM2.setvalue "SetName"
+		call sg__ARG_00.setvalue class variable.ed_lname.value
+		put /program sg__do_output_arg0_sub
+	}
+
+	if ! variable.ed_label.isdefault() {
+		call sg__PARAM2.setvalue "SetSelected"
+		call sg__ARG_00.setvalue "label"
+		call sg__ARG_01.setvalue class variable.ed_label.value
+		put /program sg__do_output_sub
+	}
+	if ! variable.ed_label_alt.isdefault() {
+		call sg__PARAM2.setvalue "SetSelected"
+		call sg__ARG_00.setvalue "label"
+		call sg__ARG_01.setvalue class variable.ed_label_alt.value
+		put /program sg__do_output_sub
+	}
+	
+	if ! variable.ed_xpos.isdefault() {
+		call dTemp.setvalue class variable.ed_xpos.value
+		call sTemp.setvalue class variable.ed_xpos.value
+		if (!dTemp & dTemp.isneq(0) & sTemp.isneq("<multiple>")) {
+			stopbox stop "On the Main tab,"	///
+			`""x" position contains a nonnumeric value."'
+		}
+		call sg__PARAM2.setvalue "SetSelected"
+		call sg__ARG_00.setvalue "pos[1]"
+		call sg__ARG_01.setvalue class variable.ed_xpos.value
+		put /program sg__do_output_sub
+	}
+
+	if ! variable.ed_ypos.isdefault() {
+		call dTemp.setvalue class variable.ed_ypos.value
+		call sTemp.setvalue class variable.ed_ypos.value
+		if (!dTemp & dTemp.isneq(0) & sTemp.isneq("<multiple>")) {
+			stopbox stop "On the Main tab,"	///
+			`""y" position contains a nonnumeric value."'
+		}
+		call sg__PARAM2.setvalue "SetSelected"
+		call sg__ARG_00.setvalue "pos[2]"
+		call sg__ARG_01.setvalue class variable.ed_ypos.value
+		put /program sg__do_output_sub
+	}
+	
+	if ! variable.ed_cnsmean.isdefault() {
+		call sg__PARAM2.setvalue "SetSelected"
+		call sg__ARG_00.setvalue "cns_mean"
+		call sg__ARG_01.setvalue class variable.ed_cnsmean.value
+		put /program sg__do_output_sub
+	}
+
+	if ! variable.ed_cnscons.isdefault() {
+		call sg__PARAM2.setvalue "SetSelected"
+		call sg__ARG_00.setvalue "cns_cons"
+		call sg__ARG_01.setvalue class variable.ed_cnscons.value
+		put /program sg__do_output_sub
+	}
+
+	if ! variable.ed_cnsvar.isdefault() {
+		call sg__PARAM2.setvalue "SetSelected"
+		call sg__ARG_00.setvalue "cns_var"
+		call sg__ARG_01.setvalue class variable.ed_cnsvar.value
+		put /program sg__do_output_sub
+	}
+
+	if ! variable.ck_estmean.isdefault() {
+		call sg__PARAM2.setvalue "SetSelected"
+		call sg__ARG_00.setvalue "estmean"
+		if variable.ck_estmean {
+			call sg__ARG_01.setvalue "1"
+		}
+		else {
+			call sg__ARG_01.setvalue "0"
+		}
+		put /program sg__do_output_sub
+	}
+END
+
+/*****************************************************************************/
+
+SCRIPT error_PREINIT
+BEGIN
+	create STRING sErrorDir
+	create STRING sErrorCnsVar
+
+	program error_get_defaults
+END
+
+SCRIPT error_POSTINIT
+BEGIN
+	program error_initialize_controls
+END
+
+PROGRAM error_get_defaults
+BEGIN
+	call sErrorDir.setvalue class .__SEMG.dbsettings.nodestyle_errdir
+	call sErrorDir.withvalue error.cb_direction.setdefault "@"
+
+	call sErrorCnsVar.setvalue class .__SEMG.dbsettings.errornode_cns_var
+	call sErrorCnsVar.withvalue error.ed_cnsvar.setdefault "@"
+END
+
+PROGRAM error_initialize_controls
+BEGIN
+	if (bEndogenous) {
+		call error.tx_direction.enable
+		call error.cb_direction.enable
+		call error.gb_cons.enable
+		call error.tx_cnsvar.enable
+		call error.ed_cnsvar.enable
+		call error.bu_cnsvar.enable
+	}
+	else {
+		call error.tx_direction.disable
+		call error.cb_direction.disable
+		call error.gb_cons.disable
+		call error.tx_cnsvar.disable
+		call error.ed_cnsvar.disable
+		call error.bu_cnsvar.disable
+	}
+	call error.cb_direction.setvalue class sErrorDir.value
+	call error.ed_cnsvar.setvalue class sErrorCnsVar.value
+END
+
+DIALOG error, tabtitle("Error")
+BEGIN
+  TEXT     tx_direction	_ilft	20	_wd2	.,		///
+	label("Direction:") right
+  COMBOBOX cb_direction	_sep2	@	_cbwd	., nomemory	///
+	dropdown 						///
+	contents(__SEM_STYLES_LABEL.direction)			///
+	values(__SEM_STYLES.direction)
+
+  GROUPBOX gb_cons	_lft	_ls	_iwd	50,		///
+	label("Constraints")
+  TEXT     tx_cnsvar	_ilft	_ss	_wd2	.,		///
+	label("Error variance:") right
+  EDIT     ed_cnsvar	_sep2	@	_cbwd	., nomemory
+  BUTTON   bu_cnsvar	_cbsep	@	_clwd	.,		///
+	label("?") onpush(view help sg__constraints##|_new)
+END
+
+PROGRAM error_output
+BEGIN
+	call program error_get_defaults
+
+	if ! error.cb_direction.isdefault() & error.cb_direction.isenabled(){
+		call sg__PARAM2.setvalue "SetErrDir"
+		call sg__ARG_00.setvalue "nodestyle.errdir"
+		call sg__ARG_01.setvalue class error.cb_direction.value
+		put /program sg__do_output_sub
+	}
+
+	if ! error.ed_cnsvar.isdefault() & error.ed_cnsvar.isenabled() {
+		call sg__PARAM2.setvalue "SetSelected"
+		call sg__ARG_00.setvalue "errornode.cns_var"
+		call sg__ARG_01.setvalue class error.ed_cnsvar.value
+		put /program sg__do_output_sub
+	}
+END
+
+/*****************************************************************************/
+
+SCRIPT prop_custom_on
+BEGIN
+	prop.bu_propset.enable
+	prop.bu_propclear.enable
+END
+
+SCRIPT prop_custom_off
+BEGIN
+	prop.bu_propset.disable
+	prop.bu_propclear.disable
+END
+
+DIALOG prop, tabtitle("Appearance")
+BEGIN
+  TEXTBOX tb_n1			_lft	_top	_iwd	105,		///
+	label("You may change the appearance " 				///
+	"(size, color, label font, etc.) of individual or selected "	///
+	"variables, but you probably do not want to.  Rather, you "	///
+	"probably want to change the appearance of all variables, "	///
+	"all latent variables, all observed exogenous variables, "	///
+	"or some other class of variables.  Make these changes from "	///
+	"the classes of variables available under the SEM Builder's "	///
+	"Settings > Variables menu.")
+
+  CHECKBOX ck_custom		_lft	+110	_iwd	_ht6,		///
+	nomemory							///
+	onclickon(script prop_custom_on)				///
+	onclickoff(script prop_custom_off)				///
+	groupbox label("Customize appearance for selected variables")
+
+  BUTTON  bu_propset 		+20	_ms	160	.,		///
+	label("Set custom appearance")					///
+	onpush(program do_prop_selected)	
+  BUTTON  bu_propclear 		@	 _mls	160	.,		///
+	label("Clear custom appearances")				///
+	onpush(program do_prop_clear)
+END
+
+PROGRAM do_prop_selected
+BEGIN
+	call sg__PARAM1.setvalue class OBJ.value
+	call sg__PARAM2.setvalue "LaunchDlg"
+	call sg__ARG_00.setvalue "variables_prop"
+	call sg__ARG_01.setvalue "selected"
+	put /program sg__do_output_sub
+END
+
+PROGRAM do_prop_clear
+BEGIN
+	call sg__PARAM1.setvalue class OBJ.value
+	call sg__PARAM2.setvalue "ClearStylesSelected"
+	call sg__ARG_00.setvalue "variables_prop"
+	call sg__ARG_01.setvalue "selected"
+	put /program sg__do_output_sub
+END
+
+/*****************************************************************************/
+
+SCRIPT adv_PREINIT
+BEGIN
+	create STRING sAdvVarname
+	create STRING sAdvLname
+	create STRING sAdvLabel
+
+	create STRING sIniMean
+	create STRING sIniCons
+	create STRING sIniVar
+	create STRING sReliab
+
+	program adv_get_defaults
+END
+
+SCRIPT adv_POSTINIT
+BEGIN
+	program adv_initialize_controls
+END
+
+PROGRAM adv_get_defaults
+BEGIN
+	call sAdvVarname.setvalue class .__SEMG.dbsettings.varname
+	call sAdvVarname.withvalue adv.vn_var.setdefault "@"
+
+	call sAdvLname.setvalue class .__SEMG.dbsettings.lname
+	call sAdvLname.withvalue adv.ed_lname.setdefault "@"
+
+	call sAdvLabel.setvalue class .__SEMG.dbsettings.label
+	call sAdvLabel.withvalue adv.ed_label.setdefault "@"
+
+	call sIniMean.setvalue class .__SEMG.dbsettings.ini_mean
+	call sIniMean.withvalue adv.ed_cnsmean.setdefault "@"
+
+	call sIniCons.setvalue class .__SEMG.dbsettings.ini_cons
+	call sIniCons.withvalue adv.ed_cnscons.setdefault "@"
+
+	call sIniVar.setvalue class .__SEMG.dbsettings.ini_var
+	call sIniVar.withvalue adv.ed_cnsvar.setdefault "@"
+
+	call sReliab.setvalue class .__SEMG.dbsettings.reliab
+	if sReliab.iseq(".") {
+		call sReliab.setvalue ""
+	}
+	call sReliab.withvalue adv.ed_reliab.setdefault "@"
+END
+
+PROGRAM adv_initialize_controls
+BEGIN
+	call create BOOLEAN hasTypeChange
+	call create BOOLEAN hasInitValues
+	call create BOOLEAN hasReliability
+
+	call adv.vn_var.setvalue class sAdvVarname.value
+	call adv.ed_lname.setvalue class sAdvLname.value
+	call adv.ed_label.setvalue class sAdvLabel.value
+
+	call adv.ed_cnsmean.setvalue class sIniMean.value
+	call adv.ed_cnscons.setvalue class sIniCons.value
+	call adv.ed_cnsvar.setvalue class sIniVar.value
+	call adv.ed_reliab.setvalue class sReliab.value
+
+/* handle convert */
+	/* bLatent and bObserved are mutually exclusive */
+	if ((bLatent | bObserved) & !nSelected.isgt(1)) {
+		call adv.ck_convert.show
+		if (bObserved) {
+			call adv.tx_var.hide
+			call adv.vn_var.hide
+			call adv.tx_lname.show
+			call adv.ed_lname.show
+			call adv.ck_convert.setlabel "Convert to latent"
+		}
+		if (bLatent) {
+			call adv.tx_var.show
+			call adv.vn_var.show
+			call adv.tx_lname.hide
+			call adv.ed_lname.hide
+			
+			call adv.ck_convert.setlabel "Convert to observed"
+		}
+		call hasTypeChange.settrue
+	}
+	else {
+		call hasTypeChange.setfalse
+
+		call adv.ck_convert.hide
+		call adv.tx_label.hide
+		call adv.ed_label.hide
+		call adv.tx_var.hide
+		call adv.vn_var.hide
+		call adv.tx_lname.hide
+		call adv.ed_lname.hide
+	}
+
+/* handle initial values */
+	if (bExogenous | bEndogenous) { /* mutually exclusive */
+		call adv.gb_init.show
+		call hasInitValues.settrue
+		if (bExogenous) {
+			call adv.tx_cnsmean.show
+			call adv.ed_cnsmean.show
+			call adv.bu_cnsmean.show
+			call adv.tx_cnsvar.show
+			call adv.ed_cnsvar.show
+			call adv.bu_cnsvar.show
+
+			call adv.tx_cnscons.hide
+			call adv.ed_cnscons.hide
+			call adv.bu_cnscons.hide
+
+			call adv.gb_init.setposition . . . 85
+
+		}
+		else {
+			call adv.tx_cnsmean.hide
+			call adv.ed_cnsmean.hide
+			call adv.bu_cnsmean.hide
+			call adv.tx_cnsvar.hide
+			call adv.ed_cnsvar.hide
+			call adv.bu_cnsvar.hide
+
+			call adv.tx_cnscons.show
+			call adv.ed_cnscons.show
+			call adv.bu_cnscons.show
+
+			call adv.gb_init.setposition . . . 55
+		}
+		
+		if hasTypeChange {
+			call adv.gb_init.setposition . 95
+			call adv.tx_cnsmean.setposition . 115
+			call adv.ed_cnsmean.setposition . 115
+			call adv.bu_cnsmean.setposition . 115
+			call adv.tx_cnscons.setposition . 115
+			call adv.ed_cnscons.setposition . 115
+			call adv.bu_cnscons.setposition . 115
+			call adv.tx_cnsvar.setposition . 145
+			call adv.ed_cnsvar.setposition . 145
+			call adv.bu_cnsvar.setposition . 145
+		}
+		else {
+			call adv.gb_init.setposition . 10
+			call adv.tx_cnsmean.setposition . 30
+			call adv.ed_cnsmean.setposition . 30
+			call adv.bu_cnsmean.setposition . 30
+			call adv.tx_cnscons.setposition . 30
+			call adv.ed_cnscons.setposition . 30
+			call adv.bu_cnscons.setposition . 30
+			call adv.tx_cnsvar.setposition . 60
+			call adv.ed_cnsvar.setposition . 60
+			call adv.bu_cnsvar.setposition . 60
+		}
+	}
+	else {
+		call adv.gb_init.hide
+		call adv.tx_cnsvar.hide
+		call adv.ed_cnsvar.hide
+		call adv.bu_cnsvar.hide
+
+		call adv.tx_cnsmean.hide
+		call adv.ed_cnsmean.hide
+		call adv.bu_cnsmean.hide
+		call adv.tx_cnscons.hide
+		call adv.ed_cnscons.hide
+		call adv.bu_cnscons.hide
+		
+		call hasInitValues.setfalse
+	}
+	
+/* handle reliablilty */
+	if (bEndogenous & bObserved) {
+		call hasReliability.settrue
+	
+		call adv.gb_reliab.show
+		call adv.tx_reliab.show
+		call adv.ed_reliab.show
+		call adv.bu_reliab.show
+
+		if (hasTypeChange & hasInitValues) {
+			call adv.gb_reliab.setposition . 160
+			call adv.tx_reliab.setposition . 180
+			call adv.ed_reliab.setposition . 180
+			call adv.bu_reliab.setposition . 180
+		}
+		else {
+			if (hasInitValues) {
+			call adv.gb_reliab.setposition . 75
+			call adv.tx_reliab.setposition . 95
+			call adv.ed_reliab.setposition . 95
+			call adv.bu_reliab.setposition . 95
+			}
+		}
+	}
+	else {
+		call adv.gb_reliab.hide
+		call adv.tx_reliab.hide
+		call adv.ed_reliab.hide
+		call adv.bu_reliab.hide
+
+		call hasReliability.setfalse
+	}
+	
+	if hasTypeChange | hasInitValues | hasReliability {
+		call adv.tb_note.hide
+	}
+	else {
+		call adv.tb_note.show
+	}
+END
+
+DIALOG adv, tabtitle("Advanced")
+BEGIN
+  TEXTBOX  tb_note	_lft	_top	_iwd	_tb2,		///
+	label("This feature is not available with multiple selections.")
+
+  CHECKBOX ck_convert	_lft	_top	_iwd	_ht4h,		///
+	label("Convert to observed") groupbox nomemory		///
+	onclickon(program adv_check_convert)			///
+	onclickoff(program adv_check_convert)
+
+  TEXT     tx_var	_ilft	_ss	_vnwd	.,		///
+	label("Variable:")
+DEFINE y @y
+  VARNAME  vn_var	@	_ss	@	., nomemory
+
+  TEXT     tx_lname	_ilft	y	@	.,		///
+	label("Name:")
+  EDIT     ed_lname	@	_ss	@	., nomemory
+
+  TEXT     tx_label	_vlx	y	_ivlwd	.,		///
+	label("Label:")
+  EDIT     ed_label	@	_ss	@	., nomemory
+
+  GROUPBOX gb_init	_lft	+45	_iwd	80,		///
+	label("Initial values")
+  TEXT     tx_cnsmean	_ilft	_ss	_wd2	.,		///
+	label("Mean:") right
+  EDIT     ed_cnsmean	_sep2	@	_cbwd	., nomemory
+  BUTTON   bu_cnsmean	_cbsep	@	_clwd	.,		///
+	label("?") onpush(view help sg__initialvalues##|_new)
+
+  TEXT     tx_cnscons	_ilft	@	_wd2	.,		///
+	label("Intercept:") right
+  EDIT     ed_cnscons	_sep2	@	_cbwd	., nomemory
+  BUTTON   bu_cnscons	_cbsep	@	_clwd	.,		///
+	label("?") onpush(view help sg__initialvalues##|_new)
+
+  TEXT     tx_cnsvar	_ilft	_ls	_wd2	.,		///
+	label("Variance:") right
+  EDIT     ed_cnsvar	_sep2	@	_cbwd	., nomemory
+  BUTTON   bu_cnsvar	_cbsep	@	_clwd	.,		///
+	label("?") onpush(view help sg__initialvalues##|_new)
+
+  GROUPBOX gb_reliab	_lft	+45	_iwd	_ht2h,		///
+	label("Reliability")
+  TEXT     tx_reliab	_ilft	_ss	_wd2	.,		///
+	label("Reliability:") right
+  EDIT     ed_reliab	_sep2	@	_cbwd	., nomemory
+  BUTTON   bu_reliab	_cbsep	@	_clwd	.,		///
+	label("?") onpush(view help sg__reliability##|_new)
+END
+
+PROGRAM adv_check_convert
+BEGIN
+	if !H(adv.ck_convert) & adv.ck_convert {
+		call adv.tx_var.enable
+		call adv.vn_var.enable
+		call adv.tx_lname.enable
+		call adv.ed_lname.enable
+		call adv.tx_label.enable
+		call adv.ed_label.enable
+	}
+	else {
+		call adv.tx_var.disable
+		call adv.vn_var.disable
+		call adv.tx_lname.disable
+		call adv.ed_lname.disable
+		call adv.tx_label.disable
+		call adv.ed_label.disable
+	}
+END
+
+PROGRAM adv_output
+BEGIN
+	call program adv_get_defaults
+
+	if !H(adv.ck_convert) & adv.ck_convert {
+		if (!adv.ed_label.isdefault()) {
+			call sg__PARAM2.setvalue "SetSelected"
+			call sg__ARG_00.setvalue "label"
+			call sg__ARG_01.setvalue class adv.ed_label.value
+			put /program sg__do_output_sub
+		}
+
+		if (bLatent) {
+			if (adv.vn_var) {
+				call sg__PARAM2.setvalue "SetSelected"
+				call sg__ARG_00.setvalue "varname"
+				call sg__ARG_01.setvalue class adv.vn_var.value
+				put /program sg__do_output_sub
+			}
+
+			/* must be last */
+			call sg__PARAM2.setvalue "ConvertType"
+			call sg__ARG_00.setvalue "observed"
+			put /program sg__do_output_sub
+		}
+		if (bObserved) { /* really else if */
+			if (adv.ed_lname) {
+				call sg__PARAM2.setvalue "SetSelected"
+				call sg__ARG_00.setvalue "name"
+				call sg__ARG_01.setvalue class adv.ed_lname.value
+				put /program sg__do_output_sub
+			}
+
+			/* must be last */
+			call sg__PARAM2.setvalue "ConvertType"
+			call sg__ARG_00.setvalue "latent"
+			put /program sg__do_output_sub
+		}
+	}
+
+	if ! adv.ed_cnsmean.isdefault() {
+		call dTemp.setvalue class adv.ed_cnsmean.value
+		call sTemp.setvalue class adv.ed_cnsmean.value
+		if (!dTemp & dTemp.isneq(0) & sTemp.isneq("<multiple>")) {
+			stopbox stop "On the Advanced tab,"	///
+			`"an "Initial value" contains a nonnumeric value."'
+		}
+		call sg__PARAM2.setvalue "SetSelected"
+		call sg__ARG_00.setvalue "ini_mean"
+		call sg__ARG_01.setvalue class adv.ed_cnsmean.value
+		put /program sg__do_output_sub
+	}
+
+	if ! adv.ed_cnscons.isdefault() {
+		call dTemp.setvalue class adv.ed_cnscons.value
+		call sTemp.setvalue class adv.ed_cnscons.value
+		if (!dTemp & dTemp.isneq(0) & sTemp.isneq("<multiple>")) {
+			stopbox stop "On the Advanced tab,"	///
+			`"an "Initial value" contains a nonnumeric value."'
+		}
+		call sg__PARAM2.setvalue "SetSelected"
+		call sg__ARG_00.setvalue "ini_cons"
+		call sg__ARG_01.setvalue class adv.ed_cnscons.value
+		put /program sg__do_output_sub
+	}
+
+	if ! adv.ed_cnsvar.isdefault() {
+		call dTemp.setvalue class adv.ed_cnsvar.value
+		call sTemp.setvalue class adv.ed_cnsvar.value
+		if (!dTemp & dTemp.isneq(0) & sTemp.isneq("<multiple>")) {
+			stopbox stop "On the Advanced tab,"	///
+			`"an "Initial value" contains a nonnumeric value."'
+		}
+		call sg__PARAM2.setvalue "SetSelected"
+		call sg__ARG_00.setvalue "ini_var"
+		call sg__ARG_01.setvalue class adv.ed_cnsvar.value
+		put /program sg__do_output_sub
+	}
+
+	if ! adv.ed_reliab.isdefault() {
+		call dTemp.setvalue class adv.ed_reliab.value
+		call sTemp.setvalue class adv.ed_reliab.value
+		if (!dTemp & dTemp.isneq(0) & sTemp.isneq("<multiple>")) {
+			stopbox stop "On the Advanced tab,"	///
+			`""Reliability" contains a nonnumeric value."'
+		}
+		call create DOUBLE dRelTemp
+		call dRelTemp.setvalue class adv.ed_reliab.value
+		if dRelTemp.isle(0) | dRelTemp.isgt(1) {
+			stopbox stop "On the Advanced tab,"	///
+			`""Reliability" must be greater than zero and less than or equal to one."'
+		}
+
+		call sg__PARAM2.setvalue "SetSelected"
+		call sg__ARG_00.setvalue "reliab"
+		call sg__ARG_01.setvalue class adv.ed_reliab.value
+		put /program sg__do_output_sub
+	}
+END
+
+/*****************************************************************************/
+
+PROGRAM command
+BEGIN
+	call program global_get_defaults
+
+	call sg__PARAM1.setvalue class OBJ.value
+	
+	call sg__PARAM2.setvalue "BeginSet"
+	call sg__DESCPT.setvalue "change variable settings"
+	put /program sg__do_output_sub
+	
+	put /program variable_output
+	put /program error_output
+	put /program adv_output
+
+	call sg__PARAM2.setvalue "EndSet"
+	call sg__DESCPT.setvalue "change variable settings"
+	put /program sg__do_output_sub
+
+
+	call sg__PARAM1.setvalue class OBJ.value
+	call sg__PARAM2.setvalue "UpdateDlg"
+	call sg__ARG_00.setvalue "variables"
+	call sg__ARG_01.setvalue class sSrcTypeOrig.value
+	put /program sg__do_output_sub
+
+	/* only necessary because of convert on the advanced tab */
+	call program global_get_defaults
+	call program variable_get_defaults
+	call program variable_initialize_controls
+	call program adv_get_defaults
+	call program adv_initialize_controls
+	call adv.ck_convert.setoff
+	/* */
+
+	call sg__PARAM1.setvalue class OBJ.value
+	call sg__PARAM2.setvalue "Reselect"
+	put /program sg__do_output_sub
+END

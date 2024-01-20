@@ -1,0 +1,6 @@
+*! version 1.0.0  22dec2002
+sequence 3850
+
+set width    scheme reverse_big 
+set color    scheme reverse_big_line
+set pattern  solid

@@ -1,0 +1,247 @@
+/*
+    kdensity.dlg
+
+*!  VERSION 1.1.2  03aug2006  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+HELP hlp1, view("help kdensity")
+RESET res1
+
+DIALOG main, label("kdensity - Univariate kernel density estimation")   /*
+		*/ tabtitle("Main")
+BEGIN
+  TEXT     tx_var    _lft      _top      _cwd4_1   .,			/*
+		*/ label("Variable:")					/*
+		*/
+  DEFINE y @y
+  VARNAME  vn_var    _lft      _ss       _vnwd     .,			/*
+		*/ label("Variable")					/*
+		*/
+
+  TEXT     tx_kernel _lft4_2   y         _cwd4_1   .,			/*
+		*/ label("Kernel function:")				/*
+		*/
+  COMBOBOX cb_kernel @         _ss       _vnwd     .,			/*
+		*/ label("Kernel function")				/*
+		*/ dropdownlist						/*
+		*/ contents(kernel_function)				/*
+		*/ values(kernel_function_val)				/*
+		*/
+
+  CHECKBOX ck_gen    _lft      _xls      _cwd1     _ht4h,		/*
+		*/ label("Generate new variables")			/*
+		*/ groupbox						/*
+		*/ clickon("script gen_on")				/*
+		*/ clickoff("script gen_off")				/*
+		*/
+DEFINE y @y
+
+  TEXT     tx_newx   _ilft     _ss       _vnwd     .,			/*
+		*/ label("Estimation points:")				/*
+		*/
+  TEXT     tx_newden _ilft4_2  @         @         .,			/*
+		*/ label("Density values:")				/*
+		*/
+
+  EDIT     ed_newx   _ilft     _ss       _vnwd     .,			/*
+		*/ label("Estimation points")				/*
+		*/ max(32)						/*
+		*/
+  EDIT     ed_newden _ilft4_2  @         @         .,			/*
+		*/ label("Density values")				/*
+		*/ max(32)						/*
+		*/
+
+  CHECKBOX ck_width  _lft2     y         _cwd1     _ht4h,		/*
+		*/ label(`"Override "optimal" width"')			/*
+		*/ clickon("script width_on")				/*
+		*/ clickoff("script width_off")				/*
+		*/ groupbox						/*
+		*/ option("width")					/*
+		*/
+  TEXT     tx_width  _indent   _ss       _cwd3     .,			/*
+		*/ label("Halfwidth of kernel:")			/*
+		*/
+  EDIT     en_width  @         _ss       _en14wd   .,			/*
+		*/ label("Halfwidth of kernel")				/*
+		*/ numonly						/*
+		*/ option("width")					/*
+		*/
+
+  CHECKBOX ck_n      _lft      _xxls     _iwd      _ht10,		/*
+		*/ groupbox						/*
+		*/ onclickoff(script main_ck_n_off)			/*
+		*/ onclickon(program main_ck_n_on)			/*
+		*/ label("Override default grid of evaluation points")
+
+  RADIO    rb_n      _ilft     _ms        400       .,			/*
+		*/ onclickon(program main_rb_n_on) first		/*
+		*/ label("Estimate density using a specified number of evaluation points")
+  RADIO    rb_at     @         +50        @         .,			/*
+  		*/ onclickon(program main_rb_at_on) last		/*
+  		*/ label("Estimate density using the values specified by a variable")
+  VARNAME  vn_at     _indent2  +20        _vnwd     .,			/*
+  		*/ label("Estimate density using the values specified by a variable") 	/*
+  		*/ option(at)
+  SPINNER  sp_n      @         -50        _spwd     .,			/*
+		*/ min(1)						/*
+		*/ max(10000000)					/*
+		*/ default(50)						/*
+		*/ option("n")
+
+  CHECKBOX ck_nogr   _lft      +100        _vnwd    .,			/*
+		*/ label("Suppress graph")				/*
+		*/ option("nograph") 					/*
+		*/ clickon("script graph_off")				/*
+		*/ clickoff("script graph_on")				/*
+		*/
+END
+
+INCLUDE ifin
+INCLUDE weights_fa
+INCLUDE p1_opts
+INCLUDE gdensity
+INCLUDE addplot
+INCLUDE gr_twoway
+
+SCRIPT PREINIT
+BEGIN
+	script p1_opts_createAsNoRange
+	script p1_opts_setDefaultLine
+END
+
+SCRIPT POSTINIT
+BEGIN
+	p1_opts.settabtitle "Kernel plot"
+	script gdensity_allow_tDensity
+END
+
+SCRIPT graph_on
+BEGIN
+	script p1_opts_enable
+	script gdensity_enable
+	script addplot_enable
+	script gr_twoway_enable
+END
+
+SCRIPT graph_off
+BEGIN
+	script p1_opts_disable
+	script gdensity_disable
+	script addplot_disable
+	script gr_twoway_disable
+END
+
+SCRIPT gen_on
+BEGIN
+  main.ed_newx.enable
+  main.tx_newx.enable
+  main.ed_newden.enable
+  main.tx_newden.enable
+END
+
+SCRIPT gen_off
+BEGIN
+  main.ed_newx.disable
+  main.tx_newx.disable
+  main.ed_newden.disable
+  main.tx_newden.disable
+END
+
+SCRIPT main_ck_n_off
+BEGIN
+  main.rb_at.disable
+  main.rb_n.disable
+  main.vn_at.disable
+  main.sp_n.disable
+END
+
+PROGRAM main_ck_n_on
+BEGIN
+  call main.rb_at.enable
+  call main.rb_n.enable
+  if main.rb_n {
+  	call main.sp_n.enable
+  }
+  if main.rb_at {
+  	call main.vn_at.enable
+  }
+END
+
+PROGRAM main_rb_n_on
+BEGIN
+  if main.ck_n { // must check due to initialization order
+  	call main.vn_at.disable
+  	call main.sp_n.enable
+  }
+END
+
+PROGRAM main_rb_at_on
+BEGIN
+  if main.ck_n { // must check due to initialization order
+  	call main.vn_at.enable
+  	call main.sp_n.disable
+  }
+END
+
+SCRIPT width_on
+BEGIN
+  main.en_width.enable
+  main.tx_width.enable
+END
+
+SCRIPT width_off
+BEGIN
+  main.en_width.disable
+  main.tx_width.disable
+END
+
+SCRIPT stud_on
+BEGIN
+  main.sp_stud.enable
+  main.tx_stud.enable
+END
+
+SCRIPT stud_off
+BEGIN
+  main.sp_stud.disable
+  main.tx_stud.disable
+END
+
+PROGRAM command
+BEGIN
+	put "kdensity "
+	varlist main.vn_var
+	INCLUDE _weights_pr
+	INCLUDE _ifin_pr
+	beginoptions
+		put main.cb_kernel " "
+		if main.ck_gen {
+			require main.ed_newden main.ed_newx
+			put "generate("
+			put main.ed_newx
+			put " "
+			put main.ed_newden
+			put ")"
+		}
+		optionarg main.sp_n
+		if main.ck_width {
+			optionarg main.en_width
+		}
+		if main.rb_at {
+			require main.vn_at
+			optionarg main.vn_at
+		}
+		option main.ck_nogr
+
+		put " " /program p1_opts_recast_output
+		put " " /program gdensity_output
+		put " " /program addplot_output
+		put " " /program gr_twoway_output
+	endoptions
+END

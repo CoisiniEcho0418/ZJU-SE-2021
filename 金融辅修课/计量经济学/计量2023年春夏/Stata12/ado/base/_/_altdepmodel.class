@@ -1,0 +1,2257 @@
+*! version 1.3.2  15jun2011
+
+version 10
+
+/* abstract class for limited dependent variable models			*/
+class _altdepmodel {
+	instance:
+		/* variable identifying cases				*/
+		_numericvar case
+		/* alternatives	for each case				*/
+		_alternvar altern
+		/* by-alternative variables, bav 			*/
+		array bavars
+		/* names of ancillary parameters			*/
+		array anc
+		/* scores of ancillary parameters			*/
+		array scanc
+
+		/* stats on cases					*/
+		double unbal
+		double kmin
+		double kmax
+		double kmean
+		double ncase
+
+		/* temp vars for initial estimates 			*/
+		array tvars
+		/* tvars labels in stripe	 			*/
+		array tlabels
+		/* ml models						*/
+		array mlmodels
+		/* index of the base alternative 			*/
+		double base
+		/* .altern.k x .kbavars matrix indicating identifiable 	*/
+		/* by-alternative regression coefficients		*/
+		_matrix idbacoef
+}, inherit(_model)
+
+program .oncopy
+
+	di as err "_altdepmodel.oncopy not implemented"
+	exit 498
+end
+
+program ._set 
+	local vv : display "version " string(_caller()) ":"
+	syntax [varlist(default=none numeric)] [fw iw pw],               ///
+		touse(varname numeric) altern(varname) case(name)        ///
+		[ BYAltvars(varlist numeric) noCHKbav base(string)       ///
+		bylist(string) const(passthru) wtobj(passthru) COLlinear ]
+
+	.Super._set `varlist' [`weight'`exp'], touse(`touse') `const' ///
+		`collinear' `wtobj'
+
+	.droptvars
+	.mlmodels.Arrdropall
+	.anc.Arrdropall
+	.scanc.Arrdropall
+
+	/* case must be a _numericvar object 				*/
+	cap local ok = `.`case'.isofclass _numericvar'
+	if (_rc) local ok = 0
+	if !`ok'{
+		/* programmer error: should not happen 			*/
+		di as err "_altdepmodel._set: case() is not an object of " ///
+		 "class _numericvar"
+		exit 198
+	}
+	.case.ref = .`case'.ref
+
+	local case `.case.varname'
+	sort `case'
+	if "`.wtype'" != "" {
+		._assertnovar `.weight.varname', bylist(`case')
+		if _rc==9 {
+			di as err "{p}weights must be constant within " ///
+			 "case{p_end}"
+			exit 407
+		}
+		if "`.wtype'" == "fweight" {
+			local wtopt [fweight=`.weight.varname']
+		}
+	}
+	`vv' ///
+	.altern = ._alternvar.new `altern' `wtopt' if `touse'
+	local alt `.altern.varname'
+
+	tempvar check
+	if "`.dep'" != "" {
+		/* check for replicate alternatives per case		*/
+		forvalues i=1/`.altern.k' {
+			qui by `case': gen `check' = (`alt'==`i') if `.touse'
+			qui by `case': replace `check' = sum(`check')
+			cap by `case': assert `check'[_N] <= 1
+			if _rc {
+				di as err "variable `.altern.variable' " ///
+				 "has replicate levels for one or more " ///
+				 "cases; this is not allowed"
+				exit 459
+			}
+			cap drop `check'
+		}
+	}
+	/* check for balanced data 					*/
+	qui lab list `.altern.varname' 
+	local r  = r(k)
+
+	local case `.case.varname'
+	tempvar check
+	qui bysort `case': gen int `check' = sum(`.touse')
+	cap by `case': assert `check'[_N]==`r' if `.touse'
+	.unbal = (_rc > 0)
+
+	/* case statistics						*/
+	qui by `case': replace `check' = . if _n<_N
+	summarize `check' `wtopt' if `.touse', meanonly
+
+	.kmin = r(min)
+	.kmax = r(max)
+	.kmean = r(mean)
+	.ncase = r(N)
+
+	.bavars.Arrdropall
+
+	.altindex `"`base'"'
+	.base = `r(index)'
+
+	local nvar = `.kvars'
+	if ("`byaltvars'"=="" & `.const'==0) {
+		.idbacoef = ._matrix.new J(`.altern.k',1,0)
+		mat colnames `.idbacoef.matname' = _cons
+		mat rownames `.idbacoef.matname' = `.altern.strlabels'
+
+		if (`nvar'==0) exit
+
+		local mlmodel (`.altern.variable':`.dep'=
+		forvalues i=1/`.kvars' {
+			._validateas `.vars[`i']'
+			local mlmodel `mlmodel' `.vars[`i']'
+		}
+		local mlmodel `mlmodel', nocons)
+
+		.mlmodels.Arrpush `"`mlmodel'"'
+
+		exit
+	}
+	if "`byaltvars'" != "" {
+		if "`collinear'" == "" {
+			if (`.const'==0) local conopt noconstant
+
+			_rmcoll `byaltvars' if `.touse', `conopt'
+			local byaltvars `r(varlist)'
+		}
+		else  {
+			local dups : list dups byaltvars
+			if "`dups'" != "" {
+				local byaltvars : list uniq byaltvars
+			
+				if (`:word count `dups'' > 1) ///
+					local mes variables `dups' are
+				else local mes variable `dups' is
+			
+				di as err "{p}`mes' specified twice in the " ///
+				 "model specification{p_end}"
+				exit 198
+			}
+		}
+	}
+	local m = `.altern.k'
+	local nbav : word count `byaltvars'
+	local nbav1 = `nbav' + 1
+
+	.idbacoef = ._matrix.new J(`m',`nbav1',1)
+	local idba `.idbacoef.matname'
+
+	mat colnames `idba' = `byaltvars' _cons
+	mat rownames `idba' = `.altern.strlabels'
+
+	if `nbav' > 0 {
+		if ("`chkbav'"=="") sort `case' 
+		local k = 0
+		foreach var of varlist `byaltvars' {
+			if "`chkbav'" == "" {
+				/* ensure the by-alternative variables	*/
+				/* are case specific			*/
+				._assertnovar `var', bylist(`case')
+				if _rc == 9 {
+					di as err "{p}variable `var' is " ///
+					 "not constant within case{p_end}"
+					exit 459
+				}
+			}
+			.bavars.Arrpush "`var'"
+			mat `idba'[`.base',`++k'] = 0
+		}
+		if "`chkbav'" != "" {
+			sort `case' `bylist' 
+			forvalues i=1/`nbav' {
+				local var `.bavars[`i']'
+				/* does by alt var vary across level 	*/
+				/*  alternatives? 			*/
+				._assertnovar `var', bylist(`case' `bylist')
+				if (_rc==9) mat `idba'[`.base',`i'] = 1
+			}
+		}
+	}
+	if (`.const') mat `idba'[`.base',`nbav1'] = 0
+
+	/* first pass generate temp vars that interact alternative	*/
+	/* indicators with by-alternative variables			*/
+	local kc = 0
+	forvalues j=1/`m' {
+		local lev `.altern.labels[`j']'
+		if `nvar'>0 & "`lev'"=="`altern'" {
+			di as err "there is an equation naming conflict " ///
+			 "with alternative variable `altern' with "       ///
+			 "alternative label `lev'"
+			exit 459
+		}
+		if (!`.const') mat `idba'[`j',`nbav1'] = 0
+
+		forvalues k=1/`nbav' {
+			if `idba'[`j',`k'] == 0 {
+				/* not identifiable 			*/
+				continue
+			}
+			local bavar `.bavars[`k']'
+			local type : type `bavar'
+			.tvars[`++kc'] = ._numericvar.new `type' ///
+				cond(`alt'==`j',`bavar', 0)
+			.tlabels[`kc'] = "`lev':`bavar'"
+			mat `idba'[`j',`k'] = `kc'
+		}
+		if `idba'[`j',`nbav1'] == 1 {
+			.tvars[`++kc'] = ._numericvar.new byte (`alt'==`j')
+			.tlabels[`kc'] = "`lev':_cons"
+			mat `idba'[`j',`nbav1'] = `kc'
+		}
+	}
+	local regen = 0
+	if "`collinear'" == "" {
+		/* check that the by-alternative temp and a-s 		*/
+		/*  variables are not collinear				*/
+		._rmcollin_bavars  
+		/* may have dropped a by-alternative variable		*/
+		local nbav = `.kbavars'
+		local nbav1 = `nbav' + 1
+		local nvar = `.kvars'
+		local regen = r(nbadrop) > 0
+		if (`regen') .tvars.Arrdropall
+	}
+	.tlabels.Arrdropall
+	if `nvar' > 0 {
+		local mlmodel (`.altern.variable':`.dep'=
+		forvalues i=1/`nvar' {
+			._validateas `.vars[`i']'
+			local mlmodel `mlmodel' `.vars[`i']'
+		}
+		local mlmodel `mlmodel', nocons)
+
+		.mlmodels.Arrpush `"`mlmodel'"'
+	}
+	else {
+		local dep `.dep'
+	}
+	/* second pass generate models specifications for ml and	*/
+	/*  regenerate temp variables if necessary			*/
+	local k = 0
+	forvalues i=1/`m' {
+		local mlmodel
+		local indep
+		local lev `.altern.labels[`i']'
+		local nc = 0
+		forvalues j=1/`nbav' {
+			if `idba'[`i',`j'] == 0 {
+				/* not identifiable			*/
+				continue
+			}
+			local bavar `.bavars[`j']'
+			local indep `indep' `bavar'
+			local `++nc'
+			if `regen' {
+				local type : type `bavar'
+				.tvars[`++k'] = ._numericvar.new `type' ///
+					cond(`alt'==`i',`bavar', 0)
+				mat `idba'[`i',`j'] = `k'
+			}
+		}
+		if `nc'==0 & `idba'[`i',`nbav1']==0 {
+			if `i' != `.base' {
+				di as txt "{p 0 6 2}note: all regression " ///
+				 "coefficients for alternative `lev' have " ///
+				 "been dropped{p_end}"
+			}
+			continue
+		}
+		local mlmodel `mlmodel'  (`lev': 
+		if ("`dep'"!="") local mlmodel `mlmodel' `dep' =
+		if ("`indep'"!="") local mlmodel `mlmodel' `indep'
+
+		if `idba'[`i',`nbav1'] {
+			local mlmodel `mlmodel')
+			if `regen' {
+				.tvars[`++k']=._numericvar.new byte (`alt'==`i')
+				mat `idba'[`i',`nbav1'] = `k'
+			}
+		}
+		else local mlmodel `mlmodel', nocons)
+
+		local dep
+		.mlmodels.Arrpush `"`mlmodel'"'
+	}
+end
+
+/* validate data and markout before setting data members		*/
+/* called by parent class						*/
+program ._presetvalidate
+	syntax varlist(min=1 numeric), touse(varname numeric) ///
+		case(varname numeric) 	[ altern(varname)     ///
+		BYAltvars(varlist numeric) altwise ifin(varname numeric) ]
+
+       	cap assert float(`case')==float(trunc(`case')) if `touse'
+	if _rc {
+		di as error "case() variable must be integer " ///
+		 "valued"
+		exit 459
+	}
+	markout `touse' `case'
+	if ("`altern'"!="") markout `touse' `altern', strok
+
+	if ("`byaltvars'"!="") markout `touse' `byaltvars'
+
+	/* casewise or altwise deletion					*/
+	if ("`altwise'"=="") ._markoutbycase `touse', case(`case') ifin(`ifin')
+
+	/* markout cases with only one alternative 			*/
+	._markoutsingletons `touse', case(`case')
+end
+
+program ._markoutsingletons
+	syntax varname(numeric), case(varname numeric)
+
+	local touse `varlist'
+
+	tempvar check
+	qui gen long `check' = `case' if `touse'
+	qui count if `touse'
+	local N0 = r(N)
+	qui bysort `check': replace `touse' = 0 if _N == 1 
+	qui count if `touse'
+	local d = `N0' - r(N)
+	if `d' != 0 {
+		di as txt "{p 0 7 2}note: `d' cases dropped because they " ///
+		 "have only one alternative{p_end}"
+	}
+end
+
+program ._rmcollin, rclass
+	syntax varlist(min=1), touse(varname numeric) ///
+		[ byaltvars(varlist numeric) ]
+
+	gettoken dep indep : varlist
+	local ni: word count `indep' `byaltvars'
+	if `ni' > 0 {
+		local indep : list uniq indep
+		local byaltvars : list uniq byaltvars
+		_rmcollright `indep' `byaltvars' if `touse', noconstant
+		local indep0 `"`r(varlist)'"'
+		if `:word count `indep0'' < `ni' {
+			local indep : list indep & indep0
+			local byaltvars : list byaltvars & indep0 
+		}
+	}
+	return local varlist `dep' `indep'
+	return local byaltvars `byaltvars'
+end
+
+program ._rmcollin_bavars, rclass
+
+	local idba `.idbacoef.matname'
+	local kbav1 = `.kbavars'+1
+
+	if `kbav1' == 1 {
+		return scalar ndrop = 0
+		return scalar nbadrop = 0
+		exit
+	}
+	
+	forvalues i=1/`.altern.k' {
+		/* put constant terms first so they get dropped last	*/
+		local k = `idba'[`i',`kbav1'] 
+		if `k' > 0 {
+			local tvars `tvars' `.tvars[`k'].varname'
+			local tlabs `tlabs' `.tlabels[`k']'
+		}
+	}
+	/* now the rest of the temp variables				*/
+	forvalues i=1/`.altern.k' {
+		forvalues j=1/`.kbavars' {
+			local k = `idba'[`i',`j'] 
+			if `k' > 0 {
+				local tvars `tvars' `.tvars[`k'].varname'
+				local tlabs `tlabs' `.tlabels[`k']'
+			}
+		}
+	}
+	local vars `.strvars'
+
+	/* drop a-s variables first, then by-alternative temp variables	*/
+	cap _rmcollright (`tvars') `vars' if `.touse', noconst
+
+	if "`r(dropped)'" == "" {
+		return scalar ndrop = 0
+		return scalar nbadrop = 0
+		exit
+	}
+	local varsd `r(block2)'
+	local tvarsd `r(block1)'
+	local dropv : list vars - varsd
+	return scalar ndrop = `:word count `dropv''
+	if "`dropv'" != "" {
+
+		local vars `r(block2)'
+		.vars.Arrdropall
+		if "`vars'" !=  "" {
+			foreach var of varlist `vars' {
+				.vars.Arrpush "`var'"
+			} 
+		}
+		foreach var of varlist `dropv' {
+			di as txt "{p 0 6 2}note: " abbrev("`var'",12) ///
+			 " dropped because of collinearity{p_end}"
+		}
+	}
+	local dropv : list tvars - tvarsd
+	return scalar nbadrop = `:word count `dropv''
+
+	if ("`dropv'" == "") exit
+
+	local bavars `.strbavars'
+	local alts `.altern.strlabels'
+	tempname nv
+	mat `nv' = `idba'
+
+	foreach var of varlist `dropv' {
+		local k : list posof "`var'" in tvars
+		local lab : word `k' of `tlabs'
+		di as txt "{p 0 6 2}note: " abbrev("`lab'",12) ///
+		 " dropped because of collinearity{p_end}"
+
+		gettoken alt bavar: lab, parse(":")
+		gettoken colon bavar: bavar, parse(":")
+		local j = rownumb(`idba',"`alt'")
+		local l = colnumb(`idba',"`bavar'")
+		mat `idba'[`j',`l'] = 0
+	}
+
+	local m = `.altern.k'
+	local nd = 0
+	tempname p
+	mat `p' = J(1,`m',1)*`idba'
+	forvalues i=1/`.kbavars' {
+		if `p'[1,`i'] == 0 {
+			di as txt "{p 0 6 2}note: "                      ///
+			 abbrev("`.bavars[`i']'",12) " dropped because " ///
+			 "of collinearity{p_end}"
+			local `++nd'
+		}
+		else local bavars1 `bavars1' `.bavars[`i']'
+	}
+	if `.const' {
+		if `p'[1,`=`.kbavars'+1'] == 0 {
+			di as txt "{p 0 6 2}note: constant terms are no " ///
+			 "longer in the model due to collinearities{p_end}"
+
+			.const = 0
+		}
+	}
+	if `nd' {
+		.bavars.Arrdropall
+		nbavars1 : word count `bavars1'
+		mat `p' = J(`m',`=nbavars1+1',0)
+		mat colnames `p' = `bavars1'
+		mat rownames `p' = `.alternvar.strlabels'
+		forvalues i=1/`nbavars1' {
+			local var : word `i' of `bavars1'
+			.bavars.Arrpush `var'
+			local k : list posof "`var'" in `bavars'
+			forvalues j=1/`m' {
+				mat `p'[`j',`i'] = `idba'[`j',`k']
+			}
+		}
+		if `.const' {
+			local `++nbavars1'
+			local k : word count `bavars'
+			local `++k'
+			forvalues j=1/`m' {
+				mat `p'[`j',`nbavars1''] = `idba'[`j',`k']
+			}
+		}
+		mat `idba' = `p'
+	}
+end
+
+program ._markoutbycase
+	syntax varname(numeric), case(varname numeric) ///
+		[ ifin(varname numeric) ] 
+
+	local touse `varlist'
+	tempvar check case0
+	
+	if "`ifin'" != "" {
+		local iff if `ifin'
+		tempvar case0
+		/* just in case there are duplicate case id's 		*/
+		/*  across a by: variable				*/
+		qui gen long `case0' = `case' if `ifin'
+	}
+	else local case0 `case'
+
+	gen byte `check' = 0
+	qui bysort `case0': replace `check' = sum(!`touse') `iff'
+	qui by `case0': replace `touse' = 0 if `check'[_N] > 0
+
+	qui count if `touse'
+	local n0 = r(N)
+	if `n0' == 0 {
+		di as err "no cases remain after removing invalid " ///
+		 "observations"
+		exit 2000
+	}
+end
+
+/* validate binary dependent variable and single choice	per case	*/
+program ._markoutbindep
+	syntax varlist(min=1 max=1 numeric), case(varname numeric) ///
+		touse(varname numeric) [ ONEonly ]
+
+	local dep `varlist'
+        cap assert `dep'==0 | `dep'==1 if `touse'
+        if _rc != 0 {
+                di as error "{p}depvar `dep' must be a 0-1 variable " ///
+		 "indicating which alternatives are chosen{p_end}"
+                exit 450
+        }
+	qui count if `touse'
+	local n0 = r(N)
+
+	tempvar sdep count case1
+	/* set case !touse to missing to place at bottom of sort	*/ 
+	qui gen long `case1' = `case' if `touse'
+	/* count the number of cases 					*/
+	qui bysort `case1': gen byte `count' = (_n==1)*`touse'
+	qui count if `count' 
+	local ncase = r(N)
+	qui drop `count'
+
+	/* assert one 1 positive outcome per case. markout otherwise	*/
+	qui gen int `sdep' = cond(`touse',`dep',0)
+	qui by `case1': replace `sdep' = sum(`sdep')
+	if "`oneonly'" != "" {
+		qui by `case1':  replace `touse' = 0 if `sdep'[_N] != 1
+		local extra "or multiple positive outcomes"
+	}
+	else {
+		qui by `case1':  replace `touse' = 0 if `sdep'[_N] == 0
+	}
+	qui drop `sdep'
+
+	qui count if `touse'
+	local n1 = r(N)
+	local ndrop = `n0' - `n1'
+	if `ndrop' > 0 {
+		qui by `case1': gen byte `count' = (_n==1)*`touse'
+		qui count if `count' 
+
+		local dcase = `ncase'-r(N)
+		di in gr "{p 0 7 2}note: `dcase' " plural(`dcase',"case") ///
+		 " (`ndrop' obs) dropped due to no positive outcome "     ///
+		 "`extra' per case{p_end}"
+	}
+	if (`n1' == 0) {
+		di as err "no cases remain after removing invalid " ///
+		 "observations"
+		exit 2000
+	}
+end
+
+program ._validateas
+	syntax varname
+
+	local var `varlist'
+	._bycountdif `var', bylist(`.case.varname')
+
+	if r(k) == 0 {
+		di as err "{p}variable `var' is not alternative-specific: " ///
+		 "it has no within-case variability{p_end}"
+		exit 459
+	}
+	else if r(k) < `.ncase' {
+		di in gr `"{p 0 7 2}note: variable `=abbrev("`var'",12)' "' ///
+		 "has `=`.ncase'-r(k)' cases that are not alternative-"     ///
+		 "specific: there is no within-case variability {p_end}"
+	}
+end
+
+program ._bycountdif, rclass
+	syntax varname, bylist(varlist)
+
+	tempvar mark rdif
+	local var `varlist'
+	local type: type `var'
+	if substr("`type'",1,3)=="str" {
+		/* programmer error: should not happen			*/
+		di as err "variable `var' is not numeric"
+		exit 459
+	}
+	if "`type'"=="int" | "`type'"=="long" | "`type'"=="byte" {
+		qui bysort `bylist' : gen byte ///
+			`mark' = sum(`var'!=`var'[1]) if `.touse'
+	}
+	else {
+		local sfloat = 1e3
+		local sdouble = 1e6
+
+		qui bysort `bylist': gen double `rdif' =              ///
+			abs(`var'-`var'[1])/(abs(`var')+c(epsdouble)) ///
+			if `.touse'
+		qui by `bylist' : gen byte `mark' = ///
+			sum(`rdif'>`s`type''*c(eps`type')) if `.touse'
+	}
+	qui replace `mark' = (`mark'>0) if `.touse'
+	qui by `bylist' : replace `mark' = 0 if _n<_N & `.touse'
+	if "`.wtype'"=="fweight" {
+		local wopt [fweight=`.weight.varname']
+	}
+	summarize `mark' `wopt', meanonly
+	tempname k
+	scalar `k' = r(sum)
+	return clear
+	return scalar k = `k'
+end
+
+program ._assertnovar
+	syntax varname, bylist(varlist)
+
+	local var `varlist'
+
+	local type : type `var'
+	if "`type'"=="double" | "`type'"=="float" {
+		local sfloat = 1e3
+		local sdouble = 1e6
+
+		cap bysort `bylist': assert abs(`var'-`var'[1])/         ///
+			(abs(`var')+c(epsdouble))<`s`type''*c(eps`type') ///
+			if `.touse'
+	}
+	else {
+		cap bysort `bylist': assert `var' == `var'[1] if `.touse' 
+	}
+end
+
+program .strbavars
+
+	forvalues i=1/`.bavars.arrnels' {
+		local bavars `bavars' `.bavars[`i']'
+	}
+	class exit `"`bavars'"'
+end
+
+program .kbavars
+
+	class exit .bavars.arrnels
+end
+
+/* postestimation: generate by-alternative temporary variables		*/
+program .gentvars
+
+	if (`.tvars.arrnels' > 0) exit
+
+	local m = `.altern.k'
+	local idba `.idbacoef.matname'
+	local kbavars = `.kbavars'
+	if rowsof(`idba')!=`m' | colsof(`idba')!=`kbavars'+1' {
+		/* programmer error					*/
+		di as err "_altdepmodel.idbacoef matrix must be `m' x " ///
+		 `kbavars'+1
+		exit 498
+	}
+	forvalues j=1/`m' {
+		local lev `.altern.labels[`j']'
+		local indep
+		forvalues k=1/`kbavars' {
+			if `idba'[`j',`k'] {
+				/* identifiable 			*/
+				local bavar `.bavars[`k']'
+				.tvars[`++kc'] = ._numericvar.new `type' ///
+					cond(`alt'==`j',`bavar', 0)
+			}
+		}
+		if `idba'[`j',`=`kbavars'+1'] {
+			.tvars[`++kc'] = ._numericvar.new byte ///
+				(`alt'==`j')
+		}
+	}
+end
+
+program .strtvars
+
+	forvalues i=1/`.tvars.arrnels' {
+		local tvars `tvars' `.tvars[`i'].varname'
+	}
+	class exit `"`tvars'"'
+end
+
+program .kcoef
+	
+	local kcoef = `.kvars' + `.kbacoef'
+
+	class exit `kcoef'
+end
+
+program .kbacoef
+
+	local kbacoef = 0
+	if (!`.idbacoef.isvalid') class exit `kbacoef'
+
+	local idba `.idbacoef.matname'
+	forvalues i=1/`.altern.k' {
+		forvalues j=1/`=`.kbavars'+1' {
+			if `idba'[`i',`j'] {
+				local `++kbacoef'
+			}
+		}
+	}
+	class exit `kbacoef'
+end
+
+program .droptvars
+
+	.tvars.Arrdropall
+	.tlabels.Arrdropall
+end
+
+program .keq 
+
+	class exit .mlmodels.arrnels
+end
+
+program .mlmodel
+
+	forvalues i=1/`.keq' {
+		local mlmodel `mlmodel' `.mlmodels[`i']'
+	}
+	class exit `"`mlmodel'"'
+end
+
+/* models with a single (generic) coefficient for all alternatives 	*/
+program .mlasvmodel
+
+	if `.kvars' > 0 {
+		class exit `"`.mlmodels[1]'"'
+	}
+	class exit ""
+end
+
+/* models with by-alternative coefficients 				*/
+program .mlbavmodel
+
+	local i1 = 1
+	if (`.kvars' > 0) local i1 = 2
+	forvalues i=`i1'/`.keq' {
+		local mlmodel `mlmodel' `.mlmodels[`i']'
+	}
+	class exit `"`mlmodel'"'
+end
+
+/* ancillary parameters							*/
+program .kanc
+
+	class exit `.anc.arrnels'
+end
+
+program .stripe
+
+	local eq `.altern.variable'
+	forvalues i=1/`.kvars' {
+		._validateas `.vars[`i']'
+		local stripe `stripe' `eq':`.vars[`i']'
+	}
+	class exit `"`stripe'"'
+end
+
+program .bastripe
+
+	if `.kbavars'+`.const' == 0 {
+		class exit ""
+	}
+	local idba `.idbacoef.matname'
+	forvalues j=1/`.altern.k' {
+		local lev `.altern.labels[`j']'
+		forvalues k=1/`.kbavars' {
+			if `idba'[`j',`k'] {
+				/*  identifiable			*/
+				local bavar `.bavars[`k']'
+				local stripe `stripe' `lev':`bavar'
+			}
+		}
+		if `idba'[`j',`=`.kbavars'+1'] {
+			local stripe `stripe' `lev':_cons 
+		}
+	}
+	class exit `"`stripe'"'
+end
+
+program .strancscrs
+
+	local scores
+	forvalues i=1/`.scanc.arrnels' {
+		local scores `scores' `.scanc.[`i'].varname'
+	}
+
+	class exit `"`scores'"'
+end
+
+program .ancstripe
+
+	forvalues i=1/`.kanc' {
+		local stripe `stripe' `.anc[`i']':_cons
+	}
+	class exit `"`stripe'"'
+end
+
+program .mlancmodel
+
+	forvalues i=1/`.kanc' {
+		local model `model' /`.anc[`i']'
+	}
+	class exit `"`model'"'
+end
+
+program genscvar
+
+	.Super.genscvar
+
+	.scanc.Arrdropall
+	forvalues i=1/`.kanc' {
+		.scanc[`i'] = ._numericvar.new double 0
+	}
+end
+
+program dropscvar
+
+	.Super.dropscvar
+
+	.scanc.Arrdropall
+end
+
+program .evaleqs
+	syntax newvarlist(max=1), b(name) 
+
+	.evalaseq `varlist', b(`b')
+	.evalbaeqs `varlist', b(`b') update
+end
+
+program .evalaseq
+	syntax newvarlist(max=1), b(name) 
+
+	.Super.evaleq `varlist', b(`b') eq(`.altern.variable')
+end	
+
+program .evalbaeqs
+	syntax name, b(name) [ UPdate ]
+
+	tempvar u
+	tempname idba
+
+	if "`update'"=="" {
+		cap drop `namelist'
+		qui gen double `namelist' = cond(`.touse',0,.)
+	}
+	if (`.kbavars'+`.const'==0) exit
+
+	local alt `.altern.varname'
+	local m = `.altern.k'
+	mat `idba' = `.idbacoef.matname'*J(`=`.kbavars'+1',1,1)
+
+	forvalues j=1/`m' {
+		if `idba'[`j',1] == 0 {
+			/* no by-alternative equation			*/
+			continue
+		}
+		local lev `.altern.labels[`j']'
+		mat score double `u' = `b' if `alt'==`j' & `.touse', eq(`lev')
+		qui replace `namelist' = `namelist' + `u' ///
+				if `alt'==`j' & `.touse'
+		qui drop `u'
+	}
+end
+
+program .evalanc
+	syntax name, b(name)
+
+	tempvar u
+	cap drop `namelist'
+	qui gen double `namelist' = cond(`.touse',0,.)
+	forvalues j=1/`.kanc' {
+		matrix score double `u' = `b' if `.touse', eq(`.anc[`j']')
+		qui replace `namelist' = `u' if `.altern.varname'==`j' & ///
+			`.touse'
+		drop `u'
+	}
+end
+
+/* compute quadratic form using Cholesky matrix R 			*/
+program .evalxRRx
+	syntax newvarlist(min=1 max=1), r(name)
+
+	local eqopt eq(`.altern.variable')
+	if `.kbavars'+`.const' == 0 {
+		.Super.evalxRRx `varlist', r(`r') `eqopt'
+		exit
+	}
+	qui gen double `varlist' = 0 if `.touse'
+	local alt `.altern.varname'
+
+	local m = `.altern.k'
+	local nr = rowsof(`r')
+
+	tempvar t tx
+	tempname v idba
+
+	mat `idba' = `.idbacoef.matname'*J(`=`.kbavars'+1',1,1)
+
+	forvalues j=1/`m' {
+		if `idba'[`j',1] == 0 {
+			/* by-alternative no equation			*/
+			if `.kvars' == 0 {
+				continue
+			}
+			forvalues i=1/`nr' {
+				mat `v' = `r'[1...,`i']'
+				mat score double `tx' = `v' if `.touse', `eqopt'
+				qui replace `varlist' = `varlist'+`tx'*`tx' ///
+					if `alt'==`j' & `.touse'
+				drop `tx'
+			}
+			continue
+		}
+		local lev `.altern.labels[`j']'
+		forvalues i=1/`nr' {
+			mat `v' = `r'[1...,`i']'
+			mat score double `t' = `v' ///
+				if `alt'==`j' & `.touse', eq(`lev')
+			if `.kvars' > 0 {
+				mat score double `tx' = `v' if `.touse', `eqopt'
+				qui replace `t' = `t' + `tx'
+				drop `tx'
+			}
+			qui replace `varlist' = `varlist'+`t'*`t' ///
+				if `alt'==`j' & `.touse'
+			cap drop `t'
+		}
+	}
+end
+
+program .evalasscrs, rclass
+	syntax [newvarlist], [ g(name) ]
+
+	.Super.evalscrs `varlist', g(`g')
+
+	return add
+end
+
+program .evalbascrs, rclass
+	syntax [newvarlist], [ g(name) ]
+
+	local kbavars = `.kbavars'
+	if `kbavars'+`.const' == 0 {
+		return scalar k = 0
+		exit
+	}
+
+	local kscrs : word count `varlist'
+	local bg = ("`g'"!="")
+	if (`kscrs'==0 & !`bg') {
+		/* programmer error 					*/
+		di as err "_altdepmodel.evalbascrs, require either a " ///
+		 "varlist or the g() option"
+		exit 499
+	}
+	if `kscrs' > 0 {
+		local scores `varlist'
+	}
+	tempvar sc
+
+	local si `.scvar.varname'
+	local ai `.altern.varname'
+	local is = 0
+	local n = 0
+
+	if (`kscrs'==0) tempvar sc 
+
+	if `bg' & "`.wtype'" != "" {
+		if "`.wtype'"=="pweight" {
+			local wopt [iweight=`.weight.varname']
+		}
+		else {
+			local wopt [`.wtype'=`.weight.varname']
+		}
+	}
+	local idba `.idbacoef.matname'
+	local bavars `.strbavars'
+	forvalues j=1/`.altern.k' {
+		forvalues k=1/`.kbavars' {
+			if `idba'[`j',`k'] == 0 {
+				continue
+			}
+			if `kscrs' {
+				local sc: word `++is' of `scores' 
+				if "`sc'" == "" {
+					di as err "insufficient number of " ///
+					 "score variables"
+					exit 489
+				}
+			}
+			local bavar : word `k' of `bavars'
+			qui gen double `sc' = cond(`ai'==`j', ///
+				`bavar'*`si',0) if `.touse'
+			if `bg' {
+				summarize `sc' `wopt' ///
+					if `ai'==`j' & `.touse', meanonly
+				mat `g' = (nullmat(`g'),r(sum))
+
+				cap drop `sc'
+			}
+			local `++n'
+		}
+		if `idba'[`j',`=`.kbavars'+1'] {
+			if `kscrs' {
+				local sc: word `++is' of `scores'
+				if "`sc'" == "" {
+					di as err `scerr'
+					exit 498
+				}
+			}
+			qui gen double `sc' = cond(`ai'==`j',`si',0) if `.touse'
+
+			if `bg' {
+				summarize `sc' `wopt' ///
+					if `ai'==`j' & `.touse', meanonly
+				mat `g' = (nullmat(`g'),r(sum))
+
+				cap drop `sc'
+			}
+			local `++n'
+		}
+	}
+	return scalar k = `n'
+end
+
+program .evalancscrs, rclass
+	syntax [newvarlist], [ g(name) ]
+
+	local kanc = `.kanc'
+	if `kanc' == 0 {
+		return local kanc = `kanc'
+		exit
+	}
+	local kscrs : word count `varlist'
+	local bg = ("`g'"!="")
+	if `kscrs'==0 & !`bg' {
+		/* programmer error 					*/
+		di as err "_altdepmodel.evalancscrs, require either a " ///
+		 "namelist or the g() option"
+		exit 499
+	}
+	if `kscrs' > 0 {
+		if `kscrs' < `kanc' {
+			di as err "insufficient number of variables"
+			exit 489
+		}
+		local scores `varlist'
+	}
+	if `bg' & "`.wtype'" != "" {
+		if ("`.wtype'"=="pweight") ///
+			local wopt [iweight=`.weight.varname']
+		else local wopt [`.wtype'=`.weight.varname']
+	}
+	forvalues i=1/`kanc' {
+		if `kscrs' {
+			local sc : word `i' of `scores'
+			qui gen double `sc' = `.scanc[`i'].varname' if `.touse'
+		}
+
+		if `bg' {
+			summarize `.scanc[`i'].varname' `wopt' if `.touse', ///
+				meanonly
+			mat `g' = (nullmat(`g'),r(sum))
+		}
+	}
+	return scalar k = `kanc'
+end
+
+/* generate temp variables to ensure robust standard errors		*/
+/*  can be computed after estimation is complete			*/
+program .robustcheckmemory
+	syntax, b(name)
+
+	forvalues i=1/`=colsof(`b')' {
+		tempvar sc`i'
+		qui gen double `sc`i'' = .
+	}
+end
+
+program .robust, eclass
+	syntax, b(name) v(name) [ cluster(varname) noBYCase ]
+
+	forvalues i=1/`=colsof(`b')' {
+		tempvar sc`i'
+		local scores `scores' `sc`i''
+		local robnms `robnms' `sc`i'':_cons
+	}
+	if "`.wtype'" != "" {
+		local wgt [`.wtype'=`.weight.varname'] 
+	}
+	.scores `scores', b(`b') 
+
+	sort `.case.varname'
+	foreach scr of varlist `scores' {
+		qui by `.case.varname': replace `scr' = sum(`scr') if `.touse'
+	}
+	tempvar robuse
+	gen byte `robuse' = 0
+	qui by `.case.varname': replace `robuse' = (_n==_N) if `.touse'
+
+	if ("`cluster'"!="") local clopt cluster(`cluster')
+
+	matrix colnames `v' = `robnms'
+	matrix rownames `v' = `robnms'
+
+	tempname vmb
+	matrix `vmb' = `v'
+	_robust2 `scores' `wgt' if `robuse', variance(`v') `clopt' 
+	local nc = r(N_clust)
+
+	local nms : colfullnames `b'
+	matrix rownames `v' = `nms'
+	matrix colnames `v' = `nms'
+	matrix rownames `vmb' = `nms'
+	matrix colnames `vmb' = `nms'
+	ereturn matrix V_modelbased `vmb'
+
+	ereturn repost b=`b' V=`v' 
+	ereturn local chi2
+	ereturn local p
+	if ("`.wtype'"=="pweight") ereturn local wtype pweight 
+	ereturn local vcetype "Robust"
+
+	if "`cluster'" != "" {
+		ereturn local vce "cluster"
+		ereturn scalar N_clust = `nc'
+	/* 	use asymptotic chisquare not F statistic 		*/
+	/*	ereturn scalar df_r = `nc' - 1 				*/
+		ereturn local clustvar "`cluster'"
+	}
+	else ereturn local vce "robust"
+
+	.waldtest
+end
+
+program .scores
+	syntax [newvarlist]  [, b(name) g(name) ]
+
+	local scores `varlist'
+
+	if "`b'" != "" {
+		/* set equation scores					*/
+		tempvar lf
+		.evaluate `lf', b(`b') todo(1)  
+	}
+	local bscr = ("`scores'"!="")
+	local bg = ("`g'"!="")
+	if !`bg' & !`bscr' {
+		di as err "._altdepmodel.scores requires either a varlist " ///
+		 "or g() or both"
+		exit 198
+	}
+	if (`bg') cap mat drop `g'
+
+	/* gradients/scores: linear predictor scores 			*/
+	/* equation involving alternative specific variables 		*/
+	.evalasscrs `scores', g(`g')
+	local is = r(k)
+	if `bscr' & `is' {
+		tokenize `scores'
+		macro shift `is'
+		local scores `*'
+	}
+
+	/* equations involving level specific (by-alternative) 		*/
+	/* variables 							*/
+	.evalbascrs `scores', g(`g')
+	local is = r(k)
+	if `bscr' & `is' {
+		tokenize `scores'
+		macro shift `is'
+		local scores `*'
+	}
+
+	/* inclusive value/dissimilarity ancillary parameters 		*/
+	.evalancscrs `scores', g(`g')
+	local is = r(k)
+	if `bscr' & `is' {
+		tokenize `scores'
+		macro shift `is'
+		local scores `*'
+	}
+end
+
+program .predscores, rclass
+	syntax newvarlist, b(name) 
+
+	.genscvar
+	.scores `varlist', b(`b')
+
+	if ("`type'"=="float") qui recast `type' `varlist', force
+	local names: colfullnames `b'
+	local k = 0
+	foreach var of varlist `varlist' {
+		local coef : word `++k' of `names'
+		label variable `var' `"`coef' scores"'
+	}
+	return local varlist `varlist'
+	return local type `type'
+end
+
+program .waldtest, eclass
+
+	ereturn scalar k_eq_model = `.keq'
+
+	_prefix_model_test
+	/* use asymptotic chisquare not the F statistic			*/
+	/* if ("`e(clustvar)'"!="") ereturn local chi2type 		*/
+end
+
+program .eretpost, eclass
+	syntax, [ IND2vars(string) index(integer -1) noCASE noALTERN noSTATS ]
+
+	.Super.eretpost, index(`index') 
+
+	if (`index'<0) local index
+	else local indopt index(`index')
+
+	if "`case'" == "" {
+		ereturn local case "`.case.exp'"
+		ereturn scalar N_case = `.ncase'
+	}
+	if "`altern'" == "" {
+		.altern.eretpost, `indopt' `stats'
+		if "`index'" == "" {
+			ereturn scalar alt_min`index' = `.kmin'
+			ereturn scalar alt_max`index' = `.kmax'
+			ereturn scalar alt_avg`index' = `.kmean'
+		}
+	}
+	if ("`ind2vars'"=="") local ind2vars ind2vars
+	ereturn scalar k_`ind2vars'`index' = `.kbavars'
+	if (`.kbavars'>0) ereturn local `ind2vars'`index' `"`.strbavars'"'
+
+	tempname idba
+	mat `idba' = `.idbacoef.matname'
+	ereturn mat alt_`ind2vars'`index' = `idba'
+
+	if (`.base' < .) ereturn scalar i_base`index' = `.base' 
+end
+
+program .eretget
+	syntax, touse(varname) [ IND2vars(string) index(integer -1) ///
+		case(string) altern(string) avopts(string) * ]
+
+	.Super.eretget, touse(`touse') index(`index') `options'
+
+	.kmin = 0
+	.kmax = 0
+	.kmean = 0
+	.ncase = 0
+	/* postestimation assume data is unbalanced			*/
+	.unbal = 1
+	if (`index'<0) local index 
+	else local indopt index(`index')
+	if "`case'" == "" {
+		if ("`e(case)'"=="") error 322
+		.case = ._numericvar.new long `e(case)' if `touse'
+		.ncase = e(N_case)
+	}
+	else {
+		/* in a container                                	*/
+		/* case contains the key to a _numericvar object 	*/
+		cap assert `.`case'.isofclass _numericvar'
+		if _rc {
+			/* programmer error 				*/
+			di as err "_altdepmodel.eretget, case() must be " ///
+			 "the name of a _numericvar object"
+			exit 198
+		}
+		.case.ref = .`case'.ref
+	}
+	if ("`ind2vars'"=="") local ind2vars ind2vars
+	local kv = e(k_`ind2vars'`index')
+	if 0<`kv' & `kv'<. {
+		local k = 0
+		if ("`e(`ind2vars'`index')'"=="") error 322
+		foreach var of varlist `e(`ind2vars'`index')' {
+			.bavars[`++k'] = "`var'"
+		}
+		/* identifiable coef associated with base alternative	*/
+		/*  obsolete: now use .idbacoef matrix			*/
+		local kv1 = e(k_bse2vars`index')
+		if 0<`kv1' & `kv1'<=`kv' {
+			if ("`e(bse2vars`index')'"=="") error 322 
+			local bse2vars `e(bse2vars`index')'
+		}
+	}
+	.base = e(i_base`index')
+	if "`altern'" == "" {
+		/* extract e(altvar`index')				*/
+		.altern = ._alternvar.new
+		local vv = cond("`e(opt)'"=="ml", "10.1", "11")
+		version `vv': ///
+		.altern.eretget, touse(`touse') `indopt' `avopts' 
+
+		if "`index'" == "" {
+			.kmin = e(`prefix'alt_min)
+			.kmax = e(`prefix'alt_max)
+			.kmean = e(`prefix'alt_avg)
+		}
+	}	
+	else {
+		/* object is in a container			    	*/
+		/* altern() contains the key to a _alternvar object 	*/
+		cap assert `.`altern'.isofclass _alternvar'
+		if _rc {
+			/* programmer error 				*/
+			di as err "_altdepmodel.eretget, altern() must be " ///
+			 "the name of an _alternvar object"
+			exit 198
+		}
+		.altern.ref = .`altern'.ref
+	}
+	/* data structure added version 1.1.0  24sep2007		*/
+	/* (# alternatives) X (# c-s variables + 1) matrix indicating	*/
+	/* identifiable coefficients					*/
+	tempname idba
+	local kba1 = `.kbavars'+1
+	mat `idba' = e(alt_`ind2vars'`index')
+	if `idba'[1,1] >= . {
+		/* create .idbacoef matrix from e(bse2vars)		*/
+		.idbacoef = ._matrix.new J(`.altern.k',`kba1',1)
+		local idba `.idbacoef.matname'
+		local bavars `.strbavars'
+		mat colnames `idba' = `bavars' _cons
+		mat rownames `idba' = `.altern.strlabels'
+		forvalues i=1/`kba1' {
+			mat `idba'[`.base',`i'] = 0
+		}
+		if "`bse2vars'" != "" {
+			foreach var in `bse2vars' {
+				local k : list posof "`var'" in bavars
+				if (`k'>0) mat `idba'[`.base',`k'] = 1
+			}
+		}
+		local k = 0
+		forvalues i=1/`.altern.k' {
+			forvalues j=1/`kba1' {
+				if `idba'[`i',`j'] {
+					mat `idba'[`i',`j'] = `++k'
+				}
+			}
+		}
+	}
+	else .idbacoef = ._matrix.new `idba'
+
+end
+
+/* markout using elements of eclass known by this object		*/
+/* called before initialization using .eretget, touse(`touse')		*/
+program ._eretmarkout 
+	syntax varname(numeric), [ IND2vars(string) index(integer -1) ///
+		case avopts(string) * ]
+
+	.Super._eretmarkout `varlist', index(`index') `options'
+
+	local touse `varlist'
+	if (`index'>0) local ind `index'
+	if ("`ind2vars'"=="") local ind2vars ind2vars
+
+	local kv = e(k_`ind2vars'`ind')
+	if `kv' > 0 {
+		if ("`e(`ind2vars'`ind')'"=="") error 322
+		markout `touse' `e(`ind2vars'`ind')'
+	}
+	if "`case'" != "" {
+		if ("`e(case)'"=="") error 322
+		markout `touse' `e(case)'
+	}
+	if ("`e(altvar`ind')'"=="") error 322
+	markout `touse' `e(altvar`ind')', strok
+
+	/* create temporary alternative variables to mark out 		*/
+	/*  observations with alternatives not in the model		*/
+	tempname altvar
+	.`altvar' = ._alternvar.new
+	.`altvar'.eretget, touse(`touse') index(`index') altwise `avopts'
+end
+
+program .altindex, rclass
+	args alt
+
+	local index = .
+	local k = `.altern.k'
+	local levok = `.altern.values.isvalid'
+	if `levok' {
+		local vals `.altern.values.matname'
+		local vlab `.altern.vlabel'
+	}
+	else {
+		local vlab `.altern.varname'
+	}
+	if "`alt'" != "" {
+		if `levok' {
+			local i = 0
+			while `++i'<=`k' & `index'>=. {
+				local ialt = `vals'[1,`i']
+				if (`"`alt'"'==`"`ialt'"') local index = `i'
+			}
+		}
+		if `index'>=. & "`vlab'"!="" {
+			local i = 0
+			while `++i'<=`k' & `index'>=. {
+				if `levok' {
+					local alti: label `vlab' `=`vals'[1,`i']'
+				}
+				else local alti: label `vlab' `i'
+	
+				if (`"`alt'"'==`"`alti'"') local index = `i'
+			}
+		}
+		if `index' >= . {
+			di as err "{p}`alt' is not one of the " 	  ///
+			 "alternatives of `.altern.variable'; use "       ///
+			 "{help tabulate##|_new:tabulate} for a list of " ///
+			 "values{p_end}"
+			exit 459
+		}
+	}
+	else {
+		local index = 1
+		local xmax = `.altern.freq.matname'[1,1]
+		forvalues i=2/`k' {
+			if `.altern.freq.matname'[1,`i'] > `xmax' {
+				local index = `i'
+				local xmax = `.altern.freq.matname'[1,`i']
+			}
+		}
+	}
+	return local index = `index'
+end 
+
+program ._alternstats, rclass
+	syntax varname, type(string)  
+
+	local case `.case.varname'
+	local altern  `.altern.varname'
+	local nalt `.altern.k'
+	local altlevels `.altern.values.matname' 
+	local altfreq `.altern.freq.matname' 
+	local y `varlist'
+	if "`.wtype'" == "fweight" {
+		local wgt [`.wtype'=`.weight.varname']
+	}	
+
+	tempvar ix
+	tempname stats sum fmode
+	if "`type'" == "ranked" {
+		matrix `stats' = J(`nalt',4, 0)
+		matrix colnames `stats' = ///
+			level case_present rank_median rank_mode
+	}
+	else if "`type'" == "binary" {
+		matrix `stats' = J(`nalt',4, 0)
+/*****************************************************************************/
+	matrix colnames `stats' = level case_present freq_select per_select
+/*****************************************************************************/
+	}
+	else {
+		matrix `stats' = J(`nalt',2, 0)
+		matrix colnames `stats' = level case_present 
+	}
+	qui gen int `ix' = 1
+	scalar `sum' = 0
+	forvalues i=1/`nalt' {
+		local index `"`index' `i'"'
+		if ("`altlevels'" != "") matrix `stats'[`i',1] = ///
+			`altlevels'[1,`i']
+		else matrix `stats'[`i',1] = `i'
+
+		matrix `stats'[`i',2] = `altfreq'[1,`i']
+		if "`type'" == "ranked" {
+			qui summarize `y' `wgt' if `altern'==`i', detail
+			local j = r(p50)
+			 matrix `stats'[`i',3] = r(p50)
+
+			scalar `fmode' = 0
+			forvalues j=1/`nalt' {
+				summarize `ix' `wgt' if `altern'==`i' & ///
+					`y'==`j', meanonly
+				if r(sum) > `fmode' {
+					scalar `fmode' = r(sum)
+					matrix `stats'[`i',4] = `j'
+				}					
+			}
+		}
+		else if "`type'" == "binary" {
+			summarize `ix' `wgt' if `altern'==`i' & `y'==1, meanonly
+			matrix `stats'[`i',3] = r(sum)
+			scalar `sum' = `sum'+`stats'[`i',3] 
+		}
+	}
+	matrix rownames `stats' = `index'
+	if "`type'" == "binary" {
+		forvalues i=1/`nalt' {
+			matrix `stats'[`i',4] = `stats'[`i',3]/`sum'
+		}
+	}
+	return mat stats = `stats'
+end
+
+program .checkmatsize
+	args np
+	
+	if "`np'" == "" {
+		local np = `.kcoef' + `.kanc'
+	}
+
+	if `np' > c(matsize) {
+		di as err "{p}the model requires estimating `np' "          ///
+		 "parameters but the matsize is set to `c(matsize)'; use "  ///
+		 "{cmd:set matsize} (help {help matsize}) to increase the " ///
+	 	 "matsize{p_end}" 
+		exit 908
+	}
+	/* ml will use store the iteration in a matrix of length 20	*/
+	if c(matsize) < 20 {
+		di as err "{p}{cmd:ml} will need matsize set to at least "  ///
+		 "20 for the iteration log but matsize is `c(matsize)'; "   ///
+		 "use {cmd:set matsize} (help {help matsize}) to increase " ///
+		 "the matsize{p_end}" 
+		exit 908
+	}
+end
+
+program .summary
+	di as txt _n "_altdepmodel class: "
+	di as txt "# coefficients = `.kcoef'"
+	if "`.stripe'" != "" {
+		di as txt "{p}stripe: `.stripe'{p_end}"
+	}
+	if "`.bastripe'" != "" {
+		di as txt "{p}bastripe: `.bastripe'{p_end}"
+	}
+
+	if `.altern.isvalid' {
+		di in txt _n "alternatives:" _c
+		.altern.summary
+	}
+
+	if `.case.isvalid' {
+		di in txt _n "case variable `.case.variable':" _c
+		.case.summary
+	}
+	if `.kbavars' > 0 {	
+		di in txt "{p}by alternative variables: `.strbavars'{p_end}"
+	}
+
+	.Super.summary 
+end
+
+program .mfx, rclass
+	syntax [varlist(default=none)], b(name) v(name) [ AT(passthru) ///
+		Level(cilevel) noDISCrete noWght noEsample * ] 
+
+	._mfxsetup `varlist', b(`b') `at' `discrete' `wght' 
+
+	/* at() specifications					*/
+	local atstat `r(atstat)'
+	local at `"`r(at)'"'
+
+	/* indices to the discrete variables			*/
+	local iIa `r(iIa)'
+	local iIc `r(iIc)'
+
+	/* k_alt is the number of alternatives for this case 	*/
+	local k_alt = _N
+
+	local indvars `"`r(indvars)'"'
+	local i_indvars `"`r(i_indvars)'"'
+	local k_indvars : word count `r(indvars)'
+	local ind2vars `"`r(ind2vars)'"'
+	local i_ind2vars `"`r(i_ind2vars)'"'
+	local k_ind2vars : word count `r(ind2vars)'
+
+	local kvars = `.kvars'
+	local kbavars = `.kbavars'
+
+	._evalmfx, b(`b') `options'
+
+	tempname g pr
+	matrix `g' = r(g)
+	matrix `pr' = r(p)
+
+	/* check if there is an r(outcome) matrix		*/
+	cap mat li r(outcome)
+	if _rc == 0 {
+		tempname outcome
+		matrix `outcome' = r(outcome)
+	}
+
+	local k_p = `r(k_p)'
+	forvalues i=1/`k_p' {
+		tempname dpdx`i'
+		matrix `dpdx`i'' = r(dpdx`i')
+		if `kvars' > 0 {
+			tempname dgdb`i'
+			matrix `dgdb`i'' = r(dgdb`i')
+		}
+		if `kbavars' > 0 {
+			tempname dgda`i' 
+			matrix `dgda`i'' = r(dgda`i')
+		}
+	}
+	if `"`iIa'"' != "" {
+		._mfx_discrete_altv `indvars', b(`b') v(`v') ind(`iIa') ///
+			`options'
+
+		forvalues i=1/`k_alt' {
+			tempname gIa`i' vgIa`i'
+			matrix `vgIa`i'' = r(vg`i')
+			matrix `gIa`i'' = r(g`i')
+		}
+	}
+	if `"`iIc'"' != "" {
+		._mfx_discrete_casev `ind2vars', b(`b') v(`v') ind(`iIc') ///
+			`options'
+
+		tempname gIc vgIc
+		matrix `gIc' = r(g)
+		matrix `vgIc' = r(vg)	
+	}
+
+	local nb = colsof(`b') 
+	local j1 = `kvars'*`.altern.k'
+	local altern `.altern.varname'
+
+	tempname vdp table subt atable ctable dx vx x
+
+	forvalues i=1/`k_p' {
+		local rownames
+		cap mat drop `table'
+		if `k_indvars' {
+			cap mat drop `atable'
+			if "`iIa'" != "" {
+				local kI = 1
+				local jI : word 1 of `iIa'
+				local nI : word count `iIa'
+			}
+			else {
+				local jI = -1
+			}
+			matrix `vdp' = vecdiag(`dgdb`i'''*`v'*`dgdb`i'')'
+			local rspec &
+
+			forvalues j=1/`k_indvars' {
+				cap mat drop `vx'
+				cap mat drop `dx'
+				local varj : word `j' of `indvars'
+				mkmat `varj', matrix(`x')
+				if `j' == `jI' {
+					/* discrete	*/
+					forvalues k=1/`k_alt' {
+/****************************************************************************/
+			local ka = `altern'[`k']
+			local eqa `.altern.labels[`ka']'
+			local rownames `rownames' `varj'*:`eqa'
+			if (`k' < `k_alt') local rspec `rspec'&
+/****************************************************************************/
+					}
+					matrix `vx' = `vgIa`i''[1..`k_alt',`j']
+					matrix `dx' = `gIa`i''[1..`k_alt',`j']
+					
+					if `++kI' <= `nI' {
+						local jI : word `kI' of `iIa'
+					}
+				}
+				else {
+					/* derivative	*/
+					local ji : word `j' of `i_indvars'
+					local ji = (`ji'-1)*`.altern.k'+1
+					forvalues k=1/`k_alt' {
+/****************************************************************************/
+			local ka = `altern'[`k']
+			local eqa `.altern.labels[`ka']'
+			local rownames `rownames' `varj':`eqa'
+			matrix `dx' = (nullmat(`dx') \    ///
+				`dpdx`i''[`=`ji'+`ka'-1',1])
+			matrix `vx' = (nullmat(`vx') \    ///
+				`vdp'[`=`ji'+`ka'-1',1])
+			if (`k' < `k_alt') local rspec `rspec'&
+/****************************************************************************/
+					}
+				}
+				if (!`k_ind2vars' & `j'==`k_indvars') ///
+					local rspec `rspec'&
+				else local rspec `rspec'|
+
+				mata:_mprobit_mfx_stats("`dx'","`vx'",`level')
+				matrix `subt' = (`dx', r(se), r(z), r(p), ///
+					r(lb), r(ub), `x')
+				matrix `atable' = (nullmat(`atable') \ `subt')
+			}
+		}
+		if `k_ind2vars' {
+			cap mat drop `ctable'
+			matrix `dx' = J(`k_ind2vars',1,0)
+			matrix `vx' = J(`k_ind2vars',1,.)
+			matrix `vdp' = vecdiag(`dgda`i'''*`v'*`dgda`i'')'
+
+			if "`iIc'" != "" {
+				local kI = 1
+				local jI : word 1 of `iIc'
+				local nI : word count `iIc'
+			}
+			else {
+				local jI = -1
+			}
+			if (!`k_indvars') local rspec &
+			local j = 0
+			foreach k of numlist `i_ind2vars' {
+				local ci : word `++j' of `ind2vars'
+				if `j' == `jI' {
+					local rownames ///
+						`rownames' casevars:`ci'*
+					matrix `dx'[`j',1] = `gIc'[`i',`j']
+					matrix `vx'[`j',1] = `vgIc'[`i',`j']
+					if `++kI' <= `nI' {
+						local jI : word `kI' of `iIc'
+					}
+				}
+				else {
+					local rownames ///
+						`rownames' casevars:`ci'
+					matrix `dx'[`j',1] = ///
+						`dpdx`i''[`=`j1'+`k'',1]
+					matrix `vx'[`j',1] = `vdp'[`k',1]
+				}
+				local rspec `rspec'&
+			}
+			mkmat `ind2vars', matrix(`x')
+			mat `x' = `x'[1,1..`k_ind2vars']'
+			mata:_mprobit_mfx_stats("`dx'","`vx'",`level')
+			matrix `ctable' = (`dx', r(se), r(z), r(p), r(lb), ///
+				r(ub), `x')
+		}
+
+		matrix `table' = (nullmat(`atable') \ nullmat(`ctable'))
+ 		matrix colnames `table' =  _:
+		matrix colnames `table' = dp/dx SE z P>|z| Lb Ub X
+		matrix rownames `table' = `rownames'
+
+		if `k_p' > 1 {
+			local ia = `altern'[`i']
+			local eqa `.altern.labels[`ia']'
+			return local alt_`i' `eqa'
+
+			local ename = strtoname("`eqa'")
+			return matrix `ename' = `table'
+			return scalar pr_`eqa' = `pr'[`i',1]
+			return local rspec_`eqa' "`rspec'"
+		}
+		else {
+			return matrix mfx = `table'
+			return scalar pr = `pr'[`i',1]
+			return local rspec "`rspec'"
+		}
+	}
+	local fmt & %12s | %8.0g & %8.0g & %6.2f & %6.3f & %8.0g &
+	local fmt `fmt' %8.0g & %8.5g &
+	return local fmt `"`fmt'"'
+	return local k_alt = `k_alt'
+	return local k_p = `k_p'
+	if ("`outcome'"!="") return matrix outcome `outcome'
+	return local level = `level'
+	return local discrete = ("`iIa'`iIc'"!="")
+end
+
+program ._extract_ascoef, rclass
+	syntax, b(name)
+
+	if (`.kvars' == 0) exit
+
+	tempname as
+	mat `as' = `b'[1,"`.altern.exp':"]
+	local names `.strvars'
+	local names : subinstr local names " " " :", all
+	mat colnames `as' = :`names'
+	mat rownames `as' = `.altern.exp'
+
+	return matrix b = `as'
+end
+
+program ._extract_bacoef, rclass
+	syntax, b(name)
+
+	if (`.kbavars'+`.const'==0) exit
+
+	tempname A b1 idba
+
+	if (`.const') local cons _cons
+	local bavars `.strbavars' `cons'
+
+	local kbavar1 = `.kbavars' + `.const'
+	local kalt `.altern.k'
+
+	mat `A' = J(`kalt',`kbavar1',0)
+	mat colnames `A' = `bavars'
+	mat rownames `A' = `.altern.strlabels'
+
+	mat `idba' = `.idbacoef.matname'*J(`=`.kbavar'+1',1,1)
+	forvalues j=1/`.altern.k' {
+		if `idba'[`j',1] == 0 {
+			continue
+		}
+		mat `b1' = `b'[1,"`.altern.labels[`j']':"]
+		local vars : colnames `b1'
+		local i = 0
+		foreach var in `vars' {
+			local k : list posof "`var'" in bavars
+			mat `A'[`j',`k'] = `b1'[1,`++i']
+		}
+	}
+
+	return matrix A = `A'
+end
+
+program ._extract_anccoef, rclass
+	syntax, b(name)
+
+	if (`.kanc' == 0) exit
+
+	tempname a
+	local stripe `.ancstripe'
+	foreach anci of local stripe {
+		mat `a' = (nullmat(`a'), `b'[1,"`anci'"])
+	}
+
+	return matrix b = `a'
+end
+
+program ._mfxsetup, rclass
+	syntax [varlist(default=none)], b(name) [ AT(string asis) ///
+		noDISCrete noWght extra(varlist numeric) ]
+
+	local vars `.strvars' 
+	local bavars `.strbavars'
+	if `"`varlist'"' != "" {
+		local indvars : list vars & varlist 
+		local ind2vars : list bavars & varlist 
+		local check `indvars' `ind2vars'
+		local check : list varlist - check
+		if "`check'" != "" {
+			if `:word count `check'' > 1 {
+				di as err "{p}variables `check' are not in " ///
+				 "the model{p_end}"
+			}
+			else {
+				di as err "{p}variable `check' is not in " ///
+				 "the model{p_end}"
+			}
+			exit 322
+		}
+		if "`indvars'" != "" {
+			foreach var of varlist `indvars' {
+				local i : list posof "`var'" in vars
+				local i_indvars `i_indvars' `i'
+			}
+		}
+		if "`ind2vars'" != "" {
+			foreach var of varlist `ind2vars' {
+				local i : list posof "`var'" in bavars
+				local i_ind2vars `i_ind2vars' `i'
+			}
+		}
+	}
+	else {
+		local indvars `vars'
+		local ind2vars `bavars'
+		numlist "1/`.kvars'"
+		local i_indvars `r(numlist)'
+		numlist "1/`.kbavars'"
+		local i_ind2vars `r(numlist)'
+	}
+	if `:word count `indvars''+`:word count `ind2vars'' == 0 {
+		di as error "no variables"
+		exit 498
+	}
+	return local indvars `"`indvars'"'
+	return local i_indvars `"`i_indvars'"'
+	return local ind2vars `"`ind2vars'"'
+	return local i_ind2vars `"`i_ind2vars'"'
+
+	/* use double quotes: at may contain quoted alternatives	*/
+	if `"`at'"' != "" {
+		._mfx_parseatstat `"`at'"'
+		local atstat `r(atstat)'
+		local at `"`r(at)'"'
+		return add
+	}
+	if "`atstat'" == "" { 
+		local atstat mean
+		return local atstat mean
+	}
+
+	if "`discrete'" == "" {
+		._mfx_discretevarindex `"`indvars'"'
+		return local iIa `r(ind)'
+		._mfx_discretevarindex `"`ind2vars'"'
+		return local iIc `r(ind)'
+	}
+	if "`wght'"=="" & "`.wtype'"!="" {
+		if ("`.wtype'"=="pweight") ///
+			local wtopt [iweight=`.weight.varname']
+		else local wtopt [`.wtype'=`.weight.varname']
+	}
+	if "`bavars'" != "" {
+		tempvar mark
+		bysort `.case.varname': gen byte `mark' = (_n==1)
+		local k = 0
+		foreach var of varlist `bavars' {
+			tempname v`++k'
+			if "`atstat'" == "median" {
+				qui summarize `var' `wtopt' if `mark', detail
+				scalar `v`k'' = r(p50)
+			}
+			else {
+				summarize `var' `wtopt' if `mark', meanonly
+				scalar `v`k'' = r(mean)
+			}
+		}
+	}
+	collapse (`atstat') `vars' `bavars' `extra' (max) `.touse' ///
+		(min) `.case.varname' `wtopt' if `.touse',         ///
+		by(`.altern.varname') fast
+
+	if _N == 1 {
+		di as error "{p}there is only a single alternative; " ///
+		 "marginal effects cannot be computed{p_end}"
+		exit 459
+	}
+	qui replace `.case.varname' = 1
+	if "`bavars'" != "" {
+		local k = 0
+		foreach var of varlist `bavars' {
+			qui replace `var' = `v`++k''
+		}
+	}
+	if `"`at'"'!="" & `"`at'"'!="mean" & `"`at'"'!="median" {
+		._mfx_parseevalat `"`at'"', extra(`extra')
+	}
+end
+
+program ._mfx_discrete_altv, rclass
+	syntax [varlist(default=none)], b(name) v(name) [ ind(numlist) * ]
+
+	if (`"`varlist'"'=="" | `"`ind'"'=="") exit
+
+	local na = _N 
+	local nv : word count `varlist'
+	forvalues j=1/`na' {
+		tempname dg0db`j' vg`j' g`j'
+		matrix `vg`j'' = J(`na',`nv',.)
+		matrix `g`j'' = J(`na',`nv',.)
+	}	
+	local vars `.strvars'
+	local bavars `.strbavars'
+	local altern `.altern.varname'
+
+	tempname xk p0 tmp del
+	tempvar eta
+	foreach j of numlist `ind' {
+		local var : word `j' of `varlist' 
+		forvalues k = 1/`na' {
+			scalar `xk' = `var'[`k']
+			qui replace `var' = 0 if _n == `k'
+
+			._evalmfx, b(`b') discrete `options'
+
+			matrix `p0' = r(p)
+			forvalues i=1/`na' {
+				matrix `dg0db`i'' = r(dgdb`i')
+			}
+			qui replace `var' = 1 if _n == `k' 
+
+			._evalmfx, b(`b') discrete `options'
+
+			qui replace `var' = `xk' if _n == `k' 
+			matrix `del' = r(p)-`p0'
+			forvalues i=1/`na' {
+				matrix `g`i''[`k',`j'] = `del'[`i',1]
+				matrix `tmp' = r(dgdb`i')-`dg0db`i''
+				matrix `tmp' = `tmp''*`v'*`tmp'
+				matrix `vg`i''[`k',`j'] = `tmp'[1,1]
+			}
+		}
+	}
+	forvalues i=1/`na' {
+		return matrix vg`i' = `vg`i''
+		return matrix g`i' = `g`i''	
+	}
+	return local ind `ind'
+end
+
+program ._mfx_discrete_casev, rclass
+	syntax [varlist(default=none)], b(name) v(name) [ ind(numlist) * ]
+
+	if (`"`varlist'"'=="" | `"`ind'"'=="") exit
+
+	tempvar eta
+	tempname g vg xi p0 tmp del
+	local altern `.altern.varname'
+	local na = _N 
+	local nv : word count `varlist'
+	matrix `g' = J(`na',`nv',.) 
+	matrix `vg' = J(`na',`nv',.)
+	forvalues j=1/`na' {
+		tempname dg0db`j' 
+	}
+	local vars `.strvars'
+	local bavars `.strbavars'
+	local np = colsof(`b')
+
+	foreach j of numlist `ind' {
+		local var : word `j' of `varlist' 
+		scalar `xi' = `var'[1]
+
+		qui replace `var' = 0 
+
+		._evalmfx, b(`b') discrete `options'
+
+		matrix `p0' = r(p)
+		forvalues i=1/`na' {
+			matrix `dg0db`i'' = r(dgdb`i')
+		}
+		qui replace `var' = 1 
+
+		._evalmfx, b(`b') discrete `options'
+
+		qui replace `var' = `xi' 
+		matrix `del' = r(p)-`p0'
+		forvalues i=1/`na' {
+			matrix `g'[`i',`j'] = `del'[`i',1]
+			matrix `tmp' = r(dgdb`i')-`dg0db`i''
+			matrix `tmp' = `tmp''*`v'*`tmp'
+			matrix `vg'[`i',`j'] = `tmp'[1,1]
+		}
+	}
+	return matrix vg = `vg'
+	return matrix g = `g'	
+	return local ind `ind'
+end
+
+program ._mfx_parseatstat, rclass
+	args at
+
+	gettoken first at1: at, parse(" :=")
+	if `"`at1'"' != "" {
+		/* make sure it is not a variable specification */
+		cap ._mfx_parseat `"`at1'"', nounab
+		if _rc {
+			return local at `"`at'"'
+			exit
+		}
+	}
+	if "`first'"!="mean" & "`first'"!="median" {
+		di as err "{p}invalid statistic specified in at(), only " ///
+		 "mean or median is allowed{p_end}"
+		exit 198
+	}
+	return local atstat `first'
+	return local at `"`at1'"'
+end
+
+program ._mfx_parseevalat
+	syntax anything(equalok) [, extra(varlist) ]
+	
+	local at `anything'
+	local na = _N
+	tempname val
+
+	local kvars = `.kvars'
+	if ("`extra'"!="") local kvars = `kvars' + `:word count `extra''
+	local kbavars = `.kbavars'
+	local bavars `.strbavars'
+	local vars `.strvars' `extra'
+	local kalt = `.altern.k'
+
+	while `"`at'"' != "" {
+		._mfx_parseat `"`at'"'
+		local var `r(var)'
+		local alt `r(alt)'
+		scalar `val' = r(val)
+		local at `r(at)'
+		local if
+		local found = 0
+		if `kvars' > 0  {
+			local found : list posof "`var'" in vars
+		}
+		if !`found' {
+			if `kbavars' > 0 {
+				local found : list posof "`var'" in bavars
+			}
+			if `found' & "`alt'"!="" {
+				di as error "{p}specified alternative " ///
+				 "`alt' for case specific variable "    ///
+				 "`var'{p_end}"
+				exit 322
+			}
+		}
+		if !`found'  {
+			di as error "variable `var' is not in the model"
+			exit 322
+		}
+		if "`alt'" != "" {
+			/* alternative specific variable */
+			local ia
+			forvalues i=1/`kalt' {
+				local alti: label `.altern.varname' `i'
+
+				if "`alt'" == "`alti'" {
+					local ia = `i'
+					continue, break	
+				}
+			}
+			if "`ia'" == "" {
+				forvalues i=1/`kalt' {
+					if "`alt'" == "`.altern.labels[`i']'" {
+						local ia = `i'
+						continue, break	
+					}
+				}
+			}
+			if "`ia'" == "" {
+				di as error "`alt' is not one of the " ///
+				 "alternatives"
+				exit 322
+			}
+			/* don't think this last step is necessary */
+			forvalues i=1/`na' {
+				if `ia' == `.altern.varname'[`i'] {
+					local ia = `i'
+					continue, break
+				}
+			}
+			local if if _n == `ia'
+		}
+		qui replace `var' = `val' `if' 
+	}	
+end
+
+program ._mfx_parseat, rclass
+	syntax anything(equalok) [, noUNAB ]
+
+	local at `anything'
+	local 0 `"`at'"'
+
+	local tokens1 ": =" 
+	local tokens2 ": =" 
+	local tokens3 " ="
+	local tokens4 " "
+	tempname val
+	local st = 1
+	local st1 = 2
+	while `"`0'"' != "" {
+		gettoken tok0 0: 0, parse("`tokens`st''")
+		if `st' == 1 {
+			/* variable name or alternative */
+			if ("`tok0'"=="") ._mfx_parseerror "`at'" "at()"
+			local tok1 "`tok0'"
+			local st = `st1'
+		}
+		else if `st' <= 3 {
+			if "`tok0'" == "=" {
+				/* `tok1' is a variable name 		*/
+				local st = 4
+				/* only want to check if syntax is ok	*/
+				if ("unab"=="") unab var : `tok1'
+				else local var `tok1'
+
+				return local var "`var'"
+			}
+			else if `st'==2 & "`tok0'"==":" {
+				/* `tok1' is an alternative */
+				local st = 1
+				local st1 = 3
+				return local alt "`tok1'"
+			}
+			else ._mfx_parseerror "`at'" "at()"
+		}
+		else if `st' == 4 {
+			/* rhs */
+			cap scalar `val' = `tok0'
+			if (_rc) ._mfx_parseerror "`at'" "at()" 
+			if (`val'>=.) ._mfx_parseerror "`at'" "at()" 
+			return scalar val = `val'
+			return local at `"`0'"'
+			exit
+		}
+		else ._mfx_parseerror "`at'" "at()"
+	}
+	._mfx_parseerror "`at'"
+end
+
+program ._mfx_parseerror
+	args exp which
+
+	di as err `"{p}invalid `which' expression "`exp'"{p_end}"'
+
+	exit 198
+end
+
+program ._mfx_discretevarindex, rclass
+	args varlist
+
+	if (`"`varlist'"' == "") exit
+
+	local nv = 0
+	foreach var of varlist `varlist' {
+		local `++nv''
+		cap assert `var'==0 | `var'==1 
+		if _rc == 0 {
+			local ind `ind' `nv'
+		}
+	}
+	return local ind `"`ind'"'
+end
+
+exit
+

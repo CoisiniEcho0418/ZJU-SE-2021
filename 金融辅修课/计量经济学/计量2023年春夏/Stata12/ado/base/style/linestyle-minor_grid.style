@@ -1,0 +1,6 @@
+*! version 1.0.0  22dec2002
+sequence 3630
+
+set width    scheme minor_grid 
+set color    scheme minor_grid
+set pattern  scheme minor_grid 

@@ -1,0 +1,152 @@
+*! version 1.2.1  01jun2011
+*! Stata 12 Data menu
+
+&Data stData {
+	"Describe data" tag1 {
+		"Describe data in memory"		"DB descdata"
+		"Describe data in file"			"DB descusing"
+		"Describe data contents (codebook)"	"DB codebook"
+		"Inspect variables"			"DB inspect"
+		--------
+		"List data"				"DB list"
+		"Compactly list variable names"		"DB ds"
+		--------
+		"Summary statistics"			"DB summarize"
+	}
+	--------
+	"Data Editor" tag1 {
+		"Data Editor (Edit)"			edit
+		"Data Editor (Browse)"			browse
+	}
+	"Create or change data" tag1 {
+		"Create new variable"				"DB generate"
+		"Create new variable (extended)"		"DB egen"
+		"Other variable-creation commands" tag1 {
+			"Interaction expansion"			"DB xi"
+			"Create indicator variables"		"DB tabulategen"
+			--------
+			"Fill in missing values"		"DB impute"
+			"Linearly interpolate/extrapolate values"	"DB ipolate"
+			--------
+			"Draw sample from normal distribution"	"DB drawnorm"
+			"Create dataset with specified correlation"	"DB corr2data"
+			--------
+			"Orthogonalize variables"		"DB orthog"
+			"Orthogonal polynomials"		"DB orthpoly"
+			"Create fractional polynomial powers"	"DB fracgen"
+			"Linear and cubic spline construction"	"DB mkspline"
+			"Zero-skewness log transform"		"DB lnskew0"
+			"Box-Cox transform"			"DB bcskew0"
+			--------
+			"Generate numerical range"		"DB range"
+			"Calculate numerical derivatives"	"DB dydx"
+			"Calculate numeric integrals"		"DB integ"
+			--------
+			"Clone existing variable"		"DB clonevar"
+		}
+		--------
+		"Change contents of variable"			"DB replace"
+		"Other variable-transformation commands" tag1 {
+			"Convert data between wide and long"	"DB reshape"
+			-------- 
+			"Encode value labels from string variable"	"DB encode"
+			"Decode strings from labeled numeric variable"	"DB decode"
+			"Convert variables from string to numeric"	"DB destring"
+			"Convert variables from numeric to string"	"DB tostring"
+			--------
+			"Recode categorical variable"		"DB recode"
+			"Change missing values to numeric"	"DB mvencode"
+			"Change numeric values to missing"	"DB mvdecode"
+			--------
+			"Duplicate observations"		"DB expand"
+			"Duplicate clustered observations"	"DB expandcl"
+			"Make dataset of frequencies"		"DB contract"
+			"Make dataset of means, medians, etc."	"DB collapse"
+			--------
+			"Rectangularize dataset"		"DB fillin"
+			"Create separate variables"		"DB separate"
+			"Split string variables into parts"	"DB split"
+			"Stack data"				"DB stack"
+			"Interchange observations and variables"	"DB xpose"
+		}
+		--------
+		"Keep or drop observations"			"DB drop_obs"
+	}
+	--------
+	"Variables Manager"				varmanage
+	"Data utilities" tag1 {
+		"Label utilities" tag1 {
+			"Label dataset"				"DB label_data"
+			"Label variable"			"DB label_variable"
+			--------
+			"Manage value labels"			"view dialog label_manage_dlg"
+			--------
+			"Assign value label to variables"	"DB label_values"
+			"Prepend values to value labels"	"DB numlabel"
+			"Copy value labels"			"DB label_copy"
+			--------
+			"List value labels"			"DB label_list"
+			"Produce codebook of value labels"	"DB labelbook"
+			--------
+			"Save value labels as do-file"		"DB label_save"
+			"Create dataset from value labels"	"DB uselabel"
+			--------
+			"Set label language"			"DB label_language"
+		}
+		"Notes utilities" tag1 {
+			"List or search notes"			"DB notes_list"
+			"Renumber notes"			"DB notes_renumber"
+		}
+		--------
+		"Rename groups of variables"			"DB rename"
+		"Change order of variables"			"DB order"
+		"Compare two variables"				"DB compare"
+		"Compare two datasets"				"DB cf"
+		"Optimize variable storage"			"DB compress"
+		"Check for unique identifiers"			"DB isid"
+		"Manage duplicate observations"			"view help duplicates_dlg"
+		"Count observations satisfying condition"	"DB count"
+	}
+	--------
+	"Sort" tag1 {
+		"Ascending sort"			"DB sort"
+		"Ascending and descending sort"		"DB gsort"
+	}
+	"Combine datasets" {
+		"Merge two datasets"			"DB merge"
+		"Form all pairwise combinations within groups"	"DB joinby"
+		"Append datasets"				"DB append"
+		"Form every pairwise combination of two datasets"	"DB cross"
+	}
+	--------
+	"Matrices, Mata language" 			"help mata"
+	"Matrices, ado language" tag1 {
+		"Input matrix by hand"			"DB matrix_input"
+		"Define matrix from expression"		"DB matrix_define"
+		"Convert variables to matrix"		"DB mkmat"
+		"Convert matrix to variables"		"DB svmat"
+		--------
+		"List contents of matrix"		"DB matrix_list"
+		"Rename matrix"				"DB matrix_rename"
+		"Drop matrices"				"DB matrix_drop"
+		--------
+		"Eigenvalues and eigenvectors of symmetric matrices"	"DB matrix_symeigen"
+		"Singular value decomposition"			"DB matrix_svd"
+		"Eigenvalues of square matrices"		"DB matrix_eigenvalues"
+	}
+	--------
+	"Other utilities" tag1 {
+		"Hand calculator"			"DB display"
+		"List constants and system parameters"	"DB creturn"
+		"Manage data signature"			"DB datasignature"
+		"ICD9 utilities" tag1 {
+			"Verify variable is valid"	"DB icd9check"
+			"Clean and verify variable"	"DB icd9clean"
+			"Generate new variable from existing"	"DB icd9generate"
+			"Display code descriptions"		"DB icd9lookup"
+			"Search for codes from descriptions"	"DB icd9search"
+			"Display ICD-9 code source"	"DB icd9query"
+		}
+		"Business calendar"			"DB bcal"
+	}
+}

@@ -1,0 +1,145 @@
+/*
+  boxcox
+
+*!  VERSION 1.1.4  29may2009
+
+  keyword:  eclass
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_large
+INCLUDE header
+HELP hlp1, view("help boxcox")
+RESET res1
+
+DIALOG main, label("boxcox - Box-Cox regression models") tabtitle("Model")
+BEGIN
+  TEXT tx_dv 		_lft	_top	_vnwd	.,			///
+	label("Dependent variable:")
+  VARNAME vn_dv		@ 	_ss	@	.,			///
+	ts								///
+	label("Dependent variable")
+
+  TEXT tx_iv		_vlx	_top	160	.,			///
+	label("Independent variables:")
+  VARLIST vl_iv		@	_ss	_vlwd	.,			///
+	ts								///
+	allowcat							///
+	label("Independent variables")
+
+  CHECKBOX ck_nocon       @         _ms       @         .,		/*
+		*/ option("noconstant")					/*
+		*/ label("Suppress constant term")
+
+  GROUPBOX gb_model       _lft      _ls       _iwd      _ht9,		/*
+		*/ label("Type of boxcox model")
+  RADIO    rb_lhsonly     _indent   _ss       _cwd2     .,		/*
+		*/ first						/*
+		*/ label("Left-hand side only")				/*
+		*/ clickon("script n_off")				/*
+		*/ clickoff("script n_on")				/*
+		*/ option("model(lhsonly)")				/*
+		*/
+  RADIO    rb_rhsonly     _lft2     @         @         .,		/*
+		*/ option("model(rhsonly)")				/*
+		*/ label("Right-hand side only")
+  RADIO    rb_lambda      _ilft     _ss       @         .,		/*
+		*/ option("model(lambda)")				/*
+		*/ label("Both sides with same parameter")
+  RADIO    rb_theta       _lft2     @         @         .,		/*
+		*/ option("model(theta)")				/*
+		*/ last							/*
+		*/ label("Both sides with different parameters")
+
+  TEXT     tx_notrans     _ilft     _ms       _ibwd     .,		/*
+		*/ label("Nontransformed independent variables:")
+  VARLIST  vl_notrans     @         _ss       @         .,		/*
+		*/ option("notrans")					/*
+		*/ label("Nontransformed independent variables")
+END
+
+INCLUDE byifin
+INCLUDE weights_fi
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr
+  DEFINE _y _top
+  INCLUDE _sp_level
+
+  GROUPBOX gb_tests       _lft      _xls     _iwd        _ht2,		/*
+  		*/ label("Additional test statistics")
+  CHECKBOX ck_lrtest      _ilft     _ss      _cwd2       .,		/*
+		*/ option("lrtest")					/*
+		*/ label("Perform likelihood-ratio test")
+  DEFINE _x _lft
+  DEFINE _y _xls
+  DEFINE _cx _iwd
+END
+
+DIALOG adv, label("") tabtitle("Maximization")
+BEGIN
+  SPINNER  sp_iterate     _lft      _top     _spwd        .,		/*
+		*/ option("iterate")					/*
+		*/ label("Maximum iterations")				/*
+		*/ min(0) max(16000) default(c(maxiter))
+  TEXT     tx_iterate     _spsep    @        _sprb        .,		/*
+		*/ label("Maximum iterations")
+
+  CHECKBOX ck_nolog       _lft      _ls       @           .,		/*
+		*/ option("nolog")					/*
+		*/ label("Suppress full-model iteration log")
+  CHECKBOX ck_nologlr     @         _ms       @           .,		/*
+		*/ option("nologlr")					/*
+		*/ label("Suppress restricted-model lrtest iteration log")
+
+  TEXT     tx_from        _lft      _ls       _iwd        .,		/*
+		*/ label("Initial coefficient values - from() option:")
+  EDIT     ed_from        @         _ss       @           .,		/*
+		*/ option("from")					/*
+		*/ label("Initial coefficient values - from() option")
+
+END
+
+
+SCRIPT n_on
+BEGIN
+  main.tx_notrans.enable
+  main.vl_notrans.enable
+END
+
+SCRIPT n_off
+BEGIN
+  main.tx_notrans.disable
+  main.vl_notrans.disable
+END
+
+PROGRAM command
+BEGIN
+	allowxi
+	INCLUDE _by_pr
+	put "boxcox "
+	varlist main.vn_dv [main.vl_iv]
+	if !main.vl_iv & main.ck_nocon {
+	  stopbox stop `""Suppress constant term" is selected without independent variables."'
+	}
+	if !main.vl_iv & (main.rb_rhsonly | main.rb_lambda | main.rb_theta) {
+	  stopbox stop `""Independent variables" must be specified with this type of model."'
+	}
+	INCLUDE _weights_pr
+	INCLUDE _ifin_pr
+	beginoptions
+		option radio(main rb_lhsonly rb_rhsonly rb_lambda rb_theta)
+		optionarg main.vl_notrans
+		option main.ck_nocon
+		optionarg /hidedefault rpt.sp_level
+		option rpt.ck_lrtest
+		optionarg /hidedefault adv.sp_iterate
+		option adv.ck_nolog
+		option adv.ck_nologlr
+		optionarg adv.ed_from
+	endoptions
+END

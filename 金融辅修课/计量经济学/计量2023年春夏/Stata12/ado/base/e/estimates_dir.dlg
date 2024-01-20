@@ -1,0 +1,37 @@
+/*
+	estimates dir
+
+*!  VERSION 1.2.0  20apr2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_medium
+INCLUDE _ht210
+INCLUDE header
+HELP hlp1, view("help estimates_store")
+RESET res1
+
+DIALOG main, tabtitle("Main") 	///
+	label("estimates dir - Display a list of stored estimates")
+BEGIN
+  RADIO    rb_all            _lft      _top      _iwd       ., first	///
+	onclickon(main.cb_elist.disable)				///
+	label("List all stored estimation results")
+  RADIO    rb_elist          @         _ss       @          ., last	///
+	onclickon(main.cb_elist.enable)					///
+	label("List estimation results for the following:")
+  COMBOBOX cb_elist          _indent2  _ss       _inwd      _ht12, 	///
+	append contents(estimates)					///
+	error("List estimation results for the following")
+END
+
+PROGRAM command
+BEGIN
+	put "estimates dir "
+	if main.rb_elist {
+		require main.cb_elist
+		put main.cb_elist
+	}
+END

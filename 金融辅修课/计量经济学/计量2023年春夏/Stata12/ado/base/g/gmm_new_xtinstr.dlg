@@ -1,0 +1,61 @@
+/*
+  gmm_new_xtinstr.dlg
+
+*!  VERSION 1.0.3  25may2009
+
+  keyword:  eclass
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_large
+DEFINE _dlght 200
+INCLUDE header
+
+RESET res1
+
+DIALOG main, tabtitle("Main")
+BEGIN
+  TEXT tx_eql		_lft	_top	_cwd1	.,			///
+	label("Equation list: (optional)")
+  EDIT ed_eql		@	_ss	@	.,			///
+	label("Equation list")
+
+  TEXT tx_vars		_lft	_ls	_iwd	.,			///
+	label("Variables:")
+  VARLIST vl_vars	@	_ss	@	.,			///
+	label("Variables") ts
+
+  GROUPBOX gb_from_to	@	_ls	@	_ht3,			///
+	label("Lags")
+  TEXT tx_from		_ilft	_ss	60	.,			///
+	label("From:") 
+  EDIT ed_from		+35	@	_spwd	.,			///
+	label("From")
+  TEXT tx_to		105	@	34	.,			///
+	label("to:") right
+  EDIT ed_to		+39	@	_spwd	.,			///
+	label("to")
+END
+
+PROGRAM main_output
+BEGIN
+	if main.ed_eql {
+		put main.ed_eql ":" main.vl_vars
+		put ", lags(" main.ed_from "/" main.ed_to ")"
+	}
+	else {
+		put main.vl_vars
+		put ", lags(" main.ed_from "/" main.ed_to ")"
+	}
+END
+
+PROGRAM command
+BEGIN
+	require main.vl_vars
+	require main.ed_from
+	require main.ed_to
+	put "xtinstruments(" /program main_output ")"
+
+END

@@ -1,0 +1,177 @@
+/*
+  graph matrix
+
+*! VERSION 1.1.3  03aug2006 (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+
+HELP hlp1, view("help graph_matrix")
+RESET res1
+
+DIALOG main, label("graph matrix - Draw scatterplot matrices")	///
+	tabtitle("Main")
+BEGIN
+  GROUPBOX gb_reqd	_lft      _top      _iwd      _ht2,	///
+	label("Required")
+  TEXT     tx_var	_ilft	  _ss       _txwd     .,	///
+	label("Variables:")
+  VARLIST  vl_var	_txsep    @         _txrb     .,	///
+	label("Variables")
+  TEXT     tx_if	_gft2     _xls      _ifwd     ., 	///
+  	label("if:")
+  EXP      ex_if	_indent2  @         _edifwd1g .,	///
+	label("Create...") error("if")
+  DEFINE holdy @y
+  CHECKBOX ck_half	_lft	  @         _gwd4_1   .,	///
+	label("Lower triangular half only") option(half)
+  TEXT     tx_scale	_lft4_2g  holdy     _txlwd    .,	///
+	label("Scale text:")  right
+  EDIT     ed_scale	_txlsep  @          _en7wd    .,	///
+	label("Scale text") default(1) option(scale)
+  GROUPBOX gb_marker	_lft      _ls       _cwd4_g   _ht9h,	///
+	label("Markers")
+  DEFINE y @y
+  TEXT     tx_msym	_lft4_1gi _ss       _txwd     .,	///
+	label("Symbol:") right
+  COMBOBOX cb_msym	_txsep    @         _txr4gi   .,	///
+	label("Marker symb") option(msymbol) dropdownlist	///
+	contents(symbols)
+  TEXT     tx_msize	_lft4_1gi _ms       _txwd     .,	///
+	label("Size:") right
+  COMBOBOX cb_msize	_txsep    @         _txr4gi   .,	///
+	option(msize) contents(symbolsizes) dropdownlist
+  TEXT     tx_mcol	_lft4_1gi _ms       _txwd     .,	///
+	label("Color:") right
+  COMBOBOX cb_mcol	_txsep    @         _tcr4gi   .,	///
+	option(mcolor) dropdownlist contents(colors) 		///
+	onselchangelist(main_color_mcol)
+  COLOR    cl_mcol	_tcr4gisep @	    _colorwd  .,	///
+	option(mcolor)
+  TEXT     tx_jit	_lft4_1gi _ms       _txwd     .,	///
+  	label("Jitter:") right
+  EDIT     ed_jit	_txsep    @         _en7wd    .,	///
+	label("Jitter") option(jitter) default(0)
+  BUTTON   bu_jit	_en7sep   @         _btwd     .,	///
+	label(?) onpush("view help relativesize##|_new")
+  CHECKBOX ck_mlab	_lft4_2g  y         _cwd4_g   _ht9h,	///
+	label("Marker labels") groupbox 			///
+	onclickon(script main_mlab_on)				///
+	onclickoff(script main_mlab_off)
+  TEXT     tx_mlab	_lft4_2gi _ss       _txwd     .,	///
+	label("Variable: ") right
+  VARLIST  vl_mlab	_txsep    @         _txr4gi   .,	///
+	label("Marker labels variable") option(mlabel)
+  TEXT     tx_mlsiz	_lft4_2gi _ms       _txwd     .,	///
+	label("Size:") right
+  COMBOBOX cb_mlsiz	_txsep    @         _txr4gi   .,	///
+	option(mlabsize) dropdownlist contents(symbolsizes)
+  TEXT     tx_mlcol	_lft4_2gi _ms	    _txwd     .,	///
+	label("Color:") right
+  COMBOBOX cb_mlcol	_txsep    @         _tcr4gi   .,	///
+	option(mlabcolor) dropdownlist contents(colors)		///
+	onselchangelist(main_color_mlcol)
+  COLOR    cl_mlcol	_tcr4gisep @        _colorwd  .,	///
+	option(mlabcolor)
+  TEXT     tx_mlpos	_lft4_2gi _ms       _txwd     .,	///
+	label("Position:") right
+  COMBOBOX cb_mlpos	_txsep    @         _txr4gi   .,	///
+	option(mlabposition) dropdownlist contents(clockpos)
+
+  INCLUDE gmatrix_opts_ctrl
+END
+
+INCLUDE gtitle
+INCLUDE gcaption
+INCLUDE gregion
+INCLUDE gby
+
+SCRIPT main_POSTINIT
+BEGIN
+	script gby_gmatrix_hide
+	script gxaxis_setMatrixTab
+	script gyaxis_setMatrixTab
+END
+
+SCRIPT main_mlab_on
+BEGIN
+	main.tx_mlab.enable
+	main.vl_mlab.enable
+	main.tx_mlsiz.enable
+	main.cb_mlsiz.enable
+	main.tx_mlcol.enable
+	main.cb_mlcol.enable
+	main.cl_mlcol.enable
+	main.tx_mlpos.enable
+	main.cb_mlpos.enable
+END
+
+SCRIPT main_mlab_off
+BEGIN
+	main.tx_mlab.disable
+	main.vl_mlab.disable
+	main.tx_mlsiz.disable
+	main.cb_mlsiz.disable
+	main.tx_mlcol.disable
+	main.cb_mlcol.disable
+	main.cl_mlcol.disable
+	main.tx_mlpos.disable
+	main.cb_mlpos.disable
+END
+
+LIST main_color_mcol
+BEGIN
+	main.cl_mcol.hide
+	main.cl_mcol.show
+	main.cl_mcol.hide
+END
+
+LIST main_color_mlcol
+BEGIN
+	main.cl_mlcol.hide
+	main.cl_mlcol.show
+	main.cl_mlcol.hide
+END
+
+INCLUDE gmatrix_opts_pr
+
+PROGRAM command
+BEGIN
+	put "graph matrix "
+	varlist main.vl_var
+	ifexp main.ex_if
+	beginoptions
+		put /program main_diaglab_pr
+		option main.ck_half
+		optionarg /hidedefault main.ed_scale
+		optionarg /hidedefault main.ed_jit
+		optionarg main.cb_msym
+		optionarg main.cb_msize
+		if !Hcc(main.cb_mcol) {
+			hoptionarg main.cb_mcol
+		}
+		if Hcc(main.cb_mcol) {
+			hoptionarg /quoted main.cl_mcol
+		}
+		if main.ck_mlab {
+			require main.vl_mlab
+			optionarg main.vl_mlab
+			optionarg main.cb_mlsiz
+			if !Hcc(main.cb_mlcol) {
+				hoptionarg main.cb_mlcol
+			}
+			if Hcc(main.cb_mlcol) {
+				hoptionarg /quoted main.cl_mlcol
+			}
+			optionarg main.cb_mlpos
+		}
+		put " " /program gtitle_output
+		put " " /program gcaption_output
+		put " " /program gregion_output
+		put " " /program gby_output
+	endoptions
+END

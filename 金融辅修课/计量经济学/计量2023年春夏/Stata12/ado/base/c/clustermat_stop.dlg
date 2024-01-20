@@ -1,0 +1,102 @@
+/*
+  clustermat stop
+
+*!  VERSION 1.2.0  28mar2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_medium
+INCLUDE _ht290
+INCLUDE header
+HELP hlp1, view("help cluster_stop")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	create STRING oldCluster // < stata 10 cluster results
+	create STRING newCluster
+	create LIST  clusters
+	program getClusters
+END
+
+PROGRAM getClusters
+BEGIN
+	call oldCluster.setvalue char _dta[_cl]
+	call newCluster.setvalue char _dta[_cluster_objects]
+	if newCluster {
+		call newCluster.tokenize clusters
+	}
+	else {
+		call oldCluster.tokenize clusters
+	}
+	call main.lb_clname.repopulate
+END
+
+DIALOG main, label("clustermat stop - Cluster analysis stopping rules") /*
+		*/ tabtitle("Main")
+BEGIN
+  TEXT     tx_clname    _lft      _top      _cwd3_1   .,		/*
+		*/ label("Cluster analysis:")
+  LISTBOX  lb_clname    @         _ss       @         _ht17,		/*
+		*/ contents(clusters)					/*
+		*/ label("Cluster analysis")
+
+  GROUPBOX gb_rule      _lft3_2   _top      _comb3_1  _ht4,		/*
+		*/ label("Stopping rule")
+  RADIO    rb_calinski  _indent   _ss       _inwd     ., first		/*
+		*/ option("rule(calinski)")				/*
+		*/ label("Calinski/Harabasz pseudo-F index")
+  RADIO    rb_duda      @         _ss       @         ., last		/*
+		*/ option("rule(duda)")					/*
+		*/ label("Duda/Hart Je(2)/Je(1) index")
+
+  GROUPBOX gb_options   _lft3_2   _xls      _comb3_1  _ht11,		/*
+		*/ label("Options")
+  CHECKBOX ck_groups    _indent   _ss       _inwd     .,		/*
+		*/ clickon("gaction main.sp_groups.enable")		/*
+		*/ clickoff("gaction main.sp_groups.disable")		/*
+		*/ label("Compute for groups up to:")
+  DEFINE   holdx @x
+  DEFINE   holdcx @cx
+  TEXT     tx_groups    _indent2  _vss      _inwd     .,		/*
+		*/ label("(hierarchical clustering only)")
+  SPINNER  sp_groups    @         _ms       _spwd     .,		/*
+		*/ min(2) max(100000) default(15)			/*
+		*/ label("Compute for groups up to")
+  TEXT     tx_matrix    holdx     _ls       holdcx    .,		/*
+		*/ label("Save the results in matrix:")
+  EDIT     ed_matrix    @         _ss       _vnwd     .,		/*
+		*/ option(matrix)					/*
+		*/ max(32)						/*
+		*/ label("Save the results in matrix")
+  TEXT     tx_variables _lft      _xls      _iwd      .,		/*
+	*/ label("Compute the stopping rule using these variables: (required)")
+  VARLIST  vl_variables @         _ss       _iwd      .,		/*
+		*/ label("Compute the stopping rule using these variables") /*
+		*/ option(variables)
+END
+
+
+PROGRAM command
+BEGIN
+	require main.vl_variables
+	put "clustermat stop " main.lb_clname
+	beginoptions
+		option radio(main rb_calinski rb_duda)
+		optionarg main.vl_variables
+		if main.ck_groups {
+			put "groups("
+			if main.rb_calinski {
+				put "2"
+			}
+			if main.rb_duda {
+				put "1"
+			}
+			put "/" main.sp_groups ") "
+		}
+		optionarg main.ed_matrix
+	endoptions
+END
+

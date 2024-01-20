@@ -1,0 +1,64 @@
+/*
+    copy.dlg
+
+*!  VERSION 1.1.0  17nov2004
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+INCLUDE header
+HELP hlp1, view("help copy")
+RESET res1
+
+DIALOG main, tabtitle("Main") label("copy - Copy file from disk or URL")
+BEGIN
+  TEXT     tx_srcusing    _lft     _top     _iwd        .,	///
+	label("Source filename or URL: (http://www...)")
+  FILE     fi_srcusing    @        _ss      @           .,	///
+	error("Source filename or URL")				///
+	filter("All Files (*.*)|*.*")				///
+	label("Browse...")
+
+  TEXT     tx_desusing    @        _ls      @           .,	///
+	label("Destination filename:")
+  FILE     fi_desusing    @        _ss      @           .,	///
+	error("Destination filename")				///
+	filter("All Files (*.*)|*.*")				///
+	label("Save As...") save
+
+  GROUPBOX gb_opt         _lft     _xls     _iwd        _ht7,	///
+	label("Advanced")
+
+  RADIO    rb_default     _ilft    _ss      _inwd       ., 	///
+	first option(NONE)					///
+	label("Destination file permissions set by operating system")
+  RADIO    rb_public      @        _ss      @           ., 	///
+	last option(public)					///
+	label("Destination file permissions readable by all")
+
+  CHECKBOX ck_text        @        _ls      @           .,	///
+	option(text)						///
+	label("Translate remote file to native text format (text files only)")
+END
+
+PROGRAM command
+BEGIN
+	require main.fi_srcusing main.fi_desusing
+	repfile main.fi_desusing
+	put "copy "
+	put `"""'
+	put main.fi_srcusing
+	put `"""'
+	put " "
+	put `"""'
+	put main.fi_desusing
+	put `"""'
+	put " "
+	beginoptions
+		option radio(main rb_default rb_public)
+		option main.ck_text
+		put "replace"
+	endoptions
+END

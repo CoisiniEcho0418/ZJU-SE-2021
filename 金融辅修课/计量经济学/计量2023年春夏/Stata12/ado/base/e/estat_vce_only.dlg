@@ -1,0 +1,142 @@
+/*
+	estat_vce_only -- the estat dialog for mean, proportion, ratio, and
+	total
+
+*!  VERSION 1.1.0  16may2006
+
+	NOTE: this dialog shares INCLUDE files with estat.dlg
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_large
+DEFINE _dlght 360	//dialog length for bootstrap options
+INCLUDE header
+
+HELP hlp1, view("help estat")
+RESET res1
+
+DIALOG main, tabtitle("Main") label("estat -- Postestimation statistics")
+BEGIN
+  EDIT _ed_cmd 0 0 0 0, default(e(cmd))
+  TEXT     tx_subcmd		_lft	_top	_iwd	.,		///
+  	label("Reports and statistics: (subcommand)")
+  LISTBOX  lb_subcmd		@	_ss	@	70,		///
+  	contents(main_subcommand_contents)				///
+  	values(main_subcommand_values)					///
+  	onselchangelist(main_subcommand_scripts)
+
+  DEFINE holdy 110
+  INCLUDE estat_vce
+
+  TEXT		_tx_sd		_lft	holdy	_iwd	., 		///
+	label("Mean estimation results are not available.")
+  // options for -estat sd-
+  GROUPBOX	gb_sd		_lft	holdy	_iwd	_ht4h,		///
+	label("Subpopulation standard deviations")
+  CHECKBOX	ck_var		_indent	_ss	_inwd	.,		///
+	option(variance)						///
+	label("Report subpopulation variances instead of standard deviations")
+  CHECKBOX	ck_srssd	@	_ms	@	.,		///
+	option(srssubpop)						///
+	label("Report standard deviations assuming SRS within subpopulation")
+
+  INCLUDE _estat_bootstrap
+END
+
+SCRIPT POSTINIT
+BEGIN
+	main._ed_cmd.hide
+END
+
+INCLUDE _estat_bootstrap_pr
+INCLUDE estat_vce_pr
+
+LIST main_subcommand_contents
+BEGIN
+	"Covariance matrix estimates (vce)"
+	"Subpopulation standard deviations (sd)"
+END
+
+LIST main_subcommand_values
+BEGIN
+	vce
+	sd
+END
+
+LIST main_subcommand_scripts
+BEGIN
+	script sel_vce
+	script sel_sd
+END
+
+SCRIPT sel_vce
+BEGIN
+	script main_hide_all
+	program vce_on
+END
+
+SCRIPT sel_sd
+BEGIN
+	script main_hide_all
+	program sd_on
+END
+
+SCRIPT sd_hide
+BEGIN
+	main._tx_sd.hide
+	main.gb_sd.hide
+	main.ck_var.hide
+	main.ck_srssd.hide
+END
+
+PROGRAM sd_on
+BEGIN
+	if main._ed_cmd.equals("mean") {
+		call main.gb_sd.show
+		call main.ck_var.show
+		call main.ck_srssd.show
+	}
+	if ! main._ed_cmd.equals("mean") {
+		call main._tx_sd.show
+	}
+END
+
+SCRIPT main_hide_all  // MUST BE IMPLEMENTED FOR BOOTSTRAP
+BEGIN
+	program vce_off
+	script sd_hide
+	script main_bootstrap_hide
+END
+
+
+PROGRAM vl_eq_output
+BEGIN
+	put main.vl_eq
+END
+
+PROGRAM sd_output
+BEGIN
+	if main.lb_subcmd.equals("sd") {
+		if ! main._ed_cmd.equals("mean") {
+			stopbox stop ///
+				"Mean estimation results are not available."
+		}
+		if main._ed_cmd.equals("mean") {
+			option main.ck_var
+			option main.ck_srssd
+		}
+	}
+END
+
+PROGRAM command
+BEGIN
+	put "estat "
+	put main.lb_subcmd
+	beginoptions
+		put " " /program vce_output
+		put " " /program sd_output
+		put " " /program bootstrap_output
+	endoptions
+END

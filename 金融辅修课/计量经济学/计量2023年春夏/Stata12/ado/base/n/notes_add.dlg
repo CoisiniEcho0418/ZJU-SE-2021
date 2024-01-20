@@ -1,0 +1,47 @@
+/*
+  -notes [varname]: text-
+
+  VERSION 1.0.0  21dec2002
+
+*/
+
+VERSION 8.0
+
+INCLUDE _std_medium
+INCLUDE _ht200
+INCLUDE header
+
+HELP hlp1, view("help notes")
+RESET res1
+
+DIALOG main, label("notes - Add note to data") tabtitle("Main")
+BEGIN
+  RADIO    rb_dta       _lft      _top      _iwd      ., first		/*
+		*/ clickon("gaction main.vn_var.disable")		/*
+		*/ label("Add note to dataset")
+  RADIO    rb_var       @         _ms       @         ., last		/*
+		*/ clickon("gaction main.vn_var.enable")		/*
+		*/ label("Add note to variable:")
+  VARNAME  vn_var       _indent2  _ss       _vnwd     .,		/*
+		*/ label("Add note to variable")
+
+  TEXT     tx_note      _lft      _ls       _iwd      .,		/*
+		*/ label("Note:")
+  EDIT     ed_note      @         _ss       @         .,		/*
+		*/ label("Note")
+  TEXT     tx_ts        @         _ms       @         .,		/*
+		*/ label("Enter TS surrounded by spaces anywhere in note for a time stamp")
+END
+
+
+PROGRAM command
+BEGIN
+	require main.ed_note
+	put "notes "
+	if main.rb_var {
+		varlist main.vn_var
+	}
+	put " : "
+        put main.ed_note
+END
+

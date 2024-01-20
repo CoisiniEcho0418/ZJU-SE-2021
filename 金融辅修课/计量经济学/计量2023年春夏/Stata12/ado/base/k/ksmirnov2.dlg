@@ -1,0 +1,54 @@
+/*
+	ksmirnov	
+
+*!  VERSION 1.2.0  23may2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_medium
+DEFINE _dlght 200
+INCLUDE header
+HELP hlp1, view("help ksmirnov")
+RESET res1
+
+PROGRAM POSTINIT_PROGRAM
+BEGIN
+	if __MESSAGE.iseq("-exact-") {
+		call main.ck_exact.seton
+	}
+END
+
+DIALOG main, label("ksmirnov - Two-sample Kolmogorov-Smirnov test") /*
+		*/ tabtitle("Main")
+BEGIN
+  TEXT     tx_var       _lft      _top       _iwd       .,		/*
+		*/ label("Variable:")
+  VARNAME  vn_var          @       _ss      _vnwd       .,		/*
+		*/ label("Variable")
+  TEXT     tx_byopt        @       _ls       _iwd       .,		/*
+		*/ label("Binary variable: (identifies two groups)")	
+  VARNAME  vn_byopt        @       _ss      _vnwd       .,		/*
+		*/ label("Binary variable")	
+  CHECKBOX ck_exact        @       _ls       _iwd       .,		/*
+		*/ option("exact")					/*
+		*/ label("Compute exact p-value")
+  TEXT     tx_exact _indent2      _vss      _inwd       .,		/*
+		*/ label("(may take a long time with large number of observations)")
+END
+
+INCLUDE ifin
+
+PROGRAM command
+BEGIN
+	put "ksmirnov "
+	varlist main.vn_var
+	INCLUDE _ifin_pr
+	beginoptions
+		put "by("
+		varlist main.vn_byopt
+		put ")"
+		option main.ck_exact
+	endoptions
+END

@@ -1,0 +1,62 @@
+/*
+	hotelling
+
+*! VERSION 1.0.1  20aug2003
+
+*/
+
+VERSION 8.0
+
+INCLUDE _std_medium
+INCLUDE header
+HELP hlp1, view("help hotelling")
+RESET res1
+
+
+DIALOG main, label("hotelling - Hotelling's T-squared generalized means test") tabtitle("Main")
+BEGIN
+  TEXT     tx_var        _lft     _top     _iwd        .,	/*
+		*/ label("Variables:")
+
+  VARLIST  vl_var        @        _ss      @           .,	/*
+		*/ label("Variables")
+
+  GROUPBOX gb_byopt	 _lft	  _ls	   _iwd        _ht6h,	/*
+		*/ label("Means test")
+
+  RADIO    rb_zero       _ilft    _ss	   _ibwd       .,       /*
+		*/ first					/*
+		*/ clickon("gaction main.vn_byopt.disable")	/*
+		*/ label("Test that means are jointly zero")
+
+  RADIO    rb_by         @        _ms      @           .,	/*
+		*/ last						/*
+		*/ clickon("gaction main.vn_byopt.enable")	/*
+		*/label("Test equality of means between two groups defined by:")
+
+  VARNAME  vn_byopt      _indent2 _ss      _vnwd       .,	/*
+		*/ option(by)					/*
+		*/ label("Test equality of means between two groups defined by")
+
+  CHECKBOX ck_notable    _lft     _xls     _iwd        .,	/*
+		*/ option(notable)				/*
+		*/ label("Suppress table of means")
+END
+
+INCLUDE ifin
+INCLUDE weights_fa
+
+PROGRAM command
+BEGIN
+	put "hotelling "
+	varlist main.vl_var
+	INCLUDE _weights_pr
+	INCLUDE _ifin_pr
+	beginoptions
+		if main.rb_by{
+			require main.vn_byopt
+			optionarg main.vn_byopt
+		}
+		option main.ck_notable
+	endoptions
+END

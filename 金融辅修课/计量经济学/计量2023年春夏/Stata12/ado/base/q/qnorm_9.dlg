@@ -1,0 +1,54 @@
+/*
+	qnorm
+
+*!  VERSION 1.1.3  03aug2006  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+
+HELP hlp1, view("help qnorm")
+RESET res1
+
+DIALOG main, tabtitle("Main")						///
+	label("qnorm - Quantiles of normal distribution plot")
+BEGIN
+
+  TEXT     tx_var       _lft       _top       _iwd	 .,		///
+	label("Variable:")
+  VARNAME  vn_var       @          _ss        _vnwd      .,		///
+	label("Quantiles variable")
+
+  CHECKBOX ck_grid      @          _ls        _cwd1      .,		///
+	option(grid)							///
+	label("Add grid lines at percentiles 5, 10, 25, 50, 75, 90, and 95")
+END
+
+INCLUDE ifin
+INCLUDE p1_opts
+INCLUDE line_opts
+INCLUDE addplot
+INCLUDE gr_twoway
+
+SCRIPT PREINIT
+BEGIN
+	script p1_opts_createAsNoRange
+	script p1_opts_setDefaultScatter
+END
+
+PROGRAM command
+BEGIN
+        put "qnorm "
+        varlist main.vn_var
+        INCLUDE _ifin_pr
+        beginoptions
+                option main.ck_grid
+		put " " /program p1_opts_recast_output
+		put " " /program line_opts_rlopts_output
+		put " " /program addplot_output
+		put " " /program gr_twoway_output
+        endoptions
+END

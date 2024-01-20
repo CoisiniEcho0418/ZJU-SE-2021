@@ -1,0 +1,71 @@
+/*
+    gr_combine_browse_opts.dlg
+    
+*!  VERSION 1.0.0  19may2006
+
+*/
+
+VERSION 10
+
+INCLUDE _std_medium
+INCLUDE header_gr_child
+
+HELP hlp1, view("help graph_combine")
+RESET res1
+
+DIALOG main, label("Select graphs to combine")
+BEGIN
+  RADIO    rb_saved		_lft	_top	_iwd	.,	///
+	first							///
+	onclickon(script show_disk_browse)			///
+	label("Browse graphs saved on disk")
+  RADIO	   rb_memory		@	_ss	@	.,	///
+	last							///
+	onclickon(script show_memory_browse)			///
+	label("Browse graphs in memory")
+	
+  TEXT     tx_saved		_lft	_xls	_iwd	.,	///
+	label("Graphs saved on disk:")
+DEFINE y @y
+  FILE     fi_saved		@	_ss    	@	.,	///
+	label("Browse...") 					///
+	error("Graphs saved on disk")				///
+	multiselect nomemory					///
+	defext(gph) 						///
+	filter("Stata Graphs (*.gph)|*.gph|All Files (*.*)|*.*")
+  		
+  TEXT     tx_memory        	_lft	y	_iwd	.,	///
+	label("Memory graphs:")
+  COMBOBOX cb_memory		@	_ss	@	.,	///
+	dropdown append	nomemory				///
+	label("Memory graphs") 					///
+	contents(graphs)
+END
+
+SCRIPT show_disk_browse
+BEGIN
+	main.tx_memory.hide
+	main.cb_memory.hide
+	main.tx_saved.show
+	main.fi_saved.show
+END
+
+SCRIPT show_memory_browse
+BEGIN
+	main.tx_memory.show
+	main.cb_memory.show
+	main.tx_saved.hide
+	main.fi_saved.hide
+END
+
+PROGRAM command
+BEGIN
+	if main.rb_saved {
+		require main.fi_saved
+		put main.fi_saved
+	}
+	if main.rb_memory {
+		require main.cb_memory
+		put main.cb_memory
+	}
+END

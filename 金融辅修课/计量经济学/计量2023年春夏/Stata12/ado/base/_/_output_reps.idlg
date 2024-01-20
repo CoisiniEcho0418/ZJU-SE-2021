@@ -1,0 +1,26 @@
+/*
+  _output_reps.idlg
+
+*!  VERSION 1.1.3  24sep2010
+
+  To be included within a DIALOG.
+
+  Note that macros _x, _cx, _y and _cy must already be DEFINEd.
+
+*/
+
+  /*--+----1----+----2----+----3----+----4----+----5----+----6----+----7----+*/
+  GROUPBOX gb_displ		_x	_y	_cx	_cy,		///
+	label("Elements to display in the replication log")
+  CHECKBOX ck_qui		_indent	_ss	_inwd	.,		///
+	option("nodots")						///
+	label("Suppress the replication dots")
+  CHECKBOX ck_noi		@	_ss	@	.,		///
+	option("noisily")						///
+	label("Display any output from command")
+  CHECKBOX ck_trace		@	_ss	@	.,		///
+	option("trace")							///
+	label("Trace the command")
+
+
+/* END: _output_reps.idlg */

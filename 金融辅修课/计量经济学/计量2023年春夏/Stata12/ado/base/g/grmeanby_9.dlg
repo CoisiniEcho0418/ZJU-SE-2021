@@ -1,0 +1,58 @@
+/*
+	grmeanby_9
+
+*!  VERSION 1.1.1  08sep2006 (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+HELP hlp1, view("help grmeanby")
+RESET res1
+
+DIALOG main, label("grmeanby - Graph means/medians by categorical variables") ///
+	tabtitle("Main")
+BEGIN
+   TEXT     tx_summarize	_lft	_top	@	.,	///
+	label("Variable whose mean/median is to be graphed:")
+   VARNAME  vn_summarize	@	_ss	_vnwd	.,	///
+	label("Variable whose mean/median is to be graphed")	///
+	option(summarize)
+
+  TEXT	    tx_var		_lft	_ls	_cwd1	.,	///
+	label("Categorical variables:")
+  VARLIST  vl_var		@	_ss	@	.,	///
+	label("Categorical variables")
+
+  CHECKBOX ck_median		@	_ls	_cwd1	.,	///
+   	label("Graph median instead of means")  		///
+   	option(median)
+END
+
+INCLUDE ifin
+INCLUDE weights_fa
+INCLUDE p1_opts
+INCLUDE gr_twoway
+
+SCRIPT PREINIT
+BEGIN
+	script p1_opts_createAsNoRange
+	script p1_opts_setDefaultConnected
+END
+
+PROGRAM command
+BEGIN
+	put "grmeanby "
+	require main.vn_summarize
+	varlist main.vl_var
+	INCLUDE _weights_pr
+	INCLUDE _ifin_pr
+	beginoptions
+		optionarg main.vn_summarize
+		option main.ck_median
+		put " " /program p1_opts_recast_output
+		put " " /program gr_twoway_output
+	endoptions
+END

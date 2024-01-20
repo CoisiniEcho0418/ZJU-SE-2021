@@ -1,0 +1,6 @@
+*! version 1.0.0  02feb2011
+sequence 2191
+
+set width    scheme clegend
+set color    scheme clegend_line
+set pattern  scheme clegend

@@ -1,0 +1,4 @@
+*! version 1.0.0  22dec2002
+sequence 4500
+
+set pattern "4 1 .1 1 .1 1 .1 1"

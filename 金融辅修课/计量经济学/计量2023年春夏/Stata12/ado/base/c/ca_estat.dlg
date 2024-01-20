@@ -1,0 +1,344 @@
+/*
+	ca_estat
+
+*!  VERSION 1.1.1  16may2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_large
+DEFINE _dlght 320
+INCLUDE header
+
+HELP hlp1, view("help ca postestimation")
+RESET res1
+
+DIALOG main, label("estat - Postestimation tools for ca and camat") tabtitle("Main")
+BEGIN
+  TEXT     tx_subcmd		_lft	_top	_cwd1	.,		///
+  	label("Reports and statistics: (subcommand)")
+  LISTBOX  lb_subcmd		@	_ss	_iwd	70,		///
+  	contents(main_subcommand_contents)				///
+  	values(main_subcommand_values)					///
+  	onselchangelist(main_subcommand_scripts)
+
+  DEFINE holdy 110
+
+  // coordinates options
+  // with which options
+  GROUPBOX gb_opts		_lft	holdy	_iwd	_ht6,		///
+	label("Row and column results")
+  RADIO    rb_both_coord	_ilft	_ss	_inwd	.,	first	///
+	option(NONE) label("Display row and column results (default)")
+  RADIO    rb_row_coord		@	_ss	@	.,		///
+	option(norow) label("Suppress display of row results")
+  RADIO    rb_column_coord	@	_ss	@	.,	last	///
+	option(nocolumn) label("Suppress display of column results")
+
+  // distances options
+
+  CHECKBOX ck_approx		_lft	_xls	_iwd	.,		///
+  	option(approx)							///
+  	label("Display distances between fitted (approximated) profiles")
+
+  // inertia options
+  CHECKBOX ck_total		_lft	holdy 	_iwd	.,		///
+	option(total)							///
+	label("Add row and column margins")
+  CHECKBOX ck_noscale		@	_ms	@	.,		///
+  	label("Display chi-squared contributions")			///
+  	option(noscale)
+
+  // summarize options
+  CHECKBOX ck_labels		_lft	holdy	_iwd	.,		///
+  	label("Display variable labels")				///
+  	option(labels)
+  CHECKBOX ck_noheader		@	_ms	@	.,		///
+	option(noheader)						///
+	label("Suppress the header")
+  CHECKBOX ck_noweights		@	_ms	@	.,		///
+	option(noweights)						///
+	label("Ignore weights")
+
+  // table options
+  CHECKBOX ck_fit		_lft	holdy	_iwd	.,		///
+	option(fit)							///
+	label("Display fitted values from CA model")
+  CHECKBOX ck_obs		@	_ms	@	.,		///
+  	label(`"Display correspondence table ("observed table")"')	///
+  	option(obs)
+  CHECKBOX ck_independence	@	_ms	@	.,		///
+  	label("Display expected values under independence")		///
+  	option(independence)
+  CHECKBOX ck_noscale2		@	_ms	@	.,		///
+  	label("Suppress scaling of entries to 1")			///
+  	option(noscale)
+
+  CHECKBOX ck_format		_lft	_ms	_iwd	.,		///
+  	onclickon(script main_format_on)				///
+  	onclickoff(script main_format_off)				///
+	label("Specify the display format:")
+  EDIT     ed_format		+20 	_ss	200	.,		///
+	option(format) label("Display format")
+  BUTTON   bn_format      	+205	@	80       .,		///
+	label("Create...")						///
+	onpush(script showFormatDialog)					///
+	tooltip("Create display format")
+END
+
+SCRIPT showFormatDialog
+BEGIN
+	create STRING formatString
+	create CHILD format_chooser
+	format_chooser.setExitString formatString
+	format_chooser.setExitAction "main.ed_format.setvalue class formatString.value"
+END
+
+LIST main_subcommand_contents
+BEGIN
+	"Row and column coordinates (coordinates)"
+	"Chi2-distances between row and column profiles (distances)"
+	"Inertia contributions of the individual cells (inertia)"
+	"Correlations of profiles and axes (loadings)"
+	"Row and column profiles (profiles)"
+ 	"Summarize estimation sample (summarize - for ca only)"
+	"Fitted correspondence table (table)"
+END
+
+LIST main_subcommand_values
+BEGIN
+	coordinates
+	distances
+	inertia
+	loadings
+	profiles
+	summarize
+	table
+END
+
+LIST main_subcommand_scripts
+BEGIN
+	script sel_coordinates
+	script sel_distances
+	script sel_inertia
+	script sel_loadings
+	script sel_profiles
+	script sel_summarize
+	script sel_table
+END
+
+SCRIPT sel_coordinates
+BEGIN
+	script main_row_col_opts_on
+	main.ck_format.show
+	main.ed_format.show
+	main.bn_format.show
+	main.ck_format.setposition . 210 . .
+	main.ed_format.setposition . 230 . .
+	main.bn_format.setposition . 230 . .
+
+	main.ck_approx.hide
+	script main_inertia_opts_off
+	script main_summarize_opts_off
+	script main_table_opts_off
+END
+
+SCRIPT sel_distances
+BEGIN
+	script main_row_col_opts_on
+	main.ck_format.show
+	main.ed_format.show
+	main.bn_format.show
+	main.ck_format.setposition . 235 . .
+	main.ed_format.setposition . 255 . .
+	main.bn_format.setposition . 255 . .
+	main.ck_approx.show
+
+	script main_inertia_opts_off
+	script main_summarize_opts_off
+	script main_table_opts_off
+END
+
+SCRIPT sel_inertia
+BEGIN
+	script main_inertia_opts_on
+	script main_format_opt_show
+	main.ck_format.setposition . 160 . .
+	main.ed_format.setposition . 180 . .
+	main.bn_format.setposition . 180 . .
+
+	script main_row_col_opts_off
+	main.ck_approx.hide
+	script main_summarize_opts_off
+	script main_table_opts_off
+END
+
+SCRIPT sel_loadings
+BEGIN
+	script main_row_col_opts_on
+	script main_format_opt_show
+	main.ck_format.setposition . 210 . .
+	main.ed_format.setposition . 230 . .
+	main.bn_format.setposition . 230 . .
+
+	script main_summarize_opts_off
+	script main_inertia_opts_off
+	script main_table_opts_off
+	main.ck_approx.hide
+END
+
+SCRIPT sel_profiles
+BEGIN
+	script main_row_col_opts_on
+	script main_format_opt_show
+	main.ck_format.setposition . 210 . .
+	main.ed_format.setposition . 230 . .
+	main.bn_format.setposition . 230 . .
+
+	script main_summarize_opts_off
+	script main_inertia_opts_off
+	script main_table_opts_off
+	main.ck_approx.hide
+END
+
+SCRIPT sel_summarize
+BEGIN
+	script main_summarize_opts_on
+
+	script main_row_col_opts_off
+	script main_format_opt_hide
+	main.ck_approx.hide
+	script main_inertia_opts_off
+	script main_table_opts_off
+END
+
+SCRIPT sel_table
+BEGIN
+	script main_table_opts_on
+	script main_format_opt_show
+	main.ck_format.setposition . 210 . .
+	main.ed_format.setposition . 230 . .
+	main.bn_format.setposition . 230 . .
+
+	main.ck_approx.hide
+	script main_inertia_opts_off
+	script main_summarize_opts_off
+	script main_row_col_opts_off
+END
+
+SCRIPT main_row_col_opts_on
+BEGIN
+	main.gb_opts.show
+	main.rb_both_coord.show
+	main.rb_row_coord.show
+	main.rb_column_coord.show
+END
+
+SCRIPT main_row_col_opts_off
+BEGIN
+	main.gb_opts.hide
+	main.rb_both_coord.hide
+	main.rb_row_coord.hide
+	main.rb_column_coord.hide
+END
+
+SCRIPT main_inertia_opts_on
+BEGIN
+	main.ck_total.show
+	main.ck_noscale.show
+END
+
+SCRIPT main_inertia_opts_off
+BEGIN
+	main.ck_total.hide
+	main.ck_noscale.hide
+END
+
+SCRIPT main_summarize_opts_on
+BEGIN
+	main.ck_labels.show
+	main.ck_noheader.show
+	main.ck_noweights.show
+END
+
+SCRIPT main_summarize_opts_off
+BEGIN
+	main.ck_labels.hide
+	main.ck_noheader.hide
+	main.ck_noweights.hide
+END
+
+SCRIPT main_table_opts_on
+BEGIN
+	main.ck_fit.show
+	main.ck_obs.show
+	main.ck_independence.show
+	main.ck_noscale2.show
+END
+
+SCRIPT main_table_opts_off
+BEGIN
+	main.ck_fit.hide
+	main.ck_obs.hide
+	main.ck_independence.hide
+	main.ck_noscale2.hide
+END
+
+SCRIPT main_format_opt_hide
+BEGIN
+	main.ck_format.hide
+	main.ed_format.hide
+	main.bn_format.hide
+END
+
+SCRIPT main_format_opt_show
+BEGIN
+	main.ck_format.show
+	main.ed_format.show
+	main.bn_format.show
+END
+
+SCRIPT main_format_on
+BEGIN
+	main.ed_format.enable
+	main.bn_format.enable
+END
+SCRIPT main_format_off
+BEGIN
+	main.ed_format.disable
+	main.bn_format.disable
+END
+
+PROGRAM command
+BEGIN
+	put "estat "
+	put main.lb_subcmd
+	beginoptions
+		// coordinates options
+		option main.rb_row_coord
+		option main.rb_column_coord
+
+  		// distances options
+		option main.ck_approx
+
+  		// inertia options
+		option main.ck_total
+		option main.ck_noscale
+
+		// Summarize options
+		option main.ck_labels
+		option main.ck_noheader
+		option main.ck_noweights
+
+  		// table options
+		option main.ck_fit
+		option main.ck_obs
+		option main.ck_independence
+		option main.ck_noscale2
+		if main.ck_format {
+			require main.ed_format
+			optionarg main.ed_format
+		}
+	endoptions
+END

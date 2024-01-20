@@ -1,0 +1,251 @@
+/*
+  sts_list.dlg
+
+*!  VERSION 2.0.2  07may2008
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_large
+DEFINE _dlght 390
+INCLUDE header
+
+HELP hlp1, view("help sts_list")
+RESET res1
+
+DIALOG main, tabtitle("Main") ///
+		label("sts list - List the survivor or cumulative hazard function")
+BEGIN
+  DEFINE _x _xsetbu
+  DEFINE _y _top
+  INCLUDE _bu_stset
+
+  GROUPBOX gb_estimates      _lft      _ss       _iwd      _ht6,	///
+  		label("Function")
+  RADIO    rb_kaplan         _ilft     _ss       _ibwd     .,		///
+  		first							///
+ 		option(NONE)						///
+ 		onclickon(program main_adjvar_enable)			///
+ 		label("List Kaplan-Meier estimate of the survivor function")
+  RADIO    rb_failure        @         _ss       @         .,		///
+   		option(failure)						///
+   		onclickon(program main_adjvar_enable)			///
+   		label("List Kaplan-Meier estimate of the failure function")
+  RADIO    rb_cumhaz             @         _ss       @         .,		///
+   		last     						///
+ 		option(cumhaz)						///
+ 		onclickon(script main_adjvar_disable)			///
+ 		label("List Nelson-Aalen estimate of the cumulative hazard function")
+
+  GROUPBOX gb_by             _lft      +45       _iwd      _ht13,	///
+ 		label("Calculation")
+
+  CHECKBOX ck_byvar          _ilft     _ms       _inwd     .,		///
+ 		onclickon(program main_by_on)				///
+ 		onclickoff(program main_by_off)				///
+ 		label("Separate on different groups of specified variables: (by variables)")
+  VARLIST  vl_byvar          @         _ss       @         .,		///
+ 		option(by)						///
+ 		label("Separate on different groups of specified variables")
+
+  CHECKBOX ck_adjvar         _ilft     _ls       _ibwd     .,		///
+  		onclickon(program main_adjvar_on)			///
+  		onclickoff(program main_adjvar_off)			///
+   		label("Adjust the estimates to zero values of adjustment variables:")
+  VARLIST  vl_adjvar         @         _ss       @         .,		///
+ 		option(adjustfor)					///
+ 		label("Adjust the estimates to zero values of adjustment variables")
+
+  CHECKBOX ck_strvar         @         _ls       @         .,		///
+  		onclickon(script main_strvar_on)			///
+  		onclickoff(program main_strvar_off)			///
+ 		label("Stratify on grouping variables")
+END
+
+PROGRAM main_adjvar_enable
+BEGIN
+	call main.ck_adjvar.enable
+	if main.ck_adjvar {
+		call program main_adjvar_on
+	}
+END
+
+SCRIPT main_adjvar_disable
+BEGIN
+	main.ck_adjvar.disable
+	program main_adjvar_off
+END
+
+PROGRAM main_by_on
+BEGIN
+	call main.vl_byvar.enable
+	if main.ck_adjvar {
+		call main.ck_strvar.enable
+	}
+	call opt.ck_compare.enable
+END
+
+PROGRAM main_by_off
+BEGIN
+	call main.vl_byvar.disable
+	call main.ck_strvar.disable
+	if ! (main.ck_byvar | main.ck_strvar) {
+		call opt.ck_compare.disable
+	}
+END
+
+PROGRAM main_adjvar_on
+BEGIN
+	call main.vl_adjvar.enable
+	if main.ck_byvar {
+		call main.ck_strvar.enable
+	}
+	if main.ck_strvar {
+		call opt.ck_compare.enable
+	}
+END
+
+PROGRAM main_adjvar_off
+BEGIN
+	call main.vl_adjvar.disable
+	call main.ck_strvar.disable
+	if ! (main.ck_byvar | (main.ck_strvar & ! D(main.ck_strvar))) {
+		call opt.ck_compare.disable
+	}
+END
+
+SCRIPT main_strvar_on
+BEGIN
+	opt.ck_compare.enable
+END
+
+PROGRAM main_strvar_off
+BEGIN
+	if ! main.ck_byvar {
+		call opt.ck_compare.disable
+	}
+END
+
+INCLUDE ifin
+
+DIALOG opt, label("")  tabtitle("Options")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr
+  DEFINE _y _top
+  INCLUDE _sp_level
+  GROUPBOX gb_at             _lft      _ls       _iwd      _ht11,	///
+ 		label("Estimated survivor/cumulative hazard function")
+  RADIO    rb_unique         _ilft     _ss       _ibwd     .,		///
+  		label("Display all unique time values")			///
+ 		first							///
+ 		onclickon(script unique_off)
+  RADIO    rb_sptime         _ilft     _ss       _ibwd     .,		///
+ 		onclickon(script values_disable)			///
+ 		label("Display equally spaced time values")
+  RADIO    rb_values         _ilft     +45       _ibwd     .,		///
+ 		last							///
+ 		onclickon(script spt_disable)				///
+ 		label("Display specified time values:  (space-separated list of numbers)")
+  EDIT     ed_values         _indent2  _ss       _inwd     .,		///
+ 		label("Specified time values")				///
+ 		option(at)
+  SPINNER  sp_sptime         @         -45       _spwd     .,		///
+ 		min(2)							///
+ 		max(100000)						///
+ 		default(10)						///
+ 		option(at)
+  TEXT     tx_sptime         _spsep    @         _rbsprb   .,		///
+ 		label("Number of equally spaced time values")
+
+  GROUPBOX gb_enter          _lft      +95       _iwd      _ht4,	///
+ 		label("Number lost")
+  RADIO    rb_noenter        _ilft     _ss       _ibwd     .,		///
+ 		label("Report number lost as censored minus entered")	///
+ 		first							///
+ 		option(NONE)
+  RADIO    rb_enter          @         _ss       @         .,		///
+ 		label("Report number lost as pure number censored")	///
+ 		last							///
+ 		option(enter)
+  CHECKBOX ck_noshow         _lft      +45       _cwd1     .,		///
+ 		label("Do not show st setting information")		///
+ 		option(noshow)
+  CHECKBOX ck_compare        @         _ms       _iwd      .,		///
+ 		option(compare)						///
+ 		label("List groups of survivor/cumulative hazard functions side-by-side")
+
+  TEXT     tx_sav            @         _ls       @         .,		///
+		label("Save results to dataset:")
+  FILE     fi_sav            @         _ss       @         .,		///
+		label("Browse...")					///
+		option("saving")					///
+		filter("Stata Dataset (*.dta)|*.dta|All (*.*)|*.*")	///
+		defext(dta)						///
+		save
+END
+
+SCRIPT unique_off
+BEGIN
+	opt.sp_sptime.disable
+	opt.tx_sptime.disable
+	opt.ed_values.disable
+	opt.ck_compare.disable
+END
+
+SCRIPT values_disable
+BEGIN
+	opt.sp_sptime.enable
+	opt.tx_sptime.enable
+	opt.ed_values.disable
+END
+
+SCRIPT spt_disable
+BEGIN
+	opt.sp_sptime.disable
+	opt.tx_sptime.disable
+	opt.ed_values.enable
+END
+
+PROGRAM command
+BEGIN
+	if main.ck_byvar {
+		require main.vl_byvar
+	}
+	if main.ck_adjvar {
+		require main.vl_adjvar
+	}
+	if opt.rb_values {
+		require opt.ed_values
+	}
+	put "sts list "
+	INCLUDE _ifin_pr
+	beginoptions
+		if main.ck_strvar.isenabled() & main.ck_strvar {
+			call main.vl_byvar.setoption "strata"
+		}
+		else {
+			call main.vl_byvar.setoption "by"
+		}
+		optionarg main.vl_byvar
+		optionarg main.vl_adjvar
+		option radio(main rb_kaplan rb_failure rb_cumhaz)
+		if opt.rb_sptime {
+			optionarg opt.sp_sptime
+		}
+		if opt.rb_values {
+			optionarg opt.ed_values
+		}
+		option opt.ck_compare
+		option radio(opt rb_noenter rb_enter)
+		INCLUDE _level_opt_pr
+		option opt.ck_noshow
+		if opt.fi_sav {
+			repfile opt.fi_sav
+			put `"saving(""'
+			put opt.fi_sav
+			put `"", replace)"'
+		}
+	endoptions
+END

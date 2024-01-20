@@ -1,0 +1,49 @@
+/*
+  drawnorm
+
+*! VERSION 1.1.1  18aug2006
+
+  (Uses the corr2data idlg files)
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_large
+INCLUDE _ht360
+INCLUDE header
+HELP hlp1, view("help drawnorm")
+RESET res1
+
+DIALOG main, label("drawnorm - Draw sample from multivariate normal distribution") /*
+		*/ tabtitle("Main")
+BEGIN
+  INCLUDE  _corr2data
+END
+
+
+INCLUDE _corr2data_sc
+
+DIALOG opt, tabtitle("Options")
+BEGIN
+  CHECKBOX ck_seed      _lft      _top      _ckwd     .,		/*
+		*/ clickon("gaction opt.sp_seed.enable")		/*
+		*/ clickoff("gaction opt.sp_seed.disable")		/*
+		*/ label("")
+  SPINNER  sp_seed      _cksep    @         _spwd     .,		/*
+		*/ min(1) max(10000000) default(12345)			/*
+		*/ option(seed)						/*
+		*/ label("Set seed")
+  TEXT     tx_seed      _spsep    @         _ckspr    .,		/*
+		*/ label("Seed for random-number generator")
+END
+
+PROGRAM command
+BEGIN
+	put "drawnorm "
+	INCLUDE _corr2data_pr
+	beginoptions
+		optionarg opt.sp_seed
+	endoptions
+END
+

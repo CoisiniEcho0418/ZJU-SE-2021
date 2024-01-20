@@ -1,0 +1,103 @@
+/*
+	predict (after treatreg)
+
+*!  VERSION 1.2.0  28jun2006
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_large  // ** set POSTINIT to match
+DEFINE _dlght 305
+INCLUDE header
+
+HELP hlp1, view("help treatreg postestimation")
+RESET res1
+
+SCRIPT main_POSTINIT
+BEGIN
+	script _p_gentype_setLarge
+END
+
+DIALOG main, label("predict - Prediction after estimation") tabtitle("Main")
+BEGIN
+  INCLUDE  _p_gentype
+
+  GROUPBOX gb_opts       _lft     _ls     _iwd    _ht18,	/*
+		*/ label("Produce:")
+  RADIO    rb_xb      _indent      _ss    _inwd        ., first /*
+		*/ option(xb)					/*
+		*/ onclickon(script _p_gentype_single)		/*
+		*/ label("Linear prediction for the regression equation")
+  RADIO    rb_stdp          @      _ss        @        .,	/*
+		*/ option(stdp)					/*
+		*/ onclickon(script _p_gentype_single)		/*
+	*/ label("Standard error of the prediction for the regression equation")
+  RADIO    rb_stdf          @      _ss        @        .,	/*
+		*/ option(stdf)					/*
+		*/ onclickon(script _p_gentype_single)		/*
+	*/ label("Standard error of the forecast for the regression equation")
+  RADIO    rb_yctrt         @      _ss        @        .,	/*
+		*/ option(yctrt)				/*
+		*/ onclickon(script _p_gentype_single)		/*
+		*/ label("E(y | treatment = 1)")
+  RADIO    rb_ycntrt        @      _ss        @        .,	/*
+		*/ option(ycntrt)				/*
+		*/ onclickon(script _p_gentype_single)		/*
+		*/ label("E(y | treatment = 0)")
+  RADIO    rb_ptrt          @      _ss        @        .,	/*
+		*/ option(ptrt)					/*
+		*/ onclickon(script _p_gentype_single)		/*
+		*/ label("Probability of being assigned the treatment")
+  RADIO    rb_xbtrt         @      _ss        @        .,	/*
+		*/ option(xbtrt)				/*
+		*/ onclickon(script _p_gentype_single)		/*
+		*/ label("Linear prediction for the treatment equation")
+  RADIO    rb_stdptrt       @      _ss        @        .,	/*
+		*/ option(stdptrt)				/*
+		*/ onclickon(script _p_gentype_single)		/*
+	*/ label("Standard error of the prediction for the treatment equation")
+  RADIO    rb_score         @      _ss        @         ., last	/*
+		*/ option(scores)				/*
+		*/ onclickon(script _p_gentype_multiple)	/*
+		*/ label("Equation-level scores")
+  INCLUDE _svy_predict_note
+END
+
+SCRIPT PREINIT
+BEGIN
+	create STRING prefix_name
+	prefix_name.setstring e(prefix)
+END
+
+SCRIPT POSTINIT
+BEGIN
+	main.tx_temp.hide
+	main.tx_svy_note.hide
+	program svy_check
+END
+
+PROGRAM svy_check
+BEGIN
+	if prefix_name.equals("svy") {
+		call main.tx_svy_note.show
+		call main.rb_stdf.disable
+	}
+END
+
+
+INCLUDE _p_gentype_sc
+INCLUDE ifin
+
+INCLUDE _type_list_fd
+
+PROGRAM command
+BEGIN
+	put "predict "
+	put " " /program _p_gentype_output
+	INCLUDE _ifin_pr
+	beginoptions
+		option radio(main rb_xb rb_stdp rb_stdf rb_yctrt rb_ycntrt /*
+			*/ rb_ptrt rb_xbtrt rb_stdptrt rb_score)
+	endoptions
+END

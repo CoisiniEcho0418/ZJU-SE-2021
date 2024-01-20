@@ -1,0 +1,263 @@
+/*
+  sg__errvar.dlg
+
+*!  VERSION 1.0.1  21jul2011
+
+*/
+
+VERSION 12.0
+MODAL
+
+INCLUDE _std_msmall
+DEFINE _dlght 230
+INCLUDE header_sem_ed
+
+DEFINE _clwd	15
+DEFINE _wd	160
+DEFINE _sep	+165
+DEFINE _wd2	120
+DEFINE _sep2	+125
+DEFINE _cbwd	100
+DEFINE _cbsep	+105
+
+INCLUDE sg__common_output		/* routines necessary for output */
+
+SCRIPT PREINIT
+BEGIN
+	script sg__common_output_init 	/* initialize output globals */
+
+	create STRING OBJ
+	program setupOBJECT
+
+	create STRING sTemp
+	create DOUBLE dTemp
+END
+
+PROGRAM setupOBJECT
+BEGIN
+	if ! __MESSAGE {
+		stopbox stop 	///
+			"An unexpected error has occurred." "Object not found."
+		exit 198
+	}
+	call OBJ.setvalue class __MESSAGE.value
+END
+
+SCRIPT variable_PREINIT
+BEGIN
+	create STRING sLabel
+	create STRING sXpos
+	create STRING sYpos
+	create STRING sCnsVar		/* constraint variance	*/
+	create STRING sIniVar
+
+	program variable_get_defaults
+END
+
+SCRIPT variable_POSTINIT
+BEGIN
+	program variable_initialize_controls
+END
+
+PROGRAM variable_get_defaults
+BEGIN
+	call sLabel.setvalue class .__SEMG.dbsettings.errlabel
+	call sLabel.withvalue variable.ed_errlabel.setdefault "@"
+
+	call sXpos.setvalue class .__SEMG.dbsettings.xoffset
+	call sXpos.withvalue variable.ed_xpos.setdefault "@"
+
+	call sYpos.setvalue class .__SEMG.dbsettings.yoffset
+	call sYpos.withvalue variable.ed_ypos.setdefault "@"
+
+	call sCnsVar.setvalue class .__SEMG.dbsettings.cns_var
+	call sCnsVar.withvalue variable.ed_cnsvar.setdefault "@"
+
+	call sIniVar.setvalue class .__SEMG.dbsettings.ini_var
+	call sIniVar.withvalue variable.ed_inivar.setdefault "@"
+END
+
+PROGRAM variable_initialize_controls
+BEGIN
+	call variable.ed_errlabel.setvalue class sLabel.value
+	call variable.ed_errlabel.setvalue class sLabel.value
+	call variable.ed_xpos.setvalue class sXpos.value
+	call variable.ed_ypos.setvalue class sYpos.value
+
+	call variable.ed_cnsvar.setvalue class sCnsVar.value
+	call variable.ed_inivar.setvalue class sIniVar.value
+END
+
+DIALOG variable, label("Variable properties") tabtitle("Error variable")
+BEGIN
+  TEXT     tx_label	_lft	_top	_iwd	.,		///
+	label("Custom label:")
+  EDIT     ed_errlabel	@	_ss	@	., nomemory
+
+
+  GROUPBOX gb_pos	_lft	+35	_iwd	55,		///
+	label("Offset") 
+  TEXT     tx_xpos	80	_ss	25	.,		///
+	label("x:") right 
+  EDIT     ed_xpos	+30	@	75	., nomemory
+  TEXT     tx_ypos	+80	@	25	.,		///
+	label("y:") right 
+  EDIT     ed_ypos	+30	@	75	., nomemory
+
+  GROUPBOX gb_cons	_lft	+45	_iwd	_ht5h,		///
+	label("Error variance")
+
+  TEXT     tx_cnsvar	_ilft	_ss	_wd2	.,		///
+	label("Constraint:") right
+  EDIT     ed_cnsvar	_sep2	@	_cbwd	., nomemory
+  BUTTON   bu_cnsvar	_cbsep	@	_clwd	.,		///
+	label("?") onpush(view help sg__constraints##|_new)
+
+  TEXT     tx_inivar	_ilft	_ls	_wd2	.,		///
+	label("Initial value:") right
+  EDIT     ed_inivar	_sep2	@	_cbwd	., nomemory
+  BUTTON   bu_inivar	_cbsep	@	_clwd	.,		///
+	label("?") onpush(view help sg__initialvalues##|_new)
+END
+
+PROGRAM variable_output
+BEGIN
+	call program variable_get_defaults
+
+	if ! variable.ed_errlabel.isdefault() {
+		call sg__PARAM2.setvalue "SetSelected"
+		call sg__ARG_00.setvalue "errlabel"
+		call sg__ARG_01.setvalue class variable.ed_errlabel.value
+		put /program sg__do_output_sub
+	}
+
+	if ! variable.ed_xpos.isdefault() {
+		call dTemp.setvalue class variable.ed_xpos.value
+		call sTemp.setvalue class variable.ed_xpos.value
+		if (!dTemp & dTemp.isneq(0) & sTemp.isneq("<multiple>")) {
+			stopbox stop `""x" contains a nonnumeric value."'
+		}
+		call sg__PARAM2.setvalue "SetSelected"
+		call sg__ARG_00.setvalue "offset[1]"
+		call sg__ARG_01.setvalue class variable.ed_xpos.value
+		put /program sg__do_output_sub
+	}
+
+	if ! variable.ed_ypos.isdefault() {
+		call dTemp.setvalue class variable.ed_ypos.value
+		call sTemp.setvalue class variable.ed_ypos.value
+		if (!dTemp & dTemp.isneq(0) & sTemp.isneq("<multiple>")) {
+			stopbox stop `""y" contains a nonnumeric value."'
+		}
+		call sg__PARAM2.setvalue "SetSelected"
+		call sg__ARG_00.setvalue "offset[2]"
+		call sg__ARG_01.setvalue class variable.ed_ypos.value
+		put /program sg__do_output_sub
+	}
+
+	if ! variable.ed_cnsvar.isdefault() {
+		call sg__PARAM2.setvalue "SetSelected"
+		call sg__ARG_00.setvalue "cns_var"
+		call sg__ARG_01.setvalue class variable.ed_cnsvar.value
+		put /program sg__do_output_sub
+	}
+
+	if ! variable.ed_inivar.isdefault() {
+		call dTemp.setvalue class variable.ed_inivar.value
+		call sTemp.setvalue class variable.ed_inivar.value
+		if (!dTemp & dTemp.isneq(0) & sTemp.isneq("<multiple>")) {
+			stopbox stop `""y" contains a nonnumeric value."'
+		}
+		call sg__PARAM2.setvalue "SetSelected"
+		call sg__ARG_00.setvalue "ini_var"
+		call sg__ARG_01.setvalue class variable.ed_inivar.value
+		put /program sg__do_output_sub
+	}
+END
+
+
+/*****************************************************************************/
+
+SCRIPT prop_custom_on
+BEGIN
+	prop.bu_propset.enable
+	prop.bu_propclear.enable
+END
+
+SCRIPT prop_custom_off
+BEGIN
+	prop.bu_propset.disable
+	prop.bu_propclear.disable
+END
+
+DIALOG prop, tabtitle("Appearance")
+BEGIN
+  TEXTBOX tb_n1			_lft	_top	_iwd	105,		///
+	label("You may change the appearance " 				///
+	"(size, color, label font, etc.) of individual or selected "	///
+	"variables, but you probably do not want to.  Rather, you "	///
+	"probably want to change the appearance of all variables, "	///
+	"all latent variables, all observed exogenous variables, "	///
+	"or some other class of variables.  Make these changes from "	///
+	"the classes of variables available under the SEM Builder's "	///
+	"Settings > Variables menu.")
+
+  CHECKBOX ck_custom		_lft	+110	_iwd	_ht6,		///
+	nomemory							///
+	onclickon(script prop_custom_on)				///
+	onclickoff(script prop_custom_off)				///
+	groupbox label("Customize appearance for selected variables")
+
+  BUTTON  bu_propset 		+20	_ms	160	.,		///
+	label("Set custom appearance")					///
+	onpush(program do_prop_selected)	
+  BUTTON  bu_propclear 		@	 _mls	160	.,		///
+	label("Clear custom appearances")				///
+	onpush(program do_prop_clear)
+END
+
+PROGRAM do_prop_selected
+BEGIN
+	call sg__PARAM1.setvalue class OBJ.value
+	call sg__PARAM2.setvalue "LaunchDlg"
+	call sg__ARG_00.setvalue "variables_prop"
+	call sg__ARG_01.setvalue "selected"
+	put /program sg__do_output_sub
+END
+
+PROGRAM do_prop_clear
+BEGIN
+	call sg__PARAM1.setvalue class OBJ.value
+	call sg__PARAM2.setvalue "ClearStylesSelected"
+	call sg__ARG_00.setvalue "variables_prop"
+	call sg__ARG_01.setvalue "selected"
+	put /program sg__do_output_sub
+END
+
+/*****************************************************************************/
+
+PROGRAM command
+BEGIN
+	call sg__PARAM1.setvalue class OBJ.value
+	
+	call sg__PARAM2.setvalue "BeginSet"
+	call sg__DESCPT.setvalue "change variable settings"
+	put /program sg__do_output_sub
+	
+	put /program variable_output
+
+	call sg__PARAM2.setvalue "EndSet"
+	call sg__DESCPT.setvalue "change variable settings"
+	put /program sg__do_output_sub
+
+
+	call sg__PARAM1.setvalue class OBJ.value
+	call sg__PARAM2.setvalue "UpdateDlg"
+	call sg__ARG_00.setvalue "variables"
+	call sg__ARG_01.setvalue class sSrcTypeOrig.value
+	put /program sg__do_output_sub
+
+	call sg__PARAM1.setvalue class OBJ.value
+	call sg__PARAM2.setvalue "Reselect"
+	put /program sg__do_output_sub
+END

@@ -1,0 +1,219 @@
+/*
+
+*!  VERSION 1.1.0  02dec2009
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_mlarge
+POSITION . . _dlgwd 425
+
+OK ok1, label("OK")
+CANCEL can1, label("Cancel")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	create STRING s_output
+	create STRING s_local
+	create STRING s_tsvar
+
+	create BOOLEAN b_isAnova
+	create BOOLEAN b_isMainEffect
+	create BOOLEAN b_allowTS
+	
+	b_isAnova.setfalse
+	b_isMainEffect.setfalse
+	b_allowTS.settrue
+END
+
+PROGRAM POSTINIT_PROGRAM
+BEGIN
+	if __MESSAGE {
+		call main.vl_varlist.setvalue ""
+		call __MESSAGE.withvalue main.vl_varlist.smartinsert "@"
+	}
+	call program check_tsset
+END
+
+PROGRAM ON_DOTPROMPT
+BEGIN
+	call program check_tsset
+END
+
+PROGRAM check_tsset
+BEGIN
+	call s_tsvar.setvalue char _dta[_TStvar]
+	if (s_tsvar) {
+		call program _ts_operators_enable
+		call program _fv_core_enable
+	}
+	else {
+		call program _ts_operators_disable
+		call program _fv_core_disable
+	}
+	call program check_setGroupTitle
+END
+
+DIALOG main, tabtitle("Main") 	///
+	label("Create varlist with factor or time-series variables")
+BEGIN
+  GROUPBOX	gb_type		_lft	_top	_iwd	_ht6,		///
+	label("Type of variable")
+  RADIO		rb_fv		_ilft	_ss	_ibwd	., first	///
+	label("Factor variable") onclickon(program fv_on)
+  RADIO		rb_ts		_ilft	_ss	_ibwd	., middle 	///
+	label("Time-series variable") onclickon(program ts_on)
+  HYPERLINK	hl_time		_rj110	@	100	.,		///
+	label("Time settings...") right onpush(program show_tsset)
+  RADIO		rb_var		_ilft	_ss	_ibwd	., last 	///
+	label("Simple variable") onclickon(program simple_on)
+
+
+  GROUPBOX	gb_add		_lft	_xls	_iwd	80,		///
+	label("")
+
+  TEXT		tx_var		_ilft	_ms	_vnwd	.,		///
+	label("Variable:")
+  DEFINE holdy @y
+  VARNAME	vl_var		@	_ss	@ 	.,		///
+	label("Variable")
+  BUTTON	bu_add		_irj80	@	80	.,		///
+	label("Add to varlist") onpush(program add)
+
+  DEFINE _x _ilft
+  DEFINE _y _ls
+  DEFINE _cx _ibwd
+  INCLUDE _ts_operators
+  INCLUDE _fv_core
+
+  TEXT   	tx_varlist	_lft	375	_iwd	.,		///
+	label("Varlist:")
+  EDIT		vl_varlist	_lft	_ss	_iwd	.,
+END
+
+PROGRAM show_tsset
+BEGIN
+	call create STRING tssetResult
+	call create CHILD tsset
+	call tsset.setExitString "tssetResult"
+	call tsset.setExitAction "program get_tsset_result"
+END
+PROGRAM get_tsset_result
+BEGIN
+	if tssetResult {
+		put tssetResult
+		stata
+	}
+END
+
+INCLUDE _ts_operators_pr
+INCLUDE _fv_core_pr
+
+PROGRAM check_setGroupTitle
+BEGIN
+	if main.rb_fv {
+		call main.gb_add.setlabel "Add factor variable"
+	}
+	if main.rb_ts {
+		call s_tsvar.setvalue char _dta[_TStvar]
+		if (s_tsvar) {
+			call main.gb_add.setlabel "Add time-series variable"
+		}
+		else {
+			call main.gb_add.setlabel "Add time-series variable (time settings not set)"
+		}
+	}
+	if main.rb_var {
+		call main.gb_add.setlabel "Add simple variable"
+	}		
+END
+
+PROGRAM simple_on
+BEGIN
+	call program check_setGroupTitle
+	call main.gb_add.setposition . . . 80
+	call main.tx_var.show
+	call main.vl_var.show
+
+	call main.tx_term.hide
+	call main.cb_term.hide
+	call main.tx_variables.hide
+	call main.tx_base.hide
+ 	call main.tx_cont.hide
+	call main.tx_timeop.hide
+
+	call program _ts_operators_hide
+	call program hide_terms
+END
+
+PROGRAM ts_on
+BEGIN
+	call program check_setGroupTitle
+	call main.gb_add.setposition . . . 255
+	call main.tx_var.show
+	call main.vl_var.show
+	call program _ts_operators_show
+
+	call main.tx_term.hide
+	call main.cb_term.hide
+	call main.tx_variables.hide
+	call main.tx_base.hide
+ 	call main.tx_cont.hide
+	call main.tx_timeop.hide
+	call program hide_terms
+END
+
+PROGRAM fv_on
+BEGIN
+	call program check_setGroupTitle
+	call main.gb_add.setposition . . . 255
+	call main.tx_var.hide
+	call main.vl_var.hide
+	
+	call program _ts_operators_hide
+
+	call main.tx_term.show
+	call main.cb_term.show
+
+	call main.tx_variables.show
+	call main.tx_base.show
+ 	call main.tx_cont.show
+ 	
+ 	if b_allowTS {
+		call main.tx_timeop.show
+	}
+	else {
+		call main.tx_timeop.hide
+	}
+	call program check_term
+END
+
+PROGRAM add
+BEGIN
+	require main.vl_var
+
+	call s_output.setvalue ""
+
+	if main.rb_var {
+		call main.vl_var.withvalue main.vl_varlist.smartinsert "@"
+	}
+	if main.rb_ts {
+		put /program _ts_operators_add
+		if (s_output) {
+			call s_output.append "."
+		}
+		call s_output.append class main.vl_var.value
+	}
+	if main.rb_fv {
+		put /program _fv_core_add
+	}
+
+	call s_output.withvalue main.vl_varlist.smartinsert "@"
+END
+
+PROGRAM command
+BEGIN
+	put  main.vl_varlist
+END

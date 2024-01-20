@@ -1,0 +1,289 @@
+/*
+  easy histogram - Histogram
+
+*!  VERSION 1.0.4  03aug2006  (deprecated)
+
+*/
+VERSION 8.0
+
+INCLUDE egraph_header
+INCLUDE header
+HELP hlp1, view("help histogram")
+RESET res1
+
+DIALOG main, label("histogram - Histogram for continuous and categorical variables") ///
+	tabtitle("Main")
+BEGIN
+  TEXT     tx_var      _lft        _top      _vnwd       .,		///
+  	label("Variable:")
+  VARNAME  vn_var      @           _ss       @           .,		///
+  	label("Variable")
+  TEXT     tx_mark     @           _top      0           0,
+  RADIO    rb_contin   _lft2       +5        _vnwd       .,		///
+  	label("Continuous data") first					///
+  	onclickon(script main_continuous_on)
+  RADIO    rb_discrete @           _ss       @           .,		///
+  	label("Discrete data") last option(discrete) 			///
+  	onclickon(script main_discrete_on)
+END
+
+SCRIPT main_continuous_on
+BEGIN
+	script eopts_bin_on
+	eopts.tx_start.setlabel "Lower limit of first bin"
+END
+
+SCRIPT main_discrete_on
+BEGIN
+	script eopts_bin_off
+	eopts.tx_start.setlabel "Theoretical minimum"
+END
+
+INCLUDE ifin
+INCLUDE weights_f
+INCLUDE etitle
+
+DIALOG eaxes, label("") tabtitle("Axes")
+BEGIN
+  GROUPBOX gb_xaxis    _lft        _top      _comb4_1    _ht11,		///
+  	label("X-Axis")
+ DEFINE y @y
+  TEXT     tx_xtitle   _ilft       _ms       _txwd       .,		///
+ 	label("Title:") right
+  EDIT     ed_xtitle   _txsep      @         _vllwd      .,		///
+ 	label("X-Title")
+  TEXT     tx_xsize    _ilft       _ms       _txwd       .,		///
+  	label("Title size:") right
+  COMBOBOX cb_xsize    _txsep      @         _cbwd       ., 		///
+  	label("X-Axis Size")						///
+  	dropdownlist contents(textsizes)				///
+  	option(size)
+  TEXT     tx_xrule    _ilft       _xxls     _txwd       .,		///
+ 	label("Tick rule:") right
+  EDIT     ed_xrule    _txsep      @         _vllwdmbu   .,		///
+ 	label("X-Tick rule")
+  BUTTON   bu_xrule    _vllwdbusep @         _btwd       .,		///
+  	label("?")							///
+  	onpush(view help major_tick_rule##|_new)
+
+  GROUPBOX gb_yaxis    _lft        _xxls     _comb4_1    _ht11,		///
+  	label("Y-Axis")
+  TEXT     tx_ytitle   _ilft       _ms       _txwd       .,		///
+ 	label("Title:") right
+  EDIT     ed_ytitle   _txsep      @         _vllwd      .,		///
+ 	label("Y-Title")
+  TEXT     tx_ysize    _ilft       _ms       _txwd       .,		///
+  	label("Title size:") right
+  COMBOBOX cb_ysize    _txsep      @         _cbwd       ., 		///
+  	label("Y-Axis Size")						///
+  	dropdownlist contents(textsizes)				///
+  	option(size)
+  TEXT     tx_yrule    _ilft       _xxls     _txwd       .,		///
+ 	label("Tick rule:") right
+  EDIT     ed_yrule    _txsep      @         _vllwdmbu   .,		///
+ 	label("Y-Tick rule")
+  BUTTON   bu_yrule    _vllwdbusep @         _btwd       .,		///
+  	label("?")							///
+  	onpush(view help major_tick_rule##|_new)
+
+END
+
+PROGRAM eaxes_xtitle_opts
+BEGIN
+	beginoptions
+		optionarg eaxes.cb_xsize
+	endoptions
+END
+
+PROGRAM eaxes_ytitle_opts
+BEGIN
+	beginoptions
+		optionarg eaxes.cb_ysize
+	endoptions
+END
+
+PROGRAM eaxes_output
+BEGIN
+  if eaxes.ed_xtitle | eaxes.cb_xsize {
+  	put " " "xtitle("
+  	put eaxes.ed_xtitle
+  	put /program eaxes_xtitle_opts
+  	put ") "
+  }
+  if eaxes.ed_xrule {
+  	put " " "xlabel("
+  	put eaxes.ed_xrule
+  	put ") "
+  }
+
+  if eaxes.ed_ytitle | eaxes.cb_ysize {
+  	put " " "ytitle("
+  	put eaxes.ed_ytitle
+  	put /program eaxes_ytitle_opts
+  	put ") "
+  }
+  if eaxes.ed_yrule {
+  	put " " "ylabel("
+  	put eaxes.ed_yrule
+  	put ") "
+  }
+END
+
+INCLUDE _kernel_function_list
+
+DIALOG eopts, label("") tabtitle("Options")
+BEGIN
+  INCLUDE ecommon_opts_ctrl
+  GROUPBOX gb_bins     _lft        _xxxxxls  _cwd1        _ht9,		///
+  	label("Bins")
+DEFINE y @y
+  CHECKBOX ck_bin      _ilft       _ms       _ckwd       .,		///
+	clickon(gaction eopts.sp_bin.enable)				///
+	clickoff(gaction eopts.sp_bin.disable)				///
+	label("")
+  SPINNER  sp_bin      _cksep      @         _spwd       .,		///
+	min(1)								///
+	max(1000000)							///
+	default(1)							///
+	option(bin)							///
+	label("Number of bins")
+  TEXT     tx_bin      _spsep      @         _vnwd       .,		///
+	label("Number of bins")
+
+  CHECKBOX ck_width    _ilft       _ls       _ckwd       .,		///
+	clickon(gaction eopts.en_width.enable)				///
+	clickoff(gaction eopts.en_width.disable)			///
+	label("")
+  EDIT     en_width    _cksep      @         _en7wd      .,		///
+	numonly								///
+	option(width)							///
+	label("Width of bins")
+  TEXT     tx_width    _spsep      @         _vnwd       .,		///
+	label("Width of bins")
+
+  CHECKBOX ck_start    _ilft       _ls       _ckwd       .,		///
+	clickon(gaction eopts.en_start.enable)				///
+	clickoff(gaction eopts.en_start.disable)			///
+	label("")
+  EDIT     en_start    _cksep      @         _en7wd      .,		///
+	numonly								///
+	option(start)							///
+	label("Lower limit of first bin")
+  TEXT     tx_start    _spsep      @         _vnwd       .,		///
+	label("Lower limit of first bin")
+
+  GROUPBOX gb_yaxis    _lft        _xxxxls     _cwd1        _ht4,	///
+  	label("Y-axis")
+  RADIO    rb_den      _ilft       _ss       _cwd4_4     .,		///
+  	label("Density") first option(NONE)
+  DEFINE yax @y
+  RADIO    rb_frac     @           _ss       @           .,		///
+  	label("Fraction") option(fraction)
+  RADIO    rb_freq     _ilft4_2    yax       @           .,		///
+  	label("Frequency") option(frequency)
+  RADIO    rb_perc     @           _ss       @           .,		///
+  	label("Percent") last option(percent)
+
+  GROUPBOX gb_density  _lft2       y         _cwd1       _ht19h,	///
+  	label("Density plots")
+  CHECKBOX ck_norm     _ilft2      _ls       _inwd       .,		///
+  	label("Add normal density plot")				///
+  	option(normal)
+  CHECKBOX ck_kde      @           _ms       @           .,		///
+  	label("Add kernel density estimate plot")			///
+  	option(kdensity)						///
+  	onclickon(script eopts_kde_on)					///
+  	onclickoff(script eopts_kde_off)
+  GROUPBOX gb_ksmooth  @           _ms       @           _ht10h,	///
+  	label("Kernel density smoothing")
+  TEXT     tx_khw      _indent     _ms       _inwd       .,		///
+  	label("Halfwidth of kernel:")
+  EDIT     ed_khw      @           _ss       _en7wd      .,		///
+  	label("Halfwidth of kernel")					///
+  	numonly option(width)
+  TEXT     tx_kfunct   @           _ls       _vnwd       .,		///
+  	label("Kernel function:")
+  COMBOBOX cb_kfunct   @           _ss       @           .,             ///
+  	label("Kernel function:") dropdownlist				///
+  	contents(kernel_function) values(kernel_function_val)
+
+END
+
+SCRIPT eopts_bin_off
+BEGIN
+	eopts.ck_bin.disable
+	eopts.sp_bin.disable
+	eopts.tx_bin.disable
+END
+
+SCRIPT eopts_bin_on
+BEGIN
+	eopts.ck_bin.enable
+	eopts.sp_bin.enable
+	eopts.tx_bin.enable
+END
+
+SCRIPT eopts_kde_off
+BEGIN
+	eopts.gb_ksmooth.disable
+	eopts.tx_khw.disable
+	eopts.ed_khw.disable
+	eopts.tx_kfunct.disable
+	eopts.cb_kfunct.disable
+END
+
+SCRIPT eopts_kde_on
+BEGIN
+	eopts.gb_ksmooth.enable
+	eopts.tx_khw.enable
+	eopts.ed_khw.enable
+	eopts.tx_kfunct.enable
+	eopts.cb_kfunct.enable
+END
+
+INCLUDE ecommon_opts_sc
+
+PROGRAM eopts_kdenopts
+BEGIN
+	optionarg eopts.ed_khw
+	if eopts.cb_kfunct {
+		put eopts.cb_kfunct
+	}
+END
+
+PROGRAM eopts_output
+BEGIN
+	put /program ecommon_opts_output
+END
+
+PROGRAM command
+BEGIN
+	put "histogram "
+	varlist main.vn_var
+	INCLUDE _ifin_pr
+	INCLUDE _weights_pr
+	beginoptions
+		option main.rb_discrete
+		option radio(eopts rb_den rb_freq rb_frac rb_perc)
+		if !H(eopts.ck_bin) & eopts.ck_bin & eopts.ck_width {
+		   stopbox stop 					///
+		   `"On Options tab: "Number of bins" and "Width of bins""' ///
+		   "may not be combined"
+		}
+		if eopts.ck_bin {
+			optionarg eopts.sp_bin
+		}
+		optionarg eopts.en_width
+		optionarg eopts.en_start
+		option eopts.ck_norm
+		option eopts.ck_kde
+		if eopts.ed_khw | eopts.cb_kfunct {
+			put "kdenopts("
+			put /program eopts_kdenopts
+			put ") "
+		}
+		put " " /program etitle_output
+		put " " /program eaxes_output
+		put " " /program eopts_output
+	endoptions
+END

@@ -1,0 +1,42 @@
+/*
+	stdes
+
+*!  VERSION 1.2.0  02mar2007
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help stdescribe")
+RESET res1
+
+DIALOG main, label("stdescribe - Describe survival-time data") /*
+		*/ tabtitle("Main")
+BEGIN
+DEFINE  _x _xsetbu
+DEFINE  _y _top
+INCLUDE _bu_stset
+
+  CHECKBOX ck_weight        _lft   _ls        _iwd        .,		/*
+		*/ option("weight")					/*
+		*/ label("Use weighted statistics")
+  CHECKBOX ck_noshow        @	   _ms        @           .,		/*
+		*/ option("noshow")					/*
+		*/ label("Do not show st setting information")
+END
+
+INCLUDE byifin
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "stdescribe "
+	INCLUDE _ifin_pr
+	beginoptions
+		option main.ck_weight
+		option main.ck_noshow
+	endoptions
+END

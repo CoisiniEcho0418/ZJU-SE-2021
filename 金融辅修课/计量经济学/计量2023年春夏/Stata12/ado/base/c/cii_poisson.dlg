@@ -1,0 +1,50 @@
+/*
+  cii_poisson
+
+  VERSION 1.0.1  10mar2006
+
+*/
+
+VERSION 8.0
+
+INCLUDE _std_small
+INCLUDE _ht150
+INCLUDE header
+HELP hlp1, view("help cii")
+RESET res1
+
+DIALOG main, label("cii - Poisson confidence intervals and standard errors") /*
+		*/ tabtitle("Main")
+BEGIN
+  /*--+----1----+----2----+----3----+----4----+----5----+----6----+----7----+*/ 
+  EDIT     en_exp          _lft      _top      _spwd     .,numonly      /*
+  		*/ label("Sample exposure")
+  	
+  TEXT     tx_exp          _spsep    @         _spr      .,		/*
+		*/label("Sample exposure")
+  SPINNER  sp_event        _lft      _ls       _spwd     .,             /*
+  		*/label("Sample events")				/*
+  		*/min(1)						/*
+		*/max(1000000000)					/*
+		*/default(100)
+  TEXT     tx_event        _spsep    @         _spr      .,		/*
+		*/label("Sample events")
+
+  DEFINE _x _lft 		
+  DEFINE _y _ls
+  DEFINE _cx _sprb
+  INCLUDE _sp_level
+END
+
+PROGRAM command
+BEGIN
+	put "cii "
+	require main.en_exp
+	put main.en_exp
+	put " "
+	put main.sp_event
+	beginoptions
+		put " poisson "
+		INCLUDE _level_main_pr
+	endoptions
+END

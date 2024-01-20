@@ -1,0 +1,6 @@
+*! version 1.0.0  22dec2002
+sequence 2100
+label "Minuscule"
+set val .3472
+
+* 1 pt based on a 1 inch high graph

@@ -1,0 +1,65 @@
+/*
+	prtesti
+
+*!  VERSION 1.0.2  20mar2007
+
+	One-sample immediate prtest.
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+DEFINE _dlght 200
+INCLUDE header
+
+HELP hlp1, view("help prtesti")
+RESET res1
+
+DIALOG main, label("prtesti - One-sample proportion test calculator") tabtitle("Main")
+BEGIN
+  EDIT     en_obs1      _lft      _top      _en7wd      .,		/*
+		*/ label("Sample size")					/*
+		*/ numonly	
+  TEXT     tx_obs1   _en7sep         @       _en7r      .,		/*
+		*/ label("Sample size")	
+
+  EDIT     en_prop1     _lft       _ls      _en7wd      ., 		/*
+		*/ label("Sample proportion")				/*
+		*/ numonly
+  TEXT     tx_prop1  _en7sep         @       _en7r      .,		/*
+		*/ label("Sample proportion")	
+
+  EDIT     en_prop2     _lft       _ls      _en7wd      .,		/*
+		*/ label("Hypothesized proportion")			/*
+		*/ numonly
+  TEXT     tx_prop2  _en7sep         @       _en7r      .,		/*
+		*/ label("Hypothesized proportion")
+
+  DEFINE _x _lft
+  DEFINE _cx _spr
+  DEFINE _y _ls
+  INCLUDE _sp_level
+
+  CHECKBOX ck_count     _lft	   _ls 	      _iwd      .,		/*
+		*/ option("count")					/*
+		*/ label("Use integer counts instead of proportions")	
+END
+
+
+PROGRAM command
+BEGIN
+	put "prtesti "	
+	require main.en_obs1
+	put main.en_obs1 
+	put " "
+	require main.en_prop1
+	put main.en_prop1
+	put " "
+	require main.en_prop2
+	put main.en_prop2
+	put " "
+	beginoptions
+		INCLUDE _level_main_pr
+		option main.ck_count
+	endoptions
+END

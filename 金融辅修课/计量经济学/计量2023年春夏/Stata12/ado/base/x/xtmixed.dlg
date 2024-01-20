@@ -1,0 +1,1437 @@
+/*
+ *   xtmixed
+ *
+ *!  VERSION 1.2.4  07jun2011
+ *
+ *     keyword:  eclass
+ *
+ *     */
+
+VERSION 12.0
+
+INCLUDE _std_xlarge
+DEFINE _dlght 430	/* Report tab needs this height */
+INCLUDE header
+
+HELP hlp1, view("help xtmixed")
+RESET res1
+
+
+SCRIPT PREINIT
+BEGIN
+	create BOOLEAN allow_fweights
+	create BOOLEAN allow_pweights
+
+	allow_fweights.settrue
+	allow_pweights.settrue
+	script se_createAsClRobust
+END
+
+PROGRAM POSTINIT_PROGRAM
+BEGIN
+	call program check_bytab
+	call script max_setFromNotVisible
+	call script max_setListNoBHHH
+	call script max_setOptionXTME_MATLOG
+	call create STRING rpt_bu_facvarsResults
+	call program rpt_bu_facvars_ckResults
+
+	call script main_set_isXTMIXED
+	call script main_reml_eq_hide
+	call program check_mle_eq_EditResult
+END
+
+PROGRAM check_bytab
+BEGIN
+	if __MESSAGE.contains("__MI__") {
+		call script byifin_set_by_off
+	}
+END
+
+SCRIPT main_PREINIT
+BEGIN
+	create DOUBLE main_mle_childDLGNum
+	main_mle_childDLGNum.setvalue 0
+
+	create STRING main_mle_eq1Results
+	create STRING main_mle_eq2Results
+	create STRING main_mle_eq3Results
+	create STRING main_mle_eq4Results
+	create STRING main_mle_eq5Results
+	create STRING main_mle_eq6Results
+	create STRING main_mle_eq7Results
+	create STRING main_mle_eq8Results
+	
+	create BOOLEAN allow_fweights_eq1
+	create BOOLEAN allow_pweights_eq1
+	create BOOLEAN allow_fweights_eq2
+	create BOOLEAN allow_pweights_eq2
+	create BOOLEAN allow_fweights_eq3
+	create BOOLEAN allow_pweights_eq3
+	create BOOLEAN allow_fweights_eq4
+	create BOOLEAN allow_pweights_eq4
+	create BOOLEAN allow_fweights_eq5
+	create BOOLEAN allow_pweights_eq5
+	create BOOLEAN allow_fweights_eq6
+	create BOOLEAN allow_pweights_eq6
+	create BOOLEAN allow_fweights_eq7
+	create BOOLEAN allow_pweights_eq7
+	create BOOLEAN allow_fweights_eq8
+	create BOOLEAN allow_pweights_eq8
+	
+	allow_fweights_eq1.settrue
+	allow_pweights_eq1.settrue
+	allow_fweights_eq2.settrue
+	allow_pweights_eq2.settrue
+	allow_fweights_eq3.settrue
+	allow_pweights_eq3.settrue
+	allow_fweights_eq4.settrue
+	allow_pweights_eq4.settrue
+	allow_fweights_eq5.settrue
+	allow_pweights_eq5.settrue
+	allow_fweights_eq6.settrue
+	allow_pweights_eq6.settrue
+	allow_fweights_eq7.settrue
+	allow_pweights_eq7.settrue
+	allow_fweights_eq8.settrue
+	allow_pweights_eq8.settrue
+
+	
+	create STRING main_reml_eq1Results
+	create STRING main_reml_eq2Results
+	create STRING main_reml_eq3Results
+	create STRING main_reml_eq4Results
+	create STRING main_reml_eq5Results
+	create STRING main_reml_eq6Results
+	create STRING main_reml_eq7Results
+	create STRING main_reml_eq8Results
+END
+
+DIALOG main, tabtitle("Model")	///
+	label("xtmixed  -  Multilevel mixed-effects linear regression")
+BEGIN
+  GROUPBOX gb_est_method	_lft	_top	_iwd	_ht2,		///
+  	label("Estimation method")
+  RADIO rb_mle			_ilft	_ss	_cwd1	., first	///
+	onclickon("script main_mle_on")					///
+	label("Maximum likelihood (ML)")		 	
+  RADIO rb_reml			_lft2	@	@	., last		///
+	option(reml)							///
+	onclickon("script main_reml_on")				///
+	label("Restricted maximum likelihood (REML)")
+  TEXT tx_dv 			_lft	_xls	_vnwd	.,		///
+	label("Dependent variable:")
+  DEFINE holdy @y
+  VARNAME vn_dv			@ 	_ss	@	.,		///
+	ts								///
+	label("Dependent variable")
+
+  TEXT tx_iv			_vlx	holdy	160	.,		///
+	label("Independent variables:")
+  VARLIST vl_iv			@	_ss	_vlwd	.,		///
+	fv ts								///
+	allowcat							///
+	label("Independent variables")
+
+  CHECKBOX ck_nocons		@	_ms	@	.,		///
+	label("Suppress constant term")					///
+	option(noconstant)
+
+  TEXT tx_mle_equation		_lft	_ls	_cwd6	.,		///
+	label("Equation level:")
+  TEXT tx_pwscale		+320	@	_cwd6	.,		///
+	label("Control scaling of sampling weights:")
+  COMBOBOX cb_pwscale		@	_ss	@	.,		///
+	option(pwscale)							///
+	dropdown							///
+	contents(main_pwscale_contents)					///
+	onselchangelist(main_resid_type_scripts)			///
+	label("Control scaling of sampling weights in two-level models:")
+  DEFINE holdy2 @y
+  LISTBOX lb_mle_eq		_lft	@	200	95,		///
+	contents(main_mle_equationList)					///
+	values(main_mle_equationList_values)				///
+	onselchange(program main_mle_equationList_sel)			///
+	label("")
+  DEFINE holdy3 @y
+  BUTTON bu_edit_mle_1		+210	@	80	.,		///
+	label("Define")							///
+	onpush(program show_mle_eqDialog)
+  BUTTON bu_edit_mle_2		@	@	@	.,		///
+	label("Define")							///
+	onpush(program show_mle_eqDialog)
+  BUTTON bu_edit_mle_3		@	@	@	.,		///
+	label("Define")							///
+	onpush(program show_mle_eqDialog)
+  BUTTON bu_edit_mle_4		@	@	@	.,		///
+	label("Define")							///
+	onpush(program show_mle_eqDialog)
+  BUTTON bu_edit_mle_5		@	@	@	.,		///
+	label("Define")							///
+	onpush(program show_mle_eqDialog)
+  BUTTON bu_edit_mle_6		@	@	@	.,		///
+	label("Define")							///
+	onpush(program show_mle_eqDialog)
+  BUTTON bu_edit_mle_7		@	@	@	.,		///
+	label("Define")							///
+	onpush(program show_mle_eqDialog)
+  BUTTON bu_edit_mle_8		@	@	@	.,		///
+	label("Define")							///
+	onpush(program show_mle_eqDialog)
+  BUTTON bu_clear_mle		@	_ms	@	.,		///
+	label("Clear")							///
+	onpush(program clear_mle_eqDialog)
+
+  TEXTBOX tb_mle_equations	_lft	+80	_iwd	.,		///
+	label(`"Press "Define" to define an equation level"')
+
+  LISTBOX lb_reml_eq		_lft	holdy3	200	95,		///
+	contents(main_reml_equationList)				///
+	values(main_reml_equationList_values)				///
+	onselchange(program main_reml_equationList_sel)			///
+	label("")
+  BUTTON bu_edit_reml_1		+210	@	80	.,		///
+	label("Define")							///
+	onpush(program show_reml_eqDialog)
+  BUTTON bu_edit_reml_2		@	@	@	.,		///
+	label("Define")							///
+	onpush(program show_reml_eqDialog)
+  BUTTON bu_edit_reml_3		@	@	@	.,		///
+	label("Define")							///
+	onpush(program show_reml_eqDialog)
+  BUTTON bu_edit_reml_4		@	@	@	.,		///
+	label("Define")							///
+	onpush(program show_reml_eqDialog)
+  BUTTON bu_edit_reml_5		@	@	@	.,		///
+	label("Define")							///
+	onpush(program show_reml_eqDialog)
+  BUTTON bu_edit_reml_6		@	@	@	.,		///
+	label("Define")							///
+	onpush(program show_reml_eqDialog)
+  BUTTON bu_edit_reml_7		@	@	@	.,		///
+	label("Define")							///
+	onpush(program show_reml_eqDialog)
+  BUTTON bu_edit_reml_8		@	@	@	.,		///
+	label("Define")							///
+	onpush(program show_reml_eqDialog)
+  BUTTON bu_clear_reml		@	_ms	@	.,		///
+	label("Clear")							///
+	onpush(program clear_reml_eqDialog)
+
+  TEXTBOX tb_reml_equations	_lft	+80	_iwd	.,		///
+	label(`"Press "Define" to define an equation level"')
+
+  CHECKBOX ck_resid		_lft	_ls	_iwd	_ht7,		///
+	groupbox							///
+	onclickon("script main_ck_resid_on")				///
+	onclickoff("script main_ck_resid_off")				///
+	label("Residuals")
+  TEXT tx_resid_type		_indent	_ss	_vnwd	.,		///
+	label("Type:")
+  DEFINE holdy @y
+  COMBOBOX cb_resid_type 	@	_ss	@	.,		///
+	dropdownlist							///
+	contents(main_resid_type_contents)				///
+	values(main_resid_type_values)					///
+	onselchangelist(main_resid_type_scripts)			///
+	label("Type")
+  SPINNER sp_order		_ilft	_ls	_spwd	.,		///
+	default(1)							///
+	min(1)								///
+	max(50)								///
+	label("Order")
+  EDIT ed_order			@	@	@	.,		///
+	default("Full")							///
+	label("Order")
+  TEXT tx_order			_spsep	@	305	.,		///
+	label("Order")
+
+  TEXT tx_resid_by		+120	holdy	_vnwd	.,		///
+	label("By variable:")
+  DEFINE holdy @y
+  VARNAME vn_resid_by		@	_ss	@	.,		///
+	option(by)							///
+	label("By variable")
+  TEXT tx_resid_t		+200	holdy	@	.,		///
+	label("Time variable:")
+  VARNAME vn_resid_t		@	_ss	@	.,		///
+	option(t)							///
+	label("Time variable")
+END
+
+SCRIPT main_mle_on
+BEGIN
+	script main_mle_eq_show
+	script main_reml_eq_hide
+	program weights_enable
+	se.lb_vcetype.enable
+END
+
+SCRIPT main_reml_on
+BEGIN
+	script main_mle_eq_hide
+	script main_reml_eq_show
+	script weights_disable
+	se.lb_vcetype.disable
+END
+
+SCRIPT main_mle_eq_hide
+BEGIN
+	main.lb_mle_eq.hide
+	script main_mle_eq_hide_buttons
+  	main.bu_clear_mle.hide
+	main.tb_mle_equations.hide
+	main.tx_pwscale.hide
+	main.cb_pwscale.hide
+END
+
+SCRIPT main_mle_eq_show
+BEGIN
+	main.lb_mle_eq.show
+	program main_mle_equationList_sel
+  	main.bu_clear_mle.show
+	main.tb_mle_equations.show
+	main.tx_pwscale.show
+	main.cb_pwscale.show
+	program main_check_pwscale_state
+END
+
+LIST main_mle_equationList
+BEGIN
+	Equation 1
+	Equation 2
+	Equation 3
+	Equation 4
+	Equation 5
+	Equation 6
+	Equation 7
+	Equation 8
+END
+
+LIST main_mle_equationList_values
+BEGIN
+	equation1
+	equation2
+	equation3
+	equation4
+	equation5
+	equation6
+	equation7
+	equation8
+END
+
+SCRIPT main_mle_eq_hide_buttons
+BEGIN
+	main.bu_edit_mle_1.hide
+	main.bu_edit_mle_2.hide
+	main.bu_edit_mle_3.hide
+	main.bu_edit_mle_4.hide
+	main.bu_edit_mle_5.hide
+	main.bu_edit_mle_6.hide
+	main.bu_edit_mle_7.hide
+	main.bu_edit_mle_8.hide
+END
+
+PROGRAM main_mle_equationList_sel
+BEGIN
+	if !main.lb_mle_eq.isvisible() {
+		exit
+	}
+	call script main_mle_eq_hide_buttons
+	if main.lb_mle_eq.iseq("equation1") {
+		call main.bu_edit_mle_1.show
+		call main.tb_mle_equations.setlabel class		///
+			main_mle_eq1Results.value
+	}
+	if main.lb_mle_eq.iseq("equation2") {
+		call main.bu_edit_mle_2.show
+		call main.tb_mle_equations.setlabel class		///
+			main_mle_eq2Results.value
+	}
+	if main.lb_mle_eq.iseq("equation3") {
+		call main.bu_edit_mle_3.show
+		call main.tb_mle_equations.setlabel class		///
+			main_mle_eq3Results.value
+	}
+	if main.lb_mle_eq.iseq("equation4") {
+		call main.bu_edit_mle_4.show
+		call main.tb_mle_equations.setlabel class		///
+			main_mle_eq4Results.value
+	}
+	if main.lb_mle_eq.iseq("equation5") {
+		call main.bu_edit_mle_5.show
+		call main.tb_mle_equations.setlabel class		///
+			main_mle_eq5Results.value
+	}
+	if main.lb_mle_eq.iseq("equation6") {
+		call main.bu_edit_mle_6.show
+		call main.tb_mle_equations.setlabel class		///
+			main_mle_eq6Results.value
+	}
+	if main.lb_mle_eq.iseq("equation7") {
+		call main.bu_edit_mle_7.show
+		call main.tb_mle_equations.setlabel class		///
+			main_mle_eq7Results.value
+	}
+	if main.lb_mle_eq.iseq("equation8") {
+		call main.bu_edit_mle_8.show
+		call main.tb_mle_equations.setlabel class		///
+			main_mle_eq8Results.value
+	}
+END
+	
+PROGRAM clear_mle_eqDialog
+BEGIN
+	if main.lb_mle_eq.iseq("equation1") {
+		call main_mle_eq1Results.setvalue ""
+		call allow_fweights_eq1.settrue
+		call allow_pweights_eq1.settrue
+	}
+	if main.lb_mle_eq.iseq("equation2") {
+		call main_mle_eq2Results.setvalue ""
+		call allow_fweights_eq2.settrue
+		call allow_pweights_eq2.settrue
+	}
+	if main.lb_mle_eq.iseq("equation3") {
+		call main_mle_eq3Results.setvalue ""
+		call allow_fweights_eq3.settrue
+		call allow_pweights_eq3.settrue
+	}
+	if main.lb_mle_eq.iseq("equation4") {
+		call main_mle_eq4Results.setvalue ""
+		call allow_fweights_eq4.settrue
+		call allow_pweights_eq4.settrue
+	}
+	if main.lb_mle_eq.iseq("equation5") {
+		call main_mle_eq5Results.setvalue ""
+		call allow_fweights_eq5.settrue
+		call allow_pweights_eq5.settrue
+	}
+	if main.lb_mle_eq.iseq("equation6") {
+		call main_mle_eq6Results.setvalue ""
+		call allow_fweights_eq6.settrue
+		call allow_pweights_eq6.settrue
+	}
+	if main.lb_mle_eq.iseq("equation7") {
+		call main_mle_eq7Results.setvalue ""
+		call allow_fweights_eq7.settrue
+		call allow_pweights_eq7.settrue
+	}
+	if main.lb_mle_eq.iseq("equation8") {
+		call main_mle_eq8Results.setvalue ""
+		call allow_fweights_eq8.settrue
+		call allow_pweights_eq8.settrue
+	}
+	call program check_mle_eq_EditResult
+END
+
+PROGRAM show_mle_eqDialog
+BEGIN
+	if main.lb_mle_eq.iseq("equation1") {
+		call main_mle_childDLGNum.setvalue 1
+		call create CHILD xtmixed_mle_eq AS mle_eqDLG_1, allowsubmit
+		call mle_eqDLG_1.settitle "Equation 1"
+		call mle_eqDLG_1.setExitString main_mle_eq1Results
+		call mle_eqDLG_1.setExitAction "program check_mle_eq_EditResult"
+		call mle_eqDLG_1.setSubmitAction "program mle_eq_EditSubmit"
+	}
+	if main.lb_mle_eq.iseq("equation2") {
+		call main_mle_childDLGNum.setvalue 2
+		call create CHILD xtmixed_mle_eq AS mle_eqDLG_2, allowsubmit
+		call mle_eqDLG_2.settitle "Equation 2"
+		call mle_eqDLG_2.setExitString main_mle_eq2Results
+		call mle_eqDLG_2.setExitAction "program check_mle_eq_EditResult"
+		call mle_eqDLG_2.setSubmitAction "program mle_eq_EditSubmit"
+	}
+	if main.lb_mle_eq.iseq("equation3") {
+		call main_mle_childDLGNum.setvalue 3
+		call create CHILD xtmixed_mle_eq AS mle_eqDLG_3, allowsubmit
+		call mle_eqDLG_3.settitle "Equation 3"
+		call mle_eqDLG_3.setExitString main_mle_eq3Results
+		call mle_eqDLG_3.setExitAction "program check_mle_eq_EditResult"
+		call mle_eqDLG_3.setSubmitAction "program mle_eq_EditSubmit"
+	}
+	if main.lb_mle_eq.iseq("equation4") {
+		call main_mle_childDLGNum.setvalue 4
+		call create CHILD xtmixed_mle_eq AS mle_eqDLG_4, allowsubmit
+		call mle_eqDLG_4.settitle "Equation 4"
+		call mle_eqDLG_4.setExitString main_mle_eq4Results
+		call mle_eqDLG_4.setExitAction "program check_mle_eq_EditResult"
+		call mle_eqDLG_4.setSubmitAction "program mle_eq_EditSubmit"
+	}
+	if main.lb_mle_eq.iseq("equation5") {
+		call main_mle_childDLGNum.setvalue 5
+		call create CHILD xtmixed_mle_eq AS mle_eqDLG_5, allowsubmit
+		call mle_eqDLG_5.settitle "Equation 5"
+		call mle_eqDLG_5.setExitString main_mle_eq5Results
+		call mle_eqDLG_5.setExitAction "program check_mle_eq_EditResult"
+		call mle_eqDLG_5.setSubmitAction "program mle_eq_EditSubmit"
+	}
+	if main.lb_mle_eq.iseq("equation6") {
+		call main_mle_childDLGNum.setvalue 6
+		call create CHILD xtmixed_mle_eq AS mle_eqDLG_6, allowsubmit
+		call mle_eqDLG_6.settitle "Equation 6"
+		call mle_eqDLG_6.setExitString main_mle_eq6Results
+		call mle_eqDLG_6.setExitAction "program check_mle_eq_EditResult"
+		call mle_eqDLG_6.setSubmitAction "program mle_eq_EditSubmit"
+	}
+	if main.lb_mle_eq.iseq("equation7") {
+		call main_mle_childDLGNum.setvalue 7
+		call create CHILD xtmixed_mle_eq AS mle_eqDLG_7, allowsubmit
+		call mle_eqDLG_7.settitle "Equation 7"
+		call mle_eqDLG_7.setExitString main_mle_eq7Results
+		call mle_eqDLG_7.setExitAction "program check_mle_eq_EditResult"
+		call mle_eqDLG_7.setSubmitAction "program mle_eq_EditSubmit"
+	}
+	if main.lb_mle_eq.iseq("equation8") {
+		call main_mle_childDLGNum.setvalue 8
+		call create CHILD xtmixed_mle_eq AS mle_eqDLG_8, allowsubmit
+		call mle_eqDLG_8.settitle "Equation 8"
+		call mle_eqDLG_8.setExitString main_mle_eq8Results
+		call mle_eqDLG_8.setExitAction "program check_mle_eq_EditResult"
+		call mle_eqDLG_8.setSubmitAction "program mle_eq_EditSubmit"
+	}
+END
+
+PROGRAM check_mle_eq_EditResult
+BEGIN
+	if main.lb_mle_eq.iseq("equation1") {
+		if main_mle_eq1Results.iseq("") {
+			call main.bu_edit_mle_1.setlabel "Define"
+		}
+		else {
+			call main.bu_edit_mle_1.setlabel "Edit  "
+		}
+	}
+	if main.lb_mle_eq.iseq("equation2") {
+		if main_mle_eq2Results.iseq("") {
+			call main.bu_edit_mle_2.setlabel "Define"
+		}
+		else {
+			call main.bu_edit_mle_2.setlabel "Edit  "
+		}
+	}
+	if main.lb_mle_eq.iseq("equation3") {
+		if main_mle_eq3Results.iseq("") {
+			call main.bu_edit_mle_3.setlabel "Define"
+		}
+		else {
+			call main.bu_edit_mle_3.setlabel "Edit  "
+		}
+	}
+	if main.lb_mle_eq.iseq("equation4") {
+		if main_mle_eq4Results.iseq("") {
+			call main.bu_edit_mle_4.setlabel "Define"
+		}
+		else {
+			call main.bu_edit_mle_4.setlabel "Edit  "
+		}
+	}
+	if main.lb_mle_eq.iseq("equation5") {
+		if main_mle_eq5Results.iseq("") {
+			call main.bu_edit_mle_5.setlabel "Define"
+		}
+		else {
+			call main.bu_edit_mle_5.setlabel "Edit  "
+		}
+	}
+	if main.lb_mle_eq.iseq("equation6") {
+		if main_mle_eq6Results.iseq("") {
+			call main.bu_edit_mle_6.setlabel "Define"
+		}
+		else {
+			call main.bu_edit_mle_6.setlabel "Edit  "
+		}
+	}
+	if main.lb_mle_eq.iseq("equation7") {
+		if main_mle_eq7Results.iseq("") {
+			call main.bu_edit_mle_7.setlabel "Define"
+		}
+		else {
+			call main.bu_edit_mle_7.setlabel "Edit  "
+		}
+	}
+	if main.lb_mle_eq.iseq("equation8") {
+		if main_mle_eq8Results.iseq("") {
+			call main.bu_edit_mle_8.setlabel "Define"
+		}
+		else {
+			call main.bu_edit_mle_8.setlabel "Edit  "
+		}
+	}
+	call program main_check_fp_weight_state
+	call program main_check_pwscale_state
+	call program main_mle_equationList_sel
+END
+
+PROGRAM main_check_fp_weight_state
+BEGIN	
+	if !allow_fweights_eq1 | !allow_fweights_eq2 |			///
+		!allow_fweights_eq3 | !allow_fweights_eq4 | 		///
+		!allow_fweights_eq5 | !allow_fweights_eq6 |		///
+		!allow_fweights_eq7 | !allow_fweights_eq8 | weights.rb_pw {
+		call allow_fweights.setfalse
+		call weights.rb_fw.disable
+	}
+	else {
+		call allow_fweights.settrue
+		call weights.rb_fw.enable
+	}
+
+	if !allow_pweights_eq1 | !allow_pweights_eq2 |			///
+		!allow_pweights_eq3 | !allow_pweights_eq4 | 		///
+		!allow_pweights_eq5 | !allow_pweights_eq6 |		///
+		!allow_pweights_eq7 | !allow_pweights_eq8 | weights.rb_fw {
+		call allow_pweights.setfalse
+		call weights.rb_pw.disable
+	}
+	else {
+		call allow_pweights.settrue
+		call weights.rb_pw.enable
+	}
+END
+
+PROGRAM main_check_pwscale_state
+BEGIN
+	call main.tx_pwscale.disable
+	call main.cb_pwscale.disable
+	if weights.rb_fw {
+		call main.tx_pwscale.disable
+		call main.cb_pwscale.disable
+		exit
+	}
+	if (main_mle_eq1Results & !main_mle_eq2Results &		///
+		!main_mle_eq3Results & !main_mle_eq4Results &		///
+		!main_mle_eq5Results & !main_mle_eq6Results &		///
+		!main_mle_eq7Results & !main_mle_eq8Results &		///
+		allow_pweights_eq1) {
+		call main.tx_pwscale.enable
+		call main.cb_pwscale.enable
+
+	}
+	else {
+		call main.tx_pwscale.disable
+		call main.cb_pwscale.disable
+	}
+END
+
+PROGRAM mle_eq_EditSubmit
+BEGIN
+	call program check_mle_eq_EditResult
+	call Submit
+END
+
+PROGRAM mle_eq_output
+BEGIN
+	if (main_mle_eq1Results) {
+		put " " main_mle_eq1Results
+	}
+	if (main_mle_eq2Results) {
+		put " " main_mle_eq2Results
+	}
+	if (main_mle_eq3Results) {
+		put " " main_mle_eq3Results
+	}
+	if (main_mle_eq4Results) {
+		put " " main_mle_eq4Results
+	}
+	if (main_mle_eq5Results) {
+		put " " main_mle_eq5Results
+	}
+	if (main_mle_eq6Results) {
+		put " " main_mle_eq6Results
+	}
+	if (main_mle_eq7Results) {
+		put " " main_mle_eq7Results
+	}
+	if (main_mle_eq8Results) {
+		put " " main_mle_eq8Results
+	}
+END
+
+SCRIPT main_reml_eq_hide
+BEGIN
+	main.lb_reml_eq.hide
+	script main_reml_eq_hide_buttons
+  	main.bu_clear_reml.hide
+	main.tb_reml_equations.hide
+END
+
+SCRIPT main_reml_eq_show
+BEGIN
+	main.lb_reml_eq.show
+	program main_reml_equationList_sel
+  	main.bu_clear_reml.show
+	main.tb_reml_equations.show
+END
+
+LIST main_reml_equationList
+BEGIN
+	Equation 1
+	Equation 2
+	Equation 3
+	Equation 4
+	Equation 5
+	Equation 6
+	Equation 7
+	Equation 8
+END
+
+LIST main_reml_equationList_values
+BEGIN
+	equation1
+	equation2
+	equation3
+	equation4
+	equation5
+	equation6
+	equation7
+	equation8
+END
+
+SCRIPT main_reml_eq_hide_buttons
+BEGIN
+	main.bu_edit_reml_1.hide
+	main.bu_edit_reml_2.hide
+	main.bu_edit_reml_3.hide
+	main.bu_edit_reml_4.hide
+	main.bu_edit_reml_5.hide
+	main.bu_edit_reml_6.hide
+	main.bu_edit_reml_7.hide
+	main.bu_edit_reml_8.hide
+END
+
+PROGRAM main_reml_equationList_sel
+BEGIN
+	if !main.lb_reml_eq.isvisible() {
+		exit
+	}
+	call script main_reml_eq_hide_buttons
+	if main.lb_reml_eq.iseq("equation1") {
+		call main.bu_edit_reml_1.show
+		call main.tb_reml_equations.setlabel class		///
+			main_reml_eq1Results.value
+	}
+	if main.lb_reml_eq.iseq("equation2") {
+		call main.bu_edit_reml_2.show
+		call main.tb_reml_equations.setlabel class		///
+			main_reml_eq2Results.value
+	}
+	if main.lb_reml_eq.iseq("equation3") {
+		call main.bu_edit_reml_3.show
+		call main.tb_reml_equations.setlabel class		///
+			main_reml_eq3Results.value
+	}
+	if main.lb_reml_eq.iseq("equation4") {
+		call main.bu_edit_reml_4.show
+		call main.tb_reml_equations.setlabel class		///
+			main_reml_eq4Results.value
+	}
+	if main.lb_reml_eq.iseq("equation5") {
+		call main.bu_edit_reml_5.show
+		call main.tb_reml_equations.setlabel class		///
+			main_reml_eq5Results.value
+	}
+	if main.lb_reml_eq.iseq("equation6") {
+		call main.bu_edit_reml_6.show
+		call main.tb_reml_equations.setlabel class		///
+			main_reml_eq6Results.value
+	}
+	if main.lb_reml_eq.iseq("equation7") {
+		call main.bu_edit_reml_7.show
+		call main.tb_reml_equations.setlabel class		///
+			main_reml_eq7Results.value
+	}
+	if main.lb_reml_eq.iseq("equation8") {
+		call main.bu_edit_reml_8.show
+		call main.tb_reml_equations.setlabel class		///
+			main_reml_eq8Results.value
+	}
+END
+	
+PROGRAM clear_reml_eqDialog
+BEGIN
+	if main.lb_reml_eq.iseq("equation1") {
+		call main_reml_eq1Results.setvalue ""
+		call allow_fweights_eq1.settrue
+		call allow_pweights_eq1.settrue
+	}
+	if main.lb_reml_eq.iseq("equation2") {
+		call main_reml_eq2Results.setvalue ""
+		call allow_fweights_eq2.settrue
+		call allow_pweights_eq2.settrue
+	}
+	if main.lb_reml_eq.iseq("equation3") {
+		call main_reml_eq3Results.setvalue ""
+		call allow_fweights_eq3.settrue
+		call allow_pweights_eq3.settrue
+	}
+	if main.lb_reml_eq.iseq("equation4") {
+		call main_reml_eq4Results.setvalue ""
+		call allow_fweights_eq4.settrue
+		call allow_pweights_eq4.settrue
+	}
+	if main.lb_reml_eq.iseq("equation5") {
+		call main_reml_eq5Results.setvalue ""
+		call allow_fweights_eq5.settrue
+		call allow_pweights_eq5.settrue
+	}
+	if main.lb_reml_eq.iseq("equation6") {
+		call main_reml_eq6Results.setvalue ""
+		call allow_fweights_eq6.settrue
+		call allow_pweights_eq6.settrue
+	}
+	if main.lb_reml_eq.iseq("equation7") {
+		call main_reml_eq7Results.setvalue ""
+		call allow_fweights_eq7.settrue
+		call allow_pweights_eq7.settrue
+	}
+	if main.lb_reml_eq.iseq("equation8") {
+		call main_reml_eq8Results.setvalue ""
+		call allow_fweights_eq8.settrue
+		call allow_pweights_eq8.settrue
+	}
+	call program check_reml_eq_EditResult
+END
+
+PROGRAM show_reml_eqDialog
+BEGIN
+	if main.lb_reml_eq.iseq("equation1") {
+		call create CHILD xtmixed_reml_eq AS reml_eqDLG_1, allowsubmit
+		call reml_eqDLG_1.settitle "Equation 1"
+		call reml_eqDLG_1.setExitString main_reml_eq1Results
+		call reml_eqDLG_1.setExitAction				///
+			"program check_reml_eq_EditResult"
+		call reml_eqDLG_1.setSubmitAction "program reml_eq_EditSubmit"
+	}
+	if main.lb_reml_eq.iseq("equation2") {
+		call create CHILD xtmixed_reml_eq AS reml_eqDLG_2, allowsubmit
+		call reml_eqDLG_2.settitle "Equation 2"
+		call reml_eqDLG_2.setExitString main_reml_eq2Results
+		call reml_eqDLG_2.setExitAction				///
+			"program check_reml_eq_EditResult"
+		call reml_eqDLG_2.setSubmitAction "program reml_eq_EditSubmit"
+	}
+	if main.lb_reml_eq.iseq("equation3") {
+		call create CHILD xtmixed_reml_eq AS reml_eqDLG_3, allowsubmit
+		call reml_eqDLG_3.settitle "Equation 3"
+		call reml_eqDLG_3.setExitString main_reml_eq3Results
+		call reml_eqDLG_3.setExitAction				///
+			"program check_reml_eq_EditResult"
+		call reml_eqDLG_3.setSubmitAction "program reml_eq_EditSubmit"
+	}
+	if main.lb_reml_eq.iseq("equation4") {
+		call create CHILD xtmixed_reml_eq AS reml_eqDLG_4, allowsubmit
+		call reml_eqDLG_4.settitle "Equation 4"
+		call reml_eqDLG_4.setExitString main_reml_eq4Results
+		call reml_eqDLG_4.setExitAction				///
+			"program check_reml_eq_EditResult"
+		call reml_eqDLG_4.setSubmitAction "program reml_eq_EditSubmit"
+	}
+	if main.lb_reml_eq.iseq("equation5") {
+		call create CHILD xtmixed_reml_eq AS reml_eqDLG_5, allowsubmit
+		call reml_eqDLG_5.settitle "Equation 5"
+		call reml_eqDLG_5.setExitString main_reml_eq5Results
+		call reml_eqDLG_5.setExitAction				///
+			"program check_reml_eq_EditResult"
+		call reml_eqDLG_5.setSubmitAction "program reml_eq_EditSubmit"
+	}
+	if main.lb_reml_eq.iseq("equation6") {
+		call create CHILD xtmixed_reml_eq AS reml_eqDLG_6, allowsubmit
+		call reml_eqDLG_6.settitle "Equation 6"
+		call reml_eqDLG_6.setExitString main_reml_eq6Results
+		call reml_eqDLG_6.setExitAction				///
+			"program check_reml_eq_EditResult"
+		call reml_eqDLG_6.setSubmitAction "program reml_eq_EditSubmit"
+	}
+	if main.lb_reml_eq.iseq("equation7") {
+		call create CHILD xtmixed_reml_eq AS reml_eqDLG_7, allowsubmit
+		call reml_eqDLG_7.settitle "Equation 7"
+		call reml_eqDLG_7.setExitString main_reml_eq7Results
+		call reml_eqDLG_7.setExitAction				///
+			"program check_reml_eq_EditResult"
+		call reml_eqDLG_7.setSubmitAction "program reml_eq_EditSubmit"
+	}
+	if main.lb_reml_eq.iseq("equation8") {
+		call create CHILD xtmixed_reml_eq AS reml_eqDLG_8, allowsubmit
+		call reml_eqDLG_8.settitle "Equation 8"
+		call reml_eqDLG_8.setExitString main_reml_eq8Results
+		call reml_eqDLG_8.setExitAction				///
+			"program check_reml_eq_EditResult"
+		call reml_eqDLG_8.setSubmitAction "program reml_eq_EditSubmit"
+	}
+END
+
+PROGRAM check_reml_eq_EditResult
+BEGIN
+	if main.lb_reml_eq.iseq("equation1") {
+		if main_reml_eq1Results.iseq("") {
+			call main.bu_edit_reml_1.setlabel "Define"
+		}
+		else {
+			call main.bu_edit_reml_1.setlabel "Edit  "
+		}
+	}
+	if main.lb_reml_eq.iseq("equation2") {
+		if main_reml_eq2Results.iseq("") {
+			call main.bu_edit_reml_2.setlabel "Define"
+		}
+		else {
+			call main.bu_edit_reml_2.setlabel "Edit  "
+		}
+	}
+	if main.lb_reml_eq.iseq("equation3") {
+		if main_reml_eq3Results.iseq("") {
+			call main.bu_edit_reml_3.setlabel "Define"
+		}
+		else {
+			call main.bu_edit_reml_3.setlabel "Edit  "
+		}
+	}
+	if main.lb_reml_eq.iseq("equation4") {
+		if main_reml_eq4Results.iseq("") {
+			call main.bu_edit_reml_4.setlabel "Define"
+		}
+		else {
+			call main.bu_edit_reml_4.setlabel "Edit  "
+		}
+	}
+	if main.lb_reml_eq.iseq("equation5") {
+		if main_reml_eq5Results.iseq("") {
+			call main.bu_edit_reml_5.setlabel "Define"
+		}
+		else {
+			call main.bu_edit_reml_5.setlabel "Edit  "
+		}
+	}
+	if main.lb_reml_eq.iseq("equation6") {
+		if main_reml_eq6Results.iseq("") {
+			call main.bu_edit_reml_6.setlabel "Define"
+		}
+		else {
+			call main.bu_edit_reml_6.setlabel "Edit  "
+		}
+	}
+	if main.lb_reml_eq.iseq("equation7") {
+		if main_reml_eq7Results.iseq("") {
+			call main.bu_edit_reml_7.setlabel "Define"
+		}
+		else {
+			call main.bu_edit_reml_7.setlabel "Edit  "
+		}
+	}
+	if main.lb_reml_eq.iseq("equation8") {
+		if main_reml_eq8Results.iseq("") {
+			call main.bu_edit_reml_8.setlabel "Define"
+		}
+		else {
+			call main.bu_edit_reml_8.setlabel "Edit  "
+		}
+	}
+	call program main_reml_equationList_sel
+END
+
+PROGRAM reml_eq_EditSubmit
+BEGIN
+	call program check_reml_eq_EditResult
+	call Submit
+END
+
+PROGRAM reml_eq_output
+BEGIN
+	if (main_reml_eq1Results) {
+		put " " main_reml_eq1Results
+	}
+	if (main_reml_eq2Results) {
+		put " " main_reml_eq2Results
+	}
+	if (main_reml_eq3Results) {
+		put " " main_reml_eq3Results
+	}
+	if (main_reml_eq4Results) {
+		put " " main_reml_eq4Results
+	}
+	if (main_reml_eq5Results) {
+		put " " main_reml_eq5Results
+	}
+	if (main_reml_eq6Results) {
+		put " " main_reml_eq6Results
+	}
+	if (main_reml_eq7Results) {
+		put " " main_reml_eq7Results
+	}
+	if (main_reml_eq8Results) {
+		put " " main_reml_eq8Results
+	}
+END
+
+LIST main_pwscale_contents
+BEGIN
+	size
+	effective
+	gk	
+END
+
+LIST main_resid_type_contents
+BEGIN
+	"Independent"
+	"Exchangeable"
+	"Autoregressive"
+	"Moving average"
+	"Unstructured"
+	"Banded"
+	"Toeplitz"
+	"Exponential"
+END
+
+LIST main_resid_type_values
+BEGIN
+	"independent"
+	exchangeable
+	ar
+	ma
+	unstructured
+	banded
+	toeplitz
+	exponential
+END
+
+LIST main_resid_type_scripts
+BEGIN
+	script sel_indep
+	script sel_exch
+	script sel_ar
+	script sel_ma
+	script sel_unsctr
+	script sel_band
+	script sel_toep
+	script sel_expon
+END
+
+SCRIPT sel_indep
+BEGIN
+	main.tx_resid_t.hide
+	main.vn_resid_t.hide
+	main.tx_order.hide
+	main.sp_order.hide
+	main.ed_order.hide
+	main.tx_resid_t.setlabel "Time variable:"
+	main.vn_resid_t.setlabel "Time variable"
+END
+
+SCRIPT sel_exch
+BEGIN
+	main.tx_resid_t.hide
+	main.vn_resid_t.hide
+	main.tx_order.hide
+	main.sp_order.hide
+	main.ed_order.hide
+	main.tx_resid_t.setlabel "Time variable:"
+	main.vn_resid_t.setlabel "Time variable"
+END
+
+SCRIPT sel_ar
+BEGIN
+	main.tx_resid_t.show
+	main.vn_resid_t.show
+	main.tx_order.show
+	main.tx_order.setlabel "Order" 
+	main.sp_order.show
+	main.ed_order.hide
+	main.tx_resid_t.setlabel "Time variable:"
+	main.vn_resid_t.setlabel "Time variable"
+END
+
+SCRIPT sel_ma
+BEGIN
+	main.tx_resid_t.show
+	main.vn_resid_t.show
+	main.tx_order.show
+	main.tx_order.setlabel "Order" 
+	main.sp_order.show
+	main.ed_order.hide
+	main.tx_resid_t.setlabel "Time variable:"
+	main.vn_resid_t.setlabel "Time variable"
+END
+
+SCRIPT sel_unsctr
+BEGIN
+	main.tx_resid_t.show
+	main.vn_resid_t.show
+	main.tx_order.hide
+	main.sp_order.hide
+	main.ed_order.hide
+	main.tx_resid_t.setlabel "ID variable:"
+	main.vn_resid_t.setlabel "ID variable"
+END
+
+SCRIPT sel_band
+BEGIN
+	main.tx_resid_t.show
+	main.vn_resid_t.show
+	main.tx_order.show
+	main.tx_order.setlabel `"Order  (Note: value must be either "Full" or an integer)"' 
+	main.sp_order.hide
+	main.ed_order.show
+	main.tx_resid_t.setlabel "ID variable:"
+	main.vn_resid_t.setlabel "ID variable"
+END
+
+SCRIPT sel_toep
+BEGIN
+	main.tx_resid_t.show
+	main.vn_resid_t.show
+	main.tx_order.show
+	main.tx_order.setlabel `"Order  (Note: value must be either "Full" or an integer)"'
+	main.sp_order.show
+	main.sp_order.hide
+	main.ed_order.show
+	main.tx_resid_t.setlabel "Time variable:"
+	main.vn_resid_t.setlabel "Time variable"
+END
+
+SCRIPT sel_expon
+BEGIN
+	main.tx_resid_t.show
+	main.vn_resid_t.show
+	main.tx_order.hide
+	main.sp_order.hide
+	main.ed_order.hide
+	main.tx_resid_t.setlabel "Time variable:"
+	main.vn_resid_t.setlabel "Time variable"
+END
+
+SCRIPT main_ck_resid_on
+BEGIN
+	main.tx_resid_type.enable
+	main.cb_resid_type.enable
+	main.tx_order.enable
+	main.sp_order.enable
+	main.ed_order.enable
+	main.tx_resid_by.enable
+	main.vn_resid_by.enable
+	main.tx_resid_t.enable
+	main.vn_resid_t.enable
+END
+
+SCRIPT main_ck_resid_off
+BEGIN
+	main.tx_resid_type.disable
+	main.cb_resid_type.disable
+	main.tx_resid_by.disable
+	main.vn_resid_by.disable
+	main.tx_resid_t.disable
+	main.vn_resid_t.disable
+	main.tx_order.disable
+	main.sp_order.disable
+	main.ed_order.disable
+END
+
+INCLUDE byifin
+
+DIALOG weights, tabtitle("Weights")
+BEGIN
+  TEXT tx_wgttyp		_lft	_top	_cwd1	.,		///
+	label("Weight type:")
+  BUTTON bu_help		_xsetbu	-2	_setbuwd .,		///
+	onpush(view help weights##|_new)				///
+	label("Help weights")
+
+  RADIO rb_none			_lft	+22	_iwd	., first	///
+	onclickon(program weights_none_on)				///
+	label("None")
+  RADIO rb_fw			_lft	_ss	_iwd	.,		///
+	option(fweight)							///
+	onclickon(program weights_fw_on)				///
+	label("Frequency weights")
+  RADIO rb_pw			_lft	_ss	_iwd	., last		///
+	option(pweight)							///
+	onclickon(program weights_pw_on)				///
+	label("Sampling weights")
+  TEXT tx_wgt			_lft	_ls	_iwd	., 		///
+	label("Weight:")
+  VARLIST vl_wgt		@	_ss	_iwd	.,		///
+	label("Weight")
+END
+
+PROGRAM weights_none_on
+BEGIN
+	call weights.tx_wgt.disable
+	call weights.vl_wgt.disable
+	if weights.rb_none {
+		call weights.tx_wgt.setlabel "Weight:"
+	}
+	call program main_check_fp_weight_state
+	call program main_check_pwscale_state
+END
+
+PROGRAM weights_fw_on
+BEGIN
+	call weights.tx_wgt.enable
+	call weights.vl_wgt.enable
+	if weights.rb_fw {
+		call weights.vl_wgt.setlabel "Frequency weight"
+		call weights.tx_wgt.setlabel "Frequency weight:"
+	}
+	call program main_check_fp_weight_state
+	call program main_check_pwscale_state
+END
+
+PROGRAM weights_pw_on
+BEGIN
+	call weights.tx_wgt.enable
+	call weights.vl_wgt.enable
+	if weights.rb_pw {
+		call weights.vl_wgt.setlabel "Sampling weight"
+		call weights.tx_wgt.setlabel "Sampling weight:"
+	}
+	call program main_check_fp_weight_state
+	call program main_check_pwscale_state
+END
+
+SCRIPT weights_disable
+BEGIN
+	weights.tx_wgttyp.disable
+	weights.rb_none.disable
+	weights.rb_fw.disable
+	weights.rb_pw.disable
+  	weights.tx_wgt.disable
+	weights.vl_wgt.disable
+END
+
+PROGRAM weights_enable
+BEGIN
+	call weights.tx_wgttyp.enable
+	call weights.rb_none.enable
+	call weights.rb_fw.enable
+	call weights.rb_pw.enable
+	if weights.rb_none {
+		call program weights_none_on
+	}
+	if weights.rb_fw {
+		call program weights_fw_on
+	}
+	if weights.rb_pw {
+		call program weights_pw_on
+	}
+END
+
+PROGRAM _wgh_output
+BEGIN
+	option radio (weights rb_fw rb_pw)
+	put "= "
+	put weights.vl_wgt
+END
+
+PROGRAM weights_output
+BEGIN
+	if weights.rb_none.isvisible() & weights.rb_none.isenabled() {
+		if ! weights.rb_none {
+			require weights.vl_wgt
+			put " " "["
+			put /program _wgh_output
+			put "] "
+		}
+	}
+END
+
+PROGRAM rpt_check_options
+BEGIN
+	if rpt.rb_variance | rpt.rb_fixed | rpt.rb_random {
+		call rpt.ck_estmetric.disable
+	}
+	else {
+		call rpt.ck_estmetric.enable
+	}
+END
+
+INCLUDE se
+
+SCRIPT rpt_POSTINIT
+BEGIN
+	create STRING rpt_bu_fmtcoefResults
+	program rpt_bu_fmtcoef_ckResults
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr2
+  DEFINE _y _top
+  INCLUDE _sp_level
+
+  GROUPBOX gb_rpt_method	_lft	_ls	_iwd	_ht4,		///
+  	label("Reporting method for variance components")
+  RADIO    rb_stddev		_ilft	_ss	_inwd	.,		///
+	first		  						///
+	label("Report as standard deviations and correlations")		///
+	onclickon(program rpt_check_options)
+  RADIO    rb_variance		@	_ss	@	.,		///
+	last option(variance)  						///
+	label("Report as variances and covariances")			///
+	onclickon(program rpt_check_options)
+
+  GROUPBOX gb_fe_re		_lft	_xls	_iwd	_ht6,		///
+  	label("Fixed-effects and random-effects estimates")
+  RADIO    rb_both		_ilft	_ss	_inwd	.,		///
+	first								///
+	onclickon(program rpt_check_options)				///
+	label("Report both fixed effects and random effects")
+  RADIO    rb_fixed		@	_ss	@	.,		///
+	onclickon(program rpt_check_options)				///
+	label("Report only fixed effects")				///
+	option(noretable)
+  RADIO    rb_random		@	_ss	@	.,		///
+	last								///
+	onclickon(program rpt_check_options)				///
+	label("Report only random effects")				///
+	option(nofetable)
+
+  CHECKBOX ck_estmetric		_lft	_xls	_iwd	.,		///
+	label("Report parameter estimates in the estimation metric") 	///
+	option(estmetric)
+
+  CHECKBOX ck_noheader		_lft	_ms	_iwd	.,		///
+	label("Suppress output header") option(noheader)
+
+  CHECKBOX ck_nogroup		_lft	_ms	_iwd	.,		///
+	label("Suppress table summarizing groups") option(nogroup)
+
+  CHECKBOX ck_nstderr		_lft	_ms	_iwd	.,		///
+	option(nostderr)						///
+	label("Do not estimate standard errors of random-effects parameters")
+
+  CHECKBOX ck_nolrtest		@	_ms	@	.,		///
+	option(nolrtest)						///
+	label("Do not perform LR test comparing with linear regression")
+
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _noomitted
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _vsquish
+
+  DEFINE _x _lft
+  DEFINE _y _ls
+  INCLUDE _bu_factor_vars_reporting
+
+  DEFINE _x _lft2
+  DEFINE _y  @
+  INCLUDE _bu_coef_table_reporting
+END
+
+INCLUDE fmt_coef_table_reporting_pr
+INCLUDE factor_vars_reporting_pr
+
+DIALOG em, tabtitle("EM options")
+BEGIN
+  SPINNER  sp_emiter		_lft	_top	_spwd	.,		///
+	label("Number of EM iterations") option(emiter)		 	///
+	min(0) max(16000) default(20)
+  TEXT     tx_emiter		_spsep	@	_spr	.,		///
+	label("Number of EM iterations")
+
+  EDIT	   ed_emtol		_lft	_ls	_en7wd	.,		///
+	label("EM convergence tolerance") default(1e-10) 		///
+	option(emtolerance)
+  TEXT     tx_emtol		_en7sep	@	_en7r	.,		///
+	label("EM convergence tolerance")
+
+  CHECKBOX ck_emonly		_lft	_ls	_cwd1	.,		///
+	label("Fit model exclusively using EM") option(emonly)
+
+  GROUPBOX gb_log		_lft	_ls	_cwd1	_ht8,		///
+  	label("EM iteration log")
+  RADIO    rb_default		_ilft	_ss	_inwd	.,		///
+  	first								///
+  	label("Use default")
+  RADIO    rb_nolog		@	_ss	@	.,		///
+	label("Suppress log") option(noemshow)
+  RADIO    rb_emlog		@	_ss	@	.,		///
+	label("Show log") option(emlog)
+  RADIO    rb_emdots		@	_ss	@	.,		///
+	last 								///
+	label("Show EM iterations as dots") option(emdots)
+END
+
+INCLUDE max_ml
+
+PROGRAM resid_output
+BEGIN
+	put main.cb_resid_type
+	if main.cb_resid_type.iseq("ar") | 				///
+		main.cb_resid_type.iseq("ma") |				///
+		main.cb_resid_type.iseq("unstructured") |		///
+		main.cb_resid_type.iseq("banded") | 			///
+		main.cb_resid_type.iseq("toeplitz") | 			///
+		main.cb_resid_type.iseq("exponential") {
+		require main.vn_resid_t
+	}
+	put " " main.sp_order
+	if !main.ed_order.iseq("Full") {
+		put " "  main.ed_order
+	}
+	beginoptions
+		optionarg main.vn_resid_by
+		optionarg main.vn_resid_t
+	endoptions
+END
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "xtmixed "
+	varlist main.vn_dv [main.vl_iv]
+        if !main.vl_iv & main.ck_nocons {
+	  stopbox stop `""Suppress constant term" is selected without independent variables""'
+	}
+	put " " /program ifin_output
+	put " " /program weights_output
+
+	beginoptions
+		option main.ck_nocons
+		if main.rb_mle {
+			put " " /program mle_eq_output
+			put " " /program se_output
+			optionarg main.cb_pwscale
+		}
+		if main.rb_reml {
+			put " " /program reml_eq_output
+		}
+		if main.ck_resid {
+			put " residuals("
+			put /program resid_output
+			put ")"
+		}
+
+		option main.rb_reml
+
+		optionarg /hidedefault rpt.sp_level
+		option rpt.ck_noheader
+		option rpt.ck_nogroup
+		option rpt.rb_fixed
+		option rpt.rb_random
+		option rpt.rb_variance
+		option rpt.ck_estmetric
+		option rpt.ck_nstderr
+		option rpt.ck_nolrtest
+		INCLUDE _noomitted_pr
+		INCLUDE _vsquish_pr
+		put " " rpt_bu_facvarsResults
+		put " " rpt_bu_fmtcoefResults
+
+		optionarg /hidedefault em.sp_emiter
+		optionarg /hidedefault em.ed_emtol
+		option em.ck_emonly
+		option em.rb_nolog
+		option em.rb_emlog
+		option em.rb_emdots
+
+		put " " /program max_output
+	endoptions
+END

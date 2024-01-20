@@ -1,0 +1,43 @@
+/*
+	lvr2plot_9.dlg
+
+*! VERSION 1.1.1  07aug2006  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+
+INCLUDE header
+HELP hlp1, view("help lvr2plot")
+RESET res1
+
+DIALOG main, label("lvr2plot - Leverage-versus-squared-residual plot") 	///
+	tabtitle("Main")
+BEGIN
+  TEXT     tx_msg1      _lft      _top      _iwd      .,		///
+	label("lvr2plot graphs a leverage-versus-squared residual plot after regress and anova.")
+  TEXT     tx_msg2      @         _ls       @         .,		///
+	label("Click OK or Submit to graph")
+END
+
+INCLUDE p1_opts
+INCLUDE addplot
+INCLUDE gr_twoway
+
+SCRIPT PREINIT
+BEGIN
+	script p1_opts_createAsNoRange
+	script p1_opts_setDefaultScatter
+END
+
+PROGRAM command
+BEGIN
+	put "lvr2plot "
+	beginoptions
+		put " " /program p1_opts_output
+		put " " /program addplot_output
+		put " " /program gr_twoway_output
+	endoptions
+END

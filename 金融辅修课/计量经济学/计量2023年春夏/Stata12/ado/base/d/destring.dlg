@@ -1,0 +1,81 @@
+/*
+  destring
+
+*!  VERSION 1.2.2  28sep2007
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_large
+INCLUDE _ht360
+INCLUDE header
+HELP hlp1, view("help destring")
+RESET res1
+
+DIALOG main, tabtitle("Main")	///
+	label("destring - Convert string variables to numeric variables")
+	
+BEGIN
+  TEXT     tx_var          _lft      _top      _iwd      .,		///
+	label("String variables to convert: (leave empty for all variables)")
+  VARLIST  vl_var          @         _ss       _iwd      .,		///
+	label("String variables to convert")
+
+  GROUPBOX gb_action       @         _ls       @         _ht7,
+  RADIO    rb_gener        _indent   _ss       _inwd     .,		///
+	label("Create new numeric variables named:")			///
+	onclickon(main.ed_gener.enable)					///
+	first
+  RADIO    rb_repl         @         +50       @         .,		///
+	onclickon(main.ed_gener.disable)				///
+	option(replace) last nomemory					///
+	label("Convert specified variables to numeric (original strings will be lost)")
+  EDIT     ed_gener        _indent2  -30       _inwd     .,		///
+	label("Names of new numeric variables")				///
+	option(generate)
+
+  GROUPBOX gb_opt          _lft      _xxxxls   _iwd      _ht14h,	///
+	label("Options")
+  CHECKBOX ck_ignore 	   _indent   _ss       _ibwd     .,		///
+	label("Remove these characters:")				///
+	onclickon(main.ed_ignore.enable)				///
+	onclickoff(main.ed_ignore.disable)
+  DEFINE _x @x
+  EDIT     ed_ignore       _indent2  _ss       _vnwd     .,		///
+ 	label("Remove these characters")				///
+	option(ignore)
+  CHECKBOX ck_force        _ilft     _ls       _ibwd     .,		///
+  	label("Convert nonnumeric strings to missing values") 		///
+	option(force)
+  CHECKBOX ck_float        @         _ms       @         .,		///
+	label("Generate numeric variables as type float")		///
+	option(float)
+  CHECKBOX ck_percent      @         _ms       @         .,		///
+	option(percent)							///
+	label("Convert percent variables to fractional form")
+  CHECKBOX ck_dpcomma     @         _ms       @         .,		///
+	option(dpcomma)							///
+	label("Treat commas as decimals")
+END
+
+PROGRAM command
+BEGIN
+	put "destring "
+	varlist [main.vl_var]
+	beginoptions
+		if main.rb_gener {
+			require main.ed_gener
+			optionarg main.ed_gener
+		}
+		option main.rb_repl
+		if main.ck_ignore {
+		        require main.ed_ignore
+			optionarg main.ed_ignore
+		}
+		option main.ck_force
+		option main.ck_float
+		option main.ck_percent
+		option main.ck_dpcomma
+	endoptions
+END

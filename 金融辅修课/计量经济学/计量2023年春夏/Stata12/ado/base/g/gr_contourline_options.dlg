@@ -1,0 +1,219 @@
+/*
+    gr_contourline_options.dlg
+    
+*!  VERSION 1.0.0  19apr2011
+
+*/
+
+VERSION 12
+
+INCLUDE _std_small
+DEFINE _dlght 300
+INCLUDE header_gr_child
+
+DEFINE _clwd 15
+
+HELP hlp1, view("help twoway_contourline")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	create STRING formatResults
+END
+
+SCRIPT POSTINIT
+BEGIN
+	program checkFormatResults
+END
+
+LIST contour_lvl
+BEGIN
+	Use default
+	Specify the number of levels
+	Specifies the z-values for the contour lines	
+END
+
+LIST contour_lvl_values
+BEGIN
+	default
+	levels
+	ccuts	
+END
+
+DIALOG main, label("Contour options") tabtitle("Main")
+BEGIN
+  TEXT     tx_level0		_lft	_top	270	.,	///
+	label("Contour levels/cuts:")
+  COMBOBOX cb_levels		_lft	_ss	270	.,	///
+	dropdownlist 						///
+	contents(contour_lvl) values(contour_lvl_values)	///
+	onselchange(program check_level_type)
+
+  SPINNER  sp_levels		_lft	_ls	_spwd	.,	///
+	label("Number of levels") 				///
+	min(1) max(1000) default(5) option(levels)
+  TEXT     tx_levels		_spsep	@	120	.,	///
+	label("Number of levels")
+
+  EDIT     ed_ccuts		_lft	@	120	.,	///
+	label("Z-values") tooltip("Specify numlist")		///
+	option(ccuts)
+  HYPERLINK tx_ccuts		+125	@	160	.,	///
+	label("Z-values (numlist)") onpush(view help numlist##|_new)
+
+  BUTTON   bu_format		_rj70	@	70	.,	///
+	label("Format  ") onpush(program show_format_dialog)
+
+  CHECKBOX ck_minmax		_lft	_ms	_iwd	.,	///
+	option(minmax)						///
+	label("Include the minimum and maximum of z in levels")
+
+  CHECKBOX ck_colors		_lft	_ls	_iwd	_ht9,	///
+	label("Use colors for contours") groupbox		///
+	option(colorlines)					///
+	onclickon(program ck_colors_check)			///
+	onclickoff(program ck_colors_check)
+
+  TEXT     tx_crule		60	_ms	65	.,	///
+	label("Rule:") right
+  COMBOBOX cb_crule		+70	@	130	.,	///
+	dropdownlist contents(zyx2rule) option(crule)
+
+  TEXT     tx_bclr		60	_ls	65	.,	///
+	label("Start color:") right
+  COMBOBOX cb_bclr		+70	@	130	.,	///
+	dropdownlist contents(colors) option(scolor)		///
+	onselchangelist(main_cl_bclr_sel)
+  COLOR    cl_bclr		+135	@	_clwd	.,	///
+	option(scolor)
+
+  TEXT     tx_eclr		60	_ls	65	.,	///
+	label("End color:") right
+  COMBOBOX cb_eclr		+70	@	130	.,	///
+	dropdownlist contents(colors) option(ecolor)		///
+	onselchangelist(main_cl_eclr_sel)
+  COLOR    cl_eclr		+135	@	_clwd	.,	///
+	option(ecolor)
+
+  CHECKBOX ck_reverse		_lft	+50	_iwd	.,	///
+	option(reversekey)					///
+	label("Reverse the order of the keys in the legend")
+END
+
+LIST main_cl_bclr_sel
+BEGIN
+	main.cl_bclr.hide
+	main.cl_bclr.show
+	main.cl_bclr.hide
+END
+
+LIST main_cl_eclr_sel
+BEGIN
+	main.cl_eclr.hide
+	main.cl_eclr.show
+	main.cl_eclr.hide
+END
+PROGRAM check_level_type
+BEGIN
+	if main.cb_levels.iseq("default") {
+		call main.sp_levels.hide
+		call main.tx_levels.hide
+		call main.ck_minmax.hide
+		call main.tx_ccuts.hide
+		call main.ed_ccuts.hide
+		call main.bu_format.hide
+	}
+	if main.cb_levels.iseq("levels") {
+		call main.sp_levels.show
+		call main.tx_levels.show
+		call main.ck_minmax.show
+		call main.tx_ccuts.hide
+		call main.ed_ccuts.hide
+		call main.bu_format.show
+	}
+	if main.cb_levels.iseq("ccuts") {
+		call main.sp_levels.hide
+		call main.tx_levels.hide
+		call main.ck_minmax.hide
+		call main.tx_ccuts.show
+		call main.ed_ccuts.show
+		call main.bu_format.show
+	}
+END
+
+PROGRAM ck_colors_check
+BEGIN
+	if main.ck_colors {
+		call main.tx_crule.enable
+		call main.cb_crule.enable
+		call main.tx_bclr.enable
+		call main.cb_bclr.enable
+		call main.cl_bclr.enable
+		call main.tx_eclr.enable
+		call main.cb_eclr.enable
+		call main.cl_eclr.enable
+	}
+	else {
+		call main.tx_crule.disable
+		call main.cb_crule.disable
+		call main.tx_bclr.disable
+		call main.cb_bclr.disable
+		call main.cl_bclr.disable
+		call main.tx_eclr.disable
+		call main.cb_eclr.disable
+		call main.cl_eclr.disable
+	}
+END
+
+PROGRAM show_format_dialog
+BEGIN
+	call create CHILD format_chooser AS formatDlg, allowsubmit
+	call formatDlg.setExitString formatResults
+	call formatDlg.setExitAction "program checkFormatResults"
+	call formatDlg.setSubmitAction "program formatSubmit"
+END
+PROGRAM checkFormatResults
+BEGIN
+	if formatResults.iseq("") {
+		call main.bu_format.setlabel "Format  "
+	}
+	if formatResults.isneq("") {
+		call main.bu_format.setlabel "Format *"
+	}
+END
+PROGRAM formatSubmit
+BEGIN
+	call program checkFormatResults
+	call Submit
+END
+
+PROGRAM command
+BEGIN
+	optionarg main.sp_levels
+	option main.ck_minmax
+	if ! H(main.bu_format) & formatResults {
+		put " format(" formatResults ") "
+	}
+	optionarg main.ed_ccuts
+
+	if main.ck_colors {
+		option main.ck_colors
+		optionarg /hidedefault main.cb_crule
+
+		if main.cl_bclr.isvisible() {
+			optionarg /quoted main.cl_bclr
+		}
+		if ! main.cl_bclr.isvisible() {
+			optionarg /hidedefault main.cb_bclr
+		}
+
+		if main.cl_eclr.isvisible() {
+			optionarg /quoted main.cl_eclr
+		}
+		if ! main.cl_eclr.isvisible() {
+			optionarg /hidedefault main.cb_eclr
+		}
+	}
+
+	option main.ck_reverse
+END

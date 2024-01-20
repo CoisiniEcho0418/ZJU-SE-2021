@@ -1,0 +1,260 @@
+/*
+  xtivreg
+
+*!  VERSION 1.2.6  21jan2011
+
+  keyword:  eclass
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_large
+DEFINE _dlght 360
+INCLUDE header
+HELP hlp1, view("help xtivreg")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	script se_createAsConventJknifeBstrap
+END
+
+SCRIPT POSTINIT
+BEGIN
+	script se_setCluster_off
+	script se_setTitleSE
+END
+
+SCRIPT show_xtset
+BEGIN
+	create STRING note
+	note.setvalue `"For the "first-differenced estimator","'
+	note.append   `" a time variable is required."'
+	note.withvalue create CHILD xtset, message(`"" " `"@"'"')
+END
+
+DIALOG main, tabtitle("Model")	///
+	label("xtivreg - Instrumental-variables regression for panel data")
+		
+BEGIN
+  BUTTON   bu_xtset	_xsetbu	_top	_setbuwd .,		///
+	onpush(script show_xtset)				///
+	label("Panel settings...")
+
+  TEXT     tx_dv     _lft      _topph    _vnwd     .,			/*
+		*/ label("Dependent variable:")				/*
+		*/
+  VARNAME  vn_dv     @         _ss       @         .,			/*
+		*/ label("Dependent variable")				/*
+		*/ ts							/*
+		*/
+
+  TEXT     tx_iv     _vlx      _topph    _cwd2     .,			/*
+		*/ label("Independent variables:")			/*
+		*/
+  VARLIST  vl_iv     @         _ss       _vlwd     .,			/*
+		*/ label("Independent variables")			/*
+		*/ ts fv						/*
+		*/
+  CHECKBOX ck_nocons @         _ss       @         .,			/*
+		*/ label("Suppress constant term")			/*
+		*/ option("noconstant")					/*
+		*/
+
+  TEXT     tx_vars2  _lft      _ms       _iwd      .,			/*
+		*/ label("Endogenous variables:")			/*
+		*/
+  VARLIST  vl_vars2  @         _ss       @         .,			/*
+		*/ label("Endogenous variables")			/*
+		*/ allowcat						/*
+		*/ ts							/*
+		*/
+  TEXT     tx_ivars  _lft      _ls       _iwd      .,			/*
+		*/ label("Instrumental variables:")			/*
+		*/
+  VARLIST  vl_ivars  @         _ss       @         .,			/*
+		*/ label("Instrumental variables")			/*
+		*/ allowcat						/*
+		*/ ts fv						/*
+		*/
+
+  GROUPBOX gb_mopts  _lft      _ls       _iwd      _ht11,		/*
+		*/ label("Options")					/*
+		*/
+  CHECKBOX ck_ec2sls _lft2     _ss       _cwd2     .,			/*
+		*/ label("Use Baltagi's EC2SLS RE estimator")		/*
+		*/ option("ec2sls")					/*
+		*/
+  DEFINE y @y
+  CHECKBOX ck_nosa   @         _ls       @         .,			/*
+		*/ label("Use the Baltagi-Chang instead of")		/*
+		*/ option("nosa")					/*
+		*/
+  TEXT     tx_nosa   _indent2  _vss      _inwd     .,			/*
+		*/ label(" the Swamy-Arora estimator")			/*
+		*/
+  CHECKBOX ck_reg    _lft2     _ms       _cwd2     .,			/*
+		*/ label("Ignore instrumental variables and")		/*
+		*/ clickon("gaction rpt.ck_first.disable")		/*
+		*/ clickoff("gaction rpt.ck_first.enable")		/*
+		*/ option("regress")					/*
+		*/
+  TEXT     tx_reg    _indent2  _vss      _inwd     .,			/*
+		*/ label("treat all covariates as exogenous")		/*
+		*/
+
+  GROUPBOX gb_model  _ilft     y         _cwd2     _ht8,		/*
+		*/ label("Model type")					/*
+		*/
+  RADIO    rb_re     _indent   _ss       _cwd4     .,			/*
+		*/ label("Random-effects")				/*
+		*/ clickon("script re_opts")				/*
+		*/ first						/*
+		*/ option("re")						/*
+		*/
+  RADIO    rb_be     @         _ss       @         .,			/*
+		*/ label("Between-effects")				/*
+		*/ clickon("script be_opts")				/*
+		*/ option("be")						/*
+		*/
+  RADIO    rb_fe     @         _ss       @         .,			/*
+		*/ label("Fixed-effects")				/*
+		*/ clickon("script fe_opts")				/*
+		*/ option("fe")						/*
+		*/
+  RADIO    rb_fd     @         _ss       @         .,			/*
+		*/ label("First-differenced estimator")			/*
+		*/ clickon("script fd_opts")				/*
+		*/ last							/*
+		*/ option("fd")						/*
+		*/
+END
+
+SCRIPT re_opts
+BEGIN
+  	script factor_vars_reporting_enable
+	main.ck_ec2sls.enable
+	main.ck_nosa.enable
+	main.tx_nosa.enable
+	rpt.ck_theta.enable
+	main.ck_nocons.disable
+END
+
+SCRIPT be_opts
+BEGIN
+  	script factor_vars_reporting_enable
+	main.ck_ec2sls.enable
+	main.ck_ec2sls.disable
+	main.ck_nosa.disable
+	main.tx_nosa.disable
+	rpt.ck_theta.disable
+	main.ck_nocons.disable
+END
+
+SCRIPT fe_opts
+BEGIN
+  	script factor_vars_reporting_enable
+	script be_opts
+END
+
+SCRIPT fd_opts
+BEGIN
+  	script factor_vars_reporting_enable
+	main.ck_ec2sls.enable
+	main.ck_ec2sls.disable
+	main.ck_nosa.disable
+	main.tx_nosa.disable
+	rpt.ck_theta.disable
+	main.ck_nocons.enable
+END
+
+INCLUDE byifin
+INCLUDE se
+
+SCRIPT rpt_POSTINIT
+BEGIN
+	create STRING rpt_bu_fmtcoefResults
+	program rpt_bu_fmtcoef_ckResults
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr2
+  DEFINE _y _top
+  INCLUDE _sp_level
+
+  CHECKBOX ck_first  _lft      _ls       _iwd      .,			/*
+		*/ label("Report first-stage estimates")		/*
+		*/ option("first")					/*
+		*/
+
+  CHECKBOX ck_small  @         _ms       @         .,			/*
+		*/ label("Report small-sample statistics: t, F instead of Z, chi-squared")/*
+		*/ option("small")					/*
+		*/
+  CHECKBOX ck_theta  @        _ms        @         .,			/*
+		*/ label("Report theta (only available with random-effects)") /*
+		*/ option("theta")					/*
+		*/
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _noomitted
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _vsquish
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _factor_vars_reporting
+
+  DEFINE _x _lft
+  DEFINE _y _xxxls
+  INCLUDE _bu_coef_table_reporting
+END
+
+INCLUDE fmt_coef_table_reporting_pr
+
+INCLUDE _factor_vars_reporting_sc
+
+PROGRAM subcommand
+BEGIN
+	varlist main.vl_vars2
+	put "="
+	varlist main.vl_ivars
+END
+
+PROGRAM command
+BEGIN
+	put /program by_output " "
+	put "xtivreg "
+	varlist main.vn_dv [main.vl_iv]
+	put "("
+		put /program subcommand
+	put ")"
+	
+	put " " /program ifin_output
+	beginoptions
+		option main.ck_nocons
+		option radio(main rb_re rb_be rb_fe rb_fd)
+		option main.ck_ec2sls
+		option main.ck_nosa
+		option main.ck_reg
+		put " " /program se_output
+		optionarg /hidedefault rpt.sp_level
+		option rpt.ck_first
+		option rpt.ck_small
+		option rpt.ck_theta
+		INCLUDE _noomitted_pr
+		INCLUDE _vsquish_pr
+		INCLUDE _factor_vars_reporting_pr
+		put " " rpt_bu_fmtcoefResults
+	endoptions
+END
+

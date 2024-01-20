@@ -1,0 +1,186 @@
+/*
+    xtline_9.dlg
+
+*!  VERSION 1.1.4  08feb2007  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+HELP hlp1, view("help xtline")
+RESET res1
+
+DIALOG main, label("xtline - Panel data line plots")  tabtitle("Main")
+BEGIN
+  RADIO    rb_by       _lft        _top      _gwd1       .,		///
+  		label("Graph by panel") 				///
+  		first							///
+  		onclickon(script main_by_on)
+  RADIO    rb_overlay _lft         _ss       @           .,		///
+  		label("Overlay each panel on the same graph")		///
+  		last							///
+  		onclickon(script main_overlay_on)
+
+  TEXT     tx_vars     _lft        _ls       _gwd1       .,		///
+                label("Variables:")
+  TEXT     tx_var      @           @         @           .,		///
+  		label("Variable:")
+
+  VARLIST  vn_vars     @           _ss       _gwd1       .,		///
+                label("Variables")
+  VARNAME  vn_var      @           @         _vnwd       .,		///
+  		label("Variable")
+
+  DEFINE _x _xsetbu
+  DEFINE _y _top
+  BUTTON   bu_tsset _x        _y        _setbuwd  .,			/*
+		*/ onpush("view dialog xtset")				/*
+		*/ label("Panel settings...")
+
+  CHECKBOX ck_override _lft3_3     45        _cwd3_1     _ht8h,		///
+  		label("Override panel settings")			///
+		onclickon(script override_xtset_on)			///
+		onclickoff(script override_xtset_off)			///
+		groupbox
+  TEXT     tx_ivar     _indent     _ss       _cwd3_5     .,		///
+  		label("Group variable (panel variable):")
+  VARNAME  vn_ivar     @           _ss       _vnwd       .,		///
+  		option(i)						///
+  		label("Group variable (panel variable)")
+  TEXT     tx_tvar     @           _ms       _cwd3_5     .,		///
+  		label("X variable (time variable):")
+  VARNAME  vn_tvar     @           _ss       _vnwd       .,		///
+  		option(t)						///
+  		label("X variable (time variable)")
+END
+
+SCRIPT main_by_on
+BEGIN
+	main.tx_var.hide
+	main.vn_var.hide
+	script p2_opts_disable
+	script p3_opts_disable
+	script p4_opts_disable
+
+	main.tx_vars.show
+	main.vn_vars.show
+	script gby_enable
+	p1_opts.settabtitle "Plot"
+END
+
+SCRIPT main_overlay_on
+BEGIN
+	main.tx_vars.hide
+	main.vn_vars.hide
+	script gby_disable
+
+	main.tx_var.show
+	main.vn_var.show
+	script p2_opts_enable
+	script p3_opts_enable
+	script p4_opts_enable
+	p1_opts.settabtitle "Plot 1"
+END
+
+SCRIPT override_xtset_on
+BEGIN
+	main.tx_ivar.enable
+	main.vn_ivar.enable
+	main.tx_tvar.enable
+	main.vn_tvar.enable
+	main.bu_tsset.disable
+END
+
+SCRIPT override_xtset_off
+BEGIN
+	main.tx_ivar.disable
+	main.vn_ivar.disable
+	main.tx_tvar.disable
+	main.vn_tvar.disable
+	main.bu_tsset.enable
+END
+
+INCLUDE ifin
+INCLUDE p1_opts
+INCLUDE p2_opts
+INCLUDE p3_opts
+INCLUDE p4_opts
+INCLUDE addplot
+
+SCRIPT PREINIT
+BEGIN
+	script p1_opts_createAsNoRange
+	script p1_opts_setDefaultLine
+	script p2_opts_createAsNoRange
+	script p2_opts_setDefaultLine
+	script p3_opts_createAsNoRange
+	script p3_opts_setDefaultLine
+	script p4_opts_createAsNoRange
+	script p4_opts_setDefaultLine
+END
+
+SCRIPT POSTINIT
+BEGIN
+	script gby_setViewByopts
+	p2_opts.settabtitle "Plot 2"
+	p3_opts.settabtitle "Plot 3"
+	p4_opts.settabtitle "Plot 4"
+
+	p1_opts_specialOutput.setstring "plot1opts"
+	p2_opts_specialOutput.setstring "plot2opts"
+	p3_opts_specialOutput.setstring "plot3opts"
+	p4_opts_specialOutput.setstring "plot4opts"
+END
+
+INCLUDE gyaxis
+INCLUDE gtaxis
+INCLUDE gtitle
+INCLUDE gcaption
+INCLUDE glegend
+INCLUDE gregion
+INCLUDE gby
+
+PROGRAM command
+BEGIN
+	put "xtline "
+	if main.rb_by {
+		require main.vn_vars
+		put main.vn_vars
+	}
+	if main.rb_overlay {
+		require main.vn_var
+		put main.vn_var
+	}
+
+	INCLUDE _ifin_pr
+	beginoptions
+		if main.rb_overlay {
+			put "overlay "
+			put " " /program p1_opts_special_output
+			put " " /program p2_opts_special_output
+			put " " /program p3_opts_special_output
+			put " " /program p4_opts_special_output
+		}
+		if main.rb_by {
+			put " " /program p1_opts_output
+		}
+		if main.ck_override {
+			require main.vn_ivar
+			require main.vn_tvar
+			optionarg main.vn_ivar
+			optionarg main.vn_tvar
+		}
+		put " " /program addplot_output
+		put " " /program gyaxis_output
+		put " " /program gtaxis_output
+		put " " /program gtitle_output
+		put " " /program gcaption_output
+		put " " /program glegend_output
+		put " " /program gregion_output
+		if main.rb_by {
+			put " " /program gby_byopts_output
+		}
+	endoptions
+END

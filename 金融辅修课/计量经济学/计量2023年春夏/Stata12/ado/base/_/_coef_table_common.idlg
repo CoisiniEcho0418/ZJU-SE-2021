@@ -1,0 +1,36 @@
+/*
+    _coef_table_common.idlg
+
+*!  VERSION 1.0.0  21sep2004
+
+  To be included within a DIALOG.
+
+  Note that macros _x, _y, and _xwd must already be DEFINEd.
+
+*/
+
+  /*--+----1----+----2----+----3----+----4----+----5----+----6----+----7----+*/
+  CHECKBOX ck_notable _x       _y        _xwd      .,			/*
+		*/ label("Suppress table of results")			/*
+		*/ clickon(program check_table)				/*
+		*/ clickoff(program check_table)			/*
+		*/ option("notable")					/*
+		*/
+  CHECKBOX ck_noheader @       _ms       @         .,			/*
+		*/ label("Suppress the table header")			/*
+		*/ clickon(program check_header)			/*
+		*/ clickoff(program check_header)			/*
+		*/ option("noheader")					/*
+		*/
+  CHECKBOX ck_nolegend  @      _ms       @         .,			/*
+		*/ label("Suppress the table legend")			/*
+		*/ clickon(program check_legend)			/*
+		*/ clickoff(program check_legend)			/*
+		*/ option("nolegend")					/*
+		*/
+  CHECKBOX ck_verbose @        _ms       @         .,			/*
+		*/ label("Display the full table legend")		/*
+		*/ option("verbose")					/*
+		*/
+
+/* END: _coef_table_common.idlg */

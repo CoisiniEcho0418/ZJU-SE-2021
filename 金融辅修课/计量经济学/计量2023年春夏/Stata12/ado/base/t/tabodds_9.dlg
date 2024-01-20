@@ -1,0 +1,302 @@
+/*
+    tabodds_9.dlg
+
+*!  VERSION 1.2.2  08sep2006 (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+
+INCLUDE header
+
+HELP hlp1, view("help tabodds")
+RESET res1
+
+DIALOG main, label("tabodds - Case-control studies") tabtitle("Main")
+BEGIN
+  TEXT     tx_casevar        _lft      _top      _cwd4_0   .,		///
+		label("Case exposed variable:")
+  VARNAME  vn_casevar        @         _ss       _vnwd     .,		///
+		label("Case exposed variable")
+DEFINE toprow @y
+  CHECKBOX ck_expvar         _lft4_2   _top      _cwd4_0   .,		///
+		label("Control exposed variable:")			///
+		onclickon(program expvar_on)				///
+		onclickoff(script expvar_off)
+  VARNAME  vn_expvar         _indent2  _ss       _vnwd     .,		///
+		label("Control exposed variable")
+
+  CHECKBOX ck_bin            _lft4_3   _top      _cwd4_0   .,		///
+		label("No. of subjects variable:")			///
+		onclickon(script subject_on)				///
+		onclickoff(script subject_off)
+  VARNAME  vn_bin            _indent2  _ss       _vnwd     .,		///
+		option(binomial)					///
+		label("No. of subjects variable")
+
+  GROUPBOX gb_options        _lft      _xls      _iwd      _ht23,	///
+  		label(`"Options available with "Control exposed variable""')
+
+  RADIO    rb_noor           _ilft     _ss       _cwd4     .,		///
+  		first option(NONE) 					///
+  		onclickon(program noor)					///
+  		label("Do not report odds or adjusted odds ratio (default)")
+DEFINE opttop  @y
+  RADIO    rb_or             @         _ss       @         .,		///
+		option(or)						///
+		label("Report odds ratio")				///
+		onclickon(program or_on)
+  RADIO    rb_adjust         @         _ss       @         .,		///
+		label("Report odds ratios adjusted for variables:") 	///
+		onclickon(program adjust_on) 				///
+		last
+  VARLIST  vl_adjust         _indent2  _ss       @         .,		///
+		option(adjust)						///
+		label("Calculate adjusted odds ratios")
+  CHECKBOX ck_base           _ilft     _ls       _ckwd     .,		///
+		onclickon(main.sp_base.enable)				///
+		onclickoff(main.sp_base.disable)
+  SPINNER  sp_base          _cksep     @         _spwd     .,		///
+		option(base)						///
+		label("Reference group")				///
+		default(1) min(1) max(10000000)
+  TEXT     tx_base           _spsep    @         _cksprb   .,		///
+		label("Reference group of control variable for odds ratio")
+
+  GROUPBOX gb_odds           _ilft     _ls       _cwd1     _ht8,	///
+  		label("Unadjusted odds ratio")
+  RADIO    rb_default        _indent   _ss       _inwd     .,		///
+  		option(NONE) 						///
+  		first							///
+  		label("Default standard error")
+  RADIO    rb_cornfield      @         _ss       @         .,		///
+		option(cornfield)					///
+		label("Cornfield approximation")
+  RADIO    rb_woolf          @         _ss       @         .,		///
+		option(woolf)						///
+		label("Woolf approximation")
+  RADIO    rb_tb             @         _ss       @         .,		///
+		option(tb)						///
+		label("Test-based confidence intervals") 		///
+		last
+
+  CHECKBOX ck_graph          _lft2     opttop    _cwd3     .,		///
+		option(graph)						///
+		label("Graph odds vs. categories")			///
+		onclickon(script graph_on)				///
+		onclickoff(program nograph_on)
+  CHECKBOX ck_ciplot         @         _ms       @         .,		///
+		option(ciplot)						///
+		label("Plot confidence intervals")			///
+		onclickon(program ci_check)				///
+		onclickoff(program ci_check)
+  DEFINE _x _lft4_4
+  DEFINE _y toprow
+  DEFINE _cx _spr
+  INCLUDE _sp_level
+END
+
+SCRIPT subject_on
+BEGIN
+	main.vn_bin.enable
+	script weights_disable
+END
+
+SCRIPT subject_off
+BEGIN
+	main.vn_bin.disable
+	script weights_enable
+END
+
+PROGRAM ci_check
+BEGIN
+	if main.ck_ciplot {
+		call script p2_opts_enable
+	}
+	if !main.ck_ciplot {
+		call script p2_opts_disable
+	}
+END
+
+PROGRAM nograph_on
+BEGIN
+	if main.ck_expvar {
+		call gaction main.rb_or.enable
+		call gaction main.rb_adjust.enable
+	}
+	call main.ck_ciplot.disable
+	call script p1_opts_disable
+	call script p2_opts_disable
+	call script addplot_disable
+	call script gr_twoway_disable
+END
+
+SCRIPT graph_on
+BEGIN
+	main.rb_or.disable
+	main.rb_adjust.disable
+	script p1_opts_enable
+	main.ck_ciplot.enable
+	program ci_check
+	script addplot_enable
+	script gr_twoway_enable
+END
+
+PROGRAM adjust_on
+BEGIN
+  	call main.ck_base.enable
+  	call main.tx_base.enable
+	if main.ck_base {
+		call main.sp_base.enable
+	}
+	call main.vl_adjust.enable
+	call main.ck_ciplot.disable
+	call main.ck_graph.disable
+	call script or_only_off
+END
+
+PROGRAM noor
+BEGIN
+	call main.vl_adjust.disable
+	call main.ck_base.disable
+	call main.sp_base.disable
+	call main.tx_base.disable
+	if main.ck_expvar {
+		call main.ck_graph.enable
+		if main.ck_graph {
+			call main.ck_ciplot.enable
+		}
+	}
+	call script or_only_off
+END
+
+PROGRAM expvar_on
+BEGIN
+	call main.vn_expvar.enable
+  	call main.rb_or.enable
+	call main.rb_adjust.enable
+	call main.rb_noor.enable
+	if main.rb_adjust {
+  		call program adjust_on
+  	}
+	if main.rb_or {
+		call program or_on
+	}
+	if main.rb_noor {
+  		call main.ck_graph.enable
+		if main.ck_graph {
+			call script graph_on
+			call main.ck_ciplot.enable
+		}
+  	}
+END
+
+SCRIPT expvar_off
+BEGIN
+	main.vn_expvar.disable
+	main.rb_noor.disable
+	main.rb_or.disable
+	main.rb_adjust.disable
+	main.vl_adjust.disable
+	main.gb_odds.disable
+	main.ck_base.disable
+	main.sp_base.disable
+	main.tx_base.disable
+	main.ck_graph.disable
+	main.ck_ciplot.disable
+	main.rb_default.disable
+	main.rb_cornfield.disable
+	main.rb_tb.disable
+	main.rb_woolf.disable
+	script graphtab_off
+END
+
+SCRIPT or_only_off
+BEGIN
+	main.gb_odds.disable
+	main.rb_default.disable
+	main.rb_cornfield.disable
+	main.rb_tb.disable
+	main.rb_woolf.disable
+END
+
+PROGRAM or_on
+BEGIN
+	call main.ck_base.enable
+	call main.tx_base.enable
+	call main.ck_graph.disable
+	call main.ck_ciplot.disable
+	if main.ck_base {
+		call main.sp_base.enable
+  	}
+	call main.gb_odds.enable
+	call main.rb_default.enable
+	call main.rb_cornfield.enable
+	call main.rb_tb.enable
+	call main.rb_woolf.enable
+	call main.vl_adjust.disable
+END
+
+INCLUDE ifin
+INCLUDE weights_f
+INCLUDE p1_opts
+INCLUDE p2_opts
+INCLUDE addplot
+INCLUDE gr_twoway
+
+SCRIPT PREINIT
+BEGIN
+	script p1_opts_createAsNoRange
+	script p1_opts_setDefaultConnected
+	script p2_opts_createAsRange
+	script p2_opts_setDefaultRcap
+END
+
+SCRIPT POSTINIT
+BEGIN
+	script p2_opts_setTabtitleCi
+END
+
+PROGRAM command
+BEGIN
+	put "tabodds "
+	varlist main.vn_casevar
+	if main.ck_expvar {
+		varlist main.vn_expvar
+	}
+	INCLUDE _weights_pr
+	INCLUDE _ifin_pr
+	beginoptions
+		if main.ck_expvar {
+			if main.rb_or{
+				option main.rb_or
+				option radio(main rb_default /*
+				*/ rb_cornfield rb_tb rb_woolf)
+			}
+			if main.rb_adjust {
+				require main.vl_adjust
+				optionarg main.vl_adjust
+			}
+			if main.ck_base {
+				optionarg main.sp_base
+			}
+			if main.rb_noor {
+				option main.ck_graph
+				option main.ck_ciplot
+			}
+		}
+		if main.ck_bin {
+			require main.vn_bin
+			optionarg main.vn_bin
+		}
+		INCLUDE _level_main_pr
+
+		put " " /program p1_opts_output
+		put " " /program p2_opts_ci_output
+		put " " /program addplot_output
+		put " " /program gr_twoway_output
+	endoptions
+END
+/* end */

@@ -1,0 +1,43 @@
+/*
+	dfbeta
+
+	VERSION 1.0.2  29may2009
+*/
+
+VERSION 11.0
+
+INCLUDE _std_small
+DEFINE _dlght 125
+INCLUDE header
+HELP hlp1, view("help dfbeta")
+RESET res1
+
+DIALOG main, label("dfbeta - Calculate DFBETAs") tabtitle("Main")
+BEGIN
+
+  TEXT tx_iv		_lft	_top	_iwd	.,			///
+	label("Independent variables: (leave empty for all)")
+  
+  VARLIST vl_iv		@	_ss	@	.,			///
+	fv ts								///
+	label("Independent variables")
+ 
+  TEXT tx_stub		@	_ls	_iwd	.,			///
+	label("Leading characters for new variable to be generated")
+  EDIT ed_stub		@	_ss	_vnwd	.,			///
+	max(32) 							///
+	option(stub)							///
+	default("_dfbeta_")						///
+	label("Leading characters for new variable to be generated")
+ 
+END
+
+PROGRAM command
+BEGIN
+	put "dfbeta "
+	varlist [main.vl_iv]
+	beginoptions
+		optionarg /hidedefault main.ed_stub
+	endoptions
+END	
+

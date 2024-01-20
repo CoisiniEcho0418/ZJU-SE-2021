@@ -1,0 +1,44 @@
+/*
+	label save
+
+*!  VERSION 1.1.0  28mar2005
+
+	which label - built-in command:  label
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help label")
+RESET res1
+
+DIALOG main, label("label save - Save value labels in do-file") tabtitle("Main")
+BEGIN
+  TEXT     tx_fn     _lft      _top      _iwd      .,		/*
+		*/ label("Filename:")
+  FILE     fi_fn     @         _ss       @         .,		/*
+		*/ option(using)				/*
+		*/ label("Save As...")				/*
+		*/ filter("Stata Do-files (*.do)|*.do|All (*.*)|*.*")	/*
+		*/ defext(do)						/*
+		*/ error("Filename") save
+
+  TEXT     tx_lab    _lft      _ls    _iwd         .,		/*
+		*/ label("Label:  (leave empty for all labels)")
+
+  COMBOBOX cb_lab    @         _ss       @         _ht8,	/*
+		*/ append					/*
+		*/ contents(valuelabels)			/*
+		*/ label("Label")
+END
+
+PROGRAM command
+BEGIN
+	require main.fi_fn
+	put "label save " main.cb_lab " "
+	repfile main.fi_fn
+	put "using " `"""' main.fi_fn `"""'
+	put ", replace"
+END

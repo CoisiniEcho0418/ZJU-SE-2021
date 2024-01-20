@@ -1,0 +1,62 @@
+/*
+	mvdecode
+
+*!  VERSION 1.1.0  19nov2004
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help mvdecode")
+RESET res1
+
+DEFINE exina   +130
+DEFINE exwd    120
+DEFINE exwda   185
+
+
+DIALOG main, tabtitle("Main")	///
+	label("mvdecode - Change numeric values to missing values")
+BEGIN
+  TEXT     tx_var	_lft	_top	_iwd	.,	///
+	label("Variables:")
+  VARLIST  vl_var	@	_ss	@	., 	///
+	label("Variables")
+
+  TEXT     tx_mv	@	_ls	_iwd	.,	///
+	label("Conversion rules:")
+  EDIT     ed_mv	@	_ss	@	., 	///
+	option(mv) label("Conversion rules")
+
+  GROUPBOX gb_examples	@	_ls	_iwd	_ht4h,	///
+	label("Examples")
+  TEXT     tx_examp1	_en7sep	_vss	exwd	., 	///
+	right label("9")
+  DEFINE   holdx @x
+  TEXT     tx_examp1a	exina	@	exwda	.,	///
+	label("all 9s become missing values")
+  TEXT     tx_examp2	holdx	_vss	exwd	.,	///
+	right label("99=. \ 98=.a \ 97=.b")
+  TEXT     tx_examp2a	exina	@	exwda	.,	///
+	label("specify series explicitly")
+  TEXT     tx_examp3	holdx	_vss	exwd	.,	///
+	right label("99=. \ 100/999=.a")
+  TEXT     tx_examp3a	exina	@	exwda	.,	///
+	label("two conversion ranges")
+END
+
+INCLUDE ifin
+
+PROGRAM command
+BEGIN
+	put "mvdecode "
+	varlist main.vl_var
+	INCLUDE _ifin_pr
+	beginoptions
+		require main.ed_mv
+		optionarg main.ed_mv
+	endoptions
+END

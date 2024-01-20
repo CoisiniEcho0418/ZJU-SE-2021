@@ -1,0 +1,49 @@
+/*
+	sdtest
+
+*!  VERSION 1.1.0  07feb2007
+
+*/
+
+VERSION 8.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help sdtest")
+RESET res1
+
+DIALOG main, label("sdtest - One-sample variance-comparison test") 	/*
+		*/ tabtitle("Main")
+BEGIN
+  TEXT     tx_var     _lft      _top       _iwd         .,		/*
+		*/ label("Variable:")
+  VARNAME  vn_var        @       _ss      _vnwd         .,		/*
+		*/ label("Variable")
+  TEXT     tx_val        @       _ls       _iwd         .,		/*
+		*/ label("Hypothesized standard deviation:")
+  EDIT     en_val        @       _ss    _en14wd         .,		/*
+		*/ label("Hypothesized standard deviation")		/*
+		*/ numonly
+  DEFINE _x @x
+  DEFINE _cx _spr
+  DEFINE _y _xls
+  INCLUDE _sp_level
+END
+
+INCLUDE byifin
+
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "sdtest "
+	varlist main.vn_var
+	put " == "
+	require main.en_val
+	put main.en_val
+	INCLUDE _ifin_pr
+	beginoptions
+		INCLUDE _level_main_pr
+	endoptions
+END

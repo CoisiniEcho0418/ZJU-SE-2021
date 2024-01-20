@@ -1,0 +1,274 @@
+/*
+  xtpcse
+
+*! VERSION 1.2.3  23aug2010
+
+  keyword:  eclass
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_large
+INCLUDE _ht340
+INCLUDE header
+
+HELP hlp1, view("help xtpcse")
+RESET res1
+
+SCRIPT show_xtset
+BEGIN
+	create STRING note
+	note.setvalue `"A time variable is required for this command."'
+	note.withvalue create CHILD xtset, message(`""-timeRequired-" `"@"'"')
+END
+
+DIALOG main, tabtitle("Model")	///
+	label("xtpcse - Linear regression with panel-corrected standard errors")
+BEGIN
+  BUTTON   bu_xtset	_xsetbu	_top	_setbuwd .,		///
+	onpush(script show_xtset)				///
+	label("Panel settings...")
+
+  TEXT tx_dv 		_lft	_top	_vnwd	.,			///
+	label("Dependent variable:")
+  VARNAME vn_dv		@ 	_ss	@	.,			///
+	ts								///
+	label("Dependent variable")
+
+  TEXT tx_iv		_vlx	_top	160	.,			///
+	label("Independent variables:")
+  VARLIST vl_iv		@	_ss	_vlwd	.,			///
+	fv ts								///
+	allowcat							///
+	label("Independent variables")
+
+  CHECKBOX ck_nocons   @           _ms       @           .,		///
+		label("Suppress constant term")				///
+		option(noconstant)
+
+  GROUPBOX gb_corr     _lft        _ss       _iwd        _ht2,		///
+		label("Form of autocorrelation")
+
+  RADIO    rb_indep    _ilft       _ss       _cwd3_1     .,		///
+		label("No autocorrelation")				///
+		first							///
+		option(NONE)
+
+  RADIO    rb_ar1      _lft3_2     @         80          .,		///
+		label("AR(1)")						///
+		option("correlation(ar1)")
+
+  RADIO    rb_psar1    _lft4_3     @         _cwd2       .,		///
+		label("Panel-specific AR(1)")				///
+		last							///
+		option("correlation(psar1)")
+
+  GROUPBOX gb_rho      _lft        _xls      _iwd        _ht6,		///
+		label("Method to compute autocorrelation")
+
+  RADIO    rb_reg      _indent     _ss       _cwd2       .,		///
+		label("Single lag OLS of residuals")			///
+		first							///
+		option(NONE)
+
+DEFINE y @y
+  RADIO    rb_freg     @           _ss       @           .,		///
+		label("Single lead OLS of residuals")			///
+		option("rhotype(freg)")
+
+  RADIO    rb_tscorr   _lft2       y         @           .,		///
+		label("Autocorrelation of residuals")			///
+		option("rhotype(tscorr)")
+
+  RADIO    rb_dw       @           _ss       @           .,		///
+		label("Based on Durbin-Watson")				///
+		last							///
+		option("rhotype(dw)")
+
+  CHECKBOX ck_np1      _ilft       _ss       _ibwd       .,		///
+	label("Weight panel-specific autocorrelations by panel sizes (T_i) rather than T_i-1") ///
+		option("np1")
+
+  GROUPBOX gb_errors   _lft        _xls      _iwd        _ht6,		///
+  		label("Errors")
+  RADIO    rb_default  _ilft       _ss       _ibwd       .,		///
+  		label("Panel-level heteroskedastic and correlated across panels (default)") ///
+  		first
+  RADIO    rb_hetonly  @           _ss       _cwd2       .,		///
+		label("Panel-level heteroskedastic")			///
+		option(hetonly)
+  RADIO    rb_independ @           _ss       @           .,		///
+		label("Independent across panels")			///
+		option(independent) 					///
+		last
+END
+
+DEFINE fromwd 100
+DEFINE fromsep +105
+DEFINE towd 15
+DEFINE tosep +25
+
+DIALOG sub, label("") tabtitle("by/if/in")
+BEGIN
+  GROUPBOX gb_incl     _lft        _top      _iwd        _ht2,		///
+		label("Observations to include")
+
+  RADIO    rb_case     _indent     _ss       _cwd2       .,		///
+		label("Only complete cases (default)")			///
+		first							///
+		option(NONE)
+
+  RADIO    rb_pair     _lft2       @         @           .,		///
+		label("All available nonmissing pairs")			///
+		last							///
+		option(pairwise)
+
+  GROUPBOX gb_byifin   _lft        _xxls     _iwd        _ht16,		///
+  		label("by/if/in")
+
+  CHECKBOX ck_by       _ilft       _ms       _inwd       .,		///
+		label("Repeat command for groups defined by:")		///
+		onclickon(program sub_byon)				///
+		onclickoff(gaction sub.vl_by.disable)
+  VARLIST  vl_by       _indent2    _ss       _inwd       .,		///
+		label("Repeat command for groups defined by")
+
+  GROUPBOX gb_sub      _ilft       _ls       _ibwd       _ht7h,		///
+		label("Restrict observations")
+  TEXT     tx_if       _indent     _ss       _inwd       .,		///
+		label("If: (expression)")
+
+  EXP      ex_if       @           _ss       @           .,		///
+		label("Create...")
+
+  CHECKBOX ck_in       @           _ls       fromwd      .,		///
+		label("Obs. in range:")		 	    		///
+		onclickon("program sub_inon")				///
+		onclickoff("script sub_inoff")
+  SPINNER  sp_from     fromsep     @         _spwd       .,		///
+		min(1)							///
+		max(c(N))						///
+		default(1)
+
+  TEXT     tx_to       _spsep      @         towd        .,		///
+		label("to:")						///
+		right
+
+  SPINNER  sp_to       tosep       @         _spwd       .,		///
+		min(1)							///
+		max(c(N))						///
+		default(c(N))
+END
+
+PROGRAM sub_byon
+BEGIN
+	if !H(sub.ck_in) & sub.ck_in {
+call gaction sub.ck_by.setoff
+stopbox stop `"On by/if/in tab, the two checkboxes may not be used together"'
+	}
+	call gaction sub.vl_by.enable
+END
+
+PROGRAM sub_inon
+BEGIN
+	if !H(sub.ck_by) & sub.ck_by {
+call gaction sub.ck_in.setoff
+stopbox stop `"On by/if/in tab, the two checkboxes may not be used together"'
+	}
+	call gaction sub.sp_from.enable
+	call gaction sub.tx_to.enable
+	call gaction sub.sp_to.enable
+END
+
+SCRIPT sub_inoff
+BEGIN
+	sub.sp_from.disable
+	sub.sp_to.disable
+END
+
+
+INCLUDE weights_ai
+
+DIALOG robust, tabtitle("SE")
+BEGIN
+  TEXT     tx_desc     _lft        _top      _iwd        .,		///
+  	label("Many of the options on the Model tab deal with standard errors.")
+  TEXT     tx_desc2    _lft        _vss      _iwd        .,		///
+  	label("In addition, there is the following:")
+  CHECKBOX ck_nmk      _lft        _ls       _iwd        .,		///
+		label("Normalize standard errors by N-k instead of N")	///
+		option("nmk")
+END
+
+SCRIPT rpt_POSTINIT
+BEGIN
+	create STRING rpt_bu_fmtcoefResults
+	program rpt_bu_fmtcoef_ckResults
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr2b
+  DEFINE _y _top
+  INCLUDE _sp_level
+
+  CHECKBOX ck_detail   _lft        _ls       _cwd1       .,		///
+		label("Report list of gaps in time series")		///
+		option("detail")
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _noomitted
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _vsquish
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _factor_vars_reporting
+
+  DEFINE _x _lft
+  DEFINE _y _xxxls
+  INCLUDE _bu_coef_table_reporting
+END
+
+INCLUDE fmt_coef_table_reporting_pr
+
+PROGRAM command
+BEGIN
+	if sub.ck_by {
+		 bysort sub.vl_by
+	}
+	put "xtpcse "
+	varlist main.vn_dv [main.vl_iv]
+	if !main.vl_iv & main.ck_nocons {
+	  stopbox stop `""Suppress constant term" is selected without independent variables."'
+	}
+	ifexp sub.ex_if
+	if sub.ck_in {
+		inrange sub.sp_from sub.sp_to
+	}
+	put " " /program weights_output
+	beginoptions
+		option main.ck_nocons
+		option radio(main rb_indep rb_ar1 rb_psar1)
+		option radio(main rb_reg rb_freg rb_tscorr rb_dw)
+		option main.ck_np1
+		option main.rb_hetonly
+		option main.rb_independ
+		option radio(sub rb_case rb_pair)
+		option robust.ck_nmk
+		optionarg /hidedefault rpt.sp_level
+		option rpt.ck_detail
+		INCLUDE _noomitted_pr
+		INCLUDE _vsquish_pr
+		INCLUDE _factor_vars_reporting_pr
+		put " " rpt_bu_fmtcoefResults
+	endoptions
+END
+

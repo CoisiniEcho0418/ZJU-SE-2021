@@ -1,0 +1,6 @@
+*! version 1.0.1  04dec2003
+sequence 2800
+
+set width    scheme medium
+set color    scheme foreground
+set pattern  scheme foreground

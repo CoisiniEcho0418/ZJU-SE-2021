@@ -1,0 +1,39 @@
+/*
+  duplicates tag
+
+*!  VERSION 1.1.1  28mar2005
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_small
+INCLUDE header
+HELP hlp1, view("help duplicates")
+RESET res1
+
+DIALOG main, label("duplicates tag - Tag duplicates")	 /*
+		*/ tabtitle("Main")
+BEGIN
+  TEXT     tx_var          _lft      _top       _iwd     .,		/*
+  		*/label("Variables: (leave empty for all)")
+  VARLIST  vl_var          @         _ss        @        .,		/*
+  		*/label("Variables")
+  TEXT     tx_gener        @         _xls       _iwd     .,		/*
+  		*/label("New variable name:")
+  EDIT     ed_gener        @         _ss        _vnwd    .,		/*
+  		*/label("New variable name") option(generate)
+END
+
+INCLUDE ifin
+
+PROGRAM command
+BEGIN
+	put "duplicates tag "
+	varlist [main.vl_var]
+	INCLUDE _ifin_pr
+	beginoptions
+		require main.ed_gener
+		optionarg main.ed_gener
+	endoptions
+END

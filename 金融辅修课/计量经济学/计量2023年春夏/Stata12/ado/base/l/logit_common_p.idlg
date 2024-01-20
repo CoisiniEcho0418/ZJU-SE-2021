@@ -1,0 +1,147 @@
+/*
+	logit_common_p.idlg
+
+	This is an INCLUDE file for the -predict- dialogs that go with
+	-logit- and -logistic-.
+
+*!  VERSION 1.1.0  28jun2006
+
+*/
+
+DIALOG main, label("predict - Prediction after estimation") tabtitle("Main")
+BEGIN
+  INCLUDE  _p_gentype
+
+  GROUPBOX gb_opts           _lft      _ls       _iwd      _ht24,	/*
+		*/ label("Produce:")
+  RADIO    rb_p              _indent   _ss       _inwd     ., first	/*
+		*/ option(p)						/*
+		*/ onclickon(script score_off)				/*
+		*/ label("Predicted probability of a positive outcome")
+  RADIO    rb_xb             @         _ss       @         .,		/*
+		*/ option(xb)						/*
+		*/ onclickon(script score_off)				/*
+		*/ label("Linear prediction")
+  RADIO    rb_stdp           @         _ss       @         .,		/*
+		*/ option(stdp)						/*
+		*/ onclickon(script score_off)				/*
+		*/ label("Standard error of the linear prediction")
+  RADIO    rb_dbeta          @         _ss       @         .,		/*
+		*/ option(dbeta)					/*
+		*/ onclickon(script score_off)				/*
+		*/ label("Delta-Beta influence statistic")
+  RADIO    rb_deviance       @         _ss       @         .,		/*
+		*/ option(deviance)					/*
+		*/ onclickon(script score_off)				/*
+		*/ label("Deviance residual")
+  RADIO    rb_dx2            @         _ss       @         .,		/*
+		*/ option(dx2)						/*
+		*/ onclickon(script score_off)				/*
+		*/ label("Delta chi-squared influence statistic")
+  RADIO    rb_ddeviance      @         _ss       @         .,		/*
+		*/ option(ddeviance)					/*
+		*/ onclickon(script score_off)				/*
+		*/ label("Delta-D influence statistic")
+  RADIO    rb_hat            @         _ss       @         .,		/*
+		*/ option(hat)						/*
+		*/ onclickon(script score_off)				/*
+		*/ label("Leverage")
+  RADIO    rb_number         @         _ss       @         .,		/*
+		*/ option(number)					/*
+		*/ onclickon(script score_off)				/*
+		*/ label("Sequential number of the covariate pattern")
+  RADIO    rb_residuals      @         _ss       @         .,		/*
+		*/ option(residuals)					/*
+		*/ onclickon(script score_off)				/*
+	*/ label("Pearson residual (adjusted for # sharing covariate pattern)")
+  RADIO    rb_rstandard      @         _ss       @         .,		/*
+		*/ option(rstandard)					/*
+		*/ onclickon(script score_off)				/*
+*/ label("Standardized Pearson residual (adjusted for # sharing covariate pattern)")
+  RADIO    rb_score          @         _ss       @         ., last	/*
+		*/ onclickon(script score_on)				/*
+		*/ option(score)					/*
+		*/ label("Equation-level scores")
+
+  INCLUDE _svy_predict_note
+END
+
+SCRIPT PREINIT
+BEGIN
+	create STRING prefix_name
+	prefix_name.setstring e(prefix)
+END
+
+SCRIPT POSTINIT
+BEGIN
+	main.tx_temp.hide
+	main.tx_svy_note.hide
+	program svy_check
+END
+
+PROGRAM svy_check
+BEGIN
+	if prefix_name.equals("svy") {
+		call main.tx_svy_note.show
+		call main.rb_dbeta.disable
+		call main.rb_deviance.disable
+		call main.rb_dx2.disable
+		call main.rb_ddeviance.disable
+		call main.rb_hat.disable
+		call main.rb_number.disable
+		call main.rb_residuals.disable
+		call main.rb_rstandard.disable
+	}
+END
+
+SCRIPT score_off
+BEGIN
+	opt.ck_nooffset.enable
+	opt.rb_default.enable
+	opt.rb_rules.enable
+	opt.rb_asif.enable
+END
+SCRIPT score_on
+BEGIN
+	opt.ck_nooffset.disable
+	opt.rb_default.disable
+	opt.rb_rules.disable
+	opt.rb_asif.disable
+END
+
+INCLUDE ifin
+
+DIALOG opt, tabtitle("Options")
+BEGIN
+  CHECKBOX ck_nooffset       _lft      _top      _iwd      .,		/*
+		*/ option(nooffset)					/*
+		*/ label("Ignore offset variable (if any)")
+  RADIO    rb_default        @         _ls       @         ., first	/*
+		*/ option(NONE)						/*
+	*/ label(`"Produce missing for observations excluded by the "rules""')
+  RADIO    rb_rules          @         _ss       @         .,		/*
+		*/ option(rules)					/*
+	*/ label(`"Use any model identifying "rules" when making predictions"')
+  RADIO    rb_asif           @         _ss       @         ., last	/*
+		*/ option(asif)						/*
+  */ label(`"Ignore the "rules" and exclusion criteria in making predictions"')
+END
+
+INCLUDE _p_gentype_sc
+INCLUDE _type_list_fd
+
+PROGRAM command
+BEGIN
+	put "predict "
+	put " " /program _p_gentype_output
+	INCLUDE _ifin_pr
+	beginoptions
+		option radio(main rb_p rb_xb rb_stdp rb_dbeta rb_deviance /*
+				*/ rb_dx2 rb_ddeviance rb_hat rb_number /*
+				*/ rb_residuals rb_rstandard rb_score)
+		option opt.ck_nooffset
+		if !main.rb_score {
+			option radio(opt rb_default rb_rules rb_asif)
+		}
+	endoptions
+END

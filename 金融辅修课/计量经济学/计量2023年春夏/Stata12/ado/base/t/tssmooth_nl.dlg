@@ -1,0 +1,112 @@
+/*
+   tssmooth nl
+
+*! VERSION 1.0.1  15jul2004
+
+*/
+
+VERSION 8.0
+INCLUDE _std_large
+INCLUDE _ht340
+INCLUDE header
+HELP hlp1, view("help tssmooth_nl")
+RESET res1
+
+DIALOG main, label("tssmooth nl - Nonlinear filter")			/*
+		*/ tabtitle("Main")
+BEGIN
+  /*--+----1----+----2----+----3----+----4----+----5----+----6----+----7----+*/
+  DEFINE _x _xsetbu
+  DEFINE _y _top
+  INCLUDE _bu_tsset
+
+
+  TEXT     tx_gener    _lft	 _ms	   _cwd3_1   .,			/*
+  		*/label("New variable:")
+
+  TEXT     tx_exp      _lft3_2	 @	   _comb3_1  .,			/*
+  		*/label("Expression to smooth: ")
+  EDIT     ed_gener    _lft	 _ss	   _vnwd     .,			/*
+  		*/label("New variable ")
+
+  TEXT     tx_equals   _eqxpos	 @	   _eqwd     .,			/*
+  		*/center						/*
+  		*/label("=")
+
+  EXP      ex_exp      _lft3_2	 @	   _comb3_1  .,			/*
+  		*/label("Create ...")					/*
+  		*/error("Expression to smooth")
+
+DEFINE _x _lft
+DEFINE _y _ls
+DEFINE _cx _cwd1
+INCLUDE _type
+DEFINE holdy1 @y
+
+  CHECKBOX ck_replace  _lft3_2	 holdy1	   _cwd2     .,			/*
+		*/ option(replace) nomem				/*
+		*/ label("Replace existing variable")
+
+  TEXT     tx_smooth   _lft      _ls       _iwd      .,			/*
+  		*/label("Apply these smoothers:")
+
+  EDIT     ed_smooth   @         _ss       @         .,			/*
+		*/label("Apply these smoothers")
+  TEXT     tx_smooth2  @         _ss       @         .,			/*
+		*/label("Examples: 34343RSSH or  8E8H5R or 12345EH")
+  TEXT     tx_smooth3  @         _ms       @         .,			/*
+		*/label("Smoother description: ")
+  TEXT     tx_smooth3i @         _vss      @         .,			/*
+*/label("                       1-9 running median of given span")
+  TEXT     tx_smooth4  @         _vss      @         .,			/*
+*/label("                       R repeat previous until convergence")
+  TEXT     tx_smooth5  @         _vss      @         .,			/*
+*/label("                       S split at repeated values, apply E and rejoin")
+  TEXT     tx_smooth6  @         _vss      @         .,			/*
+*/label("                       E end-point adjustment rule")
+  TEXT     tx_smooth7  @         _vss      @         .,			/*
+*/label("                       H Hanning linear smoother")
+  CHECKBOX ck_twice    @         _ms       @         .,			/*
+*/label("Smooth twice and add result back in to the first smooth.") 	/*
+		*/option(twice)
+
+END
+
+
+
+INCLUDE ifin
+INCLUDE _type_list_fd
+
+
+
+PROGRAM command
+BEGIN
+	put "tssmooth nl "
+	INCLUDE _type_pr
+	require main.ed_gener
+	put main.ed_gener
+	put " "
+	put "= "
+	require main.ex_exp
+	put main.ex_exp
+	INCLUDE _ifin_pr
+	beginoptions
+		require main.ed_smooth
+		put "smoother("
+		put main.ed_smooth
+		if main.ck_twice {
+			put ", "
+			option main.ck_twice
+		}
+		put ")"
+	option main.ck_replace
+	endoptions
+
+END
+
+
+
+
+
+
+

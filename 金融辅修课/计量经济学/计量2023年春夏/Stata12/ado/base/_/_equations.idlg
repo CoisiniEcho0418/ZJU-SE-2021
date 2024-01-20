@@ -1,0 +1,135 @@
+/*
+  _equations.idlg
+
+*!  VERSION 1.1.2  17apr2009
+
+  To be included within a DIALOG.
+
+  Note that macros _y must already be DEFINEd.
+
+*/
+
+  TEXT     tx_eqni     _lft        _y        _iwd        .,		///
+		label("Multiple equations: (equation 1 is required)")
+
+  LISTBOX  lb_eqni     _lft        _ss       _vnwd       _ht8,		///
+		label("Multiple equations")				///
+		contents(eqn_con)					///
+		onselchangelist(eqn_sel)
+DEFINE y @y
+
+  TEXT     tx_dv         _vlx       y         _vlwd       .,		///
+		label("Dependent variables for equation 1:")
+
+  VARLIST  vl_dv1        @         _ss       @           .,		///
+		label("Dependent variables for equation 1") ts
+  VARLIST  vl_dv2        @         @         @           .,		///
+		label("Dependent variables for equation 2") ts
+  VARLIST  vl_dv3        @         @         @           .,		///
+		label("Dependent variables for equation 3") ts
+  VARLIST  vl_dv4        @         @         @           .,		///
+		label("Dependent variables for equation 4") ts
+  VARLIST  vl_dv5        @         @         @           .,		///
+		label("Dependent variables for equation 5") ts
+  VARLIST  vl_dv6        @         @         @           .,		///
+		label("Dependent variables for equation 6") ts
+  VARLIST  vl_dv7        @         @         @           .,		///
+		label("Dependent variables for equation 7") ts
+  VARLIST  vl_dv8        @         @         @           .,		///
+		label("Dependent variables for equation 8") ts
+  VARLIST  vl_dv9        @         @         @           .,		///
+		label("Dependent variables for equation 9") ts
+  VARLIST  vl_dv10       @         @         @           .,		///
+		label("Dependent variables for equation 10") ts
+
+  TEXT     tx_iv         @         _ls       @           .,		///
+		label("Independent variables for equation 1:")
+
+  VARLIST  vl_iv1        @         _ss       @           .,		///
+		label("Independent variables for equation 1") ts fv
+  VARLIST  vl_iv2        @         @         @           .,		///
+		label("Independent variables for equation 2") ts fv
+  VARLIST  vl_iv3        @         @         @           .,		///
+		label("Independent variables for equation 3") ts fv
+  VARLIST  vl_iv4        @         @         @           .,		///
+		label("Independent variables for equation 4") ts fv
+  VARLIST  vl_iv5        @         @         @           .,		///
+		label("Independent variables for equation 5") ts fv
+  VARLIST  vl_iv6        @         @         @           .,		///
+		label("Independent variables for equation 6") ts fv
+  VARLIST  vl_iv7        @         @         @           .,		///
+		label("Independent variables for equation 7") ts fv
+  VARLIST  vl_iv8        @         @         @           .,		///
+		label("Independent variables for equation 8") ts fv
+  VARLIST  vl_iv9        @         @         @           .,		///
+		label("Independent variables for equation 9") ts fv
+  VARLIST  vl_iv10       @         @         @           .,		///
+		label("Independent variables for equation 10") ts fv
+
+  CHECKBOX ck_nocon1     @         _ms       @           .,		///
+		label("Suppress equation 1 constant term") 		///
+		option(noconstant)
+  CHECKBOX ck_nocon2     @         @         @           .,		///
+		label("Suppress equation 2 constant term")  		///
+		option(noconstant)
+  CHECKBOX ck_nocon3     @         @         @           .,		///
+		label("Suppress equation 3 constant term")  		///
+		option(noconstant)
+  CHECKBOX ck_nocon4     @         @         @           .,		///
+		label("Suppress equation 4 constant term")  		///
+		option(noconstant)
+  CHECKBOX ck_nocon5     @         @         @           .,		///
+		label("Suppress equation 5 constant term")  		///
+		option(noconstant)
+  CHECKBOX ck_nocon6     @         @         @           .,		///
+		label("Suppress equation 6 constant term")  		///
+		option(noconstant)
+  CHECKBOX ck_nocon7     @         @         @           .,		///
+		label("Suppress equation 7 constant term") 		///
+		option(noconstant)
+  CHECKBOX ck_nocon8     @         @         @           .,		///
+		label("Suppress equation 8 constant term")  		///
+		option(noconstant)
+  CHECKBOX ck_nocon9     @         @         @           .,		///
+		label("Suppress equation 9 constant term")  		///
+		option(noconstant)
+  CHECKBOX ck_nocon10    @         @         @           .,		///
+		label("Suppress equation 10 constant term")  		///
+		option(noconstant)
+
+  GROUPBOX gb_option   _lft        _ls       _iwd        _ht10,		///
+  		label("Options")
+  TEXT     tx_eqnlab   _ilft       _ss       _vnwd       .,		///
+		label("Label for equation 1:")
+  EDIT     ed_eqn1     @           _ss       @           .,		///
+		label("Label for equation 1")				///
+		max(32)
+  EDIT     ed_eqn2     @           @         @           .,		///
+		label("Label for equation 2")				///
+		max(32)
+  EDIT     ed_eqn3     @           @         @           .,		///
+		label("Label for equation 3")				///
+		max(32)
+  EDIT     ed_eqn4     @           @         @           .,		///
+		label("Label for equation 4")				///
+		max(32)
+  EDIT     ed_eqn5     @           @         @           .,		///
+		label("Label for equation 5")				///
+		max(32)
+  EDIT     ed_eqn6     @           @         @           .,		///
+		label("Label for equation 6")				///
+		max(32)
+  EDIT     ed_eqn7     @           @         @           .,		///
+		label("Label for equation 7")				///
+		max(32)
+  EDIT     ed_eqn8     @           @         @           .,		///
+		label("Label for equation 8")				///
+		max(32)
+  EDIT     ed_eqn9     @           @         @           .,		///
+		label("Label for equation 9")				///
+		max(32)
+  EDIT     ed_eqn10    @           @         @           .,		///
+		label("Label for equation 10")				///
+		max(32)
+
+/// END: _equations.idlg */

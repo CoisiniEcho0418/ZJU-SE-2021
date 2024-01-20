@@ -1,0 +1,225 @@
+/*
+	export excel
+
+*! VERSION 1.0.1  19may2011
+
+*/
+
+VERSION 12
+
+INCLUDE _std_medium
+DEFINE _dlght 360
+INCLUDE header
+
+HELP hlp1, view("help export excel")
+RESET res1
+
+DIALOG main, label("export excel - Export to Excel file")	///
+	tabtitle("Main")
+BEGIN
+  TEXT     tx_var		_lft	_top	_iwd	.,	///
+	label("Variables:  (leave empty for all variables)")
+  VARLIST  vl_var		@	_ss	@	.,	///
+	label("Variables")
+
+  TEXT     tx_using		@	_ls	@	.,	///
+	label("Excel filename:")
+  FILE     fi_using		@	_ss	@	.,	///
+	error("Excel filename")					///
+	label("Save As...")					///
+	filter("Excel 97-2003 Workbook (*.xls)|*.xls|Excel Workbook (*.xlsx)|*.xlsx") ///
+	defext(xlsx)						///
+	save
+
+  GROUPBOX gb_sheet		_lft	+35	_iwd	_ht9h,	///
+	label("Worksheet")
+
+  CHECKBOX ck_sheet		_ilft	_ss	15	.,	///
+	onclickon(program check_sheet)				///
+	onclickoff(program check_sheet)				///
+	tooltip("Specify a worksheet to store, by default the first sheet will be used")
+  EDIT     ed_sheet		+20	@	_vnwd	.,	///
+	label("Sheet name") option(sheet)
+  TEXT     tx_sheet		_vnsep	@	200	.,	///
+	label("Worksheet name")
+
+  CHECKBOX ck_cell		_ilft	_ms	15	.,	///
+	onclickon(program check_cell)				///
+	onclickoff(program check_cell)				///
+	tooltip("Starting cell in the Excel worksheet to save to.  By default, the first row and column will be used.")
+  EDIT     ed_cell		+20	@	_vnwd	.,	///
+	label("Starting cell") option(cell)
+  TEXT     tx_cell		_vnsep	@	200	.,	///
+	label("Starting cell")
+
+  CHECKBOX ck_modify_sheet	_ilft	_ms	_ibwd	.,	///
+	onclickon(program check_replace)			///
+	onclickoff(program check_replace)			///
+	option(sheetmodify)					///
+	label("Allow worksheet to be modified if it already exists")
+  CHECKBOX ck_replace_sheet	@	_ms	@	.,	///
+	onclickon(program check_replace)			///
+	onclickoff(program check_replace)			///
+	option(sheetreplace)					///
+	label("Replace worksheet if it already exists")
+
+  CHECKBOX ck_vnames		_lft	+40	_iwd	.,	///
+	option("firstrow(variables)")					///
+	onclickon(main.ck_vlabels.disable)			///
+	onclickoff(main.ck_vlabels.enable)			///
+	label("Save variable names to first row in Excel file")
+
+  CHECKBOX ck_vlabels		@	_ms	@	.,	///
+	option("firstrow(varlabels)")				///
+	onclickon(main.ck_vnames.disable)			///
+	onclickoff(main.ck_vnames.enable)			///
+	label("Save variable labels to first row in Excel file")
+
+  CHECKBOX ck_nolabel		@	_ms	@	.,	///
+	option(nolabel)						///
+	label("Output numeric values (not labels) of labeled variables")
+
+  CHECKBOX ck_replace		@	_ms	@	.,	///
+	option(replace)						///
+	onclickon(program check_replace)			///
+	onclickoff(program check_replace)			///
+	label("Overwrite Excel file")
+END
+
+PROGRAM check_sheet
+BEGIN
+	if main.ck_sheet {
+		call main.ed_sheet.enable
+		call main.tx_sheet.enable
+	}
+	else {
+		call main.ed_sheet.disable
+		call main.tx_sheet.disable
+	}
+END
+
+PROGRAM check_cell
+BEGIN
+	if main.ck_cell {
+		call main.ed_cell.enable
+		call main.tx_cell.enable
+	}
+	else {
+		call main.ed_cell.disable
+		call main.tx_cell.disable
+	}
+END
+
+PROGRAM check_replace
+BEGIN
+	if main.ck_replace {
+		call main.ck_modify_sheet.disable
+		call main.ck_replace_sheet.disable
+	}
+	else {
+		if main.ck_modify_sheet {
+			call main.ck_replace_sheet.disable
+		}
+		else {
+			call main.ck_replace_sheet.enable
+		}
+		if main.ck_replace_sheet {
+			call main.ck_modify_sheet.disable
+		}
+		else {
+			call main.ck_modify_sheet.enable
+		}
+	}
+END
+
+INCLUDE ifin
+
+DIALOG adv, tabtitle("Advanced")
+BEGIN
+  CHECKBOX ck_format		_lft	_top	_iwd	.,	///
+	onclickon(program check_format)				///
+	onclickoff(program check_format)			///
+	label("Save dates as strings using specified format")
+  EDIT     ed_format		+20	_ss	160	.,	///
+	option(datestring)					///
+	label("Save dates as strings using specified format")
+  BUTTON   bu_format		+165	@	80	.,	///
+	label("Format...")					///
+	onpush(script showFormatDialog)				///
+	tooltip("Create display format")
+
+  CHECKBOX ck_missing		_lft	_ls	_iwd	.,	///
+	onclickon(program check_missing)			///
+	onclickoff(program check_missing)			///
+	label("Export missing values as:")
+  EDIT     ed_missing		+20	_ss	160	.,	///
+	option(missing)						///
+	label("Export missing values as")	
+END
+
+SCRIPT showFormatDialog
+BEGIN
+	create STRING formatString
+	create CHILD format_chooser
+	format_chooser.setExitString formatString
+	format_chooser.setExitAction "adv.ed_format.setvalue class formatString.value"
+END
+
+PROGRAM check_format
+BEGIN
+	if adv.ck_format & adv.ck_format.isenabled() {
+		call adv.ed_format.enable
+		call adv.bu_format.enable
+	}
+	else {
+		call adv.ed_format.disable
+		call adv.bu_format.disable
+	}
+END
+
+PROGRAM sheet_option
+BEGIN
+	beginoptions
+
+	endoptions
+END
+
+PROGRAM command
+BEGIN
+	require main.fi_using
+	put "export excel "
+	varlist [main.vl_var]
+	put " using " `"""' main.fi_using `"""' " "
+	INCLUDE _ifin_pr
+	beginoptions
+		if (main.ck_sheet) {
+			put " sheet("
+			if main.ck_sheet {
+				require main.ed_sheet
+				put `"""' main.ed_sheet `"""'
+			}
+			put ") "
+		}
+		option main.ck_modify_sheet
+		option main.ck_replace_sheet
+
+		if (main.ck_cell) {
+			require main.ed_cell
+			optionarg main.ed_cell
+		}
+
+		option main.ck_vnames
+		option main.ck_vlabels
+		option main.ck_nolabel
+		option main.ck_replace
+
+		if adv.ck_format {
+			require adv.ed_format
+			optionarg /quoted adv.ed_format
+		}
+
+		if adv.ck_missing {
+			optionarg /quoted adv.ed_missing
+		}
+	endoptions
+END

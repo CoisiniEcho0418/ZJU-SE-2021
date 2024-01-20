@@ -1,0 +1,131 @@
+/*
+ 	xpose
+
+*! VERSION 1.1.0  06feb2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help xpose")
+RESET res1
+
+DIALOG main, label("xpose - Interchange observations and variables") /*
+		*/ tabtitle("Main")
+BEGIN
+
+  CHECKBOX ck_clear       _lft         _top     _iwd       .,		/*
+  	*/label("Warning, untransposed data will be lost.  Is this okay?")/*
+  		*/option(clear) 					/*
+  		*/nomemory 						/*
+  		*/onclickon(program clear_on)				/*
+  		*/onclickoff(script clear_off)
+  CHECKBOX ck_useformat   @            _ls      _iwd       _ht7h,	/*
+		*/ label("Apply a numeric format to all variables in transposed data")			/*
+		*/ clickon("program useformat_on")			/*
+		*/ clickoff("script useformat_off")			/*
+		*/ groupbox
+  RADIO    rb_formatA  _indent         _ms      _inwd       .,		/*
+		*/ first 						/*
+		*/ option("format")					/*
+		*/ label("Use largest numeric display format")		/*
+		*/ clickon(script formatB_off)
+  RADIO    rb_formatB        @         _ss          @       .,		/*
+		*/ last							/*
+		*/ label("Specify numeric display format:")		/*
+		*/ clickon(script formatB_on)
+  EDIT     ed_formatB        _cksep    _ss        200       .,		/*
+		*/ option("format")					/*
+		*/ label("Specify numeric display format")
+  BUTTON   bn_formatB 	     +205        @         80  	    .,		/*
+		*/ label("Create...") onpush(script main_GetFormat)	/*
+		*/ tooltip("Create display format")
+
+  CHECKBOX ck_varname     _lft         _xxls     _iwd       .,		/*
+		*/ option("varname")					/*
+	*/ label(`"Add variable "_varname" containing original variable names"')
+  CHECKBOX ck_promote     _lft         _ms       _iwd       .,		/*
+		*/ option("promote")					/*
+		*/ label("Compact data types, but preserve numeric accuracy")
+END
+
+SCRIPT main_GetFormat
+BEGIN
+	create STRING mainFormat
+	create CHILD format_chooser
+	format_chooser.setExitString mainFormat
+	format_chooser.setExitAction "main.ed_formatB.setvalue class mainFormat.value"
+END
+
+PROGRAM clear_on
+BEGIN
+	call main.ck_useformat.enable
+	if main.ck_useformat {
+		call program useformat_on
+	}
+	call main.ck_varname.enable
+	call main.ck_promote.enable
+END
+
+SCRIPT clear_off
+BEGIN
+	script useformat_off
+	main.ck_useformat.disable
+	main.ck_varname.disable
+	main.ck_promote.disable
+END
+
+SCRIPT formatB_on
+BEGIN
+	main.ed_formatB.enable
+	main.bn_formatB.enable
+END
+
+SCRIPT formatB_off
+BEGIN
+	main.ed_formatB.disable
+	main.bn_formatB.disable
+END
+
+PROGRAM useformat_on
+BEGIN
+  call gaction main.rb_formatA.enable
+  call gaction main.rb_formatB.enable
+  if main.rb_formatB {
+  	call gaction main.ed_formatB.enable
+	call gaction main.bn_formatB.enable
+  }
+END
+
+SCRIPT useformat_off
+BEGIN
+  main.rb_formatA.disable
+  main.rb_formatB.disable
+  main.ed_formatB.disable
+  main.bn_formatB.disable
+END
+
+
+PROGRAM command
+BEGIN
+	put "xpose"
+	beginoptions
+		if !main.ck_clear {
+stopbox stop "Untransposed data will be lost, check the first" ///
+		"checkbox if this is okay."
+		}
+		option main.ck_clear
+		option main.ck_varname
+		if main.ck_useformat {
+			option main.rb_formatA
+			if main.rb_formatB {
+				optionarg main.ed_formatB
+			}
+		}
+		option main.ck_promote
+	endoptions
+END
+

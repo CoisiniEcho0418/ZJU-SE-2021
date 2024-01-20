@@ -1,0 +1,290 @@
+/*
+  mca.dlg	
+
+*!  VERSION 1.0.4  23may2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_wide
+DEFINE _dlght 380
+INCLUDE header
+
+HELP hlp1, view("help mca")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	create STRING crossResult
+	create STRING supCrossResult
+END
+
+PROGRAM POSTINIT_PROGRAM
+BEGIN
+	if __MESSAGE.iseq("-jca-") {
+		call model.rb_joint.seton
+	}
+END
+
+DIALOG model, tabtitle("Model") 	///
+	title("mca - Multiple and joint correspondence analysis")
+BEGIN
+  TEXT     tx_vars	_lft	_top	_iwd	.,	///
+	label("Variables:")
+  VARLIST  vl_vars	@	_ss	_lw140	.,	///
+	label("Variables")
+  BUTTON   bu_cross	_slw140	@	140	.,	///
+	label("Add crossing variables...")		///
+	onpush(script show_crossed_dialog)		///
+	tooltip("Define cross categorical variables")
+
+  TEXT     tx_svars	_lft	_ls	_iwd	.,	///
+	label("Supplementary variables: (optional)")
+  VARLIST  vl_svars	@	_ss	_lw140	.,	///
+	label("Supplementary variables")
+  BUTTON   bu_scross	_slw140	@	140	.,	///
+	label("Add crossing variables...")		///
+	onpush(script show_sup_crossed_dialog)		///
+	tooltip("Define cross categorical supplementary variables")
+
+  GROUPBOX gb_method	_lft	+35	_iwd	_ht6,	///
+	label("Method of correspondence analysis")
+  RADIO    rb_burt	_ilft	_ss	_ibwd	.,	///
+	first 						///
+	label("Burt matrix approach (default)")		///
+	onclickon(program check_method)
+  RADIO    rb_indicator	@	_ss	@	.,	///
+	label("Indicator matrix approach")		///
+	onclickon(program check_method)
+  RADIO    rb_joint	@	_ss	@	.,	///
+	last						///
+	label("Joint correspondence analysis (JCA)")	///
+	onclickon(program check_method)
+
+  SPINNER  sp_dim	_lft	+45	_spwd	.,	///
+	default(2) min(1) max(100) option(dimensions)
+  TEXT     tx_dim	_spsep	@	200	.,	///
+	label("Number of dimensions")
+
+  GROUPBOX gb_norm	_lft	_ls	_iwd	_ht2,	///
+	label("Normalization method")
+  RADIO    rb_standard	_ilft	_ss	_cwd3_1	.,	///
+	first 						///
+	label("Standard")
+  RADIO    rb_principal	_lft3_2	@	@	.,	///
+	last						///
+	label("Principal")
+
+  SPINNER  sp_iter	_lft	+45	_spwd	.,	///
+	default(250) min(1) max(100000) option(iterate)
+  TEXT     tx_iter	_spsep	@	200	.,	///
+	label("Maximum number of iterations")
+
+  EDIT     ed_tol	_lft2	@	_spwd	.,	///
+	option(tolerance) default(1e-5)
+  TEXT     tx_tol	_spsep	@	200	.,	///
+	label("Tolerance for convergence criterion")
+
+  CHECKBOX ck_missing	_lft	_ls	_cwd1	.,	///
+	option(missing)					///
+	label("Treat missing values as ordinary values")
+
+  CHECKBOX ck_noadjust	_lft2	@	@	.,	///
+	option(noadjust)				///
+	label("Suppress the adjustment of eigenvalues")
+END
+
+SCRIPT show_crossed_dialog
+BEGIN
+	create CHILD mca_crossed AS spec
+	spec.setExitString crossResult
+	spec.setExitAction "script getCrossResult"
+	
+END
+SCRIPT getCrossResult
+BEGIN
+	crossResult.withvalue model.vl_vars.smartinsert "@"
+END
+
+SCRIPT show_sup_crossed_dialog
+BEGIN
+	create CHILD mca_crossed AS suppSpec
+	suppSpec.setExitString supCrossResult
+	suppSpec.setExitAction "script getSupCrossResult"
+	
+END
+SCRIPT getSupCrossResult
+BEGIN
+	supCrossResult.withvalue model.vl_svars.smartinsert "@"
+END
+
+PROGRAM check_method
+BEGIN
+	if model.rb_burt {
+		call model.ck_noadjust.enable
+	}
+	else {
+		call model.ck_noadjust.disable
+	}
+	
+	if model.rb_joint {
+		call model.sp_iter.enable
+		call model.tx_iter.enable
+		call model.ed_tol.enable
+		call model.tx_tol.enable
+
+		call report.ck_log.enable
+	}
+	else {
+		call model.sp_iter.disable
+		call model.tx_iter.disable
+		call model.ed_tol.disable
+		call model.tx_tol.disable
+
+		call report.ck_log.disable
+	}
+END
+
+INCLUDE byifin
+INCLUDE weights_f
+INCLUDE ca_codes
+
+DIALOG report, tabtitle("Reporting")
+BEGIN
+  CHECKBOX ck_ddim		_lft	_top	_iwd	.,		///
+  	onclickon(script ck_ddim_on)					///
+  	onclickoff(script ck_ddim_off)					///
+	label("Specify the number of singular values to be displayed")
+  SPINNER  sp_ddim		+20	_ss	_spwd	.,		///
+	label("Singular values")					///
+	min(1)								///
+	max(1000)							///
+	default(2)							///
+	option(ddimensions)
+  TEXT     tx_ddim		_spsep	@	_cksprb	.,		///
+	label("Singular values")
+
+  CHECKBOX ck_points		_lft	_ls	_iwd	.,		///
+  	onclickon(report.vl_points.enable)				///
+  	onclickoff(report.vl_points.disable)				///
+	label("Display tables for listed variables only")
+  VARLIST  vl_points		+20	_ss	_vlwd	.,		///
+	label("Listed variables")					///
+	option(points)
+
+
+  CHECKBOX ck_compact		_lft	_ls	_iwd	.,		///
+	label("Display tables in a compact format")			///
+	option(compact)
+
+  CHECKBOX ck_log		@	_ms	@	.,		///
+	label("Display an iteration log") option(log)
+
+  GROUPBOX gb_plotopt		_lft	_ls	_iwd	_ht7,		///
+	label("Plot options")
+  CHECKBOX ck_plot		_ilft	_ss	_ibwd	.,		///
+	label("Plot the row and column coordinates")			///
+	onclickon(program ck_maxlength_on)				///
+	onclickoff(program ck_maxlength_off)				///
+	option(plot)
+  CHECKBOX ck_maxlength		@	_ms	_ckwd	.,		///
+	label("")							///
+	onclickon(report.sp_maxlength.enable)				///
+	onclickoff(report.sp_maxlength.disable)
+  SPINNER  sp_maxlength		_cksep	@	_spwd	.,		///
+	label("Number of characters")					///
+	min(1)								///
+	max(32)								///
+	default(12)							///
+	option(maxlength)
+  TEXT     tx_maxlength		_spsep	@	_cksprb	.,		///
+	label("Number of plotted row/column label characters")
+  TEXT     tx_note		_ilft	_ms	_irj40	.,		///
+	label("Note: additional postestimation plot options available with -mcaplot-.")
+  BUTTON   bu_mcaplot		_irj20	@	20	.,		///
+	label("..") onpush(view dialog mcaplot)				///
+	tooltip("Show dialog box for -mcaplot-")
+END
+
+SCRIPT ck_ddim_on
+BEGIN
+	report.sp_ddim.enable
+	report.tx_ddim.enable
+END
+
+SCRIPT ck_ddim_off
+BEGIN
+	report.sp_ddim.disable
+	report.tx_ddim.disable
+END
+
+PROGRAM ck_maxlength_on
+BEGIN
+	call report.ck_maxlength.enable
+	call report.tx_maxlength.enable
+	if report.ck_maxlength {
+		call report.sp_maxlength.enable
+	}
+END
+
+PROGRAM ck_maxlength_off
+BEGIN
+	call report.ck_maxlength.disable
+	call report.tx_maxlength.disable
+	if report.ck_maxlength {
+		call report.sp_maxlength.disable
+	}
+END
+
+PROGRAM svar_output
+BEGIN
+	put model.vl_svars
+END
+
+PROGRAM command
+BEGIN
+	put /program by_output " "
+	put "mca "
+	varlist model.vl_vars
+	put " " /program ifin_output
+	put " " /program weights_output
+	beginoptions
+		if model.vl_svars {
+			put " supplementary(
+			put /program svar_output
+			put ")"
+		}
+		if model.rb_indicator {
+			put " method(indicator)"
+		}
+		if model.rb_joint {
+			put " method(joint)"
+		}
+		if model.rb_principal {
+			put " normalize(principal)"
+		}
+		optionarg /hidedefault model.sp_dim
+		option model.ck_missing
+		option model.ck_noadjust
+		optionarg /hidedefault model.sp_iter
+		optionarg /hidedefault model.ed_tol
+
+		put " " /program ca_codes_output
+
+		if report.ck_points {
+			require report.vl_points
+			optionarg report.vl_points
+		}
+		if report.ck_ddim {
+			optionarg report.sp_ddim
+		}
+		option report.ck_compact
+
+		option report.ck_log
+		option report.ck_plot
+		if report.ck_maxlength {
+			optionarg /hidedefault report.sp_maxlength
+		}
+	endoptions
+END

@@ -1,0 +1,81 @@
+/*
+	infile
+
+*! VERSION 1.1.3  03apr2011
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_small
+INCLUDE header
+HELP hlp1, view("help infile1")
+RESET res1
+
+DIALOG main, tabtitle("Main")		///
+	label("infile - Import unformatted text data")
+
+BEGIN
+  TEXT     tx_using  _lft      _top      _iwd        .,		///
+	label("Text dataset filename:")
+
+  FILE     fi_using  @         _ss       @           .,		///
+	option(using)						///
+	error("Text dataset filename")				///
+	label("Browse...") defext(raw)				///
+	filter("Raw File (*.raw)|*.raw|Text Files (*.txt)|*.txt|All (*.*)|*.*")
+
+  TEXT     tx_vl     _lft      _ls       @           .,		///
+	label("New variable names:")
+
+  EDIT     ed_vl     @         _ss       @           .,		///
+	label("New variable names")
+
+  CHECKBOX ck_clear  _lft      _xls      _iwd        .,		///
+	option(clear) nomem					///
+ 	label("Replace data in memory")
+END
+
+INCLUDE ifin
+
+DIALOG opt, tabtitle("Options")
+BEGIN
+  CHECKBOX ck_auto   _lft      _top      _iwd        .,		///
+	option(automatic)					///
+	label("Create value labels from nonnumeric data")
+
+  CHECKBOX ck_byvar  @         _ms       @           .,		///
+	onclickon(opt.sp_byvar.enable)				///
+	onclickoff(opt.sp_byvar.disable)			///
+	label("Organize external file by variables")
+
+  SPINNER  sp_byvar  _indent2  _ms       _spwd       .,		///
+	option(byvariable)					///
+	min(1) max(100000) default(1)				///
+	label("Number of observations")
+
+  TEXT     tx_sp     _spsep    @         _ckspr      .,		///
+	label("Number of observations")
+END
+
+SCRIPT POSTINIT
+BEGIN
+	script ifin_setNotDataDependent
+END
+
+PROGRAM command
+BEGIN
+	require main.fi_using
+	put "infile "
+	varlist main.ed_vl
+	put "using "
+	put `"""' main.fi_using `"""'
+	put " " /program ifin_output
+	beginoptions
+		option opt.ck_auto
+		if opt.ck_byvar {
+			optionarg opt.sp_byvar
+		}
+		option main.ck_clear
+	endoptions
+END

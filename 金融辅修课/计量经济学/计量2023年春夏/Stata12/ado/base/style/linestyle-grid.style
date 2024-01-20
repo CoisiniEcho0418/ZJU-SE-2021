@@ -1,0 +1,6 @@
+*! version 1.0.0  22dec2002
+sequence 3610
+
+set width    scheme grid 
+set color    scheme grid
+set pattern  scheme grid 

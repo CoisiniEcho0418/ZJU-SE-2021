@@ -1,0 +1,53 @@
+/*
+	xtdescribe
+
+*!  VERSION 1.2.0  03feb2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help xtdescribe")
+RESET res1
+
+SCRIPT show_xtset
+BEGIN
+	create STRING note
+	note.setvalue `"A time variable is required for this command."'
+	note.withvalue create CHILD xtset, message(`""-timeRequired-" `"@"'"')
+END
+
+DIALOG main, label("xtdescribe - Describe pattern of xt data") tabtitle("Main")
+BEGIN
+  BUTTON   bu_xtset	_xsetbu	_top	_setbuwd .,		///
+	onpush(script show_xtset)				///
+	label("Panel settings...")
+
+  SPINNER  sp_pattern	_lft	_ss	_spwd	.,		///
+	option(patterns)					///
+	min(1) max(1000) default(9)
+  TEXT     tx_pattern	_spsep	@	_sprb	.,		///	
+	label("Maximum participation patterns")
+
+  SPINNER  sp_width	_lft	_ls	_spwd	.,		///
+	option(width)						///
+	min(1) max(1000) default(100)
+  TEXT     tx_width	_spsep	@	_sprb	.,		///	
+	label("Maximum width of participation patterns")
+END
+
+INCLUDE byifin
+
+PROGRAM command
+BEGIN
+	put /program by_output " "
+	put "xtdescribe "
+	put " " /program ifin_output
+	beginoptions
+		optionarg /hidedefault main.sp_pattern
+		optionarg /hidedefault main.sp_width
+	endoptions
+END

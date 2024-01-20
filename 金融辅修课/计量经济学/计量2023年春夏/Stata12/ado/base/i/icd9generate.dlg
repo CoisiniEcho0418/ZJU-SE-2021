@@ -1,0 +1,125 @@
+/*
+	icd9[p] generate
+	
+*!  VERSION 1.1.0  07feb2007
+
+	which icd9  - *! version 1.0.4  31jul2001
+	which icd9p - *! version 1.0.3  11sep2000
+*/
+
+VERSION 8.0
+
+INCLUDE _std_medium
+INCLUDE _ht280
+INCLUDE header
+HELP hlp1, view("help icd9")
+RESET res1
+
+DIALOG main, 							/*
+    */ label("icd9 generate - Generate new variable from existing variable") /*
+    */ tabtitle("Main")
+BEGIN
+  /*--+----1----+----2----+----3----+----4----+----5----+----6----+----7----+*/
+  TEXT     tx_gen    _lft      _top      _cwd1     .,		/*
+		*/ label("Generate new variable name:")
+
+  EDIT     ed_gen    @         _ss       _vnwd     .,		/*
+		*/ max(32)					/*
+		*/ label("Generate new variable name")
+
+  TEXT     tx_vn     _lft2     _top      _cwd1     .,		/*
+		*/ label("From existing variable name:")
+
+  VARNAME  vn_vn     @         _ss       _vnwd     .,		/*
+		*/ label("From existing variable name")
+
+  RADIO    rb_diag   _lft      _ls       _cwd1     .,		/*
+		*/ first					/*
+		*/ label("Diagnostic codes")
+
+  RADIO    rb_proc   _lft2     @         @         .,		/*
+		*/ last						/*
+		*/ label("Procedure codes")
+
+  GROUPBOX gb_opt    _lft      _ls       _iwd      _ht15,	/*
+		*/ label("New variable options")
+
+  RADIO    rb_main   _indent   _ss       _ibwd     .,		/*
+		*/ option(main)					/*
+		*/ first					/*
+		*/ clickon("script main_on")			/*
+		*/ label("Extract main code from ICD-9 code")
+
+  RADIO    rb_desc   @         _ls       @         .,		/*
+		*/ option(description)				/*
+		*/ clickon("script desc_on")			/*
+		*/ label("Create textual descriptions of the ICD-9 codes")
+
+  DEFINE holdx @x
+
+  CHECKBOX ck_long   _indent2  _ss       _inwd     .,		/*
+		*/ option(long)					/*
+		*/ label("Include code in addition to text describing code")
+
+  CHECKBOX ck_end    @         _ss       @         .,		/*
+		*/ option(end)					/*
+		*/ label("Do the same but place code at the end of the string")
+
+  RADIO    rb_rang   holdx     _ls       _ibwd     .,		/*
+		*/ last						/*
+		*/ clickon("script rang_on")			/*
+		*/ label("Create indicator variable from range list:")
+
+  EDIT     ed_rang   _indent2  _ss       _inwd     .,		/*
+		*/ option(range)				/*
+		*/ label("Create indicator variable from range list")
+END
+
+SCRIPT main_on
+BEGIN
+main.ck_long.disable
+main.ck_end.disable
+main.ed_rang.disable
+END
+
+SCRIPT desc_on
+BEGIN
+main.ck_long.enable
+main.ck_end.enable
+main.ed_rang.disable
+END
+
+SCRIPT rang_on
+BEGIN
+main.ck_long.disable
+main.ck_end.disable
+main.ed_rang.enable
+END
+
+PROGRAM command
+BEGIN   
+	if main.rb_diag {
+		put "icd9 generate "
+	}
+	if main.rb_proc {
+		put "icd9p generate "
+	}
+	require main.ed_gen
+	put main.ed_gen
+	put " "
+	put "= "
+	varlist main.vn_vn
+	beginoptions
+		option main.rb_main
+		option main.rb_desc
+		if main.rb_desc {
+			option main.ck_long
+			option main.ck_end
+		}
+		if main.rb_rang {
+			require main.ed_rang
+			optionarg main.ed_rang
+		}
+	endoptions
+END
+

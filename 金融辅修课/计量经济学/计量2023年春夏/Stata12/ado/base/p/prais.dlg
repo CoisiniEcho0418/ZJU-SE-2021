@@ -1,0 +1,262 @@
+/*
+  prais
+
+*!  VERSION 1.2.5  23aug2010
+
+  keyword:  eclass
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_large
+INCLUDE _ht320
+INCLUDE header
+
+HELP hlp1, view("help prais")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	script se_createAsOLS
+	script se_setBias_on
+END
+
+SCRIPT POSTINIT
+BEGIN
+	script se_setJknifeBstrap_off
+END
+
+DIALOG main, label("prais - Prais-Winsten and Cochrane-Orcutt regression") tabtitle("Model")
+BEGIN
+  DEFINE _x _xsetbu
+  DEFINE _y _top
+  INCLUDE _bu_tsset
+
+  TEXT tx_dv 		_lft	_topph	_vnwd	.,			///
+	label("Dependent variable:")
+  VARNAME vn_dv		@ 	_ss	@	.,			///
+	ts								///
+	label("Dependent variable")
+
+  TEXT tx_iv		_vlx	_topph	160	.,			///
+	label("Independent variables:")
+  VARLIST vl_iv		@	_ss	_vlwd	.,			///
+	fv ts								///
+	allowcat							///
+	label("Independent variables")
+  GROUPBOX gb_output _lft      _ls       _iwd      _ht18,		/*
+		*/ label("Options")					/*
+		*/
+
+  GROUPBOX gb_rho    _ilft     _ms       _ibwd     _ht6,		/*
+		*/ label("Method to compute autocorrelation")		/*
+		*/
+  RADIO    rb_reg    _indent   _ss       _cwd3     .,			/*
+		*/ label("Single-lag OLS of residuals")			/*
+		*/ first						/*
+		*/ option("rhotype(regress)")				/*
+		*/
+DEFINE y @y
+  RADIO    rb_freg   @         _ss       @         .,			/*
+		*/ label("Single-lead OLS of residuals")		/*
+		*/ option("rhotype(freg)")				/*
+		*/
+  RADIO    rb_tscorr @         _ss       @         .,			/*
+		*/ label("Autocorrelation of residuals")		/*
+		*/ option("rhotype(tscorr)")				/*
+		*/
+  RADIO    rb_dw     _lft2     y         @         .,			/*
+		*/ label("Based on Durbin-Watson")			/*
+		*/ option("rhotype(dw)")				/*
+		*/
+  RADIO    rb_theil  @         _ss       @         .,			/*
+		*/ label("Adjusted autocorrelation")			/*
+		*/ option("rhotype(theil)")				/*
+		*/
+  RADIO    rb_nagar  @         _ss       @         .,			/*
+		*/ label("Adjusted Durbin-Watson")			/*
+		*/ last							/*
+		*/ option("rhotype(nagar)")				/*
+		*/
+  CHECKBOX ck_corc   _ilft     _xls      _cwd2     .,			/*
+		*/ label("Corchrane-Orcutt transformation")		/*
+		*/ option("corc")					/*
+		*/
+DEFINE y @y
+  CHECKBOX ck_sse    @         _ms       @         .,			/*
+		*/ label("Search for rho that minimizes SSE")		/*
+		*/ option("ssesearch")					/*
+		*/ onclickon("main.ck_two.disable")			/*
+		*/ onclickoff("main.ck_two.enable")			/*
+		*/
+  CHECKBOX ck_two    @         _ms       @         .,			/*
+		*/ label("Stop after the first iteration (twostep)")	/*
+		*/ option("twostep")					/*
+		*/ onclickon("main.ck_sse.disable")			/*
+		*/ onclickoff("main.ck_sse.enable")			/*
+		*/
+  CHECKBOX ck_nocons _lft2      y        @         .,			/*
+		*/ label("Suppress constant term")			/*
+		*/ option("noconstant")					/*
+		*/
+  CHECKBOX ck_hascon @         _ms       @         .,			/*
+		*/ label("Has user-supplied constant")			/*
+		*/ option("hascons")					/*
+		*/
+  CHECKBOX ck_space  @         _ms       @         .,			/*
+		*/ label("Conserve memory during estimation")		/*
+		*/ option("savespace")					/*
+		*/
+END
+
+INCLUDE byifin
+INCLUDE se
+
+SCRIPT rpt_POSTINIT
+BEGIN
+	create STRING rpt_bu_fmtcoefResults
+	program rpt_bu_fmtcoef_ckResults
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr2b
+  DEFINE _y _top
+  INCLUDE _sp_level
+
+  CHECKBOX ck_nodw   _lft       _ls       _iwd     .,			///
+		label("Suppress reporting of the Durbin-Watson statistic") ///
+		option("nodw")
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _noomitted
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _vsquish
+
+  DEFINE _x _lft
+  DEFINE _y _ls
+  DEFINE _cx _iwd
+  INCLUDE _factor_vars_reporting
+
+  DEFINE _x _lft
+  DEFINE _y _xxxls
+  INCLUDE _bu_coef_table_reporting
+END
+
+INCLUDE fmt_coef_table_reporting_pr
+
+DIALOG max, tabtitle("Optimization")
+BEGIN
+  BUTTON   bu_hlp    _xsetbu	_top     _setbuwd  .,			/*
+  		*/label("Help maximize")				/*
+  		*/onpush(script max_hlp)
+
+  SPINNER  sp_iter   _lft       _top     _spwd     .,			/*
+		*/ label("Maximum iterations")				/*
+		*/ min(1)						/*
+		*/ max(16000)						/*
+		*/ default(c(maxiter))					/*
+		*/ option("iterate")					/*
+		*/
+  TEXT     tx_iter   _spsep    @         _spr2b    .,			/*
+		*/ label("Maximum iterations")				/*
+		*/
+
+  GROUPBOX gb_log    _lft      _ls       _cwd1  _ht6,			/*
+		*/ label("Iteration log")				/*
+		*/
+  DEFINE holdy @y
+  DEFINE cx @cx
+  DEFINE cy @cy
+  RADIO	   rb_default _indent  _ss       _inwd	   .,			/*
+  		*/ label("Default")					/*
+  		*/ first						/*
+		*/ option(NONE)
+  RADIO	   rb_nolog  @         _ss       @	   .,			/*
+  		*/ label("Suppress log")				/*
+  		*/ middle						/*
+  		*/ option(nolog)
+  RADIO	   rb_log    @         _ss       @	   .,			/*
+  		*/ label("Show log")					/*
+		*/ option(log)						/*
+		*/ last
+
+  GROUPBOX gb_tol    _lft2     holdy     cx        cy,			/*
+		*/ label("Convergence tolerance")			/*
+		*/
+  EDIT     ed_tol    _ilft2    _ms       _en7wd    .,			/*
+		*/ label("Coefficient vector")				/*
+		*/ option("tolerance")					/*
+		*/
+  TEXT     tx_tol    _en7sep   @         _en7r2b   .,			/*
+		*/ label("Coefficient vector")				/*
+		*/
+END
+
+SCRIPT max_hlp
+BEGIN
+	view help maximize##|_new
+END
+
+PROGRAM disable_max
+BEGIN
+	call gaction max.sp_iter.disable
+	call gaction max.tx_iter.disable
+	call gaction max.gb_tol.disable
+	call gaction max.ed_tol.disable
+	call gaction max.tx_tol.disable
+	call gaction max.ed_ltol.disable
+	call gaction max.tx_ltol.disable
+END
+
+PROGRAM enable_max
+BEGIN
+	call gaction max.sp_iter.enable
+	call gaction max.tx_iter.enable
+	call gaction max.gb_tol.enable
+	call gaction max.ed_tol.enable
+	call gaction max.tx_tol.enable
+	call gaction max.ed_ltol.enable
+	call gaction max.tx_ltol.enable
+END
+
+PROGRAM max_output
+BEGIN
+	if !H(max.rb_default) {
+		option radio (max rb_default rb_nolog rb_log)
+	}
+	optionarg /hidedefault max.sp_iter
+	optionarg max.ed_tol
+END
+
+PROGRAM command
+BEGIN
+	put " " /program by_output
+	put "prais "
+	varlist main.vn_dv [main.vl_iv]
+	put " " /program ifin_output
+	beginoptions
+		option radio(main rb_reg rb_freg rb_tscorr rb_dw rb_theil rb_nagar)
+		option main.ck_corc
+		option main.ck_sse
+		option main.ck_two
+		option main.ck_nocons
+		option main.ck_hascon
+		option main.ck_space
+		put " " /program se_output
+		optionarg /hidedefault rpt.sp_level
+		option rpt.ck_nodw
+		INCLUDE _noomitted_pr
+		INCLUDE _vsquish_pr
+		INCLUDE _factor_vars_reporting_pr
+		put " " rpt_bu_fmtcoefResults
+		put /program max_output
+	endoptions
+END

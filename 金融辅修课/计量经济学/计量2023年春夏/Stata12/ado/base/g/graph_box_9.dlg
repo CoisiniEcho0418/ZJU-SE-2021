@@ -1,0 +1,52 @@
+/*
+  graph_box_9.dlg - Box plots
+
+*!  VERSION 1.1.2  22jan2007  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+HELP hlp1, view("help graph_box")
+RESET res1
+
+INCLUDE gbox
+INCLUDE gover
+INCLUDE ifin
+INCLUDE weights
+INCLUDE gboxopt
+INCLUDE gbarstyle
+INCLUDE gmarkerstyle
+INCLUDE gbaryaxis
+INCLUDE gtitle
+INCLUDE gcaption
+INCLUDE glegend
+INCLUDE gregion
+INCLUDE gby
+
+PROGRAM command
+BEGIN
+	put /program gbox_args_output
+	put " " /program weights_output
+	put " " /program ifin_output
+	beginoptions
+		put " " /program gbox_opts_output
+		put " " /program gover_output
+		put " " /program gboxopt_output
+		put " " /program gbarstyle_output
+		put " " /program gmarkerstyle_output
+		put " " /program gbaryaxis_output
+		put " " /program gtitle_output
+		put " " /program gcaption_output
+		put " " /program glegend_output
+		put " " /program gregion_output
+		put " " /program gby_output
+	endoptions
+END
+
+SCRIPT POSTINIT
+BEGIN
+	script gbaryaxis_setExcludeZeroOFF
+END

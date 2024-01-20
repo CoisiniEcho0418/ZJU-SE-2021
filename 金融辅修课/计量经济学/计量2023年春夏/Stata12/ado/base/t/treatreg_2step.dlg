@@ -1,0 +1,153 @@
+/*
+  treatreg, twostep
+
+*!  VERSION 1.1.6  23aug2010
+
+  keyword:  eclass
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_large
+DEFINE _dlght 400
+INCLUDE header
+
+HELP hlp1, view("help treatreg")
+RESET res1
+
+DIALOG main, label("treatreg - Treatment-effects model") tabtitle("Model")
+BEGIN
+  TEXT tx_dv 		_lft	_top	_vnwd	.,			///
+	label("Dependent variable:")
+  VARNAME vn_dv		@ 	_ss	@	.,			///
+	ts								///
+	label("Dependent variable")
+
+  TEXT tx_iv		_vlx	_top	160	.,			///
+	label("Independent variables:")
+  VARLIST vl_iv		@	_ss	_vlwd	.,			///
+	fv ts								///
+	allowcat							///
+	label("Independent variables")
+
+  CHECKBOX ck_nocons @         _ms       @         .,			/*
+		*/ label("Suppress constant term")			/*
+		*/ option("noconstant")					/*
+		*/
+
+  TEXT     tx_tdv    _lft      _ls       _vnwd     .,			/*
+		*/ label("Treatment variable:")				/*
+		*/
+  DEFINE y @y
+  VARNAME  vn_tdv    @         _ss       @         .,			/*
+		*/ label("Treatment variable")				/*
+		*/ ts
+  TEXT     tx_tiv    _vlx      y         _vlwd     .,			/*
+		*/ label("Treatment independent variables:")		/*
+		*/
+  VARLIST  vl_tiv    @         _ss       @         .,			/*
+		*/ label("Treatment independent variables")		/*
+		*/ allowcat ts fv					/*
+		*/
+  CHECKBOX ck_tnocon @         _ms       @         .,			/*
+		*/ label("Suppress treatment constant term")		/*
+		*/ option("noconstant")					/*
+		*/
+END
+
+INCLUDE byifin
+INCLUDE se
+
+SCRIPT PREINIT
+BEGIN
+	script se_createAsConventJknifeBstrap
+END
+
+SCRIPT rpt_POSTINIT
+BEGIN
+	create STRING rpt_bu_fmtcoefResults
+	program rpt_bu_fmtcoef_ckResults
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr
+  DEFINE _y _top
+  INCLUDE _sp_level
+
+  CHECKBOX ck_first  _lft      _ls       _cwd1     .,			/*
+		*/ label("Report first-step probit estimates")		/*
+		*/ option("first")					/*
+		*/
+
+  GROUPBOX gb_genvar _lft      _ms       _iwd      _ht4h,		/*
+  		*/ label("Generate new variable")
+  TEXT     tx_hazard _ilft     _ss       _inwd     .,			/*
+		*/ label("Treatment hazard variable:")			/*
+		*/
+  EDIT     ed_hazard @         _ss       _vnwd     .,			/*
+		*/ label("Treatment hazard")				/*
+		*/ option("hazard")					/*
+		*/
+
+  DEFINE _x _lft
+  DEFINE _y _xxls
+  DEFINE _cx _iwd
+  INCLUDE _noomitted
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _vsquish
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _factor_vars_reporting
+
+  DEFINE _x _lft
+  DEFINE _y _xxxls
+  INCLUDE _bu_coef_table_reporting
+END
+
+INCLUDE fmt_coef_table_reporting_pr
+
+PROGRAM treat_opts
+BEGIN
+	require main.vn_tdv
+	put main.vn_tdv " "
+	put "= "
+	require main.vl_tiv
+	put main.vl_tiv
+	beginoptions
+		option main.ck_tnocon
+	endoptions
+END
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "treatreg "
+	varlist main.vn_dv [main.vl_iv]
+	if !main.vl_iv & main.ck_nocons {
+	  stopbox stop `""Suppress constant term" is selected without independent variables."'
+	}
+	INCLUDE _ifin_pr
+	beginoptions
+		option main.ck_nocons
+		put "twostep "
+		put "treat("
+		put /program treat_opts
+		put ")"
+		put " " /program se_output
+		optionarg /hidedefault rpt.sp_level
+		option rpt.ck_first
+		optionarg rpt.ed_hazard
+		INCLUDE _noomitted_pr
+		INCLUDE _vsquish_pr
+		INCLUDE _factor_vars_reporting_pr
+		put " " rpt_bu_fmtcoefResults
+	endoptions
+END

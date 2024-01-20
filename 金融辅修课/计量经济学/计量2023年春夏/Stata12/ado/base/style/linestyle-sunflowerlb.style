@@ -1,0 +1,6 @@
+*! version 1.0.2  24jun2003
+sequence 5014
+
+set width    scheme medium
+set color    scheme sunflowerlb
+set pattern  scheme sunflower

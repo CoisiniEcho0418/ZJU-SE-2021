@@ -1,0 +1,54 @@
+/*
+	predict (after xthtaylor)
+
+*!  VERSION 1.1.3  29may2005
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help xthtaylor postestimation")
+RESET res1
+
+DIALOG main, label("predict - Prediction after estimation") tabtitle("Main")
+BEGIN
+  INCLUDE  _p_gentype
+
+  GROUPBOX gb_opts           _lft      _xls      _iwd      _ht12,	/*
+		*/ label("Produce:")
+  RADIO    rb_xb             _indent   _ss       _inwd     ., first	/*
+		*/ option(xb)						/*
+		*/ label("Fitted values (B*x[i,t] + G*z[i])")
+  RADIO    rb_stdp           @         _ss       @         .,		/*
+		*/ option(stdp)						/*
+		*/ label("Standard error")
+  RADIO    rb_ue             @         _ss       @         .,		/*
+		*/ option(ue)						/*
+		*/ label("Combined residual (u[i] + e[i,t])")
+  RADIO    rb_xbu            @         _ss       @         .,		/*
+		*/ option(xbu)						/*
+*/ label("Prediction including individual effect (B*x[i,t] + G*z[i] + u[i])")
+  RADIO    rb_u              @         _ss       @         .,		/*
+		*/ option(u)						/*
+		*/ label("Individual effect (u[i])")
+  RADIO    rb_e              @         _ss       @         ., last	/*
+		*/ option(e)						/*
+		*/ label("Overall error (e[i,t])")
+END
+
+INCLUDE _p_gentype_sc
+INCLUDE ifin
+INCLUDE _type_list_fd
+
+PROGRAM command
+BEGIN
+	put "predict "
+	put " " /program _p_gentype_output
+	INCLUDE _ifin_pr
+	beginoptions
+		option radio(main rb_xb rb_stdp rb_ue rb_xbu rb_u rb_e)
+	endoptions
+END

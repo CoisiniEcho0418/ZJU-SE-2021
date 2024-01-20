@@ -1,0 +1,448 @@
+/*
+  svar
+
+*!  VERSION 1.2.4  23aug2010
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_large
+DEFINE _dlght 330
+INCLUDE header
+
+HELP hlp1, view("help svar")
+RESET res1
+
+SCRIPT POSTINIT
+BEGIN
+	script max_setListNoBHHH
+END
+
+DIALOG main, label("svar - Structural vector autoregressive models") /*
+		*/ tabtitle("Model")
+BEGIN
+  DEFINE _x _xsetbu
+  DEFINE _y _top
+  INCLUDE _bu_tsset
+
+  TEXT     tx_dv             _lft      _topph    129       .,		/*
+		*/ label("Dependent variables:")
+  VARLIST  vl_dv             @         _ss       _iwd      .,		/*
+		*/ label("Dependent variables") ts
+
+  COMBOBOX cb_run    _lft      _ls       _cwd3_03  .,			/*
+		*/ dropdownlist						/*
+		*/ contents(run_type)					/*
+		*/ label("Run type")					/*
+		*/ onselchangelist(change_run)
+  CHECKBOX ck_nocons _lft2     @         _cwd1     .,			/*
+		*/ label("Suppress the constant term")			/*
+		*/ option("noconstant")
+  DEFINE holdy @y
+  GROUPBOX gb_acons  _lft      _ls       _cwd1     _ht12,		/*
+  		*/ label("Short-run A constraints")
+  DEFINE   _holdy @y
+  GROUPBOX gb_bcons  _lft2     _holdy    _cwd1     _ht12,		/*
+  		*/ label("Short-run B constraints")
+  GROUPBOX gb_ccons  _lft      _holdy    _cwd1     _ht12,		/*
+  		*/ label("Long-run constraints")
+  TEXT     tx_cons   _ilft     _vss      _cwd3     ., 	         	/*
+		*/ label("Previously defined constraints:")
+  DEFINE   _holdy @y
+  TEXT     tx_bcons  _ilft2    _holdy    _cwd3     .,           	/*
+		*/ label("Previously defined constraints:")
+  COMBOBOX cb_acons  _ilft     _ss       @         ., 			/*
+		*/ label("Previously defined A Constraints")		/*
+		*/ append						/*
+		*/ dropdown						/*
+		*/ contents(constraint)					/*
+		*/ option("aconstraints")
+  DEFINE   _holdy @y
+  COMBOBOX cb_bcons  _ilft2    _holdy    @         ., 			/*
+		*/ label("Previously defined B Constraints")		/*
+		*/ append						/*
+		*/ dropdown						/*
+		*/ contents(constraint)					/*
+		*/ option("bconstraints")
+  COMBOBOX cb_ccons  _ilft     _holdy    @         ., 			/*
+		*/ label("Previously defined C Constraints")		/*
+		*/ append						/*
+		*/ dropdown						/*
+		*/ contents(constraint)					/*
+		*/ option("lrconstraints")
+
+  TEXT     tx_eq     _ilft     _ss       @         .,			/*
+		*/ label("Equality constraint matrix:")
+  DEFINE   _holdy @y
+  TEXT     tx_beq    _ilft2    _holdy    @         .,			/*
+		*/ label("Equality constraint matrix:")
+  COMBOBOX cb_aeq    _ilft     _ss       @         ., 			/*
+		*/ label("Equality constraint matrix A")		/*
+		*/ dropdown						/*
+		*/ contents(square)					/*
+		*/ option("aeq")
+  DEFINE   _holdy @y
+  COMBOBOX cb_beq    _ilft2    _holdy    @         ., 			/*
+		*/ label("Equality constraint matrix B")		/*
+		*/ dropdown						/*
+		*/ contents(square)					/*
+		*/ option("beq")
+  COMBOBOX cb_ceq    _ilft     _holdy    @         ., 			/*
+		*/ label("Equality constraint matrix C")		/*
+		*/ dropdown						/*
+		*/ contents(square)					/*
+		*/ option("lreq")
+  TEXT     tx_cns    _ilft     _ss       @         .,			/*
+		*/ label("Cross-parameter constraint matrix:")
+  DEFINE   _holdy @y
+  TEXT     tx_bcns   _ilft2    _holdy    @         .,			/*
+		*/ label("Cross-parameter constraint matrix:")
+  COMBOBOX cb_acns   _ilft     _ss       @         ., 			/*
+		*/ label("Cross-parameter constraint A")		/*
+		*/ dropdown						/*
+		*/ contents(square)					/*
+		*/ option("acns")
+  DEFINE   _holdy @y
+  COMBOBOX cb_bcns   _ilft2    _holdy    @         ., 			/*
+		*/ label("Cross-parameter constraint B")		/*
+		*/ dropdown						/*
+		*/ contents(square)					/*
+		*/ option("bcns")
+  COMBOBOX cb_ccns   _ilft     _holdy    @         ., 			/*
+		*/ label("Cross-parameter constraint C")		/*
+		*/ dropdown						/*
+		*/ contents(square)					/*
+		*/ option("lrcns")
+
+  GROUPBOX gb_lags   _lft      _xls      _iwd      _ht4,		/*
+		*/ label("Lags")
+  RADIO    rb_lags1  _ilft     _ss       _rbvnr4c  ., first		/*
+		*/ clickon("script one2n")				/*
+		*/ label("Include lags 1 to:")
+  DEFINE holdy @y
+  SPINNER  sp_lags1  _indent2  _ss       _spwd     .,			/*
+		*/ min(1) max(c(N)) default(2)				/*
+		*/ label("Include lags 1 to:")
+  RADIO    rb_lags2  _lft2     holdy     _rbvnr4c  ., last		/*
+		*/ clickon("script laglist")				/*
+		*/ label(`"Supply list of lags: (e.g. "2 5")"')
+  EDIT     ed_lags2  _indent2  _ss       _vnwd     .,			/*
+		*/ option("lags")					/*
+		*/ label("Supply list of lags")
+
+END
+
+SCRIPT one2n
+BEGIN
+	main.sp_lags1.enable
+	main.ed_lags2.disable
+END
+
+SCRIPT laglist
+BEGIN
+	main.ed_lags2.enable
+	main.sp_lags1.disable
+END
+
+DIALOG opt,  tabtitle("Model 2")
+BEGIN
+  CHECKBOX ck_exog   _lft      _top      _iwd      .,			/*
+		*/ label("Exogenous variables:")			/*
+		*/ onclickon(gaction opt.vl_exog.enable)		/*
+		*/ onclickoff(gaction opt.vl_exog.disable)
+  VARLIST  vl_exog   _indent2  _ss       _ibwd     .,			/*
+		*/ label("Exogenous variables")				/*
+		*/ option("exog") ts
+
+  CHECKBOX ck_constr _lft      _ls       _cwd1     _ht15h,		/*
+		*/ groupbox						/*
+		*/ label("Underlying var constraints")			/*
+		*/ onclickon(program constr_on)				/*
+		*/ onclickoff(script constr_off)
+  DEFINE col2top @y
+  COMBOBOX cb_constr _indent   _ms       _cwd3     .,			/*
+		*/ append						/*
+		*/ dropdown						/*
+		*/ contents(constraint)					/*
+		*/ label("Underlying var constraints")			/*
+		*/ option("varconstraints")
+  RADIO    rb_sure   @         _ls       _cwd3     ., first		/*
+  		*/ label("Use iterated SURE")				/*
+  		*/ onclickon(program sure)
+  CHECKBOX ck_nolog  _indent2  _ss       _cwd5     .,			/*
+  		*/ label("Suppress SURE iteration log")			/*
+  		*/ option(noislog)
+  DEFINE holdy @y
+  DEFINE holdx @x
+  SPINNER  sp_iter   @         _ms       _spwd     .,			/*
+		*/ label("iterate")					/*
+		*/ min(1)						/*
+		*/ max(1600)						/*
+		*/ default(1600)					/*
+		*/ option("isiterate")
+  TEXT     tx_sep    _spsep    @         100       .,			/*
+		*/ label("Maximum iterations")
+  EDIT	   ed_tol    holdx     _ms       _en7wd    .,			/*
+		*/ option("istolerance")				/*
+		*/ default(.000001)					/*
+		*/ numonly						/*
+		*/ label("Convergence tolerance")
+  TEXT     tx_tol    _en7sep   @         132       .,			/*
+		*/ label("Convergence tolerance")
+  RADIO    rb_noisur _ilft     _ls       _cwd3     ., last		/*
+  		*/ label("Use one-step SURE")				/*
+  		*/ onclickon(script noisure)				/*
+  		*/ option(noisure)
+
+  GROUPBOX gb_adv    _lft      +35       _iwd      _ht4,		/*
+  		*/ label("Advanced")
+  CHECKBOX ck_noiden _ilft     _ss       _ibwd     .,			/*
+  		*/ label("Do not check for local identification")	/*
+  		*/ option(noidencheck)
+  CHECKBOX ck_nobigf @         _ss       @         .,			/*
+  		*/ label("Do not compute parameter vector for coefficients implicitly set to zero")/*
+  		*/ option(nobigf)
+  /* column 2 */
+
+
+  CHECKBOX ck_dfk    _lft2     col2top   _cwd1     .,			/*
+		*/ label("Small sample d.f. adjustment")		/*
+		*/ option(dfk)
+  CHECKBOX ck_small  @         _ms       @         .,			/*
+  		*/ label("Report small sample t and F statistics")	/*
+  		*/ option(small)
+
+
+END
+
+INCLUDE byifin
+
+SCRIPT rpt_POSTINIT
+BEGIN
+	create STRING rpt_bu_fmtcoefResults
+	program rpt_bu_fmtcoef_ckResults
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr2
+  DEFINE _y _top
+  INCLUDE _sp_level
+
+  CHECKBOX ck_full   _lft      _ls       _cwd0     .,			/*
+  		*/ label("Show constrained parameters in table")	/*
+  		*/ option(full)
+  CHECKBOX ck_var    @         _ms       @         .,			/*
+  		*/ label("Display underlying var output")		/*
+  		*/ option(var)
+
+  GROUPBOX gb_tests  _lft      _ls       _iwd      _ht2,		/*
+  		*/ label("Additional test statistics")
+  CHECKBOX ck_luts   _ilft     _ss       _cwd1     .,			/*
+  		*/ label("Report Lutkepohl lag-order statistics")	/*
+  		*/ option(lutstats)
+
+  DEFINE _x _lft
+  DEFINE _y _xls
+  DEFINE _cx _iwd
+  INCLUDE _nocnsreport
+
+  DEFINE _x _lft
+  DEFINE _y _ls
+  INCLUDE _bu_coef_table_reporting
+END
+
+INCLUDE fmt_coef_table_reporting_pr
+
+INCLUDE max_ml
+
+PROGRAM constr_on
+BEGIN
+	call gaction opt.cb_constr.enable
+	call gaction opt.rb_sure.enable
+	call gaction opt.rb_noisur.enable
+	if opt.rb_sure {
+		call gaction opt.ck_nolog.enable
+		call gaction opt.sp_iter.enable
+		call gaction opt.tx_sep.enable
+		call gaction opt.ed_tol.enable
+		call gaction opt.tx_tol.enable
+	}
+END
+
+SCRIPT constr_off
+BEGIN
+	opt.cb_constr.disable
+	opt.rb_sure.disable
+	opt.ck_nolog.disable
+	opt.sp_iter.disable
+	opt.tx_sep.disable
+	opt.ed_tol.disable
+	opt.tx_tol.disable
+	opt.rb_noisur.disable
+END
+
+PROGRAM sure
+BEGIN
+	if opt.ck_constr {
+		call gaction opt.ck_nolog.enable
+		call gaction opt.sp_iter.enable
+		call gaction opt.tx_sep.enable
+		call gaction opt.ed_tol.enable
+		call gaction opt.tx_tol.enable
+	}
+END
+
+SCRIPT noisure
+BEGIN
+	opt.ck_nolog.disable
+	opt.sp_iter.disable
+	opt.tx_sep.disable
+	opt.ed_tol.disable
+	opt.tx_tol.disable
+END
+
+LIST run_type
+BEGIN
+    Short-run constraints
+    Long-run constraints
+END
+
+LIST change_run
+BEGIN
+    program do_short
+    program do_long
+END
+
+SCRIPT hide_ctrls1
+BEGIN
+    main.gb_acons.hide
+    main.gb_bcons.hide
+    main.gb_ccons.hide
+    main.tx_bcons.hide
+    main.cb_acons.hide
+    main.cb_bcons.hide
+    main.cb_ccons.hide
+    main.tx_beq.hide
+    main.cb_aeq.hide
+    main.cb_beq.hide
+    main.cb_ceq.hide
+    main.tx_bcns.hide
+    main.cb_acns.hide
+    main.cb_bcns.hide
+    main.cb_ccns.hide
+END
+
+/*******************************************************/
+
+PROGRAM do_short
+BEGIN
+    call script hide_ctrls1
+    call gaction main.gb_acons.show
+    call gaction main.gb_bcons.show
+    call gaction main.tx_bcons.show
+    call gaction main.cb_acons.show
+    call gaction main.cb_bcons.show
+    call gaction main.tx_beq.show
+    call gaction main.cb_aeq.show
+    call gaction main.cb_beq.show
+    call gaction main.tx_bcns.show
+    call gaction main.cb_acns.show
+    call gaction main.cb_bcns.show
+END
+
+PROGRAM do_long
+BEGIN
+    call script hide_ctrls1
+    call gaction main.gb_ccons.show
+    call gaction main.cb_ccons.show
+    call gaction main.cb_ceq.show
+    call gaction main.cb_ccns.show
+END
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	require main.vl_dv
+
+	if H(main.gb_ccons) {
+		if !main.cb_acons {
+		if !main.cb_aeq {
+		if !main.cb_acns {
+		if !main.cb_bcons {
+		if !main.cb_beq {
+		if !main.cb_bcns {
+			stopbox stop "No short-run constraints specified"
+		}
+		}
+		}
+		}
+		}
+		}
+	}
+	if H(main.gb_acons) {
+		if !main.cb_ccons {
+		if !main.cb_ceq {
+		if !main.cb_ccns {
+			stopbox stop "No long-run constraints specified"
+		}
+		}
+		}
+	}
+
+	put "svar "
+	put main.vl_dv
+
+	INCLUDE _ifin_pr
+
+	beginoptions
+		if H(main.gb_ccons) {
+			optionarg main.cb_acons
+			optionarg main.cb_aeq
+			optionarg main.cb_acns
+			optionarg main.cb_bcons
+			optionarg main.cb_beq
+			optionarg main.cb_bcns
+		}
+		if H(main.gb_acons) {
+			optionarg main.cb_ccons
+			optionarg main.cb_ceq
+			optionarg main.cb_ccns
+		}
+		if main.rb_lags1 {
+			put "lags(1/"
+			put main.sp_lags1
+			put ") "
+		}
+		if main.rb_lags2 {
+			require main.ed_lags2
+			optionarg main.ed_lags2
+		}
+		if opt.ck_exog {
+			require opt.vl_exog
+			optionarg opt.vl_exog
+		}
+                if opt.ck_constr {
+                	require opt.cb_constr
+                	optionarg opt.cb_constr
+                }
+                option main.ck_nocons
+                option opt.ck_dfk
+                option opt.ck_noiden
+                option opt.ck_nobigf
+		option opt.rb_noisur
+		optionarg /hidedefault opt.sp_iter
+		optionarg /hidedefault opt.ed_tol
+		option opt.ck_nolog
+                option opt.ck_small
+                optionarg /hidedefault rpt.sp_level
+                option rpt.ck_full
+                option rpt.ck_var
+        	option rpt.ck_luts
+		INCLUDE _nocnsreport_pr
+		put " " rpt_bu_fmtcoefResults
+		put " " /program max_output
+	endoptions
+END

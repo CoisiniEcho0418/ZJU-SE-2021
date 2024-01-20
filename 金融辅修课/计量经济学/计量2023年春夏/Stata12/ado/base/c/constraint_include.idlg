@@ -1,0 +1,60 @@
+/*
+	constraint_include
+
+*!  VERSION 1.0.0  10aug2007
+
+*/
+
+HELP hlp1, view("help constraint")
+RESET res1
+
+DIALOG main, label("constraint - Manage constraints") tabtitle("Main")
+BEGIN
+  TEXT      tx_cons		_lft	_top	200	.,	///
+	label("Constraints:")
+  LISTBOX   lb_cons		@	_ss	@	170,	///
+	contents(constraint) multiselect			///
+	onselchange(program check_selection)
+
+  BUTTON    bu_create		+210	@	80	.,	///
+	label("Create...") onpush(program show_create_dialog)
+  BUTTON    bu_drop		@	_mls	@	.,	///
+	label("Drop")   onpush(program drop_constraint)
+END
+
+PROGRAM check_selection
+BEGIN
+	if main.lb_cons {
+		call main.bu_drop.enable
+	}
+	else {
+		call main.bu_drop.disable
+	}
+END
+
+PROGRAM show_create_dialog
+BEGIN
+	call create CHILD cons_define
+	call cons_define.setExitAction main.lb_cons.repopulate
+	call create STRING null
+	call cons_define.setExitString null
+END
+
+PROGRAM drop_constraint
+BEGIN
+	stopbox rusure "Drop the selected constraints?"
+	
+	put "constraint drop " main.lb_cons
+	stata hidden
+
+	// echo command
+	put "constraint drop " main.lb_cons
+	stata
+
+	call main.lb_cons.repopulate
+END
+
+PROGRAM command
+BEGIN
+	// does nothing
+END

@@ -1,0 +1,388 @@
+/*
+   sts_moreplot_options.dlg
+
+*!  VERSION 1.0.1  09may2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_mlarge
+INCLUDE header_gr_child
+
+HELP hlp1, view("help sts_graph")
+RESET res1
+
+DEFINE _btwd 15
+
+SCRIPT POSTINIT
+BEGIN
+	main.cb_type.withvalue main.cb_type.setvalue "@"
+END
+
+DIALOG main, tabtitle("Main")
+BEGIN
+  TEXT     tx_type	_lft	_top	_iwd	.,		///
+	label("Plot the following additional information:")
+  COMBOBOX cb_type	_lft	_ss	_iwd	.,		///
+  	contents(added_attribute)				///
+  	values(added_attribute_values)				///
+  	onselchangelist(added_attribute_action)			///
+  	dropdownlist
+ 
+  GROUPBOX gb_lostopts	_lft	+35	_cwd1	_ht5,		///
+	label("Lost options")
+DEFINE y @y
+  TEXT     tx_lsize	_ilft	_ss	45	.,		///
+	label("Size:") right
+  COMBOBOX cb_lsize	+50	@	100	.,		///
+	dropdown contents(textsizes) option(mlabsize)
+  TEXT     tx_lclr	_ilft	_mls	45	.,		///
+	label("Color:") right
+  COMBOBOX cb_lclr	+50	@	100	.,		///
+	dropdownlist contents(colors) 				///
+	onselchangelist(main_cl_lclr_sel) option(mlabcolor)
+  COLOR    cl_lclr	+105	@	_btwd	.,		///
+	option(mlabcolor)
+
+  GROUPBOX gb_atrisk	_lft	+35	_cwd1	_ht5,		///
+	label("At risk options") 
+  TEXT     tx_rsize	_ilft	_ss	45	.,		///
+	label("Size:") right
+  COMBOBOX cb_rsize	+50	@	100	.,		///
+	dropdown contents(textsizes) option(mlabsize)
+  TEXT     tx_rclr	_ilft	_mls	45	.,		///
+	label("Color:") right
+  COMBOBOX cb_rclr	+50	@	100	.,		///
+	dropdownlist contents(colors)				///
+	onselchangelist(main_cl_rclr_sel)			///
+	option(mlabcolor)
+  COLOR    cl_rclr	+105	@	_btwd	.,		///
+	option(mlabcolor)
+
+  GROUPBOX gb_tick	_lft	y	_cwd1	_ht5,		///
+	label("Censored options (hash marks)") 
+  TEXT     tx_twidth	_ilft	_ss	45	.,		///
+	label("Width:") right
+  COMBOBOX cb_twidth	+50	@	100	.,		///
+	dropdown contents(linewidths) option(lwidth)
+  TEXT     tx_tclr	_ilft	_mls	45	.,		///
+	label("Color:") right
+  COMBOBOX cb_tclr	+50	@	100	.,		///
+	dropdownlist contents(colors)				///
+	onselchangelist(main_cl_tclr_sel)			///
+	option(lcolor)
+  COLOR    cl_tclr	+105	@	_btwd	.,		///
+	option(lcolor)
+
+  GROUPBOX gb_number	_lft2	y	_cwd1	_ht13h,		///
+	label("Censored options (numbers)")
+  TEXT     tx_nsize	_ilft2	_ss	45	.,		///
+	label("Size:") right
+  COMBOBOX cb_nsize	+50	@	100	.,		///
+	dropdown contents(textsizes) option(mlabsize)
+  TEXT     tx_nclr	_ilft2	_mls	45	.,		///
+	label("Color:") right
+  COMBOBOX cb_nclr	+50	@	100	.,		///
+	dropdownlist contents(colors) 				///
+	onselchangelist(main_cl_nclr_sel) option(mlabcolor)
+  COLOR    cl_nclr	+105	@	_btwd	.,		///
+	option(mlabcolor)
+  TEXT     tx_npos	_ilft2	_mls	45	.,		///
+	label("Position:") right
+  COMBOBOX cb_npos	+50	@	100	.,		///
+	dropdownlist contents(clockpos)				///
+	option(mlabpos)
+  TEXT     tx_nangle	_ilft2	_mls	45	.,		///
+	label("Angle:") right
+  COMBOBOX cb_nangle	+50	@	100	.,		///
+	dropdown contents(angles)				///
+	option(mlabangle)
+  TEXT     tx_ngap	_ilft2	_mls	45	.,		///
+	label("Gap:") right
+  EDIT     ed_ngap	+50	@	100	.,		///
+	option(mlabgap)
+END
+
+LIST added_attribute
+BEGIN
+	<NONE>
+	Number lost (number censored minus number who enter)
+	Number who enter in addition to number lost
+	Number lost and number who enter (pure number censored)
+	Number at risk at the beginning of each time interval
+	Number at risk at the beginning of each time interval and number lost
+	Number censored (one hash mark at each censoring time)
+	Number censored (show number censored at each censoring time)
+	Number censored (multiple hash marks for multiple censorings at each time)
+END
+LIST added_attribute_values
+BEGIN
+	""
+	lost
+	enter
+	lost enter
+	atrisk
+	atrisk lost
+	censored(single)
+	censored(number)
+	censored(multiple)
+END
+LIST added_attribute_action
+BEGIN
+	script main_hide_all
+	script main_lost_show
+	script main_lost_show
+	script main_lost_show
+	script main_atrisk_show
+	script main_atrisk_lost_show
+	script main_censored_ticks_show
+	script main_censored_nums_ticks_show
+	script main_censored_ticks_show
+END
+
+SCRIPT main_hide_all
+BEGIN
+	script lostopts_hide
+	script atriskopts_hide
+	script censored_ticks_hide
+	script censored_numbers_hide
+END
+
+SCRIPT main_lost_show
+BEGIN
+	script main_hide_all
+	script lostopts_show
+END
+
+SCRIPT main_atrisk_show
+BEGIN
+	script main_hide_all
+	script atriskopts_show
+	script atrisk_move_up
+END
+
+SCRIPT main_atrisk_lost_show
+BEGIN
+	script main_hide_all
+	script lostopts_show
+	script atriskopts_show
+	script atrisk_move_down
+END
+
+SCRIPT main_censored_ticks_show
+BEGIN
+	script main_hide_all
+	script censored_ticks_show
+END
+
+SCRIPT main_censored_nums_ticks_show
+BEGIN
+	script main_hide_all
+	script censored_ticks_show
+	script censored_numbers_show
+END
+
+LIST main_cl_lclr_sel
+BEGIN
+	main.cl_lclr.hide
+	main.cl_lclr.show
+	main.cl_lclr.hide
+END
+
+LIST main_cl_rclr_sel
+BEGIN
+	main.cl_rclr.hide
+	main.cl_rclr.show
+	main.cl_rclr.hide
+END
+
+LIST main_cl_tclr_sel
+BEGIN
+	main.cl_tclr.hide
+	main.cl_tclr.show
+	main.cl_tclr.hide
+END
+
+LIST main_cl_nclr_sel
+BEGIN
+	main.cl_nclr.hide
+	main.cl_nclr.show
+	main.cl_nclr.hide
+END
+
+SCRIPT lostopts_show
+BEGIN
+	main.gb_lostopts.show
+	main.tx_lsize.show
+	main.cb_lsize.show
+	main.tx_lclr.show
+	main.cb_lclr.show
+	main.cb_lclr.withvalue main.cb_lclr.setvalue "@"
+END
+SCRIPT lostopts_hide
+BEGIN
+	main.gb_lostopts.hide
+	main.tx_lsize.hide
+	main.cb_lsize.hide
+	main.tx_lclr.hide
+	main.cb_lclr.hide
+	main.cl_lclr.hide
+END
+
+SCRIPT atriskopts_show
+BEGIN
+	main.gb_atrisk.show
+	main.tx_rsize.show
+	main.cb_rsize.show
+	main.tx_rclr.show
+	main.cb_rclr.show
+	main.cb_rclr.withvalue main.cb_rclr.setvalue "@"
+END
+SCRIPT atriskopts_hide
+BEGIN
+	main.gb_atrisk.hide
+	main.tx_rsize.hide
+	main.cb_rsize.hide
+	main.tx_rclr.hide
+	main.cb_rclr.hide
+	main.cl_rclr.hide
+END
+
+SCRIPT atrisk_move_up
+BEGIN
+	main.gb_atrisk.setposition . 65 . .
+	main.tx_rsize.setposition . 85 . .
+	main.cb_rsize.setposition . 85 . .
+	main.tx_rclr.setposition . 115 . .
+	main.cb_rclr.setposition . 115 . .
+	main.cl_rclr.setposition . 115 . .
+END
+SCRIPT atrisk_move_down
+BEGIN
+	main.gb_atrisk.setposition . 155 . .
+	main.tx_rsize.setposition . 175 . .
+	main.cb_rsize.setposition . 175 . .
+	main.tx_rclr.setposition . 205 . .
+	main.cb_rclr.setposition . 205 . .
+	main.cl_rclr.setposition . 205 . .
+END
+
+SCRIPT censored_ticks_show
+BEGIN
+	main.gb_tick.show 
+	main.tx_twidth.show 
+	main.cb_twidth.show 
+	main.tx_tclr.show 
+	main.cb_tclr.show 
+	main.cb_tclr.withvalue main.cb_tclr.setvalue "@"
+END
+SCRIPT censored_ticks_hide
+BEGIN
+	main.gb_tick.hide 
+	main.tx_twidth.hide 
+	main.cb_twidth.hide 
+	main.tx_tclr.hide 
+	main.cb_tclr.hide 
+	main.cl_tclr.hide
+END
+
+SCRIPT censored_numbers_show
+BEGIN
+	main.gb_number.show
+	main.tx_nsize.show
+	main.cb_nsize.show
+	main.tx_nclr.show
+	main.cb_nclr.show
+	main.cb_nclr.withvalue main.cb_nclr.setvalue "@"
+	main.tx_npos.show
+	main.cb_npos.show
+	main.tx_nangle.show
+	main.cb_nangle.show
+	main.tx_ngap.show
+	main.ed_ngap.show
+END
+SCRIPT censored_numbers_hide
+BEGIN
+	main.gb_number.hide
+	main.tx_nsize.hide
+	main.cb_nsize.hide
+	main.tx_nclr.hide
+	main.cb_nclr.hide
+	main.cl_nclr.hide
+	main.tx_npos.hide
+	main.cb_npos.hide
+	main.tx_nangle.hide
+	main.cb_nangle.hide
+	main.tx_ngap.hide
+	main.ed_ngap.hide
+END
+
+PROGRAM lostopts_output
+BEGIN
+	optionarg /hidedefault main.cb_lsize
+	if H(main.cl_lclr) {
+		optionarg /hidedefault main.cb_lclr
+	}
+	else {
+		optionarg /quoted main.cl_lclr
+	}
+END
+
+PROGRAM atriskopts_output
+BEGIN
+	optionarg /hidedefault main.cb_rsize
+	if H(main.cl_rclr) {
+		optionarg /hidedefault main.cb_rclr
+	}
+	else {
+		optionarg /quoted main.cl_rclr
+	}
+END
+
+PROGRAM censopts_output
+BEGIN
+	optionarg /hidedefault main.cb_twidth
+	if H(main.cl_tclr) {
+		optionarg /hidedefault main.cb_tclr
+	}
+	else {
+		optionarg /quoted main.cl_tclr
+	}
+	
+	optionarg /hidedefault main.cb_nsize
+	if H(main.cl_nclr) {
+		optionarg /hidedefault main.cb_nclr
+	}
+	else {
+		optionarg /quoted main.cl_nclr
+	}
+	optionarg /hidedefault main.cb_npos
+	optionarg /hidedefault main.cb_nangle
+	optionarg main.ed_ngap
+END
+
+PROGRAM command
+BEGIN
+	put main.cb_type " "
+	if !H(main.cb_lsize) &  (main.cb_lsize | main.cb_lclr) {
+		put " lostopts("
+		put /program lostopts_output
+		put ") "
+	}
+
+	if !H(main.cb_rsize) & (main.cb_rsize | main.cb_rclr) {
+		put " atriskopts("
+		put /program atriskopts_output
+		put ") "
+	}
+	if ((!H(main.cb_twidth) & (main.cb_twidth | main.cb_tclr))	///
+	   | (!H(main.cb_nsize) & (main.cb_nsize | main.cb_nclr 	///
+	   			   | main.cb_npos | main.cb_nangle 	///
+	   			   | main.ed_ngap)))			///
+	{
+		put " censopts("
+		put /program censopts_output
+		put ") "
+	}
+END

@@ -1,0 +1,109 @@
+/*
+    gr_pielabel_edit.dlg
+
+*!  VERSION 1.0.0  05feb2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_vsmall
+DEFINE _dlght 190
+INCLUDE header_gr_child
+
+DEFINE _clwd	15
+DEFINE _wd	120
+DEFINE _sep	+125
+DEFINE _wd2	110
+DEFINE _sep2	+115
+DEFINE _cbwd	120
+DEFINE _cbsep	+125
+
+RESET res1
+
+DIALOG main, tabtitle("Main") title("Pie slice properties")
+BEGIN
+  GROUPBOX gb_pie	_lft	_top	_iwd	_ht13h,		///
+	label("Label properties")
+
+  TEXT     tx_label	_ilft	_ss	_wd	.,		///
+	label("Label type:") right
+  COMBOBOX cb_label	_sep	@	_cbwd	.,		///
+	dropdownlist 						///
+	contents(label_type) values(label_type_values)
+
+  TEXT     tx_clr	_ilft	_mls	_wd	.,		///
+	label("Color:") right
+  COMBOBOX cb_clr	_sep	@	_cbwd	.,		///
+	dropdownlist contents(colors) option(color)		///
+	onselchangelist(main_cl_clr_sel)
+  COLOR    cl_clr	_cbsep	@	_clwd	., option(fcolor)
+
+  TEXT     tx_size	_ilft	_mls	_wd	.,		///
+	label("Size:") right
+  COMBOBOX cb_size	_sep	@	_cbwd	.,		///
+	dropdownlist option(size)				///
+	contents(textsizes)
+
+  TEXT     tx_orient	_ilft	_mls	_wd	.,		///
+	label("Orientation:") right
+  COMBOBOX cb_orient	_sep	@	_cbwd	.,		///
+	dropdownlist option(orientation)			///
+	contents(orientation) values(orientation_values)
+
+  TEXT     tx_format	_ilft	_mls	_wd	.,		///
+	label("Format:") right
+  EDIT     ed_format	_sep	@	_cbwd	.,		///
+	option(format)
+  BUTTON   bu_format   _cbsep	@	_clwd	.,		///
+	label(..) onpush(script mainGetFormat)			///
+	tooltip("Create display format")
+END
+
+SCRIPT mainGetFormat
+BEGIN
+	create STRING labelFormat
+	create CHILD format_chooser
+	format_chooser.setExitString labelFormat
+	format_chooser.setExitAction "main.ed_format.setvalue class labelFormat.value"
+END
+
+INCLUDE gr_orientation
+
+LIST label_type_values
+BEGIN
+	""
+	sum
+	percent
+	name
+END
+LIST label_type
+BEGIN
+	None
+	Sum
+	Percent
+	Name
+END
+
+LIST main_cl_clr_sel
+BEGIN
+	main.cl_clr.hide
+	main.cl_clr.show
+	main.cl_clr.hide
+END
+
+PROGRAM command
+BEGIN
+	put main.cb_label
+	beginoptions
+		if main.cl_clr.isvisible() {
+			optionarg /quoted main.cl_clr
+		}
+		else {
+			optionarg /hidedefault main.cb_clr
+		}
+		optionarg /hidedefault main.cb_size
+		optionarg /hidedefault main.cb_orient
+		optionarg main.ed_format
+	endoptions
+END

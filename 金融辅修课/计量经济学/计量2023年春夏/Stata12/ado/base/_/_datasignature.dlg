@@ -1,0 +1,55 @@
+/*
+  _datasignature.dlg
+
+*! VERSION 1.0.0  30mar2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_medium
+INCLUDE _ht210
+INCLUDE header
+HELP hlp1, view("help _datasignature")
+RESET res1
+
+DIALOG main, label("_datasignature - Determine whether data have changed") tabtitle("Main")
+BEGIN
+  TEXT tx_var			_lft	_top	_iwd	.,	///
+	label("Variables: (leave empty for all variables)")
+  VARLIST  vl_var		@	_ss	@	.,	///
+	label("Variables")
+
+  GROUPBOX gb_opts		_lft	_ls	_iwd	_ht10h,	///
+	label("Advanced programming options")
+  CHECKBOX ck_fast		_indent	_ms	_inwd	.,	///
+  	option(fast)						///
+	label("Perform calculation in machine-dependent way")
+  CHECKBOX ck_esample		@	_ms	@	.,	///
+	option(esample)						///
+	onclickon(script ifin_disable_if)			///
+	onclickoff(script ifin_enable_if)			///
+	label("Restrict to estimation sample")
+  CHECKBOX ck_nonames		@	_ms	@	.,	///
+	option(nonames)						///
+	label("Do not include checksum for variable names")
+  CHECKBOX ck_nodefault		@	_ms	@	.,	///
+	option(nodefault)					///
+	label("Treat empty varlist as null")
+END
+
+INCLUDE ifin
+
+PROGRAM command
+BEGIN
+	put "_datasignature "
+	varlist [main.vl_var]
+	put " " /program ifin_output
+	beginoptions
+		option main.ck_fast
+		option main.ck_esample
+		option main.ck_nonames
+		option main.ck_nodefault
+	endoptions
+END
+

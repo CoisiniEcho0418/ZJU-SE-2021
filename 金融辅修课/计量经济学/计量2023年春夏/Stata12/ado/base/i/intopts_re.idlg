@@ -1,0 +1,85 @@
+/*
+  intopts_re.idlg
+
+*!  VERSION 1.0.5  28may2009
+
+	// SCRIPTS and PROGRAMS for external use
+		* SCRIPT intopts_re_enable
+		* SCRIPT intopts_re_disable
+		* SCRIPT intopts_re_reset
+		* PROGRAM intopts_re_output
+
+*/
+
+DIALOG int, tabtitle("Integration")
+BEGIN
+  GROUPBOX gb_int    _lft      _top      _iwd      _ht5,		///
+  	label("Integration options for RE model")
+  TEXT     tx_intm   _ilft     _ms       _cwd2     .,   		/*
+	*/ label("Method:")			  		/*
+		*/
+  TEXT     tx_intp   _lft2     @         _cwd2     .,			/*
+		*/ label("Number of quadrature points:")		/*
+		*/
+DEFINE y @y
+  COMBOBOX cb_intm   _ilft     _ss       _cwd2     .,			/*
+		*/ label("Method")					/*
+		*/ dropdownlist						/*
+		*/ contents(intmethods)					/*
+		*/ values(intm_val)					/*
+		*/ option("intmethod")					/*
+		*/
+
+  SPINNER  sp_intp   _lft2     @         _spwd     .,			/*
+		*/ label("Points")					/*
+		*/ min(1)						/*
+		*/ max(195)						/*
+		*/ default(12)						/*
+		*/ option("intpoints")					/*
+		*/
+END
+
+SCRIPT intopts_re_enable
+BEGIN
+	int.gb_int.enable
+	int.tx_intm.enable
+	int.tx_intp.enable
+	int.cb_intm.enable
+	int.sp_intp.enable
+END
+
+SCRIPT intopts_re_disable
+BEGIN
+	int.gb_int.disable
+	int.tx_intm.disable
+	int.tx_intp.disable
+	int.cb_intm.disable
+	int.sp_intp.disable
+END
+
+LIST intmethods
+BEGIN
+	Default
+	Mean and variance adaptive Gauss-Hermite quadrature
+	Mode and curvature adaptive Gauss-Hermite quadrature
+	Gauss-Hermite quadrature
+END
+
+LIST intm_val
+BEGIN
+	""
+	mvaghermite
+	aghermite
+	ghermite
+END
+
+SCRIPT intopts_re_reset
+BEGIN
+	int.cb_intm.withvalue int.cb_intm.setvalue "@"
+END
+
+PROGRAM intopts_re_output
+BEGIN
+	optionarg /hidedefault int.cb_intm
+	optionarg /hidedefault int.sp_intp
+END

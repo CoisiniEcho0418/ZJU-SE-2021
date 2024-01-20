@@ -1,0 +1,14 @@
+*! version 1.0.2  19dec2004
+sequence 3040
+
+set symbol     scheme matrix
+set size       scheme matrix
+set fillcolor  scheme matrix
+set linestyle  scheme matrixmark
+set angle      scheme
+
+set backsymbol  scheme none
+set backsize    scheme
+set backcolor   scheme
+set backline    scheme
+set backangle   scheme

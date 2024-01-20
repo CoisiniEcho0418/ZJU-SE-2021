@@ -1,0 +1,167 @@
+/*
+  cluster generate
+
+*!  VERSION 1.2.0  28mar2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_large
+INCLUDE _ht280
+INCLUDE header
+HELP hlp1, view("help cluster_generate")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	create STRING oldCluster // < stata 10 cluster results
+	create STRING newCluster
+	create LIST  clusters
+	program getClusters
+END
+
+PROGRAM getClusters
+BEGIN
+	call oldCluster.setvalue char _dta[_cl]
+	call newCluster.setvalue char _dta[_cluster_objects]
+	if newCluster {
+		call newCluster.tokenize clusters
+	}
+	else {
+		call oldCluster.tokenize clusters
+	}
+	call main.cb_clname.repopulate
+END
+
+DIALOG main, /*
+*/label("cluster generate - Generate summary variables from cluster")/*
+		*/ tabtitle("Main")
+BEGIN
+  TEXT     tx_gnewvar   _lft      _top      _iwd      .,		/*
+		*/label("Generate variable(s):  (prefix if multiple variables)")
+  TEXT     tx_cnewvar   @         @         @         .,		/*
+		*/ label("Generate variable:")
+  EDIT     ed_newvar    @         _ss       _vnwd     .,		/*
+		*/ max(32)						/*
+		*/ label("Generate variable(s)")
+
+  DEFINE   hldy @y
+  TEXT     tx_clname    @         _ls       _cwd1     .,		/*
+		*/ label("From cluster analysis:")
+  COMBOBOX cb_clname    @         _ss       @         .,		/*
+		*/ dropdownlist						/*
+		*/ option(name)						/*
+		*/ contents(clusters)					/*
+		*/ label("From cluster analysis")
+
+  GROUPBOX gb_function  _lft2     hldy      @         _ht4,		/*
+		*/ label("Function")
+  RADIO    rb_groups    _indent   _ss       _inwd     ., first		/*
+		*/ clickon("script groups")				/*
+		*/ label("Groups")
+  RADIO    rb_cut       @         _ss       @         ., last		/*
+		*/ clickon("script cut")				/*
+		*/ label("Cut at value")
+
+  TEXT     tx_cut       _lft      _xls      _iwd      .,		/*
+		*/ label("(Dis)similarity value for cutting dendrogram:")
+  DEFINE   holdy @y
+  EDIT     en_cut       @         _ss       _en7wd    ., numonly	/*
+		*/ option(cut)						/*
+		*/ label("(Dis)similarity value for cutting dendrogram")
+
+  TEXT     tx_groups    @         holdy     _iwd      .,		/*
+		*/ label("Number of groups to form:  (number list)")
+  EDIT     ed_groups    @         _ss       _iwd      .,		/*
+		*/ option(groups)					/*
+		*/ label("Number of groups to form")
+
+  GROUPBOX gb_ties      @         _ls       @         _ht8,		/*
+		*/ label("Method for handling ties")
+  RADIO    rb_error     _indent   _ss       _ibwd     ., first		/*
+		*/ option(ties(error))					/*
+		*/ label("Produce error message")
+  RADIO    rb_skip      @         _ss       @         .,		/*
+		*/ option(ties(skip))					/*
+		*/ label("Ignore requests that result in ties")
+  RADIO    rb_fewer     @         _ss       @         .,		/*
+		*/ option(ties(fewer))					/*
+		*/ label("Produce results for largest number of groups smaller than your request")
+  RADIO    rb_more      @         _ss       @         ., last		/*
+		*/ option(ties(more))					/*
+		*/ label("Produce results for smallest number of groups larger than your request")
+END
+
+SCRIPT groups
+BEGIN
+  script groups_on
+  script cut_off
+END
+
+SCRIPT cut
+BEGIN
+  script groups_off
+  script cut_on
+END
+
+SCRIPT groups_on
+BEGIN
+  main.tx_gnewvar.show
+  main.tx_groups.show
+  main.ed_groups.show
+  main.gb_ties.show
+  main.rb_error.show
+  main.rb_skip.show
+  main.rb_fewer.show
+  main.rb_more.show
+END
+
+SCRIPT groups_off
+BEGIN
+  main.tx_gnewvar.hide
+  main.tx_groups.hide
+  main.ed_groups.hide
+  main.gb_ties.hide
+  main.rb_error.hide
+  main.rb_skip.hide
+  main.rb_fewer.hide
+  main.rb_more.hide
+END
+
+SCRIPT cut_on
+BEGIN
+  main.tx_cnewvar.show
+  main.tx_cut.show
+  main.en_cut.show
+END
+
+SCRIPT cut_off
+BEGIN
+  main.tx_cnewvar.hide
+  main.tx_cut.hide
+  main.en_cut.hide
+END
+
+
+PROGRAM command
+BEGIN
+	require main.ed_newvar main.cb_clname
+	put "cluster generate "
+	put main.ed_newvar
+	put " " "=" " "
+	if main.rb_groups {
+		require main.ed_groups
+		optionarg main.ed_groups
+	}
+	if main.rb_cut {
+		require main.en_cut
+		optionarg main.en_cut
+	}
+	beginoptions
+		optionarg main.cb_clname
+		if main.rb_groups {
+			option radio(main rb_error rb_skip rb_fewer rb_more)
+		}
+	endoptions
+END

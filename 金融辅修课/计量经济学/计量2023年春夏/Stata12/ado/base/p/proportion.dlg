@@ -1,0 +1,97 @@
+/*
+  proportion.dlg
+
+*!  VERSION 1.2.2  11may2009
+
+  keyword:  eclass
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_large
+DEFINE _dlght 300
+INCLUDE header
+
+HELP hlp1, view("help proportion")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	program parseMessage
+	script se_createAsSvyAnalytic
+	program svy_check_title
+END
+
+PROGRAM parseMessage
+BEGIN
+	if __MESSAGE.contains("__MI__") {
+		call script se_setMI_on
+	}
+END
+
+SCRIPT POSTINIT
+BEGIN
+	script se_setTitleSeCluster
+	script sub_set_over_on
+	program se_setFinalInitState
+END
+
+SCRIPT svy_is_on
+BEGIN
+	//
+END
+SCRIPT svy_is_off
+BEGIN
+	//
+END
+PROGRAM svy_check_title
+BEGIN
+	if __MESSAGE.contains("-svy-") {
+		call settitle "svy: proportion - Estimate proportions for survey data"
+	}
+END
+
+DIALOG main, tabtitle("Model")						///
+	title("proportion - Estimate proportions") // has svy title
+BEGIN
+  TEXT     tx_vars   _lft      _top      _cwd1     .,			///
+		label("Variables:")
+  VARLIST  vl_vars   _lft      _ss       _iwd      .,			///
+		label("Variables:")
+
+  INCLUDE svy_stdize
+
+  CHECKBOX ck_nolabel  _lft    +45       _iwd      .,			///
+		label("Suppress value labels")				///
+		option(nolabel)
+  CHECKBOX ck_missing   @      _ms       @         .,			///
+		label("Treat missing values like other values")		///
+		clickon(program check_legend)				///
+		clickoff(program check_legend)				///
+		option(missing)
+END
+
+INCLUDE svy_stdize_pr
+
+INCLUDE sub_by_ifin_over_subpop
+INCLUDE weights_fpi
+INCLUDE se
+INCLUDE srsrpt
+
+PROGRAM command
+BEGIN
+	put /program se_prefix_output " "
+	put "proportion "
+	varlist main.vl_vars
+	put " " /program ifin_output
+	put " " /program weights_output
+	beginoptions
+		put /program svy_stdize_output
+		option main.ck_nolabel
+		option main.ck_missing
+		put " " /program over_output
+		put " " /program se_output
+		put " " /program srsrpt_output
+	endoptions
+END

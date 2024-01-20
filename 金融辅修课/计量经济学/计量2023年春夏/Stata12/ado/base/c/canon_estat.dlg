@@ -1,0 +1,292 @@
+/*
+	canon_estat
+
+*!  VERSION 1.1.2  03jun2011
+
+	***
+	USE EXTREME CARE WHEN CHANGING CONTROL NAMES. The names used
+	in this file have multiple external dependencies.
+*/
+
+VERSION 11.0
+
+INCLUDE _std_large
+DEFINE _dlght 340
+INCLUDE header
+
+HELP hlp1, view("help canon postestimation")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	create BOOLEAN has_FactorVars
+	has_FactorVars.setfalse
+END
+
+DIALOG main, label("estat - Postestimation tools for canon") tabtitle("Main")
+BEGIN
+  TEXT     tx_subcmd		_lft	_top	400	.,		///
+  	label("Reports and statistics: (subcommand)")
+  LISTBOX  lb_subcmd		@	_ss	@	70,		///
+  	contents(main_subcommand_contents)				///
+  	values(main_subcommand_values)					///
+  	onselchangelist(main_subcommand_scripts)
+
+  DEFINE holdy 110
+
+  // Options for correlations and loadings and rotatecompare
+  CHECKBOX ck_format_1		_lft	holdy	_iwd	.,		///
+  	label("Override display format") 				///
+  	onclickon(script main_format_on)				///
+  	onclickoff(script main_format_off)
+  EDIT     ed_format_1	       +20	_ss	200	.,		///
+  	option(format) label("Display format")
+  BUTTON   bn_format_1	      +205	@       80	.,		///
+	label("Create...")						///
+	onpush(script showFormatDialog1)				///
+	tooltip("Create display format")
+
+  // Options for rotate
+  RADIO    rb_rawc            _lft      holdy   _iwd    .,		///
+	label("Rotate raw coefficients")				///
+	option(rawcoefs) first
+  RADIO    rb_stdc            @         _ss     _iwd    .,		///
+	label("Rotate standardized coefficients")			///
+	option(stdcoefs)
+  RADIO    rb_load            @         _ss     _iwd    .,		///
+	label("Rotate canonical loadings")				///
+	option(loadings) last
+  CHECKBOX ck_format_2        @         _ls     _iwd    .,		///
+	label("Override display format")				///
+	onclickon(script main_format2_on) onclickoff(script main_format2_off)
+  EDIT     ed_format_2        +20       _ss     200	.,		///
+	option(format) label("Display format")
+  BUTTON   bn_format_2        +205	@       80      .,		///
+	label("Create...")						///
+	onpush(script showFormatDialog2)				///
+	tooltip("Create display format")
+
+  // Summarize options
+  GROUPBOX gb_eqlist            _lft    holdy	_iwd	_ht6,		///
+  	label("Summarize")
+  RADIO    rb_default		_ilft	_ss	_inwd	.,		///
+  	first label("Use all variables involved in the estimation")	///
+  	onclickon(main.vl_spec.disable)
+  RADIO    rb_spec		@	_ss	@	.,		///
+	onclickon(main.vl_spec.enable) last				///
+	label("Use variables and optional equation names:")
+  VARLIST  vl_spec	      _indent2	_ss	_inwd	.,		///
+	label("Use variables and optional equation names")
+  CHECKBOX ck_equation      	_lft	+45	_iwd	.,		///
+	option(equation)						///
+	label("Display summary by equation")
+  CHECKBOX ck_labels		@	_ms	@	.,		///
+  	label("Display variable labels")				///
+  	option(labels)
+  CHECKBOX ck_noheader		_lft	_ms	_iwd	.,		///
+	option(noheader)						///
+	label("Suppress the header")
+  CHECKBOX ck_noweights		@	_ms	@	.,		///
+	option(noweights)						///
+	label("Ignore weights")
+
+  INCLUDE estat_vce
+END
+
+SCRIPT showFormatDialog1
+BEGIN
+	create STRING formatString1
+	create CHILD format_chooser
+	format_chooser.setExitString formatString1
+	format_chooser.setExitAction "main.ed_format_1.setvalue class formatString1.value"
+END
+
+SCRIPT showFormatDialog2
+BEGIN
+	create STRING formatString2
+	create CHILD format_chooser
+	format_chooser.setExitString formatString2
+	format_chooser.setExitAction "main.ed_format_2.setvalue class formatString2.value"
+END
+
+INCLUDE estat_vce_pr
+
+LIST main_subcommand_contents
+BEGIN
+	"Show correlation matrices (correlations)"
+	"Show loading matrices (loadings)"
+	"Rotate loadings or coefficients (rotate)"
+	"Compare rotated and unrotated components (rotatecompare)"
+	"Summarize estimation sample (summarize)"
+	"Display covariance matrix estimates (vce)"
+	
+END
+
+LIST main_subcommand_values
+BEGIN
+	correlations
+	loadings
+	rotate
+	rotatecompare
+	summarize
+	vce
+END
+
+LIST main_subcommand_scripts
+BEGIN
+	script sel_correlations
+	script sel_loadings
+	script sel_rotate
+	script sel_rotatecompare
+	script sel_summarize
+	script sel_vce
+END
+
+SCRIPT sel_correlations
+BEGIN
+	script main_hide_all
+	main.ck_format_1.show
+	main.ed_format_1.show
+	main.bn_format_1.show
+END
+
+SCRIPT sel_loadings
+BEGIN
+	script main_hide_all
+	main.ck_format_1.show
+	main.ed_format_1.show
+	main.bn_format_1.show
+END
+
+SCRIPT sel_rotate
+BEGIN
+	script main_hide_all
+	main.rb_rawc.show
+	main.rb_stdc.show
+	main.rb_load.show
+	main.ck_format_2.show
+	main.ed_format_2.show
+	main.bn_format_2.show
+END
+
+SCRIPT sel_rotatecompare
+BEGIN
+	script main_hide_all
+	main.ck_format_1.show
+	main.ed_format_1.show
+	main.bn_format_1.show
+END
+
+SCRIPT sel_summarize
+BEGIN
+	script main_hide_all
+	script main_summ_on
+END
+
+SCRIPT sel_vce
+BEGIN
+	script main_hide_all
+	program vce_on
+END
+
+SCRIPT main_summ_on
+BEGIN
+	main.ck_equation.show
+	main.ck_labels.show
+	main.ck_noheader.show
+	main.ck_noweights.show
+	main.gb_eqlist.show
+	main.rb_default.show
+	main.rb_spec.show
+	main.vl_spec.show
+END
+
+SCRIPT main_summ_off
+BEGIN
+	main.ck_equation.hide
+	main.ck_labels.hide
+	main.ck_noheader.hide
+	main.ck_noweights.hide
+	main.gb_eqlist.hide
+	main.rb_default.hide
+	main.rb_spec.hide
+	main.vl_spec.hide
+END
+
+SCRIPT main_hide_all
+BEGIN
+	program vce_off
+	script main_summ_off
+	main.ck_format_1.hide
+	main.ed_format_1.hide
+	main.bn_format_1.hide
+	main.rb_rawc.hide
+	main.rb_stdc.hide
+	main.rb_load.hide
+	main.ck_format_2.hide
+	main.ed_format_2.hide
+	main.bn_format_2.hide
+END
+
+SCRIPT main_format_on
+BEGIN
+	main.ed_format_1.enable
+	main.bn_format_1.enable
+END
+SCRIPT main_format_off
+BEGIN
+	main.ed_format_1.disable
+	main.bn_format_1.disable
+END
+
+SCRIPT main_format2_on
+BEGIN
+	main.ed_format_2.enable
+	main.bn_format_2.enable
+END
+SCRIPT main_format2_off
+BEGIN
+	main.ed_format_2.disable
+	main.bn_format_2.disable
+END
+
+PROGRAM vl_output
+BEGIN
+	put main.vl_spec
+END
+
+PROGRAM vl_eq_output
+BEGIN
+	put main.vl_eq
+END
+
+PROGRAM command
+BEGIN
+	put "estat "
+	put main.lb_subcmd
+
+	if main.rb_spec {
+		require main.vl_spec
+		put " " main.vl_spec
+	}
+
+	beginoptions
+		// rotate options
+		option radio(main rb_rawc rb_stdc rb_load)
+		if main.ck_format_2 {
+			require main.ed_format_2
+			optionarg main.ed_format_2
+		}
+		// correlations and loadings options
+		if main.ck_format_1 {
+			require main.ed_format_1
+			optionarg main.ed_format_1
+		}
+		// Summarize options
+		option main.ck_equation
+		option main.ck_labels
+		option main.ck_noheader
+		option main.ck_noweights
+		put " " /program vce_output
+	endoptions
+END

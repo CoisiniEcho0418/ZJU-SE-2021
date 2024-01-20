@@ -1,0 +1,20 @@
+/*
+  gr_ed_axis_minor_label.dlg
+
+*!  VERSION 1.0.0  10oct2006
+
+*/
+
+VERSION 10.0
+MODAL
+
+SCRIPT PREINIT
+BEGIN
+	create STRING styleType
+	styleType.setvalue "minor"
+	
+	// defined in the include file
+	script local_init
+END
+
+INCLUDE gr_ed_axis_label

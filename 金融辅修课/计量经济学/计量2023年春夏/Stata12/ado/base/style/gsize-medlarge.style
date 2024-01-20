@@ -1,0 +1,6 @@
+*! version 1.0.0  22dec2002
+sequence 2160
+label "Medium large"
+set val 4.1667
+
+* 12 pt based on a 4 inch high graph

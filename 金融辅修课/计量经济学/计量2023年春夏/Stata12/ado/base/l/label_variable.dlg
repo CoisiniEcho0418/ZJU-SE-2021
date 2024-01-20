@@ -1,0 +1,60 @@
+/*
+	label variable
+
+*!  VERSION 1.1.1  13may2009
+
+	which label = built-in command:  label
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+INCLUDE header
+
+HELP hlp1, view("help label")
+RESET res1
+
+DIALOG main, label("label variable - Label variable") tabtitle("Main")
+BEGIN
+  GROUPBOX gb_action _lft      _top      _iwd      _ht4,	///
+  	label("Add or remove variable label")
+  RADIO    rb_attach _ilft     _ss       _inwd     .,		///
+	label("Attach a label to a variable") 			///
+	first onclickon(script main_new_on)
+  RADIO    rb_remove @         _ss       @         .,		///
+	label("Remove a label from a variable") last 		///
+	onclickon(script main_new_off)
+
+  TEXT     tx_var    _lft      _xls      _iwd      .,		///
+	label("Variable:")
+  VARNAME  vn_var    _lft      _ss       _vnwd     .,		///
+	label("Variable")
+
+  TEXT     tx_label  _lft      _ls       _iwd      .,		///
+	label("New variable label: (may be up to 80 characters)")
+  EDIT     ed_label  @         _ss       @         .,		///
+	label("New variable label")
+END
+
+SCRIPT main_new_on
+BEGIN
+	main.tx_label.show
+	main.ed_label.show
+END
+
+SCRIPT main_new_off
+BEGIN
+	main.tx_label.hide
+	main.ed_label.hide
+END
+
+PROGRAM command
+BEGIN
+	put "label variable "
+	varlist main.vn_var
+	if main.rb_attach {
+		require main.ed_label
+		put `"""' main.ed_label `"""'
+	}
+END
+

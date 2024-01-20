@@ -1,0 +1,7 @@
+*! version 1.0.0  22dec2002
+sequence 1700
+
+set left   8
+set right  8
+set top    8
+set bottom 8

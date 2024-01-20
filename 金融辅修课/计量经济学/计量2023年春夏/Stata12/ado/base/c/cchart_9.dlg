@@ -1,0 +1,59 @@
+/*
+	cchart_9.dlg
+
+*! VERSION 1.1.1  09aug2006  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+HELP hlp1, view("help cchart")
+RESET res1
+
+DIALOG main,label("cchart - Draws a c chart")	tabtitle("Main")
+BEGIN
+  TEXT     tx_defect      _lft       _top       _iwd	   .,	///
+	label("Variable containing number of defects:")
+  VARNAME  vn_defect      @          _ss        _vnwd      .,	///
+	label("Variable containing number of defects")
+
+  TEXT     tx_unit        @	     _ls        _iwd       .,	///
+	label("Variable containing sample units:")
+  VARNAME  vn_unit        @          _ss        _vnwd      .,	///
+	label("Variable containing sample units")
+END
+
+INCLUDE p1_opts
+INCLUDE p2_opts
+INCLUDE addplot
+INCLUDE gr_twoway
+
+SCRIPT PREINIT
+BEGIN
+	script p1_opts_createAsNoRange
+	script p1_opts_setDefaultConnected
+	script p2_opts_createAsRange
+	script p2_opts_setDefaultRline
+END
+
+SCRIPT POSTINIT
+BEGIN
+	p2_opts.settabtitle "Control limits"
+END
+
+PROGRAM command
+BEGIN
+	put "cchart "
+	varlist main.vn_defect
+	varlist main.vn_unit
+
+	beginoptions
+		put " " /program p1_opts_output
+		put " " /program p2_opts_cl_output
+		put " " /program addplot_output
+		put " " /program gr_twoway_output
+	endoptions
+END
+/* end */

@@ -1,0 +1,76 @@
+/*
+    symmetry.dlg
+
+*!  VERSION 1.2.0  23may2007
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_medium
+DEFINE _dlght 220
+INCLUDE header
+
+HELP hlp1, view("help symmetry")
+RESET res1
+
+PROGRAM POSTINIT_PROGRAM
+BEGIN
+	if __MESSAGE.iseq("-exact-") {
+		call main.ck_exact.seton
+	}
+END
+
+DIALOG main, label("symmetry - Symmetry and marginal homogeneity tests")/*
+		*/ tabtitle("Main")
+BEGIN
+  TEXT     tx_casevar     _lft      _top     _iwd        .,		/*
+		*/ label("Case variable:")
+  VARNAME  vn_casevar        @       _ss    _vnwd        ., 		/*
+		*/ label("Case variable")
+  TEXT     tx_controlvar _lft2      _top     _iwd        .,		/*
+		*/ label("Control variable:")
+  VARNAME  vn_controlvar     @       _ss    _vnwd        ., 		/*
+		*/ label("Control variable")
+
+  CHECKBOX ck_notable     _lft       _ls     _iwd        ., 		/*
+		*/ option("notable")					/*
+  		*/ label("Suppress output of contingency table")
+  CHECKBOX ck_contrib        @       _ms        @        ., 		/*
+		*/ option("contrib")					/*
+  		*/ label("Report contribution of each off-diagonal cell pair")
+  CHECKBOX ck_exact          @       _ms        @        ., 		/*
+		*/ option("exact")					/*
+  		*/ label("Perform exact test of table symmetry")
+  CHECKBOX ck_mh             @       _ms        @        ., 		/*
+		*/ option("mh")						/*
+  		*/ label("Perform two marginal homogeneity tests")
+  CHECKBOX ck_trend          @       _ms        @        ., 		/*
+		*/ option("trend")					/*
+  */ label("Perform a test for linear trend in the (log) relative risk (RR)") /*
+  		*/ clickon("gaction main.ck_cc.enable")			/*
+		*/ clickoff("gaction main.ck_cc.disable")
+  CHECKBOX ck_cc   	     @       _ms        @        ., 		/*
+		*/ option("cc")						/*
+  */ label("Use continuity correction when calculating test for linear trend")
+END
+
+INCLUDE ifin
+INCLUDE weights_f
+
+PROGRAM command
+BEGIN
+	put "symmetry "
+	varlist main.vn_casevar
+	varlist main.vn_controlvar
+	INCLUDE _weights_pr
+	INCLUDE _ifin_pr
+	beginoptions
+		option main.ck_notable
+		option main.ck_contrib
+		option main.ck_exact
+		option main.ck_mh
+		option main.ck_trend
+		option main.ck_cc
+	endoptions
+END

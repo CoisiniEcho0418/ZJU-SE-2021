@@ -1,0 +1,6 @@
+*! version 1.0.0  08nov2004
+sequence 3670
+
+set width    scheme tick
+set color    scheme tick
+set pattern  scheme tick

@@ -1,0 +1,126 @@
+/*
+	outfile
+
+*! VERSION 1.1.1  27aug2003
+
+*/
+
+VERSION 8.0
+
+INCLUDE _std_medium
+INCLUDE _ht280
+INCLUDE header
+
+HELP hlp1, view("help outfile")
+RESET res1
+
+DIALOG main, label("outfile - Write ASCII-format dataset") tabtitle("Main")
+BEGIN
+  TEXT     tx_var            _lft      _top      _iwd      .,		/*
+		*/ label("Variables:  (leave empty for all variables)")
+  VARLIST  vl_var            @         _ss       @         .,		/*
+		*/ label("Variables")
+
+  TEXT     tx_using          @         _ms       @         .,		/*
+		*/ label("Write to the file:")
+  FILE     fi_using          @         _ss       @         .,		/*
+		*/ error("Write to the file")				/*
+		*/ label("Save As...")					/*
+		*/ filter("Raw Files (*.raw)|*.raw|All Files (*.*)|*.*")	/*
+		*/ defext(raw)						/*
+		*/ save
+
+  GROUPBOX gb_options        @         _ls       @         _ht12h,	/*
+		*/ label("Options")
+
+  CHECKBOX ck_dictionary     _ilft     _ss       _ibwd     .,		/*
+		*/ option(dictionary)					/*
+		*/ clickon("script dict_on")				/*
+		*/ clickoff("script dict_off")				/*
+		*/ label("Write the file in Stata's dictionary format")
+
+  CHECKBOX ck_nolabel        @         _ms       @         .,		/*
+		*/ option(nolabel)					/*
+	*/ label("Output numeric values (not labels) of labeled variables")
+
+  CHECKBOX ck_noquote        @         _ms       @         .,		/*
+		*/ option(noquote)					/*
+		*/ label("Do not enclose strings in double quotes")
+
+  CHECKBOX ck_comma          @         _ms       @         .,		/*
+		*/ option(comma)					/*
+		*/ clickon(gaction adv.ck_missing.enable)		/*
+		*/ clickoff(gaction adv.ck_missing.disable)		/*
+		*/ label("Comma-separated (instead of space-separated) format")
+
+  CHECKBOX ck_wide           @         _ms       @         .,		/*
+		*/ option(wide)						/*
+		*/ label("Force one observation per line (no matter how wide)")
+END
+
+
+INCLUDE ifin
+
+
+DIALOG adv, label("") tabtitle("Advanced")
+BEGIN
+  GROUPBOX gb_justify        _lft      _top      _iwd      _ht6,	/*
+		*/ label("String justification")
+  RADIO    rb_left           _indent   _ss       _ibwd     ., first	/*
+		*/ option(NONE)						/*
+		*/ label("Left-justify string variables (the default)")
+  RADIO    rb_rjs            @         _ss       @         .,		/*
+		*/ option(rjs)						/*
+		*/ label("Right-justify string variables")
+  RADIO    rb_fjs            @         _ss       @         ., last	/*
+		*/ option(fjs)						/*
+	*/ label("Justify string variables based on sign of format width")
+
+  CHECKBOX ck_runtogether    _lft      _xls      _iwd      .,		/*
+		*/ option(runtogether)					/*
+  */ label("All on one line, no quotes, no space between, and ignore formats")
+  CHECKBOX ck_missing        _lft      _ms       _iwd      .,		/*
+		*/ option(missing)											/*
+  		*/ label("Retain missing values")
+END
+
+
+SCRIPT dict_on
+BEGIN
+  main.ck_comma.disable
+  main.ck_wide.disable
+  main.ck_noquote.disable
+END
+
+SCRIPT dict_off
+BEGIN
+  main.ck_comma.enable
+  main.ck_wide.enable
+  main.ck_noquote.enable
+END
+
+
+PROGRAM command
+BEGIN
+	require main.fi_using
+	put "outfile "
+	varlist [main.vl_var]
+	repfile main.fi_using
+	put " using " 
+	put `"""'
+	put main.fi_using
+	put `"""'
+	INCLUDE _ifin_pr
+	beginoptions
+		option main.ck_dictionary
+		option main.ck_nolabel
+		option main.ck_noquote
+		put "replace"
+		option main.ck_comma
+		option main.ck_wide
+		option radio(adv rb_left rb_rjs rb_fjs)
+		option adv.ck_runtogether
+		option adv.ck_missing
+	endoptions
+END
+

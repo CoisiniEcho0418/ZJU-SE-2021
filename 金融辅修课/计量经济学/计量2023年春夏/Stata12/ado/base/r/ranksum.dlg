@@ -1,0 +1,54 @@
+/*
+    ranksum.dlg
+
+*!  VERSION 1.1.0  08jan2005
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+INCLUDE _ht230
+INCLUDE header
+
+HELP hlp1, view("help ranksum")
+RESET res1
+
+DIALOG main, label("ranksum - Wilcoxon rank-sum test")			///
+		tabtitle("Main")
+BEGIN
+  TEXT     tx_var      _lft        _top      _cwd3_1     .,		///
+		label("Variable:")
+  VARNAME  vn_var      @           _ss       _vnwd       .,		///
+		label("Variable")
+  TEXT     tx_byopt    _lft3_2     _top      _cwd1       .,		///
+		label("Grouping variable:")
+  VARNAME  vn_byopt    @           _ss       _vnwd       .,		///
+		label("Grouping variable")
+  CHECKBOX ck_porder   _lft        _ls       _iwd        .,		///
+		option(porder)						///
+		label("Display an estimate of the probability that the variable for the first")
+  TEXT     tx_porder1  _indent2    _vss      -20         .,		///
+		label("group is larger than the variable for the second group.")
+END
+
+INCLUDE byifin
+
+PROGRAM by_opt_output
+BEGIN
+	varlist main.vn_byopt
+END
+
+PROGRAM command
+BEGIN
+	INCLUDE _by_pr
+	put "ranksum "
+	varlist main.vn_var
+	INCLUDE _ifin_pr
+	beginoptions
+		put "by("
+		put /program by_opt_output
+		put ")"
+		option main.ck_porder
+	endoptions
+END

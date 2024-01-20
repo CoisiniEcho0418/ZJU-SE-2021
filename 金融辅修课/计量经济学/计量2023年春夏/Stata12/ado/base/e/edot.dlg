@@ -1,0 +1,39 @@
+/*
+  easy graph dot - Dot chart
+
+*!  VERSION 1.1.1  03aug2006  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE egraph_header
+INCLUDE header
+HELP hlp1, view("help graph_dot")
+RESET res1
+
+DIALOG main, label("graph dot - Dot chart (summary statistics)") tabtitle("Main")
+BEGIN
+  INCLUDE edot_ctrl
+END
+
+INCLUDE edot_sc
+INCLUDE eover
+INCLUDE ifin
+INCLUDE etitle
+INCLUDE eyaxis
+INCLUDE edotopts
+
+PROGRAM command
+BEGIN
+	put "graph dot "
+	put /program edot_output
+	INCLUDE _ifin_pr
+	beginoptions
+		put " "  /program eover_output
+		put " "  /program etitle_output
+		put " "  /program eyaxis_output
+		put " "  /program edotopts_output
+		put " "  /program edot_mainopts_output
+	endoptions
+END

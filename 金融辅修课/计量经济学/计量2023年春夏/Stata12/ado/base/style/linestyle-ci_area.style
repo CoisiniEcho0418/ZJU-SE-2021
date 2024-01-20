@@ -1,0 +1,6 @@
+*! version 1.0.0  22dec2002
+sequence 3010
+
+set width    scheme ci_area
+set color    scheme ci_arealine 
+set pattern  scheme ci_area

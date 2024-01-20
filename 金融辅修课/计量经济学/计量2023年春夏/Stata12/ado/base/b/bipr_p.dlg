@@ -1,0 +1,99 @@
+/*
+	predict (after biprobit)
+
+*!  VERSION 1.1.1  28mar2005
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_large  // ** set POSTINIT to match
+INCLUDE header
+HELP hlp1, view("help biprobit postestimation")
+RESET res1
+
+SCRIPT POSTINIT
+BEGIN
+	script _p_gentype_setLarge
+END
+
+DIALOG main, label("predict - Prediction after estimation") tabtitle("Main")
+BEGIN
+  INCLUDE  _p_gentype
+
+  GROUPBOX gb_opts       _lft      _ls     _iwd    _ht16,	/*
+		*/ label("Produce:")
+  RADIO    rb_p11     _indent      _ss    _cwd2        ., first /*
+		*/ option(p11)					/*
+		*/ onclickon(script _p_gentype_scores_off)	/*
+		*/ label("Pr(depvar1 = 1, depvar2 = 1)")
+  DEFINE y @y
+  RADIO    rb_p10           @      _ss        @        .,	/*
+		*/ option(p10)					/*
+		*/ onclickon(script _p_gentype_scores_off)	/*
+		*/ label("Pr(depvar1 = 1, depvar2 = 0)")
+  RADIO    rb_p01           @      _ss        @        .,	/*
+		*/ option(p01)					/*
+		*/ onclickon(script _p_gentype_scores_off)	/*
+		*/ label("Pr(depvar1 = 0, depvar2 = 1)")
+  RADIO    rb_p00           @      _ss        @        .,	/*
+		*/ option(p01)					/*
+		*/ onclickon(script _p_gentype_scores_off)	/*
+		*/ label("Pr(depvar1 = 0, depvar2 = 0)")
+  RADIO    rb_pmarg1        _lft2  y          @        .,	/*
+		*/ option(pmarg1)				/*
+		*/ onclickon(script _p_gentype_scores_off)	/*
+		*/ label("Pr(depvar1 = 1)")
+  RADIO    rb_pmarg2        @      _ss        @        .,	/*
+		*/ option(pmarg2)				/*
+		*/ onclickon(script _p_gentype_scores_off)	/*
+		*/ label("Pr(depvar2 = 1)")
+  RADIO    rb_pcond1        @      _ss        @        .,	/*
+		*/ option(pcond1)				/*
+		*/ onclickon(script _p_gentype_scores_off)	/*
+		*/ label("Pr(depvar1 = 1 | depvar2 = 1)")
+  RADIO    rb_pcond2        @      _ss        @        .,	/*
+		*/ option(pcond2)				/*
+		*/ onclickon(script _p_gentype_scores_off)	/*
+		*/ label("Pr(depvar2 = 1 | depvar1 = 1)")
+  RADIO    rb_xb1           _ilft  _ss        @        .,	/*
+		*/ option(xb1)					/*
+		*/ onclickon(script _p_gentype_scores_off)	/*
+		*/ label("Linear prediction for equation 1")
+  RADIO    rb_score         _lft2  @          @        .,	/*
+		*/ option(scores)				/*
+		*/ onclickon(script _p_gentype_scores_on)	/*
+		*/ label("Equation-level scores")
+  RADIO    rb_xb2           _ilft  _ss        _ibwd    .,	/*
+		*/ option(xb2)					/*
+		*/ onclickon(script _p_gentype_scores_off)	/*
+		*/ label("Linear prediction for equation 2")
+  RADIO    rb_stdp1         @      _ss        @        .,	/*
+		*/ option(stdp1)				/*
+		*/ onclickon(script _p_gentype_scores_off)	/*
+	*/ label("Standard error of the linear prediction for equation 1")
+  RADIO    rb_stdp2         @      _ss        @        ., last	/*
+		*/ option(stdp2)				/*
+		*/ onclickon(script _p_gentype_scores_off)	/*
+	*/ label("Standard error of the linear prediction for equation 2")
+
+  INCLUDE  _p_nooffset
+END
+
+INCLUDE ifin
+
+INCLUDE _type_list_fd
+INCLUDE _p_gentype_sc
+
+PROGRAM command
+BEGIN
+	put "predict "
+	put " " /program _p_gentype_output
+	INCLUDE _ifin_pr
+	beginoptions
+		option radio(main rb_p11 rb_p10 rb_p01 rb_p00 rb_pmarg1 /*
+			*/ rb_pmarg2 rb_pcond1 rb_pcond2 rb_xb1 rb_score /*
+			*/ rb_xb2 rb_stdp1 rb_stdp2)
+	endoptions
+	INCLUDE _p_nooffset_pr
+END

@@ -1,0 +1,106 @@
+/*
+	predict (after arima)
+
+*!  VERSION 1.1.3  27may2010
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_large
+INCLUDE header
+HELP hlp1, view("help arima postestimation")
+RESET res1
+
+DIALOG main, label("predict - Prediction after estimation") tabtitle("Main")
+BEGIN
+  INCLUDE  _p_gentype
+
+  GROUPBOX gb_opt        _lft      _ls     _iwd    _ht12, label("Produce:")
+  RADIO    rb_xb      _indent      _ss    _inwd        ., first /*
+		*/ option(xb)					/*
+	    */ label("Values for mean equation - the differenced series")
+  RADIO    rb_stdp          @      _ss        @        ., 	/*
+ 		*/ option(stdp)					/*
+		*/ label("Standard error of the linear prediction")
+  RADIO    rb_y             @      _ss        @        .,	/*
+		*/ option(y)					/*
+		*/ label("Values for mean equation in y - the undifferenced series")
+  RADIO    rb_mse           @      _ss        @        .,	/*
+		*/ option(mse)					/*
+		*/ label("Mean squared error of the predicted values")
+  RADIO    rb_resid         @      _ss        @        .,	/*
+		*/ option(residuals)				/*
+		*/ label("Residuals or predicted innovations")
+  RADIO    rb_yresid        @      _ss        @        ., last	/*
+		*/ option(yresiduals)				/*
+ 		*/ label("Residuals or predicted innovations in y - the undifferenced series")
+
+END
+
+INCLUDE ifin
+
+DIALOG opt, tabtitle("Options")
+BEGIN
+  GROUPBOX gb_stepdyn    _lft     _top     _iwd     _ht8,	/*
+		*/ label("One-step or dynamic")
+  RADIO    rb_onestep _indent      _ss    _inwd        ., first	/*
+		*/ clickon("gaction opt.ed_dyn2.disable")	/*
+		*/ label("One-step prediction")
+  RADIO    rb_dyn1          @      _ss        @        .,	/*
+		*/ clickon("gaction opt.ed_dyn2.disable")	/*
+    */ label("Switch to dynamic predictions at time = max AR lag + max MA lag")
+  RADIO    rb_dyn2          @      _ss        @        ., last	/*
+		*/ clickon("gaction opt.ed_dyn2.enable")	/*
+		*/ label("Switch to dynamic predictions at time:")
+  EDIT     ed_dyn2   _indent2      _ss  _en14wd        .,	/*
+		*/ label("Switch to dynamic predictions at time")
+
+  GROUPBOX gb_disturb    _lft     _xls     _iwd     _ht8h,	/*
+		*/ label("ARMA component")
+  RADIO    rb_arma    _indent      _ss    _inwd        ., first /*
+		*/ option(NONE)  /* default */			/*
+		*/ clickon("gaction opt.ed_t0.disable")		/*
+*/ label("Include the ARMA component (e_t = 0 and s_t = 0 prior to e(sample))")
+  RADIO    rb_t0            @      _ss        @        .,	/*
+		*/ option(NONE)	 /* handled another way	*/	/*
+		*/ clickon("gaction opt.ed_t0.enable")		/*
+*/ label("Include the ARMA component and assume e_t and s_t are zero prior to:")
+  DEFINE   hldx  @x
+  DEFINE   hldcx @cx
+  EDIT     ed_t0     _indent2      _ss  _en14wd        .,	/*
+		*/ option(t0)					/*
+*/ label("Include the ARMA component and assume e_t and s_t are zero prior to")
+  RADIO    rb_struct     hldx      _ms    hldcx        ., last	/*
+		*/ option(structural)				/*
+		*/ clickon("gaction opt.ed_t0.disable")		/*
+	*/ label("Consider only the structural component (ignore ARMA terms)")
+END
+
+INCLUDE _p_gentype_sc
+INCLUDE _type_list_fd
+
+PROGRAM command
+BEGIN
+	put "predict "
+	put " " /program _p_gentype_output
+	INCLUDE _ifin_pr
+	beginoptions
+		option radio(main rb_xb rb_y rb_mse rb_resid rb_yresid rb_stdp)
+
+		if opt.rb_dyn1 {
+			put "dynamic(.) "
+		}
+		if opt.rb_dyn2 {
+			require opt.ed_dyn2
+			put "dynamic(" opt.ed_dyn2 ") "
+		}
+
+		option radio(opt rb_arma rb_struct rb_t0)
+
+		if opt.rb_t0 {
+			require opt.ed_t0
+			optionarg opt.ed_t0
+		}
+	endoptions
+END

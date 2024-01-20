@@ -1,0 +1,142 @@
+/*
+  mi impute mvn emopts
+
+*!  VERSION 1.0.2  29jun2009
+
+  keyword:  mi impute
+
+*/
+
+VERSION 11.0
+
+INCLUDE _std_large
+DEFINE _dlght 305
+INCLUDE header
+
+HELP hlp1, view("help mi impute mvn")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	create STRING main_bu_initmatResults
+END
+
+DIALOG main, tabtitle("Main")						///
+	label("EM options")
+BEGIN
+  SPINNER sp_iterate	_lft	_top	_spwd	.,			///
+	default(100)							///
+	min(0)								///
+	max(10000)							///
+	option(iterate)							///
+	label("Maximum iterations")
+  TEXT tx_iterate	_spsep	@	_cwd1	.,			///
+	label("Maximum iterations")
+  EDIT ed_tolerance	_lft2	@	_spwd	.,			///
+	default(1e-5)							///
+	option(tolerance)						///
+	label("Parameter estimates tolerance")
+  TEXT tx_tolerance	_spsep	@	_cwd1	.,			///
+	label("Parameter estimates tolerance")
+
+  GROUPBOX gb_init	_lft	_ls	_iwd	_ht8,			///
+	label("Initial values for EM algorithm")
+  RADIO	rb_ac		_indent	_ss	_inwd	., first		///
+	label("Use all available cases to obtain initial values for EM")
+  RADIO	rb_cc		@	_ss	@	., 			///
+	option(init(cc))						///
+	label("Use only complete cases to obtain initial values for EM")
+  RADIO	rb_initmatlist	@	_ss	@	., last 		///
+	onclickon(main.bu_initmat.enable)				///
+	onclickoff(main.bu_initmat.disable)				///
+	label("Supply matrices containing initial values for EM")
+
+  BUTTON bu_initmat	_indent2 _ss	130	.,			///
+	onpush("program main_bu_initmat_getOpts")			///
+	label("Initial matrix options")
+
+  CHECKBOX ck_nolog	_lft	+45	_iwd	.,			///
+	option(nolog)							///
+	label("Do not show EM iteration log")
+
+  CHECKBOX ck_savep	_lft	_ls	_iwd	_ht6h,			///
+	groupbox							///
+	onclickon(script main_savingp_on)				///
+	onclickoff(script main_savingp_off)				///
+	label("Save parameter estimates from each iteration to a file")
+  TEXT tx_savep		_indent	_ss	_ibwd	.,			///
+	label("Filename:")
+  FILE fi_savep		@	_ss	@	.,			///
+	label("Browse...")						///
+	option(saveptrace)						///
+	filter("Ptrace file (*.stptrace)|*.stptrace|All (*.*)|*.*")	///
+	defext(stptrace)						///
+	save								///
+	error("Filename")
+  CHECKBOX ck_replacep	@	_ms	@	.,			///
+	option(replace)							///
+	label("Overwrite file if it already exists")
+END
+
+PROGRAM main_bu_initmat_getOpts
+BEGIN
+	call create CHILD mi_impute_mvn_initmatlist AS main_bu_initmat
+	call main_bu_initmat.setExitString main_bu_initmatResults
+	call main_bu_initmat.setExitAction "program main_bu_initmat_ckResults"
+END
+
+PROGRAM main_bu_initmat_ckResults
+BEGIN
+	if main_bu_initmatResults {
+		call main.bu_initmat.setlabel "Initial matrix options *"
+	}
+	else {
+		call main.bu_initmat.setlabel "Initial matrix options  "
+	}
+END
+
+SCRIPT main_savingp_on
+BEGIN
+	main.tx_savep.enable
+	main.fi_savep.enable
+	main.ck_replacep.enable
+END
+
+SCRIPT main_savingp_off
+BEGIN
+	main.tx_savep.disable
+	main.fi_savep.disable
+	main.ck_replacep.disable
+END
+
+PROGRAM main_savingp_output
+BEGIN
+        put `"""' main.fi_savep `"""'
+        beginoptions
+                option main.ck_replacep
+        endoptions
+END
+
+PROGRAM command
+BEGIN
+	optionarg /hidedefault main.sp_iterate
+	optionarg /hidedefault main.ed_tolerance
+	option main.ck_nolog
+
+	if main.rb_cc {
+		option main.rb_cc
+	}
+
+	if main.rb_initmatlist {
+		put " init("
+		put main_bu_initmatResults
+		put ")"
+	}
+
+	if main.ck_savep {
+		require main.fi_savep
+		put "saveptrace("
+		put /program main_savingp_output
+		put ") "
+	}
+END

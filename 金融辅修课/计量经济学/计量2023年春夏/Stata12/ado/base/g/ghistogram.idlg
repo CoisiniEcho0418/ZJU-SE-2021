@@ -1,0 +1,448 @@
+/*
+  ghistogram
+
+*!  VERSION 1.1.2  14aug2006 (deprecated)
+
+	// SCRIPTS and PROGRAMS for external use
+
+	** (IMPORTANT) TO set the behavior of this tab call
+	   one of the following from the callers POSTINIT script
+		**SCRIPT ghistogram_createAsHistogram
+		**SCRIPT ghistogram_createAsGladder
+		**SCRIPT ghistogram_createAsOptionTab
+
+	* Routines to enable and disable
+		*SCRIPT ghistogram_disable
+		*SCRIPT ghistogram_enable
+
+	* Output routines
+		*SCRIPT ghistogram_options_output
+		*SCRIPT ghistogram_main_output
+*/
+
+DIALOG	ghistogram,
+BEGIN
+  TEXT     tx_var	     _lft      _top      _cwd4_1   .,		///
+	label("Variable:")
+  VARNAME  vn_var	     @         _ss       _vnwd     .,		///
+	label("Variable")
+
+  RADIO    rb_contin	     _lft4_2   _top      _cwd4_1   .,		///
+	first onclickon(program ghistogram_contin_on) 			///
+	label("Continuous data")
+  RADIO    rb_discrete	     @         _ss       @         .,		///
+	last option("discrete") label("Discrete data")			///
+	onclickon(script ghistogram_discrete_on)
+
+  CHECKBOX ck_bin	     _lft      _xls      _ckwd     .,		///
+	onclickon(program ghistogram_bin_check)				///
+	onclickoff(program ghistogram_bin_check)
+  SPINNER  sp_bin	     _cksep    @         _spwd     .,		///
+	min(1)	max(1000000) default(10) option(bin)
+  TEXT     tx_bin	     _spsep    @         _ckspr2   .,		///
+	label("Number of bins")
+
+  CHECKBOX ck_width	     _lft      _ls       _ckwd     .,		///
+	onclickon(program ghistogram_width_check)			///
+	onclickoff(program ghistogram_width_check)
+  EDIT     en_width	     _cksep    @         _en7wd    .,		///
+	numonly	option(width)	label("Width of bins")
+  TEXT     tx_width	     _spsep    @         _cken7r2  .,		///
+	label("Width of bins")
+
+  CHECKBOX ck_start	     _lft      _ls       _ckwd     .,		///
+	onclickon(program ghistogram_start_check)			///
+	onclickoff(program ghistogram_start_check)
+  EDIT     en_start	     _cksep    @         _en7wd    .,		///
+	numonly	option(start) label("Lower limit of first bin")
+  TEXT     tx_start	     _spsep    @         _cken7r2  .,		///
+	label("Lower limit of first bin")
+
+///--
+  GROUPBOX gb_yaxis	     _lft2g    _top      _gwd1     _ht4,	///
+	label("Y-axis")
+  RADIO    rb_den	     _indent   _ss       _cwd4_4   .,		///
+	label("Density") first
+  DEFINE y @y
+  RADIO    rb_frac	     @         _ss       @         .,		///
+	label("Fraction") option(fraction)
+  RADIO    rb_freq	     _gft4_4   y         @         .,		///
+	label("Frequency") option(frequency)
+  RADIO    rb_perc	     @         _ss       @         .,		///
+	label("Percent") last option(percent)
+
+///--
+  GROUPBOX gb_rbar	     _lft2g    +40       _gwd1	   _ht5,	///
+	label("Bars")
+
+  TEXT     tx_gap	     _gft4_4   _ss       _txwd     .,		///
+	label("Bar gap:") right
+  DEFINE barx @x
+  DEFINE bary @y
+  SPINNER  sp_gap            _txsep    @         _txr4gi   .,		///
+	min(0) max(99) default(0) option(gap)
+
+  TEXT     tx_blwid          _gft4_4   _ms       _txwd     .,		///
+	label("Line width:")	right
+  COMBOBOX cb_blwid          _txsep    @         _txr4gi   .,		///
+	dropdownlist contents(linewidths) option(lwidth)
+
+  TEXT     tx_bfcol          _igft4_3  bary      _txwd     .,		///
+	label("Fill color:") right
+
+  COMBOBOX cb_bfcol          _txsep    @         _tcr4gi   .,		///
+	dropdownlist contents(colors) option(fcolor)			///
+	onselchangelist(ghistogram_color_bfcol)
+
+  COLOR    cl_bfcol          _tcr4gisep @        _btwd     .,		///
+	option(fcolor)
+
+  TEXT     tx_blcol          _igft4_3  _ms       _txwd     .,		///
+	label("Line color:")	right
+  DEFINE x @x
+  COMBOBOX cb_blcol          _txsep    @         _tcr4gi   .,		///
+	dropdownlist contents(colors) option(lcolor)			///
+	onselchangelist(ghistogram_color_blcol)
+  COLOR    cl_blcol          _tcr4gisep @        _btwd     .,		///
+	option(lcolor)
+
+///--
+  CHECKBOX ck_addlabels      _gft2     +45       _gwd1     _ht5,	///
+	label("Add height labels to bars")				///
+	onclickon(program ghistogram_addlabopts_check)			///
+	onclickoff(program ghistogram_addlabopts_check)			///
+	option("addlabels") groupbox
+
+  TEXT     tx_mlcol          _igft4_3  _ss       _txwd     .,		///
+		label("Color:")	right
+  COMBOBOX cb_mlcol          _txsep    @         _tcr4gi   .,		///
+	dropdownlist contents(colors) option(mlabcolor)			///
+	onselchangelist(ghistogram_color_mlcol)
+
+  COLOR    cl_mlcol          _tcr4gisep @        _colorwd  .,		///
+	option(mlabcolor)
+
+  TEXT     tx_mlsize         _igft4_4  @         _txwd     .,		///
+	label("Size:") right
+  COMBOBOX cb_mlsize         _txsep    @         _txr4gi   .,		///
+	dropdownlist contents(textsizes) option(mlabsize)
+
+  TEXT     tx_mlpos          _igft4_4  _ms       _txwd     .,		///
+	label("Position:") right
+  COMBOBOX cb_mlpos          _txsep    @         _txr4gi   .,		///
+	dropdownlist contents(clockpos)	 option(mlabposition)
+
+  CHECKBOX ck_init 0 0 0 0, 						///
+  	onclickon(script ghistogram_init) 				///
+  	onclickoff(script ghistogram_init)
+END
+
+SCRIPT ghistogram_init
+BEGIN
+	ghistogram.ck_init.hide
+	create BOOLEAN ghistogram_isOptionTab
+END
+
+SCRIPT ghistogram_createAsOptionTab
+BEGIN
+	ghistogram_isOptionTab.settrue
+	ghistogram.settabtitle "Histogram"
+	ghistogram.tx_var.hide
+	ghistogram.vn_var.hide
+	ghistogram.rb_contin.setposition 10 . . .
+	ghistogram.rb_discrete.setposition 10 . . .
+END
+
+SCRIPT ghistogram_createAsGladder
+BEGIN
+	ghistogram.settitle "gladder - Ladder-of-powers histograms"
+	ghistogram.settabtitle "Main"
+	ghistogram.rb_contin.hide
+	ghistogram.rb_discrete.hide
+	ghistogram.ck_width.hide
+	ghistogram.en_width.hide
+	ghistogram.tx_width.hide
+	ghistogram.ck_start.hide
+	ghistogram.en_start.hide
+	ghistogram.tx_start.hide
+END
+
+SCRIPT ghistogram_createAsHistogram
+BEGIN
+	ghistogram.settitle "histogram - Histograms for continuous and categorical variables"
+	ghistogram.settabtitle "Main"
+END
+
+LIST ghistogram_color_bfcol
+BEGIN
+	ghistogram.cl_bfcol.hide
+	ghistogram.cl_bfcol.show
+	ghistogram.cl_bfcol.hide
+END
+
+LIST ghistogram_color_blcol
+BEGIN
+	ghistogram.cl_blcol.hide
+	ghistogram.cl_blcol.show
+	ghistogram.cl_blcol.hide
+END
+
+PROGRAM ghistogram_contin_on
+BEGIN
+	if ! D(ghistogram.rb_contin) {
+		call ghistogram.ck_bin.enable
+	}
+	call program ghistogram_bin_check
+	call ghistogram.en_start.setlabel "Lower limit of first bin"
+	call ghistogram.tx_start.setlabel "Lower limit of first bin"
+END
+
+SCRIPT ghistogram_discrete_on
+BEGIN
+	ghistogram.ck_bin.disable
+	program ghistogram_bin_check
+	ghistogram.en_start.setlabel "Theoretical minimum value"
+	ghistogram.tx_start.setlabel "Theoretical minimum value"
+END
+
+PROGRAM ghistogram_bin_check
+BEGIN
+	if !H(ghistogram.ck_bin) & ghistogram.ck_bin {
+		call ghistogram.sp_bin.enable
+	}
+	if H(ghistogram.ck_bin) | !ghistogram.ck_bin {
+		call ghistogram.sp_bin.disable
+	}
+END
+
+PROGRAM ghistogram_width_check
+BEGIN
+	if !H(ghistogram.ck_width) & ghistogram.ck_width {
+		call gaction ghistogram.en_width.enable
+	}
+	if H(ghistogram.ck_width) | !ghistogram.ck_width {
+		call gaction ghistogram.en_width.disable
+	}
+END
+
+PROGRAM ghistogram_start_check
+BEGIN
+	if !H(ghistogram.ck_start) & ghistogram.ck_start {
+		call gaction ghistogram.en_start.enable
+	}
+	if H(ghistogram.ck_start) | !ghistogram.ck_start {
+		call gaction ghistogram.en_start.disable
+	}
+END
+
+LIST ghistogram_color_mlcol
+BEGIN
+	ghistogram.cl_mlcol.hide
+	ghistogram.cl_mlcol.show
+	ghistogram.cl_mlcol.hide
+END
+
+SCRIPT ghistogram_addlabopts_enable
+BEGIN
+	ghistogram.ck_addlabels.enable
+	program ghistogram_addlabopts_check
+END
+
+SCRIPT ghistogram_addlabopts_disable
+BEGIN
+	ghistogram.ck_addlabels.disable
+	program ghistogram_addlabopts_check
+END
+
+PROGRAM ghistogram_addlabopts_check
+BEGIN
+	if !H(ghistogram.ck_addlabels) & ghistogram.ck_addlabels {
+		call ghistogram.tx_mlsize.enable
+		call ghistogram.cb_mlsize.enable
+		call ghistogram.tx_mlcol.enable
+		call ghistogram.cb_mlcol.enable
+		call ghistogram.cl_mlcol.enable
+		call ghistogram.tx_mlpos.enable
+		call ghistogram.cb_mlpos.enable
+    		call ghistogram.cb_mlcol.withvalue ghistogram.cb_mlcol.setvalue "@"
+	}
+	if H(ghistogram.ck_addlabels) | ! ghistogram.ck_addlabels {
+		call ghistogram.tx_mlsize.disable
+		call ghistogram.cb_mlsize.disable
+		call ghistogram.tx_mlcol.disable
+		call ghistogram.cb_mlcol.disable
+		call ghistogram.cl_mlcol.disable
+		call ghistogram.tx_mlpos.disable
+		call ghistogram.cb_mlpos.disable
+	}
+END
+
+SCRIPT ghistogram_enable
+BEGIN
+	program ghistogram_enable_pr
+END
+PROGRAM ghistogram_enable_pr
+BEGIN
+	call ghistogram.tx_var.enable
+	call ghistogram.vn_var.enable
+	call ghistogram.rb_contin.enable
+	call ghistogram.rb_discrete.enable
+	call ghistogram.ck_bin.enable
+	if ghistogram.ck_bin {
+		call ghistogram.sp_bin.enable
+	}
+	call ghistogram.tx_bin.enable
+
+	call ghistogram.ck_width.enable
+	if ghistogram.ck_width {
+		call ghistogram.en_width.enable
+	}
+	call ghistogram.tx_width.enable
+	call ghistogram.ck_start.enable
+	if ghistogram.ck_start {
+		call ghistogram.en_start.enable
+	}
+	call ghistogram.tx_start.enable
+	call ghistogram.gb_yaxis.enable
+	call ghistogram.rb_den.enable
+	call ghistogram.rb_frac.enable
+	call ghistogram.rb_freq.enable
+	call ghistogram.rb_perc.enable
+	call ghistogram.gb_rbar.enable
+	call ghistogram.tx_gap.enable
+	call ghistogram.sp_gap.enable
+	call ghistogram.tx_blwid.enable
+	call ghistogram.cb_blwid.enable
+	call ghistogram.tx_bfcol.enable
+	call ghistogram.cb_bfcol.enable
+	call ghistogram.cl_bfcol.enable
+	call ghistogram.tx_blcol.enable
+	call ghistogram.cb_blcol.enable
+	call ghistogram.cl_blcol.enable
+	call ghistogram.ck_addlabels.enable
+	if ghistogram.ck_addlabels {
+		call ghistogram.tx_mlcol.enable
+		call ghistogram.cb_mlcol.enable
+		call ghistogram.cl_mlcol.enable
+		call ghistogram.tx_mlsize.enable
+		call ghistogram.cb_mlsize.enable
+		call ghistogram.tx_mlpos.enable
+		call ghistogram.cb_mlpos.enable
+	}
+END
+
+SCRIPT ghistogram_disable
+BEGIN
+	ghistogram.tx_var.disable
+	ghistogram.vn_var.disable
+	ghistogram.rb_contin.disable
+	ghistogram.rb_discrete.disable
+	ghistogram.ck_bin.disable
+	ghistogram.sp_bin.disable
+	ghistogram.tx_bin.disable
+	ghistogram.ck_width.disable
+	ghistogram.en_width.disable
+	ghistogram.tx_width.disable
+	ghistogram.ck_start.disable
+	ghistogram.en_start.disable
+	ghistogram.tx_start.disable
+	ghistogram.gb_yaxis.disable
+	ghistogram.rb_den.disable
+	ghistogram.rb_frac.disable
+	ghistogram.rb_freq.disable
+	ghistogram.rb_perc.disable
+	ghistogram.gb_rbar.disable
+	ghistogram.tx_gap.disable
+	ghistogram.sp_gap.disable
+	ghistogram.tx_blwid.disable
+	ghistogram.cb_blwid.disable
+	ghistogram.tx_bfcol.disable
+	ghistogram.cb_bfcol.disable
+	ghistogram.cl_bfcol.disable
+	ghistogram.tx_blcol.disable
+	ghistogram.cb_blcol.disable
+	ghistogram.cl_blcol.disable
+	ghistogram.ck_addlabels.disable
+	ghistogram.tx_mlcol.disable
+	ghistogram.cb_mlcol.disable
+	ghistogram.cl_mlcol.disable
+	ghistogram.tx_mlsize.disable
+	ghistogram.cb_mlsize.disable
+	ghistogram.tx_mlpos.disable
+	ghistogram.cb_mlpos.disable
+END
+
+PROGRAM ghistogram_addlabopts_output
+BEGIN
+	// mlabels box
+	optionarg ghistogram.cb_mlsize
+	if H(ghistogram.cl_mlcol) {
+		optionarg /hidedefault ghistogram.cb_mlcol
+	}
+	if !H(ghistogram.cl_mlcol) {
+		optionarg /quoted ghistogram.cl_mlcol
+	}
+	optionarg ghistogram.cb_mlpos
+END
+
+PROGRAM labelopts_output
+BEGIN
+	option ghistogram.ck_addlabels
+	if ghistogram.ck_addlabels & !H(ghistogram.ck_addlabels) 	///
+		& ( ghistogram.cb_mlsize | !H(ghistogram.cl_mlcol) | 	///
+		    ghistogram.cb_mlcol | ghistogram.cb_mlpos) 	 	///
+	{
+		put "addlabopts("
+		put /program ghistogram_addlabopts_output
+		put ") "
+	}
+END
+
+PROGRAM ghistogram_options_output
+BEGIN
+	option ghistogram.rb_discrete
+	optionarg ghistogram.sp_bin
+	if ghistogram.ck_width {
+		if ghistogram.ck_bin & !H(ghistogram.ck_bin) {
+			if ghistogram_isOptionTab {
+				stopbox stop ///
+				`"On the "Histgram" tab,"' ///
+				`""Number of bins" and "Width of bins" may not be combined"'
+			}
+			if ! ghistogram_isOptionTab {
+				stopbox stop ///
+				`"On the "Main" tab,"' 	///
+				`""Number of bins" and "Width of bins" may not be combined"'
+			}
+		}
+		require ghistogram.en_width
+		optionarg ghistogram.en_width
+	}
+	if ghistogram.ck_start {
+		require ghistogram.en_start
+		optionarg ghistogram.en_start
+	}
+	option ghistogram.rb_freq
+	option ghistogram.rb_frac
+	option ghistogram.rb_perc
+	optionarg /hidedefault ghistogram.sp_gap
+	if H(ghistogram.cl_bfcol) {
+		optionarg /hidedefault ghistogram.cb_bfcol
+	}
+	if !H(ghistogram.cl_bfcol) {
+		optionarg /quoted ghistogram.cl_bfcol
+	}
+	if H(ghistogram.cl_blcol) {
+		optionarg /hidedefault ghistogram.cb_blcol
+	}
+	if !H(ghistogram.cl_blcol) {
+		optionarg /quoted ghistogram.cl_blcol
+	}
+	optionarg ghistogram.cb_blwid
+	put " " /program labelopts_output
+END
+
+PROGRAM ghistogram_main_output
+BEGIN
+	varlist ghistogram.vn_var
+END

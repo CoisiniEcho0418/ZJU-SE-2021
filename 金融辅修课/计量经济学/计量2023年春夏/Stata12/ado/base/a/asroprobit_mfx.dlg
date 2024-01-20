@@ -1,0 +1,419 @@
+/*
+	asroprobit_mfx
+
+*!  VERSION 1.0.1  23apr2007
+
+*/
+
+VERSION 10.0
+SYNCHRONOUS_ONLY
+
+INCLUDE _std_glm
+DEFINE _dlght 580
+INCLUDE header
+
+HELP hlp1, view("help asroprobit postestimation")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	create BOOLEAN loaded
+	main.ed_temp.hide
+	main.bu_drop.disable
+
+	create STRING atCmdList
+	create STRING rankCmdList
+	create BOOLEAN main_isListEmpty
+	create BOOLEAN main_isRankListEmpty
+	main_isListEmpty.settrue
+	main_isRankListEmpty.settrue
+END
+
+SCRIPT POSTINIT
+BEGIN
+	loaded.settrue
+	sub.tx_note1.setlabel `"Note: the if and in qualifiers only affect the at() option, which is specified on the "Main" dialog tab."'
+END
+
+LIST _listvals
+BEGIN
+	/* empty */
+END
+
+PROGRAM POSTINIT_PROGRAM
+BEGIN
+	put "asmprobit_mfx__dlg setup , "
+	put "dialog(asroprobit_mfx) "
+	put "control(main.lb_values) "
+	stata hidden
+
+	put "asmprobit_mfx__dlg setup , "
+	put "dialog(asroprobit_mfx) "
+	put "control(main.lb_rank_vals) rank"
+	stata hidden
+END
+
+PROGRAM main_mfx_setType
+BEGIN
+	if main.rb_alt_spec {
+		call main.cb_altvar.show
+		call main.cb_alt.show
+		call main.tx_alt.show
+		call main.tx_altvar.setlabel "Variable:"
+		call main.cb_casevar.hide
+	}
+	if main.rb_case_spec {
+		call main.cb_altvar.hide
+		call main.cb_alt.hide
+		call main.tx_alt.hide
+		call main.cb_casevar.show
+		call main.tx_altvar.setlabel "Variable:"
+	}
+END
+
+SCRIPT main_define_disable
+BEGIN
+	main.tx_values.disable
+	main.lb_values.disable
+	main.gb_override.disable
+	main.gb_type.disable
+	main.rb_alt_spec.disable
+	main.rb_case_spec.disable
+	main.tx_alt.disable
+	main.cb_alt.disable
+	main.tx_altvar.disable
+	main.cb_altvar.disable
+	main.cb_casevar.disable
+	main.tx_value.disable
+	main.en_value.disable
+	main.bu_add.disable
+	main.bu_drop.disable
+END
+
+PROGRAM main_define_enable
+BEGIN
+	call main.tx_values.enable
+	call main.lb_values.enable
+	call main.gb_override.enable
+	call main.gb_type.enable
+	call main.rb_alt_spec.enable
+	call main.rb_case_spec.enable
+	call main.tx_alt.enable
+	call main.cb_alt.enable
+	call main.tx_altvar.enable
+	call main.cb_altvar.enable
+	call main.cb_casevar.enable
+	call main.tx_value.enable
+	call main.en_value.enable
+	call main.bu_add.enable
+	if ! main_isListEmpty {
+		call main.bu_drop.enable
+	}
+END
+
+PROGRAM main_add_at
+BEGIN
+	if loaded {
+		require main.cb_altvar
+		require main.cb_casevar
+		require main.en_value
+		call main.ed_temp.setvalue ""
+
+		if main.cb_alt & main.cb_alt.isvisible() {
+			call script main_insertAlt
+		}
+		if main.cb_altvar.isvisible() {
+			call script main_insertAltvar
+		}
+		if main.cb_casevar.isvisible() {
+			call script main_insertCasevar
+		}
+
+		put "asmprobit_mfx__dlg append, "
+		put "dialog(asroprobit_mfx) "
+		put "value(" /hidden main.ed_temp ") "
+		stata hidden
+
+		call main.bu_drop.enable
+		call main_isListEmpty.setfalse
+	}
+END
+SCRIPT main_insertAlt
+BEGIN
+	main.cb_alt.withvalue main.ed_temp.append "@"
+	main.ed_temp.append ":"
+END
+SCRIPT main_insertAltvar
+BEGIN
+	main.cb_altvar.withvalue main.ed_temp.append "@"
+	main.ed_temp.append "="
+	main.en_value.withvalue main.ed_temp.append "@"
+END
+SCRIPT main_insertCasevar
+BEGIN
+	main.cb_casevar.withvalue main.ed_temp.append "@"
+	main.ed_temp.append "="
+	main.en_value.withvalue main.ed_temp.append "@"
+END
+
+PROGRAM main_delete
+BEGIN
+	if loaded {
+		put "asmprobit_mfx__dlg delete, "
+		put "dialog(asroprobit_mfx) "
+		put "value(" main.lb_values ") "
+		stata hidden
+	}
+END
+
+PROGRAM main_set_override_label
+BEGIN
+	if main.rb_means {
+		call main.ck_values.setlabel "Calculate marginal effects at specified variable values (override means)"
+	}
+	if main.rb_medians {
+		call main.ck_values.setlabel "Calculate marginal effects at specified variable values (override medians)"
+	}
+END
+
+SCRIPT main_disable_delete
+BEGIN
+	// CALLED BY EXTERNAL CLASS CODE
+	main.bu_drop.disable
+	main_isListEmpty.settrue
+END
+
+PROGRAM main_add_rank
+BEGIN
+	if loaded {
+		require main.cb_rank_alt
+		require main.en_rank_val
+		call main.ed_temp.setvalue ""
+
+		if main.cb_rank_alt {
+			call script main_insertRankAlt
+		}
+
+		put "asmprobit_mfx__dlg append, "
+		put "dialog(asroprobit_mfx) "
+		put "value(" /hidden main.ed_temp ") rank"
+		stata hidden
+
+		call main.bu_rank_drop.enable
+		call main_isRankListEmpty.setfalse
+	}
+END
+SCRIPT main_insertRankAlt
+BEGIN
+	main.cb_rank_alt.withvalue main.ed_temp.append "@"
+	main.ed_temp.append "="
+	main.en_rank_val.withvalue main.ed_temp.append "@"
+END
+
+PROGRAM main_rank_delete
+BEGIN
+	if loaded {
+		put "asmprobit_mfx__dlg delete, "
+		put "dialog(asroprobit_mfx) "
+		put "value(" main.lb_rank_vals ") rank"
+		stata hidden
+	}
+END
+
+SCRIPT main_rank_disable_delete
+BEGIN
+	// CALLED BY EXTERNAL CLASS CODE
+	main.bu_rank_drop.disable
+	main_isRankListEmpty.settrue
+END
+
+DIALOG main, label("estat mfx - Marginal effects after asroprobit") tabtitle("Main")
+BEGIN
+  TEXT     tx_vars		_lft	_top	_iwd	.,		///
+  	label("Display marginal effects for the following variables: (by default all are used)")
+  VARLIST  vl_vars		@	_ss	@	.,		///
+  	label("Display marginal effects for the following variables") option(varlist)
+
+  GROUPBOX gb_estpoints		_lft	_ls	_iwd	_ht2,		///
+  	label("Calculate marginal effects at:")
+  RADIO    rb_means		_ilft	_ss	_cwd1	.,		///
+  	first label("Means")						///
+  	onclickon(program main_set_override_label)
+  RADIO    rb_medians		_lft2	@	@	.,		///
+  	label("Medians") last						///
+  	onclickon(program main_set_override_label)
+
+  CHECKBOX ck_values		_lft	+45	_iwd	_ht23h,		///
+  	groupbox							///
+  	onclickon(program main_define_enable) 				///
+  	onclickoff(script main_define_disable)				///
+  	label("Calculate marginal effects at specified variable values (override means)")
+
+  TEXT     tx_values		_indent _ss	_cwd3_1	.,		///
+  	label("Specified values:")
+DEFINE y @y
+  LISTBOX  lb_values		@	_ss	@	185, contents(_listvals)
+  BUTTON   bu_drop		@	+195	@	.,		///
+  	label("Delete selected value") onpush(program main_delete)
+
+  GROUPBOX gb_override		_lft3_2	y	_comb3_2 _ht19,		///
+  	label("Create new specified value")
+
+  GROUPBOX gb_type		_indent _ss	_inwd	_ht2,		///
+  	label("Type of variable")
+  DEFINE x @x
+  RADIO    rb_alt_spec		_indent	_ss	140	.,		///
+  	first								///
+  	onclickon(program main_mfx_setType)				///
+  	label("Alternative-specific")
+  RADIO    rb_case_spec		_lft3_3	@	@	.,		///
+  	last								///
+  	onclickon(program main_mfx_setType)				///
+  	label("Case-specific")
+
+  TEXT     tx_altvar		x	_xls	_cwd3_5	.,		///
+  	label("Variable:")
+  TEXT     tx_alt		_lft3_3	@	@	.,		///
+  	label("Alternative: (empty for all)")
+  COMBOBOX cb_altvar		x	_ss	@	.,		///
+  	dropdown contents(e(indvars))					///
+  	label("Variable:")
+  DEFINE y @y
+  COMBOBOX cb_alt		_lft3_3	@	@	.,		///
+  	dropdown contents(e(alteqs))
+  COMBOBOX cb_casevar		x	y	@	.,		///
+  	dropdown contents(e(casevars))					///
+  	label("Variable:")
+
+  TEXT     tx_value		x	_ls	_vnwd	.,		///
+  	label("Value:")
+  EDIT	   en_value		@	+20	_en7wd	.,		///
+  	numonly	label("Value")
+
+  BUTTON   bu_add		@	+35	140	.,		///
+  	label("<< Add specified value") onpush(program main_add_at)
+
+  CHECKBOX ck_rank		_lft	+75	_iwd	_ht13h,		///
+	groupbox							///
+	label("Specify the ranks for the alternatives")			///
+	onclickon(program main_rank_enable)				///
+	onclickoff(script main_rank_disable)
+
+  TEXT     tx_rank_vals		_indent _ss	_cwd3_1	.,		///
+	label("Specified ranks:")
+DEFINE y @y
+  LISTBOX  lb_rank_vals		@	_ss	@	85, 		///
+	contents(_listvals2)
+  BUTTON   bu_rank_drop		@	+95	@	.,		///
+	label("Delete selected rank") onpush(program main_rank_delete)
+
+  GROUPBOX gb_rank_val		_lft3_2	y	_comb3_2 _ht9,		///
+	label("Create new specified rank")
+
+  TEXT     tx_rank_alt		_indent	_ss	_inwd	.,		///
+  	label("Alternative:")
+  COMBOBOX cb_rank_alt		@	+20	_vnwd	.,		///
+  	dropdown contents(e(alteqs))					///
+  	label("Rank alternative")
+DEFINE x @x
+
+  TEXT     tx_rank_val		_lft3_3	-20	_vnwd	.,		///
+  	label("Value:")
+  EDIT	   en_rank_val		@	+20	_en7wd	.,		///
+  	numonly	label("Rank value")
+
+  BUTTON   bu_rank_add		x	+45	140	.,		///
+  	label("<< Add specified value") onpush(program main_add_rank)
+  
+  EDIT     ed_temp		0 0 0 0
+END
+
+PROGRAM main_rank_enable
+BEGIN
+	call main.tx_rank_vals.enable
+	call main.lb_rank_vals.enable
+	call main.gb_rank_val.enable
+	call main.tx_rank_alt.enable
+	call main.cb_rank_alt.enable
+	call main.tx_rank_val.enable
+	call main.en_rank_val.enable
+	call main.bu_rank_add.enable	
+	if ! main_isRankListEmpty {
+		call main.bu_rank_drop.enable
+	}
+END
+
+SCRIPT main_rank_disable
+BEGIN
+	main.tx_rank_vals.disable
+	main.lb_rank_vals.disable
+	main.bu_rank_drop.disable
+	main.gb_rank_val.disable
+	main.tx_rank_alt.disable
+	main.cb_rank_alt.disable
+	main.tx_rank_val.disable
+	main.en_rank_val.disable
+	main.bu_rank_add.disable	
+END
+
+
+INCLUDE ifin
+
+DIALOG opt, tabtitle("Options")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr2b
+  DEFINE _y _top
+  INCLUDE _sp_level
+
+  CHECKBOX ck_nodiscrete	_lft	_ls	_iwd	.,		///
+  	option(nodiscrete)						///
+  	label("Treat indicator variables as continuous")
+  CHECKBOX ck_noesample		@	_ms	@	.,		///
+  	option(noesample)						///
+  	label("Do not restrict calculation of means and medians to the estimation sample")
+  CHECKBOX ck_noweight		@	_ms	@	.,		///
+  	option(nowght)							///
+  	label("Ignore weights when calculating means and medians")
+END
+
+PROGRAM command
+BEGIN
+	call atCmdList.setstring ""
+	if main.ck_values {
+		put "asmprobit_mfx__dlg build_atlist, dialog(asroprobit_mfx) buffer(atCmdList)"
+		stata hidden
+	}
+
+	if main.ck_rank {
+		put "asmprobit_mfx__dlg build_ranklist, dialog(asroprobit_mfx) buffer(rankCmdList)"
+		stata hidden
+	}
+
+	put "estat mfx "
+	put /program ifin_output
+	beginoptions
+		optionarg main.vl_vars
+		put " at(
+		if main.rb_means {
+			put "mean"
+		}
+		if main.rb_medians {
+			put "median"
+		}
+		if atCmdList {
+			put " "
+			put atCmdList
+		}
+		put ") "
+
+		if main.ck_rank & rankCmdList {
+			put " rank(" rankCmdList ") "
+		}
+		optionarg /hidedefault opt.sp_level
+		option opt.ck_nodiscrete
+		option opt.ck_noesample
+		option opt.ck_noweight
+	endoptions
+END
+

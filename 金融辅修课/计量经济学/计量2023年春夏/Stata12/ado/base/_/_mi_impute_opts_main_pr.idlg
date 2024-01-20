@@ -1,0 +1,26 @@
+/*
+  _mi_impute_opts_main_pr.idlg
+
+  VERSION 1.0.0  01apr2011
+
+  To be included within a PROGRAM.
+
+*/
+		if ! main.ck_add & ! main.ck_replace {
+			stopbox stop `"On the "main" tab, "Imputations to add" or "Replace imputed values in existing imputations" must be selected."'
+		}
+
+		optionarg main.sp_add
+		option main.ck_replace
+		optionarg main.ed_rseed
+		option main.ck_double
+		if bu_groupOptResults {
+			require main.vl_group
+		}
+		if main.vl_group {
+			put " by("
+			put /program  main_group_output
+			put ")"
+		}
+
+/* END: _mi_impute_opts_main_pr.idlg */

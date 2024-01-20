@@ -1,0 +1,6 @@
+*! version 1.0.1  01dec2006
+sequence 3000
+
+
+label "Maximum"
+set val 999999

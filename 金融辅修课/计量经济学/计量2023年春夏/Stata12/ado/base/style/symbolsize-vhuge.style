@@ -1,0 +1,7 @@
+*! version 1.0.0  22dec2002
+sequence 1190
+label "v Huge"
+
+set val 5.555
+
+* 16 pt based on a 4 inch high graph

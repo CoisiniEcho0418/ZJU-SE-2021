@@ -1,0 +1,15 @@
+/*
+	predict (after gprobit or bprobit)
+
+*!  VERSION 2.0.1  29jun2005
+
+*/
+
+VERSION 9.0
+POSITION 0 0 0 0
+SYNCHRONOUS_ONLY
+PROGRAM PREINIT_PROGRAM
+BEGIN
+	put "db glogit_p"
+	stata hidden
+END

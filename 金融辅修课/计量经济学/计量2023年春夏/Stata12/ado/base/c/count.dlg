@@ -1,0 +1,28 @@
+/*
+
+  count
+
+*!  VERSION 1.2.0  07feb2007
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+INCLUDE header
+HELP hlp1, view("help count")
+RESET res1
+
+INCLUDE byifin
+
+SCRIPT PREINIT
+BEGIN
+	settitle "count - Count observations satisfying specified condition"
+END
+
+PROGRAM command
+BEGIN
+	put /program by_output " "
+        put "count "
+	put /program ifin_output
+END

@@ -1,0 +1,647 @@
+/*
+   sts_graph_9.dlg
+
+*!  VERSION 1.2.4  03aug2006  (deprecated)
+
+*/
+
+VERSION 9.0
+
+INCLUDE graph_header
+INCLUDE header
+
+HELP hlp1, view("help sts")
+RESET res1
+
+DIALOG main, tabtitle("Main")	///
+	label("sts graph - Graph the survivor and cumulative hazard functions")
+BEGIN
+  DEFINE _x _vlcsep
+  DEFINE _y _top
+  INCLUDE _bu_stset
+
+  GROUPBOX gb_graph          _lft      _top      _comb3_1  _ht8,	///
+                label("Function")
+
+  RADIO    rb_kaplan         _ilft     _ss       _inwd     .,		///
+  		first							///
+                label("Graph Kaplan-Meier survivor function")		///
+                option(NONE)						///
+                onclickon(script main_kaplan_on)
+
+  RADIO    rb_kaplan_fail    @         _ss       @         .,		///
+                label("Graph Kaplan-Meier failure function")		///
+                option(failure)						///
+                onclickon(script main_kaplan_on)
+DEFINE y @y
+
+  RADIO    rb_na             @         _ss       @         .,		///
+                label("Graph Nelson-Aalen cumulative hazard function")	///
+                option(na)						///
+		onclickon(script main_nelson_on)			///
+
+  RADIO    rb_hazard         @         _ss       @         .,		///
+  		last							///
+                label("Graph smoothed hazard estimate")			///
+                option(hazard)						///
+                onclickon(script main_hazard_on)
+
+  EDIT     en_per            _lft3_3   y         _en7wd    .,		///
+  		label("Units used to report rates")			///
+		default(1.0) numonly option(per)
+  TEXT     tx_per            _en7sep   @         _en7r3b   .,		///
+  		label("Units used to report rates")
+  GROUPBOX gb_by             _lft      _xxxxxls  _comb3_1  _ht18,	///
+		label("Calculation")
+
+  CHECKBOX ck_byvar          _ilft     _ms       _inwd     .,		///
+ 		onclickon(script main_by_on)				///
+ 		onclickoff(program main_by_off)				///
+ 		label("Separate on different groups of specified variables: (by variables)")
+DEFINE xwd @xsize
+  VARLIST  vl_byvar          @         _ss       @         .,		///
+ 		option(by)						///
+ 		label("Separate on different groups of specified variables")
+
+  CHECKBOX ck_adjvar         _ilft     _ls       xwd       .,		///
+  		onclickon(program main_adjvar_on)			///
+  		onclickoff(program main_adjvar_off)			///
+   		label("Adjust the estimates to zero values of adjustment variables:")
+  VARLIST  vl_adjvar         @         _ss       @         .,		///
+ 		option(adjustfor)					///
+ 		label("Adjust the estimates to zero values of adjustment variables")
+
+  CHECKBOX ck_strvar         @         _ls       @         .,		///
+  		onclickon(script main_strvar_on)			///
+  		onclickoff(program main_strvar_off)			///
+ 		label("Separate on different groups of strata variables: (optional)")
+  VARLIST  vl_strvar         @         _ss       @         .,		///
+ 		option(strata)						///
+ 		label("Separate on different groups of strata variables")
+
+  CHECKBOX ck_separate       @         _ls       _cwd3_3   .,		///
+		label("Show curves on separate graphs")			///
+		option(separate)
+
+  CHECKBOX ck_gwood_cna_ci   _lft3_2   @         @         ., 		///
+		label("Show pointwise confidence bands")		///
+		onclickon(script p1_opts_enable) 			///
+		onclickoff(script p1_opts_disable)
+END
+
+SCRIPT main_kaplan_on
+BEGIN
+	main.en_per.enable
+	main.tx_per.enable
+	script more_noorigin_enable
+	program main_adjvar_enable
+	program main_hazard_check
+END
+
+SCRIPT main_nelson_on
+BEGIN
+	main.en_per.disable
+	main.tx_per.disable
+	script more_noorigin_disable
+	script main_adjvar_disable
+	program main_hazard_check
+END
+
+SCRIPT main_hazard_on
+BEGIN
+	main.en_per.disable
+	main.tx_per.disable
+	script more_noorigin_disable
+	program main_adjvar_enable
+	program main_hazard_check
+END
+
+PROGRAM main_adjvar_enable
+BEGIN
+	call main.ck_adjvar.enable
+	if main.ck_adjvar {
+		call program main_adjvar_on
+	}
+END
+
+SCRIPT main_adjvar_disable
+BEGIN
+	main.ck_adjvar.disable
+	program main_adjvar_off
+END
+
+SCRIPT main_by_on
+BEGIN
+	main.vl_byvar.enable
+	main.ck_separate.enable
+END
+
+PROGRAM main_by_off
+BEGIN
+	call main.vl_byvar.disable
+	if ! (main.ck_byvar | main.ck_strvar) {
+		call main.ck_separate.disable
+	}
+END
+
+PROGRAM main_adjvar_on
+BEGIN
+	call main.vl_adjvar.enable
+	call main.ck_strvar.enable
+	if main.ck_strvar {
+		call main.vl_strvar.enable
+		call main.ck_separate.enable
+	}
+END
+
+PROGRAM main_adjvar_off
+BEGIN
+	call main.vl_adjvar.disable
+	call main.ck_strvar.disable
+	call main.vl_strvar.disable
+	if ! (main.ck_byvar | (main.ck_strvar & ! D(main.ck_strvar))) {
+		call main.ck_separate.disable
+	}
+END
+
+SCRIPT main_strvar_on
+BEGIN
+	main.vl_strvar.enable
+	main.ck_separate.enable
+END
+
+PROGRAM main_strvar_off
+BEGIN
+	call main.vl_strvar.disable
+	if ! main.ck_byvar {
+		call main.ck_separate.disable
+	}
+END
+
+PROGRAM main_hazard_check
+BEGIN
+	if main.rb_hazard {
+		call gaction more.gb_meth.enable
+		call gaction more.ck_width.enable
+		call program kdenopts_width_check
+		call gaction more.tx_kernel.enable
+		call gaction more.cb_kernel.enable
+		call script display_disable
+	}
+	if main.rb_kaplan | main.rb_kaplan_fail | main.rb_na {
+		call gaction more.gb_meth.disable
+		call gaction more.ck_width.disable
+		call gaction more.ed_width.disable
+		call gaction more.tx_width.disable
+		call gaction more.tx_kernel.disable
+		call gaction more.cb_kernel.disable
+		call program display_enable
+	}
+END
+
+INCLUDE ifin
+
+DIALOG opt, tabtitle("Options")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr2
+  DEFINE _y _top
+  INCLUDE _sp_level
+
+  CHECKBOX ck_noshow      _lft2     _top      _cwd1       .,            /*
+                */ label("Do not show st setting information")          /*
+                */ option(noshow)
+
+  GROUPBOX gb_dis         _lft      +35       _iwd        _ht25h,        /*
+                */ label("Display of lost / entered / at risk / censored")
+
+  RADIO    rb_none        _indent   _ss       _inwd       .,            /*
+                */ label("Do not display")                              /*
+                */ first                                                /*
+                */ option(NONE)                                         /*
+                */ clickon("script both_opts_off")
+
+  RADIO    rb_lost        @         _ss       @           .,            /*
+                */ option(lost)                                         /*
+                */ clickon("script lost_on")				/*
+                */ label("Display number lost (number censored minus number who enter)")
+
+  RADIO    rb_enter       @         _ss       @           .,            /*
+                */ option(enter)                                        /*
+                */ clickon("script lost_on")				/*
+                */ label("Display number who enter in addition to number lost")
+
+  RADIO    rb_lost_enter  @         _ss       @           .,            /*
+                */ option(lost enter)					/*
+                */ clickon("script lost_on")				/*
+		*/ label("Display number lost and number who enter (pure number censored)")
+
+  RADIO    rb_atrisk      @         _ss       @           .,            /*
+                */ option(atrisk)					/*
+                */ clickon("script atrisk_on")				/*
+                */ label("Display numbers at risk at the beginning of each time interval")
+
+  RADIO    rb_a_lst       @         _ss       @           .,            /*
+                */ option(atrisk lost)					/*
+                */ clickon("script both_opts_on")			/*
+                */ label("Display numbers at risk at the beginning of each time interval and number lost")
+
+  RADIO    rb_censored    @         _ss       @           .,		/*
+                */ last							/*
+		*/ clickon("program censor_check")			/*
+		*/ option(NONE)						/*
+		*/ label("Display censored observations by placing tick marks")
+
+  RADIO    rb_number      _indent2  _ss       _inwd       .,  first	/*
+                */ option("censored(single)")				/*
+                */ label("One tick at each censoring time no matter the number censored at that time")
+
+  RADIO    rb_single      @         _ss       @           .,            /*
+		*/ option("censored(number)")				/*
+		*/ label("One tick at each censoring time and number censored above the tick")
+
+  RADIO    rb_multiple    @         _ss       @           .,  last	/*
+		*/ option("censored(multiple)")				/*
+		*/ label("Multiple tick marks for multiple censorings at the same time")
+
+  GROUPBOX gb_lostopts    _igft    _ms       _gwd2       _ht2,		/*
+  		*/ label("Lost options")
+  GROUPBOX gb_atriskopts  _igft2   @         _gwd2       _ht2,		/*
+  		*/ label("At risk options")
+
+  TEXT     tx_lsize       _iigft   _ss       _txswd      .,		/*
+		*/ label("Size:")					/*
+		*/ right
+  COMBOBOX cb_lsize       _txssep  @         _txr2b4g    .,		/*
+		*/ dropdownlist						/*
+		*/ contents(textsizes) 					/*
+		*/ option(mlabsize)
+  TEXT     tx_lclr        _gft4_2  @         _txswd      .,		/*
+		*/ label("Color:")					/*
+		*/ right
+  COMBOBOX cb_lclr        _txssep  @         _tcr2b4g    .,		/*
+		*/ dropdownlist						/*
+		*/ contents(colors)					/*
+		*/ onselchangelist(options_cl_lclr_sel)			/*
+		*/ option(mlabcolor)
+  COLOR    cl_lclr     _tcr2b4gsep @          _colorwd    .,		/*
+		*/ option(mlabcolor)
+
+  // RIGHT SIDE -- at risk opts
+  TEXT     tx_rsize       _iigft2  @         _txswd      .,		/*
+		*/ label("Size:")					/*
+		*/ right
+  COMBOBOX cb_rsize       _txssep  @         _txr2b4g    .,		/*
+		*/ dropdownlist						/*
+		*/ contents(textsizes)					/*
+		*/ option(mlabsize)
+  TEXT     tx_rclr        _gft4_4 @         _txswd      .,		/*
+		*/ label("Color:")					/*
+		*/ right
+  COMBOBOX cb_rclr        _txssep  @         _tcr2b4g    .,		/*
+		*/ dropdownlist						/*
+		*/ contents(colors) 					/*
+		*/ onselchangelist(options_cl_rclr_sel)			/*
+		*/ option(mlabcolor)
+  COLOR    cl_rclr    _tcr2b4gsep @          _colorwd    .,		/*
+		*/ option(mlabcolor)
+END
+
+LIST options_cl_lclr_sel
+BEGIN
+	opt.cl_lclr.hide
+	opt.cl_lclr.show
+	opt.cl_lclr.hide
+END
+
+LIST options_cl_rclr_sel
+BEGIN
+	opt.cl_rclr.hide
+	opt.cl_rclr.show
+	opt.cl_rclr.hide
+END
+
+SCRIPT lost_on
+BEGIN
+	script lostopts_enable
+	script atriskopts_disable
+	script censor_off
+END
+
+SCRIPT atrisk_on
+BEGIN
+	script atriskopts_enable
+	script lostopts_disable
+	script censor_off
+END
+
+SCRIPT both_opts_on
+BEGIN
+	script lostopts_enable
+	script atriskopts_enable
+	script censor_off
+END
+
+SCRIPT both_opts_off
+BEGIN
+	script lostopts_disable
+	script atriskopts_disable
+	script censor_off
+END
+
+SCRIPT lostopts_enable
+BEGIN
+	opt.gb_lostopts.enable
+	opt.tx_lsize.enable
+	opt.cb_lsize.enable
+	opt.tx_lclr.enable
+	opt.cb_lclr.enable
+	opt.cl_lclr.enable
+END
+
+SCRIPT lostopts_disable
+BEGIN
+	opt.gb_lostopts.disable
+	opt.tx_lsize.disable
+	opt.cb_lsize.disable
+	opt.tx_lclr.disable
+	opt.cb_lclr.disable
+	opt.cl_lclr.disable
+END
+
+SCRIPT atriskopts_enable
+BEGIN
+	opt.gb_atriskopts.enable
+	opt.tx_rsize.enable
+	opt.cb_rsize.enable
+	opt.tx_rclr.enable
+	opt.cb_rclr.enable
+	opt.cl_rclr.enable
+END
+
+SCRIPT atriskopts_disable
+BEGIN
+	opt.gb_atriskopts.disable
+	opt.tx_rsize.disable
+	opt.cb_rsize.disable
+	opt.tx_rclr.disable
+	opt.cb_rclr.disable
+	opt.cl_rclr.disable
+END
+
+PROGRAM censor_check
+BEGIN
+	if opt.rb_censored & ! H(opt.rb_censored) {
+		call gaction opt.rb_single.enable
+		call gaction opt.rb_number.enable
+		call gaction opt.rb_multiple.enable
+	}
+	if ! opt.rb_censored | H(opt.rb_censored) {
+		call script censor_off
+	}
+	call script lostopts_disable
+	call script atriskopts_disable
+END
+
+SCRIPT censor_off
+BEGIN
+	opt.rb_single.disable
+	opt.rb_number.disable
+	opt.rb_multiple.disable
+END
+
+SCRIPT display_disable
+BEGIN
+	opt.gb_dis.disable
+	opt.rb_none.disable
+	opt.rb_lost.disable
+	opt.rb_lost_enter.disable
+	opt.rb_enter.disable
+	opt.rb_atrisk.disable
+	opt.rb_a_lst.disable
+	opt.rb_censored.disable
+	program censor_check
+END
+
+PROGRAM display_enable
+BEGIN
+	call gaction opt.gb_dis.enable
+	call gaction opt.rb_none.enable
+	call gaction opt.rb_lost.enable
+	call gaction opt.rb_lost_enter.enable
+	call gaction opt.rb_enter.enable
+	call gaction opt.rb_atrisk.enable
+	call gaction opt.rb_a_lst.enable
+	call gaction opt.rb_censored.enable
+	call program censor_check
+	if opt.rb_lost | opt.rb_lost_enter | opt.rb_enter {
+		call script lost_on
+	}
+	if opt.rb_atrisk {
+		call script atrisk_on
+	}
+	if opt.rb_a_lst{
+		call script both_opts_on
+	}
+END
+
+DIALOG more, tabtitle("More options")
+BEGIN
+  EDIT     en_tmax        _lft      _top      _en7wd      .,            /*
+                */ numonly                                              /*
+                */ label("Maximum analysis time to be graphed")                           /*
+                */ option(tmax)
+
+  TEXT     tx_tmax        _en7sep   @         _en7r2      .,            /*
+                */ label("Maximum analysis time to be graphed")
+
+  EDIT     en_tmin        _lft      _ms       _en7wd      .,            /*
+                */ numonly                                              /*
+                */ label("Minimum analysis time to be graphed")                           /*
+                */ option(tmin)
+
+  TEXT     tx_tmin        _en7sep   @         _en7r2      .,            /*
+                */ label("Minimum analysis time to be graphed")
+
+  GROUPBOX gb_noorigin    _lft      _ls       _cwd1       _ht4,		/*
+  		*/ label("Origin")
+
+  RADIO    rb_origin      _indent   _ss       _inwd       .,            /*
+                */ first                                                /*
+                */ option(NONE)						/*
+		*/ label("Begin survivor (failure) curve where time equal zero")
+
+  RADIO    rb_noorigin    @         _ss       @           .,            /*
+                */ last                                                 /*
+                */ option(noorigin)					/*
+		*/ label("Begin survivor (failure) curve at first exit time")
+
+  GROUPBOX gb_meth        _lft       _xls      _cwd1     _ht10,		/*
+		*/ label("Smoothing options")				/*
+		*/
+  CHECKBOX ck_width       _indent   _ss       _inwd     _ht2h,		/*
+		*/ label(`"Override "optimal" width(s)"')		/*
+		*/ clickon("program kdenopts_width_check")		/*
+		*/ clickoff("program kdenopts_width_check")		/*
+		*/
+  DEFINE x @x
+  DEFINE cx @cx
+  EDIT     ed_width  _indent2  _ms       _en14wd   .,			/*
+		*/ label("Halfwidth(s) of kernel")			/*
+		*/ option("width")					/*
+		*/
+  TEXT     tx_width  _en14sep  @         _en7r3bb  .,			/*
+		*/ label("Halfwidth(s) of kernel")			/*
+		*/
+
+  TEXT     tx_kernel x         _ls       cx        .,			/*
+		*/ label("Kernel function:")				/*
+		*/
+  COMBOBOX cb_kernel @         _ss       @         .,			/*
+		*/ label("Kernel function")				/*
+		*/ dropdownlist						/*
+		*/ contents("kernel_function")				/*
+		*/ values("kernel_function_val")			/*
+		*/ option("kernel")
+END
+
+SCRIPT more_noorigin_enable
+BEGIN
+	more.gb_noorigin.enable
+	more.rb_noorigin.enable
+	more.rb_origin.enable
+END
+
+SCRIPT more_noorigin_disable
+BEGIN
+	more.gb_noorigin.disable
+	more.rb_noorigin.disable
+	more.rb_origin.disable
+END
+
+PROGRAM kdenopts_width_check
+BEGIN
+	if !H(more.ck_width) & more.ck_width {
+		call gaction more.ed_width.enable
+		call gaction more.tx_width.enable
+	}
+	if H(more.ck_width) | ! more.ck_width {
+		call gaction more.ed_width.disable
+		call gaction more.tx_width.disable
+	}
+END
+
+INCLUDE p2_opts
+INCLUDE p1_opts
+INCLUDE addplot
+INCLUDE gr_twoway
+
+SCRIPT PREINIT
+BEGIN
+	script p2_opts_createAsNoRange
+	script p2_opts_setDefaultLine
+	script p1_opts_createAsRange
+	script p1_opts_setDefaultRline
+END
+
+SCRIPT POSTINIT
+BEGIN
+	script p1_opts_setTabtitleCi
+END
+
+PROGRAM lostopts_output
+BEGIN
+	optionarg /hidedefault opt.cb_lsize
+	if H(opt.cl_lclr) {
+		optionarg /hidedefault opt.cb_lclr
+	}
+	if !H(opt.cl_lclr) {
+		optionarg /quoted opt.cl_lclr
+	}
+END
+
+PROGRAM atriskopts_output
+BEGIN
+	optionarg /hidedefault opt.cb_rsize
+	if H(opt.cl_rclr) {
+		optionarg /hidedefault opt.cb_rclr
+	}
+	if !H(opt.cl_rclr) {
+		optionarg /quoted opt.cl_rclr
+	}
+END
+
+PROGRAM command
+BEGIN
+	if main.ck_byvar {
+		require main.vl_byvar
+	}
+	if main.ck_strvar {
+		require main.vl_strvar
+		require main.vl_adjvar
+	}
+	put "sts graph"
+	INCLUDE _ifin_pr
+	beginoptions
+		optionarg /hidedefault main.en_per
+		optionarg main.vl_byvar
+		optionarg main.vl_strvar
+		optionarg main.vl_adjvar
+		option main.rb_na
+		option main.rb_hazard
+		option main.rb_kaplan_fail
+		option main.ck_separate
+		if main.rb_kaplan | main.rb_kaplan_fail{
+			if main.ck_gwood_cna_ci {
+				put "gwood"
+			}
+		}
+		if main.rb_na {
+			if main.ck_gwood_cna_ci {
+				put "cna"
+			}
+		}
+		if main.rb_hazard {
+			if main.ck_gwood_cna_ci {
+				put "cihazard"
+			}
+		}
+		INCLUDE _level_opt_pr
+		option opt.ck_noshow
+		if ! main.rb_hazard {
+			option radio(opt rb_none rb_lost rb_enter /*
+				*/ rb_lost_enter /*
+				*/ rb_atrisk rb_a_lst rb_censored)
+		}
+		if opt.rb_censored & !H(opt.rb_censored) {
+			option radio(opt rb_single rb_multiple rb_number)
+		}
+
+		if !D(opt.cb_lsize) &  (opt.cb_lsize | opt.cb_lclr) {
+			put " " "lostopts("
+			put /program lostopts_output
+			put ")"
+		}
+
+		if !D(opt.cb_rsize) & (opt.cb_rsize | opt.cb_rclr) {
+			put " " "atriskopts("
+			put /program atriskopts_output
+			put ")"
+		}
+		if main.rb_hazard {
+			if more.ck_width {
+				require more.ed_width
+				optionarg more.ed_width
+			}
+			optionarg /hidedefault more.cb_kernel
+		}
+		optionarg more.en_tmax
+		optionarg more.en_tmin
+		option more.rb_noorigin
+		put " " /program p2_opts_output
+		put " " /program p1_opts_ci_output
+		put " " /program addplot_output
+		put " " /program gr_twoway_output
+	endoptions
+END
+/* end */

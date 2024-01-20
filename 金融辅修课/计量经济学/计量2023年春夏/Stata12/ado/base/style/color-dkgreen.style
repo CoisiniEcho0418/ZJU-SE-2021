@@ -1,0 +1,5 @@
+*! version 1.0.0  22dec2002
+sequence 250
+label "Dark green"
+
+set rgb "0 96 0"

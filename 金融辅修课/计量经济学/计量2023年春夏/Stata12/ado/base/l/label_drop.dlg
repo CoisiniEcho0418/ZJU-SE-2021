@@ -1,0 +1,41 @@
+/*
+	label drop
+
+*!  VERSION 1.2.0  07feb2007
+
+	which label - built-in command:  label
+*/
+
+VERSION 9.0
+
+INCLUDE _std_small
+INCLUDE header
+
+HELP hlp1, view("help label")
+RESET res1
+
+DIALOG main, label("label drop - Drop value labels") tabtitle("Main")
+BEGIN
+  TEXT     tx_lab    _lft      _top      _iwd      .,		///
+	label("Label to drop:")
+
+  COMBOBOX cb_lab    @         _ss       @         _ht10,	///
+	append contents(valuelabels) label("Label to drop")
+
+  CHECKBOX ck_all    _lft      +125      _iwd      .,		///
+	onclickon(main.cb_lab.disable)				///
+	onclickoff(main.cb_lab.enable)				///
+	label("Drop all value labels")
+END
+
+PROGRAM command
+BEGIN
+	put "label drop "
+	if ! main.ck_all {
+		require main.cb_lab
+		put main.cb_lab
+	}
+	if main.ck_all {
+		put "_all"
+	}
+END

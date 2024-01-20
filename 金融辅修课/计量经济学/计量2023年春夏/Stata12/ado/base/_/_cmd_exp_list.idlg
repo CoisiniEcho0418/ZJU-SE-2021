@@ -1,0 +1,38 @@
+/*
+  _cmd_exp_list.idlg
+
+*!  VERSION 1.0.2  29mar2005
+
+  To be included within a DIALOG.
+
+  Note that macros _y must already be DEFINEd.
+
+*/
+
+  TEXT     tx_cmd    _lft      _y        _cwd1     .,			/*
+		*/ label("Stata command to run:")			/*
+		*/
+  EDIT     vl_cmd    @         _ss       _iwd      .,			/*
+		*/ label("Stata command to run")			/*
+		*/
+  GROUPBOX gb_stats  _lft      _ls       _iwd      _ht6h,		/*
+		*/ label("List of statistics")				/*
+		*/
+
+  CHECKBOX ck_b      _indent   _ss       _cwd2     .,			/*
+		*/ label("Model coefficients")				/*
+		*/ option("_b")						/*
+		*/
+  DEFINE x @x
+  CHECKBOX ck_se     _lft2     @         @         .,			/*
+		*/ label("SE of model coefficients")			/*
+		*/ option("_se")					/*
+		*/
+  TEXT     tx_explst x         _ms       _ibwd     .,			/*
+		*/ label("Other statistical expressions:")		/*
+		*/
+  EDIT     ed_explst @         _ss       _ibwd     .,			/*
+		*/ label("Other statistical expressions")		/*
+		*/
+
+/* END: _cmd_exp_list.idlg */

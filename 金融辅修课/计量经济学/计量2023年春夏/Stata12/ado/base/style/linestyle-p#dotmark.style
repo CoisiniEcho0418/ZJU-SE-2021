@@ -1,0 +1,6 @@
+*! version 1.0.1  05dec2003
+sequence 6201
+
+set width    scheme p#dotmark
+set color    scheme p#dotmarkline
+set pattern  scheme p#dotmark

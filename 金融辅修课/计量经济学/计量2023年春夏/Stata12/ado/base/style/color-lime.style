@@ -1,0 +1,5 @@
+*! version 1.0.0  22dec2002
+sequence 220
+label "Lime"
+
+set rgb "0 255 0"

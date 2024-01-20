@@ -1,0 +1,10 @@
+/*
+	Includes the -nooffset- option for -predict-
+
+	VERSION 1.0.0  21dec2002
+*/
+
+  CHECKBOX ck_nooffset   _lft    _xls      _iwd        .,	/*
+		*/ option(nooffset)				/*
+		*/ label("Ignore offset variable (if any)")
+

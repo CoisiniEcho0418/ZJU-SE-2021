@@ -1,0 +1,137 @@
+/*
+	runtest	
+
+	VERSION 1.0.0  21dec2002
+
+*/
+
+VERSION 8.0
+
+INCLUDE _std_medium
+INCLUDE _ht300
+INCLUDE header
+
+HELP hlp1, view("help runtest")
+RESET res1
+
+DEFINE fromwd 50
+DEFINE fromsep +55
+DEFINE towd 35
+DEFINE tosep +45
+
+DIALOG main, label("runtest - Test for random order") tabtitle("Main")
+BEGIN
+  /*--+----1----+----2----+----3----+----4----+----5----+----6----+----7----+*/
+  TEXT     tx_var    _lft      _top      _iwd      .,			/*
+		*/ label("Variable:")					/*
+		*/
+  VARNAME  vn_var    @         _ss       _vnwd     .,			/*
+		*/ label("Variable")					/*
+		*/
+
+  CHECKBOX ck_cont   _lft      _ls       _iwd      .,			/*
+		*/ option("continuity")					/*
+		*/ label("Continuity correction")			/*
+		*/
+
+
+  GROUPBOX gb_equal  _lft      _ls       _cwd1     _ht7h,		/*
+		*/ label("Values equal to threshold are:")		/*
+		*/
+  DEFINE y @y
+  RADIO    rb_below  _indent   _ss       _inwd     .,			/*
+		*/ option(NONE)	/* default option */			/*
+		*/ label("Counted as below")				/*
+		*/ first						/*
+		*/
+  RADIO    rb_drop   @         _ss       @         .,			/*
+		*/ option("drop")					/*
+		*/ label("Not counted")					/*
+		*/
+  RADIO    rb_split  @         _ss       @         .,			/*
+		*/ option("split")					/*
+		*/ label("Randomly assigned ")				/*
+		*/ last							/*
+		*/
+  TEXT     tx_split  _indent2  _vss      _cwd5     .,			/*
+		*/ label("above or below")				/*
+		*/
+
+  GROUPBOX gb_thres  _lft2     y         _cwd1     _ht7h,		/*
+		*/ label("Threshold")					/*
+		*/
+  RADIO    rb_median _indent   _ss       _inwd     .,			/*
+		*/ first						/*
+		*/ option(NONE) /* default option */ 			/*
+		*/ clickon("gaction main.en_thres.disable")		/*
+		*/ label("Use median")					/*
+		*/
+  RADIO    rb_mean   @         _ss       @         .,			/*
+		*/ option("mean")					/*
+		*/ clickon("gaction main.en_thres.disable")		/*
+		*/ label("Use mean")					/*
+		*/
+  RADIO    rb_thres  @         _ss       _rbwd     ., last		/*
+		*/ option(NONE) /* handled another way */ 		/*
+		*/ clickon("gaction main.en_thres.enable")		/*
+		*/ label("")						/*
+		*/
+
+  EDIT     en_thres  _rbsep    @         _en7wd    .,			/*
+		*/ option("threshold")					/*
+		*/ label("Set threshold to")				/*
+		*/ numonly						/*
+		*/
+
+  GROUPBOX gb_sub    _lft      _xxxls    _iwd      _ht2,		/*
+		*/ label("Restrict calculations on observations")	/*
+		*/
+  CHECKBOX ck_in     _ilft     _ss       fromwd    .,			/*
+		*/ label("from:")					/*
+		*/ clickon("script sub_on")				/*
+		*/ clickoff("script sub_off")				/*
+		*/
+  SPINNER  sp_from   fromsep   @         _spwd     .,			/*
+		*/ min(1)						/*
+		*/ max(100)						/*
+		*/ default(1)						/*
+		*/
+  TEXT     tx_to     _spsep    @         towd      .,			/*
+		*/ label("to:")						/*
+		*/ right						/*
+		*/
+  SPINNER  sp_to     tosep     @         _spwd     .,			/*
+		*/ min(1)						/*
+		*/ max(c(N))						/*
+		*/ default(c(N))					/*
+		*/
+END
+
+SCRIPT sub_on
+BEGIN
+	main.sp_from.enable
+	main.sp_to.enable
+END
+
+SCRIPT sub_off
+BEGIN
+	main.sp_from.disable
+	main.sp_to.disable
+END
+
+PROGRAM command
+BEGIN
+	put "runtest "
+	varlist main.vn_var
+	if main.ck_in {
+		inrange main.sp_from main.sp_to
+	}
+	beginoptions
+		option main.ck_cont
+		option radio(main rb_below rb_drop rb_split)
+		option radio(main rb_median rb_mean rb_thres)
+		if main.rb_thres {
+			optionarg main.en_thres
+		}
+	endoptions
+END

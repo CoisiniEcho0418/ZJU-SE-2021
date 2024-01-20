@@ -1,0 +1,31 @@
+/*
+	kappa
+
+	VERSION 1.0.0  21dec2002
+*/
+
+VERSION 8.0
+
+INCLUDE _std_small
+INCLUDE header
+HELP hlp1, view("help kappa")
+RESET res1
+
+DIALOG main, label("kappa - Interrater agreement") tabtitle("Main")
+BEGIN
+  TEXT     tx_var            _lft      _top      _iwd      .,		/*
+		*/ label("Variables containing frequency for ratings:")
+  VARLIST  vl_var            @         _ss       @         .,		/*
+		*/ label("Variables containing frequency for ratings")
+END
+
+
+INCLUDE ifin
+
+
+PROGRAM command
+BEGIN
+	put "kappa "
+	varlist main.vl_var
+	INCLUDE _ifin_pr
+END

@@ -1,0 +1,483 @@
+/*
+  streg
+
+*!  VERSION 1.3.0  23aug2010
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_large
+DEFINE _dlght 385
+INCLUDE header
+
+HELP hlp1, view("help streg")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	program parseMessage
+	script se_createAsSvyJknifeBstrapML
+	program svy_check_title
+END
+
+PROGRAM parseMessage
+BEGIN
+	if __MESSAGE.contains("__MI__") {
+		call script se_setMI_on
+		call main.bu_stset.hide
+	}
+	else {
+		call main.bu_mi_stset.hide
+	}
+END
+
+SCRIPT POSTINIT
+BEGIN
+	program check_bytab
+	program se_setFinalInitState
+END
+
+PROGRAM check_bytab
+BEGIN
+	if ! __MESSAGE.contains("__MI__") {
+		call script sub_set_by_on
+	}
+END
+
+SCRIPT svy_is_on
+BEGIN
+	program shared_off
+	rpt.ck_nohead.disable
+	rpt.ck_nolr.disable
+	script max_setDefaultNoLog
+END
+SCRIPT svy_is_off
+BEGIN
+	program shared_on
+	rpt.ck_nohead.enable
+	program check_frailty
+	script max_setDefaultLog
+END
+PROGRAM svy_check_title
+BEGIN
+	if __MESSAGE.contains("-svy-") {
+		call settitle "svy: streg - Fit parametric survival model for survey data"
+	}
+END
+DIALOG main, tabtitle("Model")						///
+	title("streg - Fit parametric survival model") // has svy title
+BEGIN
+  DEFINE _x _xsetbu
+  DEFINE _y _top
+  INCLUDE _bu_stset
+  BUTTON   bu_mi_stset _x        _y        _setbuwd  .,			/*
+		*/ onpush("view dialog mi_stset")			/*
+		*/ label("Survival settings...")			/*
+		*/ tooltip("Declare data to be survival-time data")
+
+  TEXT     tx_iv     _lft      _topph     _cwd1    .,			/*
+		*/ label("Independent variables:")			/*
+		*/
+  VARLIST  vl_iv     _lft      _ss       _iwd      .,			/*
+		*/ label("Independent variables") fv			/*
+		*/
+  CHECKBOX ck_nocons @         _ls       @         .,			/*
+  		*/label("Suppress constant term") option(noconstant)
+
+  GROUPBOX gb_model  _lft      _ls       _iwd      _ht6,		/*
+		*/ label("Survival distribution")			/*
+		*/
+  RADIO    rb_exp    _indent   _ss       _cwd2     .,			/*
+		*/ label("Exponential")					/*
+		*/ clickon("script exp")				/*
+		*/ first						/*
+		*/ option("dist(exponential)")				/*
+		*/
+  RADIO    rb_weib   _lft2     @         @         .,			/*
+		*/ label("Weibull")					/*
+		*/ clickon("script weib")				/*
+		*/ option("dist(weibull)")				/*
+		*/
+  RADIO    rb_gomp   _ilft     _ss       @         .,			/*
+		*/ label("Gompertz")					/*
+		*/ clickon("script gomp")				/*
+		*/ option("dist(gompertz)")				/*
+		*/
+  RADIO    rb_logn   _lft2     @         @         .,			/*
+		*/ label("Lognormal")					/*
+		*/ clickon("script logn")				/*
+		*/ option("dist(lognormal)")				/*
+		*/
+  RADIO    rb_logl   _ilft     _ss       @         .,			/*
+		*/ label("Loglogistic")					/*
+		*/ clickon("script logl")				/*
+		*/ option("dist(loglogistic)")				/*
+		*/
+  RADIO    rb_gamma  _lft2     @         @         .,			/*
+		*/ label("Generalized gamma")				/*
+		*/ clickon("script gamma")				/*
+		*/ last							/*
+		*/ option("dist(gamma)")				/*
+		*/
+
+  CHECKBOX ck_frailty _lft     +45       _iwd      _ht2,		/*
+		*/ label("Frailty distribution")			/*
+		*/ groupbox						/*
+		*/ clickon("script frailty_on")				/*
+		*/ clickoff("script frailty_off")			/*
+		*/
+  RADIO    rb_fgamma _indent   _ss       _cwd2     .,			/*
+		*/ label("Gamma")					/*
+		*/ first						/*
+		*/ option("frailty(gamma)")				/*
+		*/
+  RADIO    rb_figaus _lft2     @         @         .,			/*
+		*/ label("Inverse-Gaussian")				/*
+		*/ last							/*
+		*/ option("frailty(invgaussian)")			/*
+		*/
+
+  CHECKBOX ck_time   _lft      +45       _cwd1     .,			/*
+		*/ label("Use accelerated failure-time metric")		/*
+		*/ clickon("program time_tr_pr")			/*
+		*/ clickoff("program time_tr_pr")			/*
+		*/ option("time")					/*
+		*/
+END
+
+PROGRAM check4shared
+BEGIN
+	if !main.ck_frailty {
+		model2.tx_shared.disable
+		model2.vn_shared.disable
+	}
+	call program shared_on
+END
+
+PROGRAM check_frailty
+BEGIN
+	if main.ck_frailty {
+		call script frailty_on
+	}
+	if ! main.ck_frailty {
+		call script frailty_off
+	}
+END
+
+SCRIPT frailty_on
+BEGIN
+	main.rb_fgamma.enable
+	main.rb_figaus.enable
+	model2.tx_strata.disable
+	model2.vn_strata.disable
+	program check4shared
+	model2.tx_anc.disable
+	model2.vl_anc.disable
+	model2.tx_anc2.disable
+	model2.vl_anc2.disable
+	rpt.ck_nolr.enable
+END
+
+SCRIPT frailty_off
+BEGIN
+	main.rb_fgamma.disable
+	main.rb_figaus.disable
+	model2.tx_strata.enable
+	model2.vn_strata.enable
+	program check4shared
+	program ancillary_pr
+	rpt.ck_nolr.disable
+END
+
+SCRIPT ancillary_pr
+BEGIN
+	if main.rb_exp {
+		script exp
+	}
+	if main.rb_weib {
+		script weib
+	}
+	if main.rb_gomp {
+		script comp
+	}
+	if main.rb_logn {
+		script logn
+	}
+	if main.rb_logl {
+		script logl
+	}
+	if main.rb_gamma {
+		script gamma
+	}
+END
+
+PROGRAM time_tr_pr
+BEGIN
+	if main.rb_logl | main.rb_logn | main.rb_gamma {
+		call gaction main.ck_time.disable
+		call gaction rpt.ck_tr.enable
+	}
+	if main.rb_exp | main.rb_weib {
+		call gaction main.ck_time.enable
+		if main.ck_time {
+			call gaction rpt.ck_tr.disable
+		}
+		if ! main.ck_time {
+			call gaction rpt.ck_tr.enable
+		}
+	}
+	if main.rb_gomp {
+		call gaction main.ck_time.disable
+		call gaction rpt.ck_tr.disable
+	}
+END
+
+SCRIPT exp
+BEGIN
+	rpt.ck_nohr.enable
+	program time_tr_pr
+	program shared_on
+	model2.tx_anc.disable
+	model2.vl_anc.disable
+	model2.tx_anc2.disable
+	model2.vl_anc2.disable
+	script max_from_disable
+END
+
+SCRIPT weib
+BEGIN
+	rpt.ck_nohr.enable
+	program time_tr_pr
+	program shared_on
+	model2.tx_anc.enable
+	model2.vl_anc.enable
+	model2.tx_anc2.disable
+	model2.vl_anc2.disable
+	script max_from_enable
+END
+
+SCRIPT gomp
+BEGIN
+	rpt.ck_nohr.enable
+	program time_tr_pr
+	program shared_on
+	model2.tx_anc.enable
+	model2.vl_anc.enable
+	model2.tx_anc2.disable
+	model2.vl_anc2.disable
+	script max_from_enable
+END
+
+SCRIPT logn
+BEGIN
+	rpt.ck_nohr.disable
+	program time_tr_pr
+	program shared_on
+	model2.tx_anc.enable
+	model2.vl_anc.enable
+	model2.tx_anc2.disable
+	model2.vl_anc2.disable
+	script max_from_enable
+END
+
+SCRIPT logl
+BEGIN
+	rpt.ck_nohr.disable
+	program time_tr_pr
+	program shared_on
+	model2.tx_anc.enable
+	model2.vl_anc.enable
+	model2.tx_anc2.disable
+	model2.vl_anc2.disable
+	script max_from_enable
+END
+
+SCRIPT gamma
+BEGIN
+	rpt.ck_nohr.disable
+	program time_tr_pr
+	program shared_off
+	model2.tx_anc.enable
+	model2.vl_anc.enable
+	model2.tx_anc2.enable
+	model2.vl_anc2.enable
+	script max_from_enable
+END
+
+PROGRAM shared_off
+BEGIN
+	call gaction model2.tx_shared.disable
+	call gaction model2.vn_shared.disable
+END
+
+PROGRAM shared_on
+BEGIN
+	if main.ck_frailty & ! main.rb_gamma {
+		call gaction model2.tx_shared.enable
+		call gaction model2.vn_shared.enable
+	}
+END
+
+DIALOG model2, tabtitle("Model 2")
+BEGIN
+  GROUPBOX gb_opts   _lft      _top      _iwd      _ht27h,		/*
+  		*/ label("Options")
+  TEXT     tx_strata _ilft     _ms       _cwd3_2   .,			/*
+		*/ label("Strata ID variable:")				/*
+		*/
+DEFINE y @y
+  VARNAME  vn_strata @         _ss       @         .,			/*
+		*/ label("Strata ID variable")				/*
+		*/ option("strata")					/*
+		*/
+
+  TEXT     tx_offset _ilft3_2   y        @         .,			/*
+  		*/label("Offset variable:")
+  VARNAME  vn_offset @         _ss       @         .,			/*
+  		*/label("Offset variable") option(offset)
+
+  TEXT     tx_shared _ilft     _ls       _cwd2     .,			/*
+		*/ label("Shared frailty ID variable:")			/*
+		*/
+  VARNAME  vn_shared @         _ss       _cwd3_2   .,			/*
+		*/ label("Shared frailty ID variable")			/*
+		*/ option("shared")					/*
+		*/
+
+  TEXT     tx_anc    _ilft     _ls       _ibwd     .,			/*
+		*/ label("Independent variables to model the first ancillary parameter:")/*
+		*/
+  VARLIST  vl_anc    @         _ss       @         .,			/*
+		*/ label("Model variables for first ancillary parameter")/*
+		*/ option("ancillary") fv				/*
+		*/
+  TEXT     tx_anc2   @         _ls       @         .,			/*
+		*/ label("Independent variables to model the second ancillary parameter:")/*
+		*/
+  VARLIST  vl_anc2   @         _ss       @         .,			/*
+		*/ label("Model variables for second ancillary parameter")/*
+		*/ option("anc2") fv					/*
+		*/
+
+  DEFINE _x _ilft
+  DEFINE _y _ls
+  DEFINE _cx _ilw80
+  DEFINE _bux _islw80
+  INCLUDE _constraints
+
+  DEFINE _x _ilft
+  DEFINE _xw _ibwd
+  INCLUDE _ck_collinear
+END
+
+SCRIPT model2_PREINIT
+BEGIN
+	create STRING __const_tab
+	__const_tab.setvalue "model2"
+END
+
+INCLUDE _constraints_sc 
+INCLUDE sub_by_ifin_over_subpop
+INCLUDE se
+
+SCRIPT rpt_POSTINIT
+BEGIN
+	create STRING rpt_bu_fmtcoefResults
+	program rpt_bu_fmtcoef_ckResults
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _spr2
+  DEFINE _y _top
+  INCLUDE _sp_level
+  DEFINE y @y
+
+  CHECKBOX ck_nohr   _lft      _ls       _cwd1     .,			/*
+		*/ label("Do not report hazard ratios")			/*
+		*/ option("nohr")					/*
+		*/
+  CHECKBOX ck_tr     _lft2      @      @         .,			/*
+		*/ label("Report time ratios")				/*
+		*/ option("tr")						/*
+		*/
+  CHECKBOX ck_noshow _lft      _ms       @         .,			/*
+		*/ label("Do not report st variable descriptions")	/*
+		*/ option("noshow")					/*
+		*/
+  CHECKBOX ck_nohead _lft2      @       @         .,			/*
+  		*/label("Do not display output header") option(noheader)
+  CHECKBOX ck_nolr   _lft        _ms       @         .,			/*
+  		*/label("Do not perform likelihood-ratio test")		/*
+  		*/option("nolrtest")
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _nocnsreport
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _noomitted
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _vsquish
+
+  DEFINE _x _lft
+  DEFINE _y _ms
+  DEFINE _cx _iwd
+  INCLUDE _factor_vars_reporting
+
+  DEFINE _x _lft
+  DEFINE _y _xxxls
+  INCLUDE _bu_coef_table_reporting
+END
+
+INCLUDE fmt_coef_table_reporting_pr
+
+INCLUDE max_ml
+
+PROGRAM command
+BEGIN
+	allowxi
+	put /program by_output " "
+	put /program se_prefix_output " "
+	put "streg "
+	varlist [main.vl_iv]
+	put " " /program ifin_output
+	beginoptions
+		option main.ck_nocons
+		option radio(main rb_exp rb_weib rb_gomp rb_logn rb_logl rb_gamma)
+		if main.ck_frailty {
+			option radio(main rb_fgamma rb_figaus)
+		}
+		option main.ck_time
+		optionarg model2.vn_strata
+		optionarg model2.vn_offset
+		optionarg model2.vn_shared
+		optionarg model2.vl_anc
+		optionarg model2.vl_anc2
+		optionarg model2.cb_constr
+		option model2.ck_collinear
+
+		put " " /program se_output
+
+		optionarg /hidedefault rpt.sp_level
+		option rpt.ck_nohr
+		option rpt.ck_tr
+		option rpt.ck_noshow
+		option rpt.ck_nohead
+		option rpt.ck_nolr
+		INCLUDE _nocnsreport_pr
+		INCLUDE _noomitted_pr
+		INCLUDE _vsquish_pr
+		INCLUDE _factor_vars_reporting_pr
+		put " " rpt_bu_fmtcoefResults
+		put " " /program max_output
+	endoptions
+END

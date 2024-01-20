@@ -1,0 +1,527 @@
+/*
+  mi impute mvn
+
+*!  VERSION 1.0.6  05apr2011
+
+  keyword:  mi impute
+
+*/
+
+VERSION 12.0
+
+INCLUDE _std_large
+DEFINE _dlght 485
+INCLUDE header
+
+HELP hlp1, view("help mi impute mvn")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+	create STRING _mi_ivars
+	create LIST   _mi_IVARS_LIST
+	create STRING opts_bu_emResults
+	create STRING opts_bu_initmatResults
+	create STRING adv_bu_emResults
+	create STRING bu_groupOptResults
+END
+
+SCRIPT POSTINIT
+BEGIN
+	_mi_ivars.setvalue char _dta[_mi_ivars]
+
+	_mi_IVARS_LIST.Arrdropall
+	_mi_ivars.tokenize _mi_IVARS_LIST
+	main.cb_ivar.repopulate
+
+	create DOUBLE _mi_M
+	create STRING _mi_M_STR
+	program check_M
+END
+
+PROGRAM check_M
+BEGIN
+	call _mi_M_STR.setvalue char _dta[_mi_M]
+	call _mi_M.setvalue class _mi_M_STR.value
+
+	if _mi_M.islt(1) {
+		call main.ck_add.seton
+	}
+END
+
+DIALOG main, tabtitle("Main")	///
+	label("mi impute mvn - Impute using multivariate normal regression")
+BEGIN
+  TEXT     tx_dv 	_lft	_top	_iwd	.,			///
+	label("Imputed variables:")
+  COMBOBOX cb_ivar	@ 	_ss	@	.,			///
+	dropdown							///
+	append								///
+	contents(_mi_IVARS_LIST)					///
+	label("Imputed variables")
+
+  TEXT     tx_iv	@	_ms	@	.,			///
+	label("Independent variables:")
+  VARLIST  vl_iv	@	_ss	@	.,			///
+	fv								///
+	label("Independent variables")
+
+  CHECKBOX ck_nocons	@	_ms	@	.,			///
+	label("Suppress constant term")					///
+	option(noconstant)
+
+  DEFINE _x _lft
+  DEFINE _cx _iwd
+  DEFINE _y _ls
+  INCLUDE _mi_impute_opts
+END
+
+INCLUDE _mi_impute_opts_sc
+
+INCLUDE if
+
+DIALOG opts, tabtitle("MCMC options")
+BEGIN
+  SPINNER sp_burnin	_lft	_top	_spwd	.,			///
+	default(100)							///
+	min(0)								///
+	max(1000)							///
+	option(burnin)							///
+	label("Burn-in period")
+  TEXT tx_burnin	_spsep	@	_cwd1	.,			///
+	label("Burn-in period")
+  SPINNER sp_burnb	_lft2	@	_spwd	.,			///
+	default(100)							///
+	min(0)								///
+	max(1000)							///
+	option(burnbetween)						///
+	label("Burn-between period")
+  TEXT tx_burnb		_spsep	@	_cwd1	.,			///
+	label("Burn-between period")
+
+  TEXT tx_prior		_lft	_ls	_cwd1	.,			///
+	label("Prior distribution:")
+  COMBOBOX cb_prior	_lft	_ss	@	.,			///
+	dropdownlist							///
+	option(prior)							///
+	contents(opts_prior_list)					///
+	values(opts_prior_values)					///
+	onselchange(program opts_prior_sel_changed)			///
+	label("Prior distribution")
+
+  SPINNER sp_df		_lft2	@	_spwd	.,			///
+	option(df)							///
+	default(1)							///
+	min(1)								///
+	max(10000)							///
+	label("Degrees of freedom")
+  TEXT tx_df		_spsep	@	200	.,			///
+	label("Degrees of freedom")
+
+  CHECKBOX ck_mcmconly	_lft	_ls	_iwd	.,			///
+	option(mcmconly)						///
+	label("Perform MCMC for the length of the burn-in period without imputing missing values")
+
+  GROUPBOX gb_initmcmc	_lft	_ls	_iwd	_ht4,			///
+	label("Initial values for the MCMC procedure")
+  RADIO rb_em		_indent	_ss	100	., first		///
+	onclickon("opts.bu_em.enable")					///
+	onclickoff("opts.bu_em.disable")				///
+	label("EM")
+  BUTTON bu_em		+105	@	130	.,			///
+	onpush("program opts_bu_em_getOpts")				///
+	label("EM options")
+  RADIO rb_initmat	_ilft	_ms	100	., last			///
+	onclickon("opts.bu_initmat.enable")				///
+	onclickoff("opts.bu_initmat.disable")				///
+	label("Initial matrix")
+  BUTTON bu_initmat	+105	@	130	.,			///
+	onpush("program opts_bu_initmat_getOpts")			///
+	label("Initial matrix options")
+
+  CHECKBOX ck_wlfwgt	_lft	+40	_iwd	_ht2,			///
+	groupbox							///
+	onclickon("script opts_wlfwgt_on")				///
+	onclickoff("script opts_wlfwgt_off")				///
+	label("Specify weights for the worst linear function")
+  COMBOBOX cb_wlfwgt	_indent _ss	_ilw100	.,			///
+	dropdown							///
+	option("wlfwgt")						///
+	contents(matrix)						///
+	label("Specify weights for the worst linear function")
+  BUTTON bu_matrix_input _islw100 @	100	.,			///
+	label("Input matrix...")					///
+	onpush(program main_show_matrix_input)				///
+	tooltip("Input matrix by hand")
+
+  CHECKBOX ck_savew	_lft	+45	_iwd	_ht6h,			///
+	groupbox							///
+	onclickon(script opts_savingw_on)				///
+	onclickoff(script opts_savingw_off)				///
+	label("Save the worst linear function from each iteration to a dataset")
+  TEXT tx_savew		_indent	_ss	_ibwd	.,			///
+	label("Filename:")
+  FILE fi_savew		@	_ss	@	.,			///
+	label("Browse...")						///
+	option(savewlf)							///
+	filter("Stata Dataset (*.dta)|*.dta|All (*.*)|*.*")		///
+	save								///
+	error("Filename")
+  CHECKBOX ck_replacew	@	_ms	@	.,			///
+	option(replace)							///
+	label("Overwrite file if it already exists")
+
+  CHECKBOX ck_savep	_lft	+45	_iwd	_ht6h,			///
+	groupbox							///
+	onclickon(script opts_savingp_on)				///
+	onclickoff(script opts_savingp_off)				///
+	label("Save parameter estimates from each iteration to a file")
+  TEXT tx_savep		_indent	_ss	_ibwd	.,			///
+	label("Filename:")
+  FILE fi_savep		@	_ss	@	.,			///
+	label("Browse...")						///
+	option(saveptrace)						///
+	filter("Ptrace file (*.stptrace)|*.stptrace|All (*.*)|*.*")	///
+	defext(stptrace)						///
+	save								///
+	error("Filename")
+  CHECKBOX ck_replacep	@	_ms	@	.,			///
+	option(replace)							///
+	label("Overwrite file if it already exists")
+END
+
+LIST opts_prior_list
+BEGIN
+	"Uniform"
+	"Jeffreys"
+	"Ridge with degrees of freedom"
+END
+
+LIST opts_prior_values
+BEGIN
+	""
+	"jeffreys"
+	"ridge"
+END
+
+PROGRAM opts_prior_sel_changed
+BEGIN
+	if opts.cb_prior.iseq("ridge") {
+		call opts.sp_df.show
+		call opts.tx_df.show
+	}
+	else {
+		call opts.sp_df.hide
+		call opts.tx_df.hide
+	}
+END
+
+PROGRAM opts_bu_em_getOpts
+BEGIN
+	call create CHILD mi_impute_mvn_emopts AS opts_bu_em
+	call opts_bu_em.setExitString opts_bu_emResults
+	call opts_bu_em.setExitAction "program opts_bu_em_ckResults"
+END
+
+PROGRAM opts_bu_em_ckResults
+BEGIN
+	if opts_bu_emResults {
+		call opts.bu_em.setlabel "EM options *"
+	}
+	else {
+		call opts.bu_em.setlabel "EM options  "
+	}
+END
+
+PROGRAM opts_bu_initmat_getOpts
+BEGIN
+	call create CHILD mi_impute_mvn_initmatlist AS opts_bu_initmat
+	call opts_bu_initmat.setExitString opts_bu_initmatResults
+	call opts_bu_initmat.setExitAction "program opts_bu_initmat_ckResults"
+END
+
+PROGRAM opts_bu_initmat_ckResults
+BEGIN
+	if opts_bu_initmatResults {
+		call opts.bu_initmat.setlabel "Initial matrix options *"
+	}
+	else {
+		call opts.bu_initmat.setlabel "Initial matrix options  "
+	}
+END
+
+SCRIPT opts_wlfwgt_on
+BEGIN
+	opts.cb_wlfwgt.enable
+	opts.bu_matrix_input.enable
+END
+
+SCRIPT opts_wlfwgt_off
+BEGIN
+	opts.cb_wlfwgt.disable
+	opts.bu_matrix_input.disable
+END
+
+PROGRAM main_show_matrix_input
+BEGIN
+	call create STRING matrixInputResult
+	call create CHILD matrix_input AS matrixInput
+	if ! _rc {
+		call matrixInput.setExitString matrixInputResult
+		call matrixInput.setExitAction				///
+			"program main_getMatrixInputResult"
+		call matrixInput.callthru "isChildContext.settrue"
+	}
+END
+
+PROGRAM main_getMatrixInputResult
+BEGIN
+	call opts.cb_wlfwgt.repopulate
+END
+
+SCRIPT opts_savingw_on
+BEGIN
+	opts.tx_savew.enable
+	opts.fi_savew.enable
+	opts.ck_replacew.enable
+END
+
+SCRIPT opts_savingw_off
+BEGIN
+	opts.tx_savew.disable
+	opts.fi_savew.disable
+	opts.ck_replacew.disable
+END
+
+PROGRAM opts_savingw_output
+BEGIN
+        put `"""' opts.fi_savew `"""'
+        beginoptions
+                option opts.ck_replacew
+        endoptions
+END
+
+SCRIPT opts_savingp_on
+BEGIN
+	opts.tx_savep.enable
+	opts.fi_savep.enable
+	opts.ck_replacep.enable
+END
+
+SCRIPT opts_savingp_off
+BEGIN
+	opts.tx_savep.disable
+	opts.fi_savep.disable
+	opts.ck_replacep.disable
+END
+
+PROGRAM opts_savingp_output
+BEGIN
+        put `"""' opts.fi_savep `"""'
+        beginoptions
+                option opts.ck_replacep
+        endoptions
+END
+
+SCRIPT opts_disabled
+BEGIN
+	opts.sp_burnin.disable
+	opts.tx_burnin.disable
+	opts.sp_burnb.disable
+	opts.tx_burnb.disable
+	opts.tx_prior.disable
+	opts.cb_prior.disable
+	opts.sp_df.disable
+	opts.tx_df.disable
+	opts.ck_mcmconly.disable
+	opts.gb_initmcmc.disable
+	opts.rb_em.disable
+	opts.bu_em.disable
+	opts.rb_initmat.disable
+	opts.bu_initmat.disable
+	opts.ck_wlfwgt.disable
+	opts.cb_wlfwgt.disable
+	opts.bu_matrix_input.disable
+	opts.ck_savew.disable
+	opts.tx_savew.disable
+	opts.fi_savew.disable
+	opts.ck_replacew.disable
+	opts.ck_savep.disable
+	opts.tx_savep.disable
+	opts.fi_savep.disable
+	opts.ck_replacep.disable
+
+	adv.bu_em.enable
+END
+
+PROGRAM opts_enabled
+BEGIN
+	call opts.sp_burnin.enable
+	call opts.tx_burnin.enable
+	call opts.sp_burnb.enable
+	call opts.tx_burnb.enable
+	call opts.tx_prior.enable
+	call opts.cb_prior.enable
+	call opts.sp_df.enable
+	call opts.tx_df.enable
+	call opts.ck_mcmconly.enable
+	call opts.gb_initmcmc.enable
+	call opts.rb_em.enable
+	call opts.rb_initmat.enable
+	if opts.rb_em {
+		call opts.bu_em.enable
+	}
+	else {
+		call opts.bu_initmat.enable
+	}
+	call opts.ck_wlfwgt.enable
+	if opts.ck_wlfwgt {
+		call script opts_wlfwgt_on
+	}
+	call opts.ck_savew.enable
+	if opts.ck_savew {
+		call script opts_savingw_on
+	}
+	call opts.ck_savep.enable
+	if opts.ck_savep {
+		call script opts_savingp_on
+	}
+
+	call adv.bu_em.disable
+END
+
+DIALOG rpt, tabtitle("Reporting")
+BEGIN
+  DEFINE _x _lft
+  DEFINE _cx _iwd
+  DEFINE _y _top
+  INCLUDE _mi_impute_rpt
+  CHECKBOX ck_emlog	@	_ms	@	.,			///
+	option(emlog)							///
+	label("Display iteration log from EM")
+  CHECKBOX ck_emoutput	@	_ms	@	.,			///
+	option(emoutput)						///
+	label("Display intermediate output from EM")
+  CHECKBOX ck_mcmcdots	@	_ms	@	.,			///
+	option(mcmcdots)						///
+	label("Display dots as MCMC iterations are performed")
+  CHECKBOX ck_alldots	@	_ms	@	.,			///
+	option(alldots)							///
+	label("Display dots as intermediate iterations are performed")
+  CHECKBOX ck_nolog	@	_ms	@	.,			///
+	option(nolog)							///
+	label("Do not display information about the EM or MCMC procedures")
+END
+
+DIALOG adv, tabtitle("Advanced")
+BEGIN
+  CHECKBOX ck_force	_lft	_top	_iwd	.,			///
+	option(force)							///
+	label("Proceed with imputation even when missing imputed values are encountered")
+  CHECKBOX ck_emonly	@	_ms	_cwd1	_ht2,			///
+	groupbox							///
+	option(emonly)							///
+	onclickon("script opts_disabled")				///
+	onclickoff("program opts_enabled")				///
+	label("Perform EM estimation only")
+  BUTTON bu_em		_indent	_ss	130	.,			///
+	onpush("program adv_bu_em_getOpts")				///
+	label("EM options")
+END
+
+PROGRAM adv_bu_em_getOpts
+BEGIN
+	call create CHILD mi_impute_mvn_emopts AS adv_bu_em
+	call adv_bu_em.setExitString adv_bu_emResults
+	call adv_bu_em.setExitAction "program adv_bu_em_ckResults"
+END
+
+PROGRAM adv_bu_em_ckResults
+BEGIN
+	if adv_bu_emResults {
+		call adv.bu_em.setlabel "EM options *"
+	}
+	else {
+		call adv.bu_em.setlabel "EM options  "
+	}
+END
+
+PROGRAM opt_ridge_output
+BEGIN
+	put "ridge,"
+	optionarg opts.sp_df
+END
+
+PROGRAM command
+BEGIN
+	put "mi impute mvn "
+	varlist main.cb_ivar
+	if main.vl_iv {
+		put " = " main.vl_iv
+	}
+	put " " /program if_output
+	beginoptions
+		option main.ck_nocons
+		INCLUDE _mi_impute_opts_main_pr
+		if !adv.ck_emonly {
+			optionarg /hidedefault opts.sp_burnin
+			optionarg /hidedefault opts.sp_burnb
+			option opts.ck_mcmconly
+			if opts.cb_prior.iseq("jeffreys") {
+				optionarg opts.cb_prior
+			}
+			if opts.cb_prior.iseq("ridge") {
+				put "prior("
+				put /program opt_ridge_output
+				put ") "
+			}
+			if opts.ck_wlfwgt {
+				require opts.cb_wlfwgt
+				optionarg opts.cb_wlfwgt
+			}
+
+			if opts.ck_savew {
+				require opts.fi_savew
+				put "savewlf("
+				put /program opts_savingw_output
+				put ") "
+			}
+
+			if opts.rb_em & opts_bu_emResults {
+				put "initmcmc(em, "
+				put opts_bu_emResults
+				put ") "
+			}
+			if opts.rb_initmat & opts_bu_initmatResults {
+				put "initmcmc("
+				put opts_bu_initmatResults
+				put ") "
+			}
+
+			if opts.ck_savep {
+				require opts.fi_savep
+				put "saveptrace("
+				put /program opts_savingp_output
+				put ") "
+			}
+		}
+		INCLUDE _mi_impute_rpt_pr
+		option rpt.ck_emlog
+		option rpt.ck_emoutput
+		option rpt.ck_mcmcdots
+		option rpt.ck_alldots
+		option rpt.ck_nolog
+
+		option adv.ck_force
+		if adv.ck_emonly {
+			if adv_bu_emResults {
+				put "emonly("
+				put adv_bu_emResults
+				put ") "
+			}
+			else {
+				option adv.ck_emonly
+			}
+		}
+	endoptions
+END

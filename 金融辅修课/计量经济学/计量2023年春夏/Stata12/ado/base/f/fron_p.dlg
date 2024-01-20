@@ -1,0 +1,64 @@
+/*
+	predict (after frontier)
+
+*!  VERSION 1.2.0  04may2007
+
+*/
+
+VERSION 9.0
+
+INCLUDE _std_large  // ** set POSTINIT to match
+INCLUDE header
+HELP hlp1, view("help frontier postestimation")
+RESET res1
+
+SCRIPT POSTINIT
+BEGIN
+	script _p_gentype_setLarge
+END
+
+DIALOG main, label("predict - Prediction after estimation") tabtitle("Main")
+BEGIN
+  INCLUDE  _p_gentype
+
+  GROUPBOX gb_opts           _lft      _ls       _iwd      _ht12,	/*
+		*/ label("Produce:")
+  RADIO    rb_xb             _indent   _ss       _inwd     ., first	/*
+		*/ option(xb)						/*
+		*/ onclickon(script _p_gentype_single)			/*
+		*/ label("Linear prediction (a + B*x[i])")
+  RADIO    rb_stdp           @         _ss       @         .,		/*
+		*/ option(stdp)						/*
+		*/ onclickon(script _p_gentype_single)			/*
+		*/ label("Standard error of the prediction")
+  RADIO    rb_u              @         _ss       @         .,		/*
+		*/ option(u)						/*
+		*/ onclickon(script _p_gentype_single)			/*
+		*/ label("Minus the log of technical efficiency via E(u[i] | e[i])")
+  RADIO    rb_m              @         _ss       @         .,		/*
+		*/ option(m)						/*
+		*/ onclickon(script _p_gentype_single)			/*
+		*/ label("Minus the log of technical efficiency via M(u[i] | e[i])")
+  RADIO    rb_te             @         _ss       @         .,		/*
+		*/ option(te)						/*
+		*/ onclickon(script _p_gentype_single)			/*
+*/ label("Technical efficiency (cost efficiency when -cost- is specified)")
+  RADIO    rb_score          @         _ss       @         ., last	/*
+		*/ option(score)					/*
+		*/ onclickon(script _p_gentype_multiple)		/*
+		*/ label("Equation-level scores")
+END
+
+INCLUDE _p_gentype_sc
+INCLUDE ifin
+INCLUDE _type_list_fd
+
+PROGRAM command
+BEGIN
+	put "predict "
+	put " " /program _p_gentype_output
+	INCLUDE _ifin_pr
+	beginoptions
+		option radio(main rb_xb rb_stdp rb_u rb_m rb_te rb_score)
+	endoptions
+END

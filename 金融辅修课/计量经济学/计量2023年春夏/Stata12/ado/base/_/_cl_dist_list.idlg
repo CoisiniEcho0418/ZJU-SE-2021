@@ -1,0 +1,92 @@
+/*
+	_cl_dist_list.idlg -- cluster analysis distances lists include file
+			   -- also used in -mds- multidimensional scaling
+
+*!  VERSION 1.0.1  20dec2005
+
+*/
+
+LIST continuous_dist
+BEGIN
+	L2 or Euclidean
+	L2squared or squared Euclidean
+	L1 or absolute value
+	Linfinity or maximum value
+	L(#)
+	Lpower(#)
+	Canberra
+	correlation
+	angular
+END
+
+LIST contin_value
+BEGIN
+	L2
+	L2squared
+	L1
+	Linfinity
+	L
+	Lpower
+	Canberra
+	correlation
+	angular
+END
+
+LIST cont_power
+BEGIN
+	script power_off
+	script power_off
+	script power_off
+	script power_off
+	script power_on
+	script power_on
+	script power_off
+	script power_off
+	script power_off
+END
+
+LIST binary_dist
+BEGIN
+	matching: (a+d)/(a+b+c+d)
+	Jaccard: a/(a+b+c)
+	Russell: a/(a+b+c+d)
+	Hamann: ((a+d)-(b+c))/(a+b+c+d)
+	Dice: 2a/(2a+b+c)
+	antiDice: a/(a+2(b+c))
+	Sneath: 2(a+d)/(2(a+d)+(b+c))
+	Rogers: (a+d)/((a+d)+2(b+c))
+	Ochiai: a/sqrt((a+b)(a+c))
+	Yule: (ad-bc)/(ad+bc)
+	Anderberg: (a/(a+b)+a/(a+c)+d/(c+d)+d/(b+d))/4
+	Kulczynski: (a/(a+b)+a/(a+c))/2
+	Pearson: (ad-bc)/sqrt((a+b)(a+c)(d+b)(d+c))
+	Gower2: ad/sqrt((a+b)(a+c)(d+b)(d+c))
+END
+
+LIST binary_value
+BEGIN
+	matching
+	Jaccard
+	Russell
+	Hamann
+	Dice
+	antiDice
+	Sneath
+	Rogers
+	Ochiai
+	Yule
+	Anderberg
+	Kulczynski
+	Pearson
+	Gower2
+END
+
+LIST mixed_dist
+BEGIN
+	Gower: sum(delta_ijv*d_ijv)/sum(delta_ijv)
+END
+
+LIST mixed_value
+BEGIN
+	Gower
+END

@@ -1,0 +1,50 @@
+/*
+	label copy
+
+*!  VERSION 1.0.0  04feb2008
+
+*/
+
+VERSION 10.0
+
+INCLUDE _std_small
+INCLUDE header
+
+HELP hlp1, view("help label")
+RESET res1
+
+DIALOG main, label("label copy - Copy value labels")
+BEGIN
+  GROUPBOX     tx_note		_lft	_top	_iwd	_ht8,	///
+	label("Make a copy of an existing value label")
+
+  TEXT     tx_label		_ilft	_ms	_cwd2	.,	///
+  	label("Source name:")
+DEFINE TOP @y
+  COMBOBOX lb_label		@	_ss	@	.,	///
+	contents(valuelabels) label("Source name") dropdownlist
+
+  TEXT     tx_label_dest	_lft2	TOP	_cwd2	.,	///
+  	label("Destination name:")
+  EDIT     ed_label_dest	@	_ss	@	.,	///
+	label("Destination name")
+
+  CHECKBOX ck_replace		_ilft	+35	_ibwd	.,	///
+	option(replace) label("Overwrite destination name if it exists")
+END
+
+
+PROGRAM command
+BEGIN
+	put "label copy "
+	
+	require main.lb_label
+	put " " main.lb_label
+
+	require main.ed_label_dest
+	put " " main.ed_label_dest
+
+	beginoptions
+		option  main.ck_replace
+	endoptions
+END

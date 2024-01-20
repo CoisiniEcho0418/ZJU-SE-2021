@@ -1,0 +1,230 @@
+%
+% This is the LaTeX template file for lecture notes for ADS Zhejiang University.  
+% When preparing LaTeX notes for this class, please use this template.
+%
+% To familiarize yourself with this template, the body contains
+% some examples of its use.  Look them over.  Then you can
+% run LaTeX on this file.  After you have LaTeXed this file then
+% you can look over the result either by printing it out with
+% dvips or using xdvi.
+%
+% This template is based on the template for Prof. Sinclair's CS 270.
+
+\documentclass[twoside]{article}
+\usepackage{CJKutf8}
+
+%\usepackage{graphics}
+\usepackage{lineno}
+\linenumbers
+\usepackage{graphics}
+\usepackage{geometry}
+\usepackage{forest,amsmath}
+\usepackage{enumerate}
+\geometry{left=2.5cm,right=2cm,top=2.5cm,bottom=2.5cm}
+
+%\setlength{\oddsidemargin}{0.25 in}
+%\setlength{\evensidemargin}{-0.25 in}
+%\setlength{\topmargin}{-0.6 in}
+%\setlength{\textwidth}{6.5 in}
+%\setlength{\textheight}{8.5 in}
+%\setlength{\headsep}{0.75 in}
+\setlength{\parindent}{0 in}
+\setlength{\parskip}{0.1 in}
+
+\usepackage{listings}
+\usepackage{color}
+\renewcommand\lstlistingname{Quelltext} % Change language of section name
+\lstset{ % General setup for the package
+    language= C,
+    %basicstyle=\small\sffamily,
+    basicstyle=\ttfamily,
+    numbers=left,
+     numberstyle=\tiny,
+    frame=tb,
+    tabsize=4,
+    columns=fixed,
+    showstringspaces=false,
+    showtabs=false,
+    keepspaces,
+    commentstyle=\color{red},
+    keywordstyle=\color{blue}
+}
+
+%
+% The following commands set up the lecnum (lecture number)
+% counter and make various numbering schemes work relative
+% to the lecture number.
+%
+%\newcounter{lecnum}
+%\renewcommand{\thepage}{\thelecnum-\arabic{page}}
+%\renewcommand{\thesection}{\thelecnum.\arabic{section}}
+%\renewcommand{\theequation}{\thelecnum.\arabic{equation}}
+%\renewcommand{\thefigure}{\thelecnum.\arabic{figure}}
+%\renewcommand{\thetable}{\thelecnum.\arabic{table}}
+
+%
+% The following macro is used to generate the header.
+%
+
+
+%
+
+
+%Use this command for a figure; it puts a figure in wherever you want it.
+%usage: 
+%\begin{figure}
+%\begin{center}
+%\includegraphics[width=5in]{fig-file}
+%\caption{}\label{fig:delavl}
+%\end{center}
+%\end{figure}
+
+%%% Use the following command for a table
+%%%
+
+% Use these for theorems, lemmas, proofs, etc.
+\newtheorem{theorem}{Theorem}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newenvironment{proof}{{\bf Proof:}}{\hfill\rule{2mm}{2mm}}
+
+% **** IF YOU WANT TO DEFINE ADDITIONAL MACROS FOR YOURSELF, PUT THEM HERE:
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+%FILL IN THE RIGHT INFO.
+%\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
+%\lecture{1}{Project Name}{Deshi Ye}{Student 1, Student 2, 学生3}
+%\footnotetext{These notes are partially based on those of Nigel Mansell.}
+\title{Title of Project Report}
+\author{Group number: Student 1 \and Student 2 \and 学生3}
+\maketitle
+% **** YOUR NOTES GO HERE:
+
+% Some general latex examples and examples making use of the
+% macros follow.  
+%**** IN GENERAL, BE BRIEF. LONG SCRIBE NOTES, NO MATTER HOW WELL WRITTEN,
+%**** ARE NEVER READ BY ANYBODY.
+\begin{abstract}
+An abstract is a short summary of a research paper or a report.
+Abstract is to help your reader understand quickly what your report is about.
+Abstract typically spends:
+\begin{itemize}
+    \item importance of research and your problem (Introduction)
+    \item what you did (Methods)
+    \item what you have found (Results)
+    \item discuss the implication and significance of the project (Discussion)
+\end{itemize}
+\end{abstract}
+
+\section{Introduction}
+
+Problem description, purpose of this report, and (if any) background of the data structures and the algorithms.  Be concise.
+
+\section{Data Structure / Algorithm Specification}
+
+Description (pseudo-code preferred) of all the algorithms involved for solving the problem,  
+including specifications of main data structures.
+Or, if you are to introduce a new data structure and its related operations, do it in this chapter.
+
+If the algorithm you used is adopted from previous work, please cite that work, such as our textbook~\cite{10.5555/1614191}. 
+
+\section{Testing Results}
+
+Table of test cases.  
+Each test case usually consists of a brief description of the purpose of this case, the expected result, 
+the actual behavior of your program, the possible cause of a bug if your program does not function as expected, 
+and the current status (“pass”, or “corrected”, or “pending”).
+
+Example table in Table~\ref{tab:relevance}:
+\begin{table}[h!]
+  \begin{center}
+    \caption{Relevance}
+    \label{tab:relevance}
+    \begin{tabular}{|l|c|r|} % <-- Alignments: 1st column left, 2nd middle and 3rd right, with vertical lines in between
+    \hline
+       & \textbf{Relevant} & \textbf{Irrelevant}\\
+      \hline
+      Retrieved & $R_R$ (true positive) & $I_R$ (false positive) \\ \hline
+      Not Retrieved & $R_N $ (false negative)& $I_N$ (true negative)\\
+      \hline
+    \end{tabular}
+  \end{center}
+\end{table}
+
+\section{Analysis and Comments}
+
+Analysis of the time and space complexities of the algorithms.  
+Comments on comparing with other known data structures and algorithms.  
+Further possible improvements.
+
+\section{Author list}
+Specify who did what to show that particular contributors deserve to have their names printed in the cover page of your report.
+
+\section*{Declaration}
+We hereby declare that all the work done in this project titled "XXX" is of our independent effort as a group.
+
+\section{Signatures}
+
+Each author must sign his/her name here.
+
+\vskip 1.5in
+
+
+Please keep in mind that these are the “minimum” requirements.  Other requirements will be specified according to each project assignment.
+\newpage
+
+%%%% References 
+%%% bibliographystyle: is the referece style, such as plain, abbrv et al. 
+%%% bibliography: the file.bib;
+\bibliographystyle{abbrv}
+%\bibliographystyle{plain}
+\bibliography{ads}
+
+\appendix 
+\section{Source Code (if required)}
+At least 30\% of the lines must be commented.  Otherwise the code will NOT be evaluated.
+
+\begin{lstlisting}
+        static Position
+        SingleRotateWithLeft( Position K2 )
+        {
+            Position K1;
+
+            K1 = K2->Left;
+            K2->Left = K1->Right;
+            K1->Right = K2;
+
+            K2->Height = Max( Height( K2->Left ), Height( K2->Right ) ) + 1;
+            K1->Height = Max( Height( K1->Left ), K2->Height ) + 1;
+
+            return K1;  /* New root */
+        }
+\end{lstlisting}
+
+Pseudocode of Dijkstra's algorithm (Heap-Based)
+\begin{lstlisting}[mathescape=true]
+for every vertex $v$ in $V$ do 
+    $d_v \leftarrow \infty$; $p_v \leftarrow null$
+    Insert($Q, v, d_v$)  /* initialize vertex priority in the priority queue */
+$d_s \leftarrow 0$; Decrease($Q, s, d_s$)  /* update priority of $s$ with $d_s$ */
+$V_T \leftarrow \emptyset$
+for $i \leftarrow 0$ to $|V| - 1$ do
+    $u^* \leftarrow DeleteMin(Q)$  /* delete the minimum priority element */
+    $V_T \leftarrow V_t  \bigcup  \{u^*\}$
+    for every vertex $u$ in $V - V_T$  that is adjacent to $u^*$ do
+        if $d_{u^*} + w(u^*, u) < d_u $
+            $d_u \leftarrow d_{u^*} + w(u^*, u)$;  $p_u \leftarrow u^*$
+            Decrease($Q, u, d_u$)
+\end{lstlisting}
+
+\end{CJK*} 
+\end{document}
+
+
+
+
+

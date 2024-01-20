@@ -1,0 +1,102 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: SketchEditor - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating command line "rc.exe /l 0x409 /fo"Debug/SketchEditor.res" /d "_DEBUG" /d "_AFXDLL" "F:\SketchEditor\Source\SketchEditor.rc"" 
+Creating temporary file "C:\Users\Lenovo\AppData\Local\Temp\RSPD04E.tmp" with contents
+[
+/nologo /MDd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_AFXDLL" /D "_MBCS" /FR"Debug/" /Fp"Debug/SketchEditor.pch" /Yu"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"F:\SketchEditor\Source\3DPoint.cpp"
+"F:\SketchEditor\Source\Camera.cpp"
+"F:\SketchEditor\Source\CameraCalibDlg.cpp"
+"F:\SketchEditor\Source\CreateDlg.cpp"
+"F:\SketchEditor\Source\EdgeDlg.cpp"
+"F:\SketchEditor\Source\GeomModel.cpp"
+"F:\SketchEditor\Source\glm.cpp"
+"F:\SketchEditor\Source\LowerTab.cpp"
+"F:\SketchEditor\Source\MainFrm.cpp"
+"F:\SketchEditor\Source\ModifyDlg.cpp"
+"F:\SketchEditor\Source\RightBar.cpp"
+"F:\SketchEditor\Source\SketchEditor.cpp"
+"F:\SketchEditor\Source\SketchEditorDoc.cpp"
+"F:\SketchEditor\Source\SketchEditorView.cpp"
+"F:\SketchEditor\Source\SketchLine.cpp"
+"F:\SketchEditor\Source\SRFRenderDlg.cpp"
+"F:\SketchEditor\Source\SurfacingDlg.cpp"
+"F:\SketchEditor\Source\TrimmingDlg.cpp"
+"F:\SketchEditor\Source\TSRFRenderDlg.cpp"
+"F:\SketchEditor\Source\UpperTab.cpp"
+]
+Creating command line "cl.exe @C:\Users\Lenovo\AppData\Local\Temp\RSPD04E.tmp" 
+Creating temporary file "C:\Users\Lenovo\AppData\Local\Temp\RSPD05F.tmp" with contents
+[
+/nologo /MDd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_AFXDLL" /D "_MBCS" /FR"Debug/" /Fp"Debug/SketchEditor.pch" /Yc"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"F:\SketchEditor\Source\StdAfx.cpp"
+]
+Creating command line "cl.exe @C:\Users\Lenovo\AppData\Local\Temp\RSPD05F.tmp" 
+Creating temporary file "C:\Users\Lenovo\AppData\Local\Temp\RSPD060.tmp" with contents
+[
+opengl32.lib glu32.lib glut32.lib glaux.lib /nologo /subsystem:windows /incremental:yes /pdb:"Debug/SketchEditor.pdb" /debug /machine:I386 /out:"Debug/SketchEditor.exe" /pdbtype:sept 
+.\Debug\3DPoint.obj
+.\Debug\Camera.obj
+.\Debug\CameraCalibDlg.obj
+.\Debug\CreateDlg.obj
+.\Debug\EdgeDlg.obj
+.\Debug\GeomModel.obj
+.\Debug\glm.obj
+.\Debug\LowerTab.obj
+.\Debug\MainFrm.obj
+.\Debug\ModifyDlg.obj
+.\Debug\RightBar.obj
+.\Debug\SketchEditor.obj
+.\Debug\SketchEditorDoc.obj
+.\Debug\SketchEditorView.obj
+.\Debug\SketchLine.obj
+.\Debug\SRFRenderDlg.obj
+.\Debug\StdAfx.obj
+.\Debug\SurfacingDlg.obj
+.\Debug\TrimmingDlg.obj
+.\Debug\TSRFRenderDlg.obj
+.\Debug\UpperTab.obj
+.\Debug\SketchEditor.res
+]
+Creating command line "link.exe @C:\Users\Lenovo\AppData\Local\Temp\RSPD060.tmp"
+<h3>Output Window</h3>
+Compiling resources...
+Compiling...
+StdAfx.cpp
+Compiling...
+3DPoint.cpp
+Camera.cpp
+CameraCalibDlg.cpp
+CreateDlg.cpp
+EdgeDlg.cpp
+GeomModel.cpp
+glm.cpp
+LowerTab.cpp
+MainFrm.cpp
+ModifyDlg.cpp
+RightBar.cpp
+SketchEditor.cpp
+SketchEditorDoc.cpp
+SketchEditorView.cpp
+SketchLine.cpp
+SRFRenderDlg.cpp
+SurfacingDlg.cpp
+TrimmingDlg.cpp
+TSRFRenderDlg.cpp
+UpperTab.cpp
+Generating Code...
+Linking...
+
+
+
+<h3>Results</h3>
+SketchEditor.exe - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>

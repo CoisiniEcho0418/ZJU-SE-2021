@@ -1,0 +1,607 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#endif //_WIN32\r\n"
+    "#include ""res\\SketchEditor.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""         // Standard components\r\n"
+    "#include ""afxprint.rc""       // printing/print preview resources\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON    DISCARDABLE     "res\\SketchEditor.ico"
+IDR_SKETCHTYPE          ICON    DISCARDABLE     "res\\SketchEditorDoc.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDR_MAINFRAME           BITMAP  MOVEABLE PURE   "res\\Toolbar.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_MAINFRAME TOOLBAR DISCARDABLE  16, 15
+BEGIN
+    BUTTON      ID_FILE_NEW
+    BUTTON      ID_FILE_OPEN
+    BUTTON      ID_FILE_SAVE
+    SEPARATOR
+    BUTTON      ID_EDIT_CUT
+    BUTTON      ID_EDIT_COPY
+    BUTTON      ID_EDIT_PASTE
+    SEPARATOR
+    BUTTON      ID_FILE_PRINT
+    SEPARATOR
+    BUTTON      ID_APP_ABOUT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINFRAME MENU PRELOAD DISCARDABLE 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&New\tCtrl+N",                ID_FILE_NEW
+        MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
+        MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
+        MENUITEM "Save &As...",                 ID_FILE_SAVE_AS
+        MENUITEM SEPARATOR
+        MENUITEM "&Print...\tCtrl+P",           ID_FILE_PRINT
+        MENUITEM "Print Pre&view",              ID_FILE_PRINT_PREVIEW
+        MENUITEM "P&rint Setup...",             ID_FILE_PRINT_SETUP
+        MENUITEM SEPARATOR
+        MENUITEM "Recent File",                 ID_FILE_MRU_FILE1, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "&Edit"
+    BEGIN
+        MENUITEM "&Undo\tCtrl+Z",               ID_EDIT_UNDO
+        MENUITEM SEPARATOR
+        MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
+        MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
+        MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
+    END
+    POPUP "&View"
+    BEGIN
+        MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
+        MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
+    END
+    POPUP "&IO"
+    BEGIN
+        MENUITEM "Input &Model",                ID_FILE_OPEN
+        MENUITEM "Input &Sketch",               ID_INPUT_SKETCH
+        MENUITEM SEPARATOR
+        MENUITEM "&Output Sketch",              ID_OUTPUT_SKETCH
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About SketchEditor...",      ID_APP_ABOUT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_MAINFRAME ACCELERATORS PRELOAD MOVEABLE PURE 
+BEGIN
+    "N",            ID_FILE_NEW,            VIRTKEY, CONTROL
+    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL
+    "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL
+    "P",            ID_FILE_PRINT,          VIRTKEY, CONTROL
+    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL
+    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL
+    "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL
+    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL
+    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT
+    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT
+    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL
+    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT
+    VK_F6,          ID_NEXT_PANE,           VIRTKEY 
+    VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 235, 55
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About SketchEditor"
+FONT 8, "MS Sans Serif"
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,11,17,20,20
+    LTEXT           "SketchEditor Version 1.0",IDC_STATIC,40,10,119,8,
+                    SS_NOPREFIX
+    LTEXT           "Copyright (C) 2008",IDC_STATIC,40,25,119,8
+    DEFPUSHBUTTON   "OK",IDOK,178,7,50,14,WS_GROUP
+END
+
+IDD_SRF_RENDER DIALOG DISCARDABLE  0, 0, 115, 154
+STYLE WS_CHILD
+FONT 9, "Times New Roman"
+BEGIN
+    CONTROL         "Bounding Box",IDC_SRF_BOUNDING_BOX,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,8,7,58,10
+    CONTROL         "Bounding Sphere",IDC_SRF_BOUNDING_SPHERE,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,8,18,66,10
+    CONTROL         "Points",IDC_SRF_POINTS,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,8,29,34,10
+    CONTROL         "Wireframe",IDC_SRF_WIREFRAME,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,8,41,48,10
+    CONTROL         "Flat",IDC_SRF_RBFLAT,"Button",BS_AUTORADIOBUTTON | 
+                    WS_GROUP,11,59,32,10
+    CONTROL         "Smooth",IDC_SRF_RBSMOOTH,"Button",BS_AUTORADIOBUTTON,11,
+                    70,34,8
+    CONTROL         "Ghost",IDC_SRF_RBGHOST,"Button",BS_AUTORADIOBUTTON,11,
+                    79,34,8
+    CONTROL         "Zebra",IDC_SRF_RBZEBRA,"Button",BS_AUTORADIOBUTTON,11,
+                    88,37,9
+    CONTROL         "None",IDC_SRF_RDNONE,"Button",BS_AUTORADIOBUTTON,11,96,
+                    37,11
+    GROUPBOX        "Surface",IDC_STATIC,7,51,45,57
+    CONTROL         "Normals",IDC_SRF_CNORMALS,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,8,113,47,9
+    CONTROL         "Orignal Constrained Edges",IDC_SRF_ORIG_EDGE,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,8,123,93,8
+    CONTROL         "User Designed Edges",IDC_SRF_USER_EDGE,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,8,133,76,8
+END
+
+IDD_TSRF_RENDER DIALOG DISCARDABLE  0, 0, 115, 154
+STYLE WS_CHILD
+FONT 10, "Times New Roman"
+BEGIN
+    CONTROL         "Points",IDC_TSRF_POINTS,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,8,29,34,10
+    CONTROL         "Wireframe",IDC_TSRF_WIREFRAME,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,8,41,48,10
+    CONTROL         "Flat",IDC_TSRF_RBFLAT,"Button",BS_AUTORADIOBUTTON,11,59,
+                    32,10
+    CONTROL         "Smooth",IDC_TSRF_RBSMOOTH,"Button",BS_AUTORADIOBUTTON,
+                    11,70,34,8
+    CONTROL         "Ghost",IDC_TSRF_RBGHOST,"Button",BS_AUTORADIOBUTTON,11,
+                    79,34,8
+    CONTROL         "Zebra",IDC_TSRF_RBZEBRA,"Button",BS_AUTORADIOBUTTON,11,
+                    88,37,9
+    CONTROL         "None",IDC_TSRF_RDNONE,"Button",BS_AUTORADIOBUTTON,11,96,
+                    37,11
+    GROUPBOX        "Surface",IDC_STATIC,7,51,45,57
+    CONTROL         "Normals",IDC_TSRF_CNORMALS,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,8,113,47,9
+END
+
+IDD_EDGE DIALOG DISCARDABLE  0, 0, 115, 154
+STYLE WS_CHILD
+FONT 10, "Times New Roman"
+BEGIN
+END
+
+IDD_CREATE DIALOG DISCARDABLE  0, 0, 115, 154
+STYLE WS_CHILD
+FONT 10, "Times New Roman"
+BEGIN
+    PUSHBUTTON      "Create on surface",IDC_CREATE_SURFACE,7,7,60,14
+    PUSHBUTTON      "Create in space",IDC_CREATE_SPACE,7,27,60,14
+    PUSHBUTTON      "Clear last stroke",IDC_CREATE_CLEAR,7,48,60,14
+END
+
+IDD_MODIFY DIALOG DISCARDABLE  0, 0, 115, 154
+STYLE WS_CHILD
+FONT 10, "Times New Roman"
+BEGIN
+    PUSHBUTTON      "Modify",IDC_MODIFY_MODIFY,7,7,54,14
+    PUSHBUTTON      "Modify locally",IDC_MODIFY_MODIFY_LOCAL,7,27,54,14
+    PUSHBUTTON      "Smooth Svt-Gly",IDC_MODIFY_SMOOTH,7,47,54,14
+    PUSHBUTTON      "Clear last stroke",IDC_MODIFY_CLEAR,7,67,54,14
+END
+
+IDD_SURFACING DIALOG DISCARDABLE  0, 0, 138, 165
+STYLE WS_CHILD
+FONT 10, "Times New Roman"
+BEGIN
+    PUSHBUTTON      "Surface",IDC_SURFACING_SURFACE,7,7,55,14
+    PUSHBUTTON      "Inflate",IDC_SURFACING_INFLATE,7,23,55,14
+    PUSHBUTTON      "Laplc Smth (x1)",IDC_SURFACE_LAPLC1,7,39,55,14
+    PUSHBUTTON      "Laplc Smth (x50)",IDC_SURFACING_LAPLC50,7,55,55,14
+    PUSHBUTTON      "Smooth",IDC_SURFACING_SMOOTH,7,71,55,14
+    PUSHBUTTON      "Flip",IDC_SURFACING_FLIP,7,87,55,14
+    PUSHBUTTON      "Pick",IDC_SURFACING_PICK,7,111,55,14
+    PUSHBUTTON      "Change Color",IDC_SURFACING_CHGCOLOR,7,125,55,14
+    PUSHBUTTON      "Delete",IDC_SURFACING_DELETE,7,139,55,14
+    CONTROL         "Slider1",IDC_SBPRESSURE,"msctls_trackbar32",TBS_VERT | 
+                    TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,67,7,11,83
+    LTEXT           "Pressure",IDC_STATIC,64,89,27,8
+    LTEXT           "+",IDC_STATIC,80,11,8,8
+    LTEXT           "-",IDC_STATIC,80,80,8,8
+    GROUPBOX        "Active Surface",IDC_STATIC,7,102,118,56
+    CONTROL         "Show active Srf",IDC_SURFACING_SHOWSRF,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,63,113,59,10
+    LTEXT           "Max.Pressure",IDC_STATIC,79,44,42,8
+    EDITTEXT        IDC_EMAXPRESSURE,80,54,43,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "-",IDC_BMAXPRESSUREMINUS,80,65,21,14
+    PUSHBUTTON      "+",IDC_BMAXPRESSUREPLUS,102,65,21,14
+END
+
+IDD_CAMERA_CALIB DIALOG DISCARDABLE  0, 0, 109, 141
+STYLE WS_CHILD
+FONT 8, "Times New Roman"
+BEGIN
+END
+
+IDD_TRIMMING DIALOG DISCARDABLE  0, 0, 115, 154
+STYLE WS_CHILD
+FONT 10, "Times New Roman"
+BEGIN
+    LTEXT           "First choose base edge,",IDC_STATIC,7,7,77,8
+    LTEXT           "then edge to be trimmed",IDC_STATIC,7,15,77,8
+    CONTROL         "Trim as L Joint",IDC_TRIM_RBLJOINT,"Button",
+                    BS_AUTORADIOBUTTON,11,38,61,10
+    CONTROL         "Trim as T Joint",IDC_TRIM_RTJOINT,"Button",
+                    BS_AUTORADIOBUTTON,11,50,61,10
+    GROUPBOX        "Edge Trim",IDC_STATIC,7,25,69,45
+END
+
+IDD_RIGHTBAR DIALOG DISCARDABLE  0, 0, 143, 378
+STYLE WS_CHILD
+FONT 9, "Times New Roman"
+BEGIN
+    CONTROL         "Tab1",IDC_TABUPPER,"SysTabControl32",0x0,7,7,129,166
+    CONTROL         "Tab2",IDC_TABLOWER,"SysTabControl32",0x0,7,181,129,175
+END
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "\0"
+            VALUE "CompanyName", "\0"
+            VALUE "FileDescription", "SketchEditor MFC Application\0"
+            VALUE "FileVersion", "1, 0, 0, 1\0"
+            VALUE "InternalName", "SketchEditor\0"
+            VALUE "LegalCopyright", "Copyright (C) 2008\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "SketchEditor.EXE\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "SketchEditor Application\0"
+            VALUE "ProductVersion", "1, 0, 0, 1\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 228
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 48
+    END
+
+    IDD_SRF_RENDER, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 108
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 147
+    END
+
+    IDD_TSRF_RENDER, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 108
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 147
+    END
+
+    IDD_EDGE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 108
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 147
+    END
+
+    IDD_CREATE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 108
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 147
+    END
+
+    IDD_MODIFY, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 108
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 147
+    END
+
+    IDD_SURFACING, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 131
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 158
+    END
+
+    IDD_CAMERA_CALIB, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 102
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 134
+    END
+
+    IDD_TRIMMING, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 108
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 147
+    END
+
+    IDD_RIGHTBAR, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 136
+        TOPMARGIN, 7
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE PRELOAD DISCARDABLE 
+BEGIN
+    IDR_MAINFRAME           "SketchEditor\n\nSketch\n\n\nSketchEditor.Document\nSketch Document"
+END
+
+STRINGTABLE PRELOAD DISCARDABLE 
+BEGIN
+    AFX_IDS_APP_TITLE       "SketchEditor"
+    AFX_IDS_IDLEMESSAGE     "Ready"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_INDICATOR_EXT        "EXT"
+    ID_INDICATOR_CAPS       "CAP"
+    ID_INDICATOR_NUM        "NUM"
+    ID_INDICATOR_SCRL       "SCRL"
+    ID_INDICATOR_OVR        "OVR"
+    ID_INDICATOR_REC        "REC"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_FILE_NEW             "Create a new document\nNew"
+    ID_FILE_OPEN            "Open an existing document\nOpen"
+    ID_FILE_CLOSE           "Close the active document\nClose"
+    ID_FILE_SAVE            "Save the active document\nSave"
+    ID_FILE_SAVE_AS         "Save the active document with a new name\nSave As"
+    ID_FILE_PAGE_SETUP      "Change the printing options\nPage Setup"
+    ID_FILE_PRINT_SETUP     "Change the printer and printing options\nPrint Setup"
+    ID_FILE_PRINT           "Print the active document\nPrint"
+    ID_FILE_PRINT_PREVIEW   "Display full pages\nPrint Preview"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_APP_ABOUT            "Display program information, version number and copyright\nAbout"
+    ID_APP_EXIT             "Quit the application; prompts to save documents\nExit"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_FILE_MRU_FILE1       "Open this document"
+    ID_FILE_MRU_FILE2       "Open this document"
+    ID_FILE_MRU_FILE3       "Open this document"
+    ID_FILE_MRU_FILE4       "Open this document"
+    ID_FILE_MRU_FILE5       "Open this document"
+    ID_FILE_MRU_FILE6       "Open this document"
+    ID_FILE_MRU_FILE7       "Open this document"
+    ID_FILE_MRU_FILE8       "Open this document"
+    ID_FILE_MRU_FILE9       "Open this document"
+    ID_FILE_MRU_FILE10      "Open this document"
+    ID_FILE_MRU_FILE11      "Open this document"
+    ID_FILE_MRU_FILE12      "Open this document"
+    ID_FILE_MRU_FILE13      "Open this document"
+    ID_FILE_MRU_FILE14      "Open this document"
+    ID_FILE_MRU_FILE15      "Open this document"
+    ID_FILE_MRU_FILE16      "Open this document"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_NEXT_PANE            "Switch to the next window pane\nNext Pane"
+    ID_PREV_PANE            "Switch back to the previous window pane\nPrevious Pane"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_WINDOW_SPLIT         "Split the active window into panes\nSplit"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_EDIT_CLEAR           "Erase the selection\nErase"
+    ID_EDIT_CLEAR_ALL       "Erase everything\nErase All"
+    ID_EDIT_COPY            "Copy the selection and put it on the Clipboard\nCopy"
+    ID_EDIT_CUT             "Cut the selection and put it on the Clipboard\nCut"
+    ID_EDIT_FIND            "Find the specified text\nFind"
+    ID_EDIT_PASTE           "Insert Clipboard contents\nPaste"
+    ID_EDIT_REPEAT          "Repeat the last action\nRepeat"
+    ID_EDIT_REPLACE         "Replace specific text with different text\nReplace"
+    ID_EDIT_SELECT_ALL      "Select the entire document\nSelect All"
+    ID_EDIT_UNDO            "Undo the last action\nUndo"
+    ID_EDIT_REDO            "Redo the previously undone action\nRedo"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_VIEW_TOOLBAR         "Show or hide the toolbar\nToggle ToolBar"
+    ID_VIEW_STATUS_BAR      "Show or hide the status bar\nToggle StatusBar"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    AFX_IDS_SCSIZE          "Change the window size"
+    AFX_IDS_SCMOVE          "Change the window position"
+    AFX_IDS_SCMINIMIZE      "Reduce the window to an icon"
+    AFX_IDS_SCMAXIMIZE      "Enlarge the window to full size"
+    AFX_IDS_SCNEXTWINDOW    "Switch to the next document window"
+    AFX_IDS_SCPREVWINDOW    "Switch to the previous document window"
+    AFX_IDS_SCCLOSE         "Close the active window and prompts to save the documents"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    AFX_IDS_SCRESTORE       "Restore the window to normal size"
+    AFX_IDS_SCTASKLIST      "Activate Task List"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    AFX_IDS_PREVIEW_CLOSE   "Close print preview mode\nCancel Preview"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#endif //_WIN32
+#include "res\SketchEditor.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"         // Standard components
+#include "afxprint.rc"       // printing/print preview resources
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

@@ -1,0 +1,18 @@
+﻿  main.cpp
+C:\Users\11\Desktop\信安原\HW2\Large number arithmetic\main.cpp(66,3): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+C:\Users\11\Desktop\信安原\HW2\Large number arithmetic\main.cpp(83,3): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+C:\Users\11\Desktop\信安原\HW2\Large number arithmetic\main.cpp(103,3): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+C:\Users\11\Desktop\信安原\HW2\Large number arithmetic\main.cpp(120,3): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+C:\Users\11\Desktop\信安原\HW2\Large number arithmetic\main.cpp(146,3): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+C:\Users\11\Desktop\信安原\HW2\Large number arithmetic\main.cpp(160,3): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+C:\Users\11\Desktop\信安原\HW2\Large number arithmetic\main.cpp(191,3): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+C:\Users\11\Desktop\信安原\HW2\Large number arithmetic\main.cpp(204,3): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+C:\Users\11\Desktop\信安原\HW2\Large number arithmetic\main.cpp(251,29): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+C:\Users\11\Desktop\信安原\HW2\Large number arithmetic\main.cpp(254,25): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+C:\Users\11\Desktop\信安原\HW2\Large number arithmetic\main.cpp(503,29): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+C:\Users\11\Desktop\信安原\HW2\Large number arithmetic\main.cpp(506,25): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+  正在生成代码
+  Previous IPDB not found, fall back to full compilation.
+  All 163 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  已完成代码的生成
+  Large number arithmetic.vcxproj -> C:\Users\11\Desktop\信安原\HW2\Large number arithmetic\x64\Release\Large number arithmetic.exe

@@ -1,0 +1,43 @@
+Title: Revisiting Intermediate Layer Distillation for Compressing Language Models: An Overfitting Perspective
+Authors: Jongwoo Ko, Seungjoon Park, Minchan Jeong, Sukjin Hong, Euijai Ahn, Du-Seong Chang, Se-Young Yun
+Abstract: Knowledge distillation (KD) is a highly promising method for mitigating the computational problems of pre-trained language models (PLMs). Among various KD approaches, Intermediate Layer Distillation (ILD) has been a de facto standard KD method with its performance efficacy in the NLP field. In this paper, we find that existing ILD methods are prone to overfitting to training datasets, although these methods transfer more information than the original KD. Next, we present the simple observations to mitigate the overfitting of ILD: distilling only the last Transformer layer and conducting ILD on supplementary tasks. Based on our two findings, we propose a simple yet effective consistency-regularized ILD (CR-ILD), which prevents the student model from overfitting the training dataset. Substantial experiments on distilling BERT on the GLUE benchmark and several synthetic datasets demonstrate that our proposed ILD method outperforms other KD techniques. Our code is available at https://github.com/jongwooko/CR-ILD.
+Cite (Informal):Revisiting Intermediate Layer Distillation for Compressing Language Models: An Overfitting Perspective (Ko et al., Findings 2023)
+Year:2023
+Venue:Findings
+Video:https://aclanthology.org/2023.findings-eacl.12.mp4
+Anthology ID:2023.findings-eacl.12
+Bibkey:ko-etal-2023-revisiting
+Volume:Findings of the Association for Computational Linguistics: EACL 2023
+URL:https://aclanthology.org/2023.findings-eacl.12
+PDF:https://aclanthology.org/2023.findings-eacl.12.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Jongwoo Ko, Seungjoon Park, Minchan Jeong, Sukjin Hong, Euijai Ahn, Du-Seong Chang, and Se-Young Yun. 2023. Revisiting Intermediate Layer Distillation for Compressing Language Models: An Overfitting Perspective. In Findings of the Association for Computational Linguistics: EACL 2023, pages 158–175, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:158–175
+DOI:10.18653/v1/2023.findings-eacl.12
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{ko-etal-2023-revisiting,
+    title = "Revisiting Intermediate Layer Distillation for Compressing Language Models: An Overfitting Perspective",
+    author = "Ko, Jongwoo  and
+      Park, Seungjoon  and
+      Jeong, Minchan  and
+      Hong, Sukjin  and
+      Ahn, Euijai  and
+      Chang, Du-Seong  and
+      Yun, Se-Young",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Findings of the Association for Computational Linguistics: EACL 2023",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.findings-eacl.12",
+    doi = "10.18653/v1/2023.findings-eacl.12",
+    pages = "158--175",
+    abstract = "Knowledge distillation (KD) is a highly promising method for mitigating the computational problems of pre-trained language models (PLMs). Among various KD approaches, Intermediate Layer Distillation (ILD) has been a de facto standard KD method with its performance efficacy in the NLP field. In this paper, we find that existing ILD methods are prone to overfitting to training datasets, although these methods transfer more information than the original KD. Next, we present the simple observations to mitigate the overfitting of ILD: distilling only the last Transformer layer and conducting ILD on supplementary tasks. Based on our two findings, we propose a simple yet effective consistency-regularized ILD (CR-ILD), which prevents the student model from overfitting the training dataset. Substantial experiments on distilling BERT on the GLUE benchmark and several synthetic datasets demonstrate that our proposed ILD method outperforms other KD techniques. Our code is available at \url{https://github.com/jongwooko/CR-ILD}.",
+}

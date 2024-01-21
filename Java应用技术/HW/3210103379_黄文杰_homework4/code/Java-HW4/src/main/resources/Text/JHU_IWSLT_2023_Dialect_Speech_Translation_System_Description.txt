@@ -1,0 +1,42 @@
+Title: JHU IWSLT 2023 Dialect Speech Translation System Description
+Authors: Amir Hussein, Cihan Xiao, Neha Verma, Thomas Thebaud, Matthew Wiesner, Sanjeev Khudanpur
+Abstract: This paper presents JHU’s submissions to the IWSLT 2023 dialectal and low-resource track of Tunisian Arabic to English speech translation. The Tunisian dialect lacks formal orthography and abundant training data, making it challenging to develop effective speech translation (ST) systems. To address these challenges, we explore the integration of large pre-trained machine translation (MT) models, such as mBART and NLLB-200 in both end-to-end (E2E) and cascaded speech translation (ST) systems. We also improve the performance of automatic speech recognition (ASR) through the use of pseudo-labeling data augmentation and channel matching on telephone data. Finally, we combine our E2E and cascaded ST systems with Minimum Bayes-Risk decoding. Our combined system achieves a BLEU score of 21.6 and 19.1 on test2 and test3, respectively.
+Cite (Informal):JHU IWSLT 2023 Dialect Speech Translation System Description (Hussein et al., IWSLT 2023)
+Year:2023
+Venue:IWSLT
+Anthology ID:2023.iwslt-1.26
+Bibkey:hussein-etal-2023-jhu
+Volume:Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023)
+URL:https://aclanthology.org/2023.iwslt-1.26
+PDF:https://aclanthology.org/2023.iwslt-1.26.pdf
+Month:July
+SIG:SIGSLT
+Address:Toronto, Canada (in-person and online)
+Language:
+Cite (ACL):Amir Hussein, Cihan Xiao, Neha Verma, Thomas Thebaud, Matthew Wiesner, and Sanjeev Khudanpur. 2023. JHU IWSLT 2023 Dialect Speech Translation System Description. In Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023), pages 283–290, Toronto, Canada (in-person and online). Association for Computational Linguistics.
+Editors:Elizabeth Salesky,Marcello Federico,Marine Carpuat
+Note:
+Pages:283–290
+DOI:10.18653/v1/2023.iwslt-1.26
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{hussein-etal-2023-jhu,
+    title = "{JHU} {IWSLT} 2023 Dialect Speech Translation System Description",
+    author = "Hussein, Amir  and
+      Xiao, Cihan  and
+      Verma, Neha  and
+      Thebaud, Thomas  and
+      Wiesner, Matthew  and
+      Khudanpur, Sanjeev",
+    editor = "Salesky, Elizabeth  and
+      Federico, Marcello  and
+      Carpuat, Marine",
+    booktitle = "Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada (in-person and online)",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.iwslt-1.26",
+    doi = "10.18653/v1/2023.iwslt-1.26",
+    pages = "283--290",
+    abstract = "This paper presents JHU{'}s submissions to the IWSLT 2023 dialectal and low-resource track of Tunisian Arabic to English speech translation. The Tunisian dialect lacks formal orthography and abundant training data, making it challenging to develop effective speech translation (ST) systems. To address these challenges, we explore the integration of large pre-trained machine translation (MT) models, such as mBART and NLLB-200 in both end-to-end (E2E) and cascaded speech translation (ST) systems. We also improve the performance of automatic speech recognition (ASR) through the use of pseudo-labeling data augmentation and channel matching on telephone data. Finally, we combine our E2E and cascaded ST systems with Minimum Bayes-Risk decoding. Our combined system achieves a BLEU score of 21.6 and 19.1 on test2 and test3, respectively.",
+}

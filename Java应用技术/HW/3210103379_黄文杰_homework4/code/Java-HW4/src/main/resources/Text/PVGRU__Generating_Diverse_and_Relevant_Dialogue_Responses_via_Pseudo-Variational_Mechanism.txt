@@ -1,0 +1,41 @@
+Title: PVGRU: Generating Diverse and Relevant Dialogue Responses via Pseudo-Variational Mechanism
+Authors: Yongkang Liu, Shi Feng, Daling Wang, Yifei Zhang, Hinrich Schütze
+Abstract: We investigate response generation for multi-turn dialogue in generative chatbots. Existing generative modelsbased on RNNs (Recurrent Neural Networks) usually employ the last hidden state to summarize the history, which makesmodels unable to capture the subtle variability observed in different dialogues and cannot distinguish the differencesbetween dialogues that are similar in composition. In this paper, we propose Pseudo-Variational Gated Recurrent Unit (PVGRU). The key novelty of PVGRU is a recurrent summarizing variable thataggregates the accumulated distribution variations of subsequences. We train PVGRU without relying on posterior knowledge, thus avoiding the training-inference inconsistency problem. PVGRU can perceive subtle semantic variability through summarizing variables that are optimized by two objectives we employ for training: distribution consistency and reconstruction. In addition, we build a Pseudo-Variational Hierarchical Dialogue(PVHD) model based on PVGRU. Experimental results demonstrate that PVGRU can broadly improve the diversity andrelevance of responses on two benchmark datasets.
+Cite (Informal):PVGRU: Generating Diverse and Relevant Dialogue Responses via Pseudo-Variational Mechanism (Liu et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.185
+Bibkey:liu-etal-2023-pvgru
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.185
+PDF:https://aclanthology.org/2023.acl-long.185.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Yongkang Liu, Shi Feng, Daling Wang, Yifei Zhang, and Hinrich Schütze. 2023. PVGRU: Generating Diverse and Relevant Dialogue Responses via Pseudo-Variational Mechanism. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 3295–3310, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:3295–3310
+DOI:10.18653/v1/2023.acl-long.185
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{liu-etal-2023-pvgru,
+    title = "{PVGRU}: Generating Diverse and Relevant Dialogue Responses via Pseudo-Variational Mechanism",
+    author = {Liu, Yongkang  and
+      Feng, Shi  and
+      Wang, Daling  and
+      Zhang, Yifei  and
+      Sch{\"u}tze, Hinrich},
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.185",
+    doi = "10.18653/v1/2023.acl-long.185",
+    pages = "3295--3310",
+    abstract = "We investigate response generation for multi-turn dialogue in generative chatbots. Existing generative modelsbased on RNNs (Recurrent Neural Networks) usually employ the last hidden state to summarize the history, which makesmodels unable to capture the subtle variability observed in different dialogues and cannot distinguish the differencesbetween dialogues that are similar in composition. In this paper, we propose Pseudo-Variational Gated Recurrent Unit (PVGRU). The key novelty of PVGRU is a recurrent summarizing variable thataggregates the accumulated distribution variations of subsequences. We train PVGRU without relying on posterior knowledge, thus avoiding the training-inference inconsistency problem. PVGRU can perceive subtle semantic variability through summarizing variables that are optimized by two objectives we employ for training: distribution consistency and reconstruction. In addition, we build a Pseudo-Variational Hierarchical Dialogue(PVHD) model based on PVGRU. Experimental results demonstrate that PVGRU can broadly improve the diversity andrelevance of responses on two benchmark datasets.",
+}

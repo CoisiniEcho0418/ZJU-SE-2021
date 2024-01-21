@@ -1,0 +1,39 @@
+Title: Revealing Single Frame Bias for Video-and-Language Learning
+Authors: Jie Lei, Tamara Berg, Mohit Bansal
+Abstract: Training an effective video-and-language model intuitively requires multiple frames as model inputs. However, it is unclear whether using multiple frames is beneficial to downstream tasks, and if yes, whether the performance gain is worth the drastically-increased computation and memory costs resulting from using more frames. In this work, we explore single-frame models for video-and-language learning. On a diverse set of video-and-language tasks (including text-to-video retrieval and video question answering), we show the surprising result that, with large-scale pre-training and a proper frame ensemble strategy at inference time, a single-frame trained model that does not consider temporal information can achieve better performance than existing methods that use multiple frames for training. This result reveals the existence of a strong “static appearance bias” in popular video-and-language datasets. Therefore, to allow for a more comprehensive evaluation of video-and-language models, we propose two new retrieval tasks based on existing fine-grained action recognition datasets that encourage temporal modeling. Our code is available at https://github.com/jayleicn/singularity.
+Cite (Informal):Revealing Single Frame Bias for Video-and-Language Learning (Lei et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.29
+Bibkey:lei-etal-2023-revealing
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.29
+PDF:https://aclanthology.org/2023.acl-long.29.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Jie Lei, Tamara Berg, and Mohit Bansal. 2023. Revealing Single Frame Bias for Video-and-Language Learning. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 487–507, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:487–507
+DOI:10.18653/v1/2023.acl-long.29
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{lei-etal-2023-revealing,
+    title = "Revealing Single Frame Bias for Video-and-Language Learning",
+    author = "Lei, Jie  and
+      Berg, Tamara  and
+      Bansal, Mohit",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.29",
+    doi = "10.18653/v1/2023.acl-long.29",
+    pages = "487--507",
+    abstract = "Training an effective video-and-language model intuitively requires multiple frames as model inputs. However, it is unclear whether using multiple frames is beneficial to downstream tasks, and if yes, whether the performance gain is worth the drastically-increased computation and memory costs resulting from using more frames. In this work, we explore single-frame models for video-and-language learning. On a diverse set of video-and-language tasks (including text-to-video retrieval and video question answering), we show the surprising result that, with large-scale pre-training and a proper frame ensemble strategy at inference time, a single-frame trained model that does not consider temporal information can achieve better performance than existing methods that use multiple frames for training. This result reveals the existence of a strong {``}static appearance bias{''} in popular video-and-language datasets. Therefore, to allow for a more comprehensive evaluation of video-and-language models, we propose two new retrieval tasks based on existing fine-grained action recognition datasets that encourage temporal modeling. Our code is available at \url{https://github.com/jayleicn/singularity}.",
+}

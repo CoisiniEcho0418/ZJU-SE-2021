@@ -1,0 +1,41 @@
+Title: Binary and Ternary Natural Language Generation
+Authors: Zechun Liu, Barlas Oguz, Aasish Pappu, Yangyang Shi, Raghuraman Krishnamoorthi
+Abstract: Ternary and binary neural networks enable multiplication-free computation and promise multiple orders of magnitude efficiency gains over full-precision networks if implemented on specialized hardware. However, since both the parameter and the output space are highly discretized, such networks have proven very difficult to optimize. The difficulties are compounded for the class of transformer text generation models due to the sensitivity of the attention operation to quantization and the noise-compounding effects of autoregressive decoding in the high-cardinality output space. We approach the problem with a mix of statistics-based quantization for the weights and elastic quantization of the activations and demonstrate the first ternary and binary transformer models on the downstream tasks of summarization and machine translation. Our ternary BART base achieves an R1 score of 41 on the CNN/DailyMail benchmark, which is merely 3.9 points behind the full model while being 16x more efficient. Our binary model, while less accurate, achieves a highly non-trivial score of 35.6. For machine translation, we achieved BLEU scores of 21.7 and 17.6 on the WMT16 En-Ro benchmark, compared with a full precision mBART model score of 26.8. We also compare our approach in the 8-bit activation setting, where our ternary and even binary weight models can match or outperform the best existing 8-bit weight models in the literature. Our code and models are available at: https://github.com/facebookresearch/Ternary_Binary_Transformer.
+Cite (Informal):Binary and Ternary Natural Language Generation (Liu et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.5
+Bibkey:liu-etal-2023-binary
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.5
+PDF:https://aclanthology.org/2023.acl-long.5.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Zechun Liu, Barlas Oguz, Aasish Pappu, Yangyang Shi, and Raghuraman Krishnamoorthi. 2023. Binary and Ternary Natural Language Generation. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 65–77, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:65–77
+DOI:10.18653/v1/2023.acl-long.5
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{liu-etal-2023-binary,
+    title = "Binary and Ternary Natural Language Generation",
+    author = "Liu, Zechun  and
+      Oguz, Barlas  and
+      Pappu, Aasish  and
+      Shi, Yangyang  and
+      Krishnamoorthi, Raghuraman",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.5",
+    doi = "10.18653/v1/2023.acl-long.5",
+    pages = "65--77",
+    abstract = "Ternary and binary neural networks enable multiplication-free computation and promise multiple orders of magnitude efficiency gains over full-precision networks if implemented on specialized hardware. However, since both the parameter and the output space are highly discretized, such networks have proven very difficult to optimize. The difficulties are compounded for the class of transformer text generation models due to the sensitivity of the attention operation to quantization and the noise-compounding effects of autoregressive decoding in the high-cardinality output space. We approach the problem with a mix of statistics-based quantization for the weights and elastic quantization of the activations and demonstrate the first ternary and binary transformer models on the downstream tasks of summarization and machine translation. Our ternary BART base achieves an R1 score of 41 on the CNN/DailyMail benchmark, which is merely 3.9 points behind the full model while being 16x more efficient. Our binary model, while less accurate, achieves a highly non-trivial score of 35.6. For machine translation, we achieved BLEU scores of 21.7 and 17.6 on the WMT16 En-Ro benchmark, compared with a full precision mBART model score of 26.8. We also compare our approach in the 8-bit activation setting, where our ternary and even binary weight models can match or outperform the best existing 8-bit weight models in the literature. Our code and models are available at: \url{https://github.com/facebookresearch/Ternary_Binary_Transformer}.",
+}

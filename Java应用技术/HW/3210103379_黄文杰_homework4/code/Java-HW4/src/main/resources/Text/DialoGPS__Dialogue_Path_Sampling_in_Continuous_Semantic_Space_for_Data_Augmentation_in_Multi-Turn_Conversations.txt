@@ -1,0 +1,42 @@
+Title: DialoGPS: Dialogue Path Sampling in Continuous Semantic Space for Data Augmentation in Multi-Turn Conversations
+Authors: Ang Lv, Jinpeng Li, Yuhan Chen, Gao Xing, Ji Zhang, Rui Yan
+Abstract: In open-domain dialogue generation tasks, contexts and responses in most datasets are one-to-one mapped, violating an important many-to-many characteristic: a context leads to various responses, and a response answers multiple contexts. Without such patterns, models poorly generalize and prefer responding safely. Many attempts have been made in either multi-turn settings from a one-to-many perspective or in a many-to-many perspective but limited to single-turn settings. The major challenge to many-to-many augment multi-turn dialogues is that discretely replacing each turn with semantic similarity breaks fragile context coherence. In this paper, we propose DialoGue Path Sampling (DialoGPS) method in continuous semantic space, the first many-to-many augmentation method for multi-turn dialogues. Specifically, we map a dialogue to our extended Brownian Bridge, a special Gaussian process. We sample latent variables to form coherent dialogue paths in the continuous space. A dialogue path corresponds to a new multi-turn dialogue and is used as augmented training data. We show the effect of DialoGPS with both automatic and human evaluation.
+Cite (Informal):DialoGPS: Dialogue Path Sampling in Continuous Semantic Space for Data Augmentation in Multi-Turn Conversations (Lv et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.70
+Bibkey:lv-etal-2023-dialogps
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.70
+PDF:https://aclanthology.org/2023.acl-long.70.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Ang Lv, Jinpeng Li, Yuhan Chen, Gao Xing, Ji Zhang, and Rui Yan. 2023. DialoGPS: Dialogue Path Sampling in Continuous Semantic Space for Data Augmentation in Multi-Turn Conversations. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 1267–1280, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:1267–1280
+DOI:10.18653/v1/2023.acl-long.70
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{lv-etal-2023-dialogps,
+    title = "{D}ialo{GPS}: Dialogue Path Sampling in Continuous Semantic Space for Data Augmentation in Multi-Turn Conversations",
+    author = "Lv, Ang  and
+      Li, Jinpeng  and
+      Chen, Yuhan  and
+      Xing, Gao  and
+      Zhang, Ji  and
+      Yan, Rui",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.70",
+    doi = "10.18653/v1/2023.acl-long.70",
+    pages = "1267--1280",
+    abstract = "In open-domain dialogue generation tasks, contexts and responses in most datasets are one-to-one mapped, violating an important many-to-many characteristic: a context leads to various responses, and a response answers multiple contexts. Without such patterns, models poorly generalize and prefer responding safely. Many attempts have been made in either multi-turn settings from a one-to-many perspective or in a many-to-many perspective but limited to single-turn settings. The major challenge to many-to-many augment multi-turn dialogues is that discretely replacing each turn with semantic similarity breaks fragile context coherence. In this paper, we propose DialoGue Path Sampling (DialoGPS) method in continuous semantic space, the first many-to-many augmentation method for multi-turn dialogues. Specifically, we map a dialogue to our extended Brownian Bridge, a special Gaussian process. We sample latent variables to form coherent dialogue paths in the continuous space. A dialogue path corresponds to a new multi-turn dialogue and is used as augmented training data. We show the effect of DialoGPS with both automatic and human evaluation.",
+}

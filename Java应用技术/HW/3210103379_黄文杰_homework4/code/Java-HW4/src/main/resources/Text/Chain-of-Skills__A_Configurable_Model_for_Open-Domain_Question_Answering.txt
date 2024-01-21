@@ -1,0 +1,42 @@
+Title: Chain-of-Skills: A Configurable Model for Open-Domain Question Answering
+Authors: Kaixin Ma, Hao Cheng, Yu Zhang, Xiaodong Liu, Eric Nyberg, Jianfeng Gao
+Abstract: The retrieval model is an indispensable component for real-world knowledge-intensive tasks, e.g., open-domain question answering (ODQA). As separate retrieval skills are annotated for different datasets, recent work focuses on customized methods, limiting the model transfer- ability and scalability. In this work, we propose a modular retriever where individual modules correspond to key skills that can be reused across datasets. Our approach supports flexible skill configurations based on the target domain to boost performance. To mitigate task interference, we design a novel modularization parameterization inspired by sparse Transformer. We demonstrate that our model can benefit from self-supervised pretraining on Wikipedia and fine-tuning using multiple ODQA datasets, both in a multi-task fashion. Our approach outperforms recent self-supervised retrievers in zero-shot evaluations and achieves state-of-the-art fine-tuned retrieval performance on NQ, HotpotQA and OTT-QA.
+Cite (Informal):Chain-of-Skills: A Configurable Model for Open-Domain Question Answering (Ma et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.89
+Bibkey:ma-etal-2023-chain
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.89
+PDF:https://aclanthology.org/2023.acl-long.89.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Kaixin Ma, Hao Cheng, Yu Zhang, Xiaodong Liu, Eric Nyberg, and Jianfeng Gao. 2023. Chain-of-Skills: A Configurable Model for Open-Domain Question Answering. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 1599–1618, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:1599–1618
+DOI:10.18653/v1/2023.acl-long.89
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{ma-etal-2023-chain,
+    title = "Chain-of-Skills: A Configurable Model for Open-Domain Question Answering",
+    author = "Ma, Kaixin  and
+      Cheng, Hao  and
+      Zhang, Yu  and
+      Liu, Xiaodong  and
+      Nyberg, Eric  and
+      Gao, Jianfeng",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.89",
+    doi = "10.18653/v1/2023.acl-long.89",
+    pages = "1599--1618",
+    abstract = "The retrieval model is an indispensable component for real-world knowledge-intensive tasks, e.g., open-domain question answering (ODQA). As separate retrieval skills are annotated for different datasets, recent work focuses on customized methods, limiting the model transfer- ability and scalability. In this work, we propose a modular retriever where individual modules correspond to key skills that can be reused across datasets. Our approach supports flexible skill configurations based on the target domain to boost performance. To mitigate task interference, we design a novel modularization parameterization inspired by sparse Transformer. We demonstrate that our model can benefit from self-supervised pretraining on Wikipedia and fine-tuning using multiple ODQA datasets, both in a multi-task fashion. Our approach outperforms recent self-supervised retrievers in zero-shot evaluations and achieves state-of-the-art fine-tuned retrieval performance on NQ, HotpotQA and OTT-QA.",
+}

@@ -1,0 +1,41 @@
+Title: TableVLM: Multi-modal Pre-training for Table Structure Recognition
+Authors: Leiyuan Chen, Chengsong Huang, Xiaoqing Zheng, Jinshu Lin, Xuanjing Huang
+Abstract: Tables are widely used in research and business, which are suitable for human consumption, but not easily machine-processable, particularly when tables are present in images. One of the main challenges to extracting data from images of tables is accurately recognizing table structures, especially for complex tables with cross rows and columns. In this study, we propose a novel multi-modal pre-training model for table structure recognition, named TableVLM.With a two-stream multi-modal transformer-based encoder-decoder architecture, TableVLM learns to capture rich table structure-related features by multiple carefully-designed unsupervised objectives inspired by the notion of masked visual-language modeling. To pre-train this model, we also created a dataset, called ComplexTable, which consists of 1,000K samples to be released publicly. Experiment results show that the model built on pre-trained TableVLM can improve the performance up to 1.97% in tree-editing-distance-score on ComplexTable.
+Cite (Informal):TableVLM: Multi-modal Pre-training for Table Structure Recognition (Chen et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.137
+Bibkey:chen-etal-2023-tablevlm
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.137
+PDF:https://aclanthology.org/2023.acl-long.137.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Leiyuan Chen, Chengsong Huang, Xiaoqing Zheng, Jinshu Lin, and Xuanjing Huang. 2023. TableVLM: Multi-modal Pre-training for Table Structure Recognition. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 2437–2449, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:2437–2449
+DOI:10.18653/v1/2023.acl-long.137
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{chen-etal-2023-tablevlm,
+    title = "{T}able{VLM}: Multi-modal Pre-training for Table Structure Recognition",
+    author = "Chen, Leiyuan  and
+      Huang, Chengsong  and
+      Zheng, Xiaoqing  and
+      Lin, Jinshu  and
+      Huang, Xuanjing",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.137",
+    doi = "10.18653/v1/2023.acl-long.137",
+    pages = "2437--2449",
+    abstract = "Tables are widely used in research and business, which are suitable for human consumption, but not easily machine-processable, particularly when tables are present in images. One of the main challenges to extracting data from images of tables is accurately recognizing table structures, especially for complex tables with cross rows and columns. In this study, we propose a novel multi-modal pre-training model for table structure recognition, named TableVLM.With a two-stream multi-modal transformer-based encoder-decoder architecture, TableVLM learns to capture rich table structure-related features by multiple carefully-designed unsupervised objectives inspired by the notion of masked visual-language modeling. To pre-train this model, we also created a dataset, called ComplexTable, which consists of 1,000K samples to be released publicly. Experiment results show that the model built on pre-trained TableVLM can improve the performance up to 1.97{\%} in tree-editing-distance-score on ComplexTable.",
+}

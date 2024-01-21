@@ -1,0 +1,41 @@
+Title: A Causal Framework to Quantify the Robustness of Mathematical Reasoning with Language Models
+Authors: Alessandro Stolfo, Zhijing Jin, Kumar Shridhar, Bernhard Schoelkopf, Mrinmaya Sachan
+Abstract: We have recently witnessed a number of impressive results on hard mathematical reasoning problems with language models. At the same time, the robustness of these models has also been called into question; recent works have shown that models can rely on shallow patterns in the problem description when generating a solution. Building on the idea of behavioral testing, we propose a novel framework, which pins down the causal effect of various factors in the input, e.g., the surface form of the problem text, the operands, and math operators on the output solution. By grounding the behavioral analysis in a causal graph describing an intuitive reasoning process, we study the behavior of language models in terms of robustness and sensitivity to direct interventions in the input space. We apply our framework on a test bed of math word problems. Our analysis shows that robustness does not appear to continuously improve as a function of size, but the GPT-3 Davinci models (175B) achieve a dramatic improvement in both robustness and sensitivity compared to all other GPT variants.
+Cite (Informal):A Causal Framework to Quantify the Robustness of Mathematical Reasoning with Language Models (Stolfo et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.32
+Bibkey:stolfo-etal-2023-causal
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.32
+PDF:https://aclanthology.org/2023.acl-long.32.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Alessandro Stolfo, Zhijing Jin, Kumar Shridhar, Bernhard Schoelkopf, and Mrinmaya Sachan. 2023. A Causal Framework to Quantify the Robustness of Mathematical Reasoning with Language Models. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 545–561, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:545–561
+DOI:10.18653/v1/2023.acl-long.32
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{stolfo-etal-2023-causal,
+    title = "A Causal Framework to Quantify the Robustness of Mathematical Reasoning with Language Models",
+    author = "Stolfo, Alessandro  and
+      Jin, Zhijing  and
+      Shridhar, Kumar  and
+      Schoelkopf, Bernhard  and
+      Sachan, Mrinmaya",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.32",
+    doi = "10.18653/v1/2023.acl-long.32",
+    pages = "545--561",
+    abstract = "We have recently witnessed a number of impressive results on hard mathematical reasoning problems with language models. At the same time, the robustness of these models has also been called into question; recent works have shown that models can rely on shallow patterns in the problem description when generating a solution. Building on the idea of behavioral testing, we propose a novel framework, which pins down the causal effect of various factors in the input, e.g., the surface form of the problem text, the operands, and math operators on the output solution. By grounding the behavioral analysis in a causal graph describing an intuitive reasoning process, we study the behavior of language models in terms of robustness and sensitivity to direct interventions in the input space. We apply our framework on a test bed of math word problems. Our analysis shows that robustness does not appear to continuously improve as a function of size, but the GPT-3 Davinci models (175B) achieve a dramatic improvement in both robustness and sensitivity compared to all other GPT variants.",
+}

@@ -1,0 +1,41 @@
+Title: Improving Retrieval Augmented Neural Machine Translation by Controlling Source and Fuzzy-Match Interactions
+Authors: Cuong Hoang, Devendra Sachan, Prashant Mathur, Brian Thompson, Marcello Federico
+Abstract: We explore zero-shot adaptation, where a general-domain model has access to customer or domain specific parallel data at inference time, but not during training. We build on the idea of Retrieval Augmented Translation (RAT) where top-k in-domain fuzzy matches are found for the source sentence, and target-language translations of those fuzzy-matched sentences are provided to the translation model at inference time. We propose a novel architecture to control interactions between a source sentence and the top-k fuzzy target-language matches, and compare it to architectures from prior work. We conduct experiments in two language pairs (En-De and En-Fr) by training models on WMT data and testing them with five and seven multi-domain datasets, respectively. Our approach consistently outperforms the alternative architectures, improving BLEU across language pair, domain, and number k of fuzzy matches.
+Cite (Informal):Improving Retrieval Augmented Neural Machine Translation by Controlling Source and Fuzzy-Match Interactions (Hoang et al., Findings 2023)
+Year:2023
+Venue:Findings
+Video:https://aclanthology.org/2023.findings-eacl.22.mp4
+Anthology ID:2023.findings-eacl.22
+Bibkey:hoang-etal-2023-improving
+Volume:Findings of the Association for Computational Linguistics: EACL 2023
+URL:https://aclanthology.org/2023.findings-eacl.22
+PDF:https://aclanthology.org/2023.findings-eacl.22.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Cuong Hoang, Devendra Sachan, Prashant Mathur, Brian Thompson, and Marcello Federico. 2023. Improving Retrieval Augmented Neural Machine Translation by Controlling Source and Fuzzy-Match Interactions. In Findings of the Association for Computational Linguistics: EACL 2023, pages 289–295, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:289–295
+DOI:10.18653/v1/2023.findings-eacl.22
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{hoang-etal-2023-improving,
+    title = "Improving Retrieval Augmented Neural Machine Translation by Controlling Source and Fuzzy-Match Interactions",
+    author = "Hoang, Cuong  and
+      Sachan, Devendra  and
+      Mathur, Prashant  and
+      Thompson, Brian  and
+      Federico, Marcello",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Findings of the Association for Computational Linguistics: EACL 2023",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.findings-eacl.22",
+    doi = "10.18653/v1/2023.findings-eacl.22",
+    pages = "289--295",
+    abstract = "We explore zero-shot adaptation, where a general-domain model has access to customer or domain specific parallel data at inference time, but not during training. We build on the idea of Retrieval Augmented Translation (RAT) where top-k in-domain fuzzy matches are found for the source sentence, and target-language translations of those fuzzy-matched sentences are provided to the translation model at inference time. We propose a novel architecture to control interactions between a source sentence and the top-k fuzzy target-language matches, and compare it to architectures from prior work. We conduct experiments in two language pairs (En-De and En-Fr) by training models on WMT data and testing them with five and seven multi-domain datasets, respectively. Our approach consistently outperforms the alternative architectures, improving BLEU across language pair, domain, and number k of fuzzy matches.",
+}

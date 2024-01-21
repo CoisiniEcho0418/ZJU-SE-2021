@@ -1,0 +1,34 @@
+Title: Why Does Surprisal From Larger Transformer-Based Language Models Provide a Poorer Fit to Human Reading Times?
+Authors: Byung-Doh Oh, William Schuler
+Abstract: This work presents a linguistic analysis into why larger Transformer-based pre-trained language models with more parameters and lower perplexity nonetheless yield surprisal estimates that are less predictive of human reading times. First, regression analyses show a strictly monotonic, positive log-linear relationship between perplexity and fit to reading times for the more recently released five GPT-Neo variants and eight OPT variants on two separate datasets, replicating earlier results limited to just GPT-2 (Oh et al., 2022). Subsequently, analysis of residual errors reveals a systematic deviation of the larger variants, such as underpredicting reading times of named entities and making compensatory overpredictions for reading times of function words such as modals and conjunctions. These results suggest that the propensity of larger Transformer-based models to ‘memorize’ sequences during training makes their surprisal estimates diverge from humanlike expectations, which warrants caution in using pre-trained language models to study human language processing.
+Cite (Informal):Why Does Surprisal From Larger Transformer-Based Language Models Provide a Poorer Fit to Human Reading Times? (Oh & Schuler, TACL 2023)
+Year:2023
+Venue:TACL
+Anthology ID:2023.tacl-1.20
+Bibkey:oh-schuler-2023-surprisal
+Volume:Transactions of the Association for Computational Linguistics, Volume 11
+URL:https://aclanthology.org/2023.tacl-1.20
+PDF:https://aclanthology.org/2023.tacl-1.20.pdf
+Month:
+SIG:
+Address:Cambridge, MA
+Language:
+Cite (ACL):Byung-Doh Oh and William Schuler. 2023. Why Does Surprisal From Larger Transformer-Based Language Models Provide a Poorer Fit to Human Reading Times?. Transactions of the Association for Computational Linguistics, 11:336–350.
+Note:
+Pages:336–350
+DOI:10.1162/tacl_a_00548
+Publisher:MIT Press
+BibTex: @article{oh-schuler-2023-surprisal,
+    title = "Why Does Surprisal From Larger Transformer-Based Language Models Provide a Poorer Fit to Human Reading Times?",
+    author = "Oh, Byung-Doh  and
+      Schuler, William",
+    journal = "Transactions of the Association for Computational Linguistics",
+    volume = "11",
+    year = "2023",
+    address = "Cambridge, MA",
+    publisher = "MIT Press",
+    url = "https://aclanthology.org/2023.tacl-1.20",
+    doi = "10.1162/tacl_a_00548",
+    pages = "336--350",
+    abstract = "This work presents a linguistic analysis into why larger Transformer-based pre-trained language models with more parameters and lower perplexity nonetheless yield surprisal estimates that are less predictive of human reading times. First, regression analyses show a strictly monotonic, positive log-linear relationship between perplexity and fit to reading times for the more recently released five GPT-Neo variants and eight OPT variants on two separate datasets, replicating earlier results limited to just GPT-2 (Oh et al., 2022). Subsequently, analysis of residual errors reveals a systematic deviation of the larger variants, such as underpredicting reading times of named entities and making compensatory overpredictions for reading times of function words such as modals and conjunctions. These results suggest that the propensity of larger Transformer-based models to {`}memorize{'} sequences during training makes their surprisal estimates diverge from humanlike expectations, which warrants caution in using pre-trained language models to study human language processing.",
+}

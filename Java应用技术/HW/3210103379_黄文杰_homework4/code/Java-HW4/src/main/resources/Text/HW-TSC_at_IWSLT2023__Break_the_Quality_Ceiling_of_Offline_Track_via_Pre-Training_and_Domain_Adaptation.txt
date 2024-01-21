@@ -1,0 +1,49 @@
+Title: HW-TSC at IWSLT2023: Break the Quality Ceiling of Offline Track via Pre-Training and Domain Adaptation
+Authors: Zongyao Li, Zhanglin Wu, Zhiqiang Rao, Xie YuHao, Guo JiaXin, Daimeng Wei, Hengchao Shang, Wang Minghan, Xiaoyu Chen, Zhengzhe Yu, Li ShaoJun, Lei LiZhi, Hao Yang
+Abstract: This paper presents HW-TSC’s submissions to the IWSLT 2023 Offline Speech Translation task, including speech translation of talks from English to German, Chinese, and Japanese, respectively. We participate in all three conditions (constrained training, constrained with large language models training, and unconstrained training) with models of cascaded architectures. We use data enhancement, pre-training models and other means to improve the ASR quality, and R-Drop, deep model, domain data selection, etc. to improve the translation quality. Compared with last year’s best results, we achieve 2.1 BLEU improvement on the MuST-C English-German test set.
+Cite (Informal):HW-TSC at IWSLT2023: Break the Quality Ceiling of Offline Track via Pre-Training and Domain Adaptation (Li et al., IWSLT 2023)
+Year:2023
+Venue:IWSLT
+Anthology ID:2023.iwslt-1.14
+Bibkey:li-etal-2023-hw
+Volume:Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023)
+URL:https://aclanthology.org/2023.iwslt-1.14
+PDF:https://aclanthology.org/2023.iwslt-1.14.pdf
+Month:July
+SIG:SIGSLT
+Address:Toronto, Canada (in-person and online)
+Language:
+Cite (ACL):Zongyao Li, Zhanglin Wu, Zhiqiang Rao, Xie YuHao, Guo JiaXin, Daimeng Wei, Hengchao Shang, Wang Minghan, Xiaoyu Chen, Zhengzhe Yu, Li ShaoJun, Lei LiZhi, and Hao Yang. 2023. HW-TSC at IWSLT2023: Break the Quality Ceiling of Offline Track via Pre-Training and Domain Adaptation. In Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023), pages 187–193, Toronto, Canada (in-person and online). Association for Computational Linguistics.
+Editors:Elizabeth Salesky,Marcello Federico,Marine Carpuat
+Note:
+Pages:187–193
+DOI:10.18653/v1/2023.iwslt-1.14
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{li-etal-2023-hw,
+    title = "{HW}-{TSC} at {IWSLT}2023: Break the Quality Ceiling of Offline Track via Pre-Training and Domain Adaptation",
+    author = "Li, Zongyao  and
+      Wu, Zhanglin  and
+      Rao, Zhiqiang  and
+      YuHao, Xie  and
+      JiaXin, Guo  and
+      Wei, Daimeng  and
+      Shang, Hengchao  and
+      Minghan, Wang  and
+      Chen, Xiaoyu  and
+      Yu, Zhengzhe  and
+      ShaoJun, Li  and
+      LiZhi, Lei  and
+      Yang, Hao",
+    editor = "Salesky, Elizabeth  and
+      Federico, Marcello  and
+      Carpuat, Marine",
+    booktitle = "Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada (in-person and online)",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.iwslt-1.14",
+    doi = "10.18653/v1/2023.iwslt-1.14",
+    pages = "187--193",
+    abstract = "This paper presents HW-TSC{'}s submissions to the IWSLT 2023 Offline Speech Translation task, including speech translation of talks from English to German, Chinese, and Japanese, respectively. We participate in all three conditions (constrained training, constrained with large language models training, and unconstrained training) with models of cascaded architectures. We use data enhancement, pre-training models and other means to improve the ASR quality, and R-Drop, deep model, domain data selection, etc. to improve the translation quality. Compared with last year{'}s best results, we achieve 2.1 BLEU improvement on the MuST-C English-German test set.",
+}

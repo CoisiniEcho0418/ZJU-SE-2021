@@ -1,0 +1,39 @@
+Title: Sentence Identification with BOS and EOS Label Combinations
+Authors: Takuma Udagawa, Hiroshi Kanayama, Issei Yoshida
+Abstract: The sentence is a fundamental unit in many NLP applications. Sentence segmentation is widely used as the first preprocessing task, where an input text is split into consecutive sentences considering the end of the sentence (EOS) as their boundaries. This task formulation relies on a strong assumption that the input text consists only of sentences, or what we call the sentential units (SUs). However, real-world texts often contain non-sentential units (NSUs) such as metadata, sentence fragments, nonlinguistic markers, etc. which are unreasonable or undesirable to be treated as a part of an SU. To tackle this issue, we formulate a novel task of sentence identification, where the goal is to identify SUs while excluding NSUs in a given text. To conduct sentence identification, we propose a simple yet effective method which combines the beginning of the sentence (BOS) and EOS labels to determine the most probable SUs and NSUs based on dynamic programming. To evaluate this task, we design an automatic, language-independent procedure to convert the Universal Dependencies corpora into sentence identification benchmarks. Finally, our experiments on the sentence identification task demonstrate that our proposed method generally outperforms sentence segmentation baselines which only utilize EOS labels.
+Cite (Informal):Sentence Identification with BOS and EOS Label Combinations (Udagawa et al., Findings 2023)
+Year:2023
+Venue:Findings
+Video:https://aclanthology.org/2023.findings-eacl.26.mp4
+Anthology ID:2023.findings-eacl.26
+Bibkey:udagawa-etal-2023-sentence
+Volume:Findings of the Association for Computational Linguistics: EACL 2023
+URL:https://aclanthology.org/2023.findings-eacl.26
+PDF:https://aclanthology.org/2023.findings-eacl.26.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Takuma Udagawa, Hiroshi Kanayama, and Issei Yoshida. 2023. Sentence Identification with BOS and EOS Label Combinations. In Findings of the Association for Computational Linguistics: EACL 2023, pages 343–358, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:343–358
+DOI:10.18653/v1/2023.findings-eacl.26
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{udagawa-etal-2023-sentence,
+    title = "Sentence Identification with {BOS} and {EOS} Label Combinations",
+    author = "Udagawa, Takuma  and
+      Kanayama, Hiroshi  and
+      Yoshida, Issei",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Findings of the Association for Computational Linguistics: EACL 2023",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.findings-eacl.26",
+    doi = "10.18653/v1/2023.findings-eacl.26",
+    pages = "343--358",
+    abstract = "The sentence is a fundamental unit in many NLP applications. Sentence segmentation is widely used as the first preprocessing task, where an input text is split into consecutive sentences considering the end of the sentence (EOS) as their boundaries. This task formulation relies on a strong assumption that the input text consists only of sentences, or what we call the sentential units (SUs). However, real-world texts often contain non-sentential units (NSUs) such as metadata, sentence fragments, nonlinguistic markers, etc. which are unreasonable or undesirable to be treated as a part of an SU. To tackle this issue, we formulate a novel task of sentence identification, where the goal is to identify SUs while excluding NSUs in a given text. To conduct sentence identification, we propose a simple yet effective method which combines the beginning of the sentence (BOS) and EOS labels to determine the most probable SUs and NSUs based on dynamic programming. To evaluate this task, we design an automatic, language-independent procedure to convert the Universal Dependencies corpora into sentence identification benchmarks. Finally, our experiments on the sentence identification task demonstrate that our proposed method generally outperforms sentence segmentation baselines which only utilize EOS labels.",
+}

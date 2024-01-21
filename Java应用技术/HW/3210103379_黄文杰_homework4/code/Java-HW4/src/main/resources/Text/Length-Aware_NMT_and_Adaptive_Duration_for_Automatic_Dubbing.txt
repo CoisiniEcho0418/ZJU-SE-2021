@@ -1,0 +1,50 @@
+Title: Length-Aware NMT and Adaptive Duration for Automatic Dubbing
+Authors: Zhiqiang Rao, Hengchao Shang, Jinlong Yang, Daimeng Wei, Zongyao Li, Jiaxin Guo, Shaojun Li, Zhengzhe Yu, Zhanglin Wu, Yuhao Xie, Bin Wei, Jiawei Zheng, Lizhi Lei, Hao Yang
+Abstract: This paper presents the submission of Huawei Translation Services Center for the IWSLT 2023 dubbing task in the unconstrained setting. The proposed solution consists of a Transformer-based machine translation model and a phoneme duration predictor. The Transformer is deep and multiple target-to-source length-ratio class labels are used to control target lengths. The variation predictor in FastSpeech2 is utilized to predict phoneme durations. To optimize the isochrony in dubbing, re-ranking and scaling are performed. The source audio duration is used as a reference to re-rank the translations of different length-ratio labels, and the one with minimum time deviation is preferred. Additionally, the phoneme duration outputs are scaled within a defined threshold to narrow the duration gap with the source audio.
+Cite (Informal):Length-Aware NMT and Adaptive Duration for Automatic Dubbing (Rao et al., IWSLT 2023)
+Year:2023
+Venue:IWSLT
+Anthology ID:2023.iwslt-1.9
+Bibkey:rao-etal-2023-length
+Volume:Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023)
+URL:https://aclanthology.org/2023.iwslt-1.9
+PDF:https://aclanthology.org/2023.iwslt-1.9.pdf
+Month:July
+SIG:SIGSLT
+Address:Toronto, Canada (in-person and online)
+Language:
+Cite (ACL):Zhiqiang Rao, Hengchao Shang, Jinlong Yang, Daimeng Wei, Zongyao Li, Jiaxin Guo, Shaojun Li, Zhengzhe Yu, Zhanglin Wu, Yuhao Xie, Bin Wei, Jiawei Zheng, Lizhi Lei, and Hao Yang. 2023. Length-Aware NMT and Adaptive Duration for Automatic Dubbing. In Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023), pages 138–143, Toronto, Canada (in-person and online). Association for Computational Linguistics.
+Editors:Elizabeth Salesky,Marcello Federico,Marine Carpuat
+Note:
+Pages:138–143
+DOI:10.18653/v1/2023.iwslt-1.9
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{rao-etal-2023-length,
+    title = "Length-Aware {NMT} and Adaptive Duration for Automatic Dubbing",
+    author = "Rao, Zhiqiang  and
+      Shang, Hengchao  and
+      Yang, Jinlong  and
+      Wei, Daimeng  and
+      Li, Zongyao  and
+      Guo, Jiaxin  and
+      Li, Shaojun  and
+      Yu, Zhengzhe  and
+      Wu, Zhanglin  and
+      Xie, Yuhao  and
+      Wei, Bin  and
+      Zheng, Jiawei  and
+      Lei, Lizhi  and
+      Yang, Hao",
+    editor = "Salesky, Elizabeth  and
+      Federico, Marcello  and
+      Carpuat, Marine",
+    booktitle = "Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada (in-person and online)",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.iwslt-1.9",
+    doi = "10.18653/v1/2023.iwslt-1.9",
+    pages = "138--143",
+    abstract = "This paper presents the submission of Huawei Translation Services Center for the IWSLT 2023 dubbing task in the unconstrained setting. The proposed solution consists of a Transformer-based machine translation model and a phoneme duration predictor. The Transformer is deep and multiple target-to-source length-ratio class labels are used to control target lengths. The variation predictor in FastSpeech2 is utilized to predict phoneme durations. To optimize the isochrony in dubbing, re-ranking and scaling are performed. The source audio duration is used as a reference to re-rank the translations of different length-ratio labels, and the one with minimum time deviation is preferred. Additionally, the phoneme duration outputs are scaled within a defined threshold to narrow the duration gap with the source audio.",
+}

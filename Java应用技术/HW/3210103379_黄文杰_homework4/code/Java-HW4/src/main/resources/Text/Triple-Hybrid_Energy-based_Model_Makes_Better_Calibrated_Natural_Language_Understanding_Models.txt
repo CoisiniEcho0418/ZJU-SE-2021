@@ -1,0 +1,38 @@
+Title: Triple-Hybrid Energy-based Model Makes Better Calibrated Natural Language Understanding Models
+Authors: Haotian Xu, Yingying Zhang
+Abstract: Though pre-trained language models achieve notable success in many applications, it’s usually controversial for over-confident predictions. Specifically, the in-distribution (ID) miscalibration and out-of-distribution (OOD) detection are main concerns. Recently, some works based on energy-based models (EBM) have shown great improvements on both ID calibration and OOD detection for images. However, it’s rarely explored in natural language understanding tasks due to the non-differentiability of text data which makes it more difficult for EBM training. In this paper, we first propose a triple-hybrid EBM which combines the benefits of classifier, conditional generative model and marginal generative model altogether. Furthermore, we leverage contrastive learning to approximately train the proposed model, which circumvents the non-differentiability issue of text data. Extensive experiments have been done on GLUE and six other multiclass datasets in various domains. Our model outperforms previous methods in terms of ID calibration and OOD detection by a large margin while maintaining competitive accuracy.
+Cite (Informal):Triple-Hybrid Energy-based Model Makes Better Calibrated Natural Language Understanding Models (Xu & Zhang, EACL 2023)
+Year:2023
+Venue:EACL
+Video:https://aclanthology.org/2023.eacl-main.21.mp4
+Anthology ID:2023.eacl-main.21
+Bibkey:xu-zhang-2023-triple
+Volume:Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics
+URL:https://aclanthology.org/2023.eacl-main.21
+PDF:https://aclanthology.org/2023.eacl-main.21.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Haotian Xu and Yingying Zhang. 2023. Triple-Hybrid Energy-based Model Makes Better Calibrated Natural Language Understanding Models. In Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics, pages 274–285, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:274–285
+DOI:10.18653/v1/2023.eacl-main.21
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{xu-zhang-2023-triple,
+    title = "Triple-Hybrid Energy-based Model Makes Better Calibrated Natural Language Understanding Models",
+    author = "Xu, Haotian  and
+      Zhang, Yingying",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.eacl-main.21",
+    doi = "10.18653/v1/2023.eacl-main.21",
+    pages = "274--285",
+    abstract = "Though pre-trained language models achieve notable success in many applications, it{'}s usually controversial for over-confident predictions. Specifically, the in-distribution (ID) miscalibration and out-of-distribution (OOD) detection are main concerns. Recently, some works based on energy-based models (EBM) have shown great improvements on both ID calibration and OOD detection for images. However, it{'}s rarely explored in natural language understanding tasks due to the non-differentiability of text data which makes it more difficult for EBM training. In this paper, we first propose a triple-hybrid EBM which combines the benefits of classifier, conditional generative model and marginal generative model altogether. Furthermore, we leverage contrastive learning to approximately train the proposed model, which circumvents the non-differentiability issue of text data. Extensive experiments have been done on GLUE and six other multiclass datasets in various domains. Our model outperforms previous methods in terms of ID calibration and OOD detection by a large margin while maintaining competitive accuracy.",
+}

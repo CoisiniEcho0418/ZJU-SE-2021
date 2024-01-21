@@ -1,0 +1,41 @@
+Title: DiTTO: A Feature Representation Imitation Approach for Improving Cross-Lingual Transfer
+Authors: Shanu Kumar, Soujanya Abbaraju, Sandipan Dandapat, Sunayana Sitaram, Monojit Choudhury
+Abstract: Zero-shot cross-lingual transfer is promising, however has been shown to be sub-optimal, with inferior transfer performance across low-resource languages. In this work, we envision languages as domains for improving zero-shot transfer by jointly reducing the feature incongruity between the source and the target language and increasing the generalization capabilities of pre-trained multilingual transformers. We show that our approach, DiTTO, significantly outperforms the standard zero-shot fine-tuning method on multiple datasets across all languages using solely unlabeled instances in the target language. Empirical results show that jointly reducing feature incongruity for multiple target languages is vital for successful cross-lingual transfer. Moreover, our model enables better cross-lingual transfer than standard fine-tuning methods, even in the few-shot setting.
+Cite (Informal):DiTTO: A Feature Representation Imitation Approach for Improving Cross-Lingual Transfer (Kumar et al., EACL 2023)
+Year:2023
+Venue:EACL
+Video:https://aclanthology.org/2023.eacl-main.29.mp4
+Anthology ID:2023.eacl-main.29
+Bibkey:kumar-etal-2023-ditto
+Volume:Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics
+URL:https://aclanthology.org/2023.eacl-main.29
+PDF:https://aclanthology.org/2023.eacl-main.29.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Shanu Kumar, Soujanya Abbaraju, Sandipan Dandapat, Sunayana Sitaram, and Monojit Choudhury. 2023. DiTTO: A Feature Representation Imitation Approach for Improving Cross-Lingual Transfer. In Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics, pages 385–406, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:385–406
+DOI:10.18653/v1/2023.eacl-main.29
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{kumar-etal-2023-ditto,
+    title = "{D}i{TTO}: A Feature Representation Imitation Approach for Improving Cross-Lingual Transfer",
+    author = "Kumar, Shanu  and
+      Abbaraju, Soujanya  and
+      Dandapat, Sandipan  and
+      Sitaram, Sunayana  and
+      Choudhury, Monojit",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.eacl-main.29",
+    doi = "10.18653/v1/2023.eacl-main.29",
+    pages = "385--406",
+    abstract = "Zero-shot cross-lingual transfer is promising, however has been shown to be sub-optimal, with inferior transfer performance across low-resource languages. In this work, we envision languages as domains for improving zero-shot transfer by jointly reducing the feature incongruity between the source and the target language and increasing the generalization capabilities of pre-trained multilingual transformers. We show that our approach, DiTTO, significantly outperforms the standard zero-shot fine-tuning method on multiple datasets across all languages using solely unlabeled instances in the target language. Empirical results show that jointly reducing feature incongruity for multiple target languages is vital for successful cross-lingual transfer. Moreover, our model enables better cross-lingual transfer than standard fine-tuning methods, even in the few-shot setting.",
+}

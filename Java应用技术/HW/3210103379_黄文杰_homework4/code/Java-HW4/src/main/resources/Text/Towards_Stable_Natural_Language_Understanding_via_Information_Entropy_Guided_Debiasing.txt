@@ -1,0 +1,42 @@
+Title: Towards Stable Natural Language Understanding via Information Entropy Guided Debiasing
+Authors: Li Du, Xiao Ding, Zhouhao Sun, Ting Liu, Bing Qin, Jingshuo Liu
+Abstract: Although achieving promising performance, current Natural Language Understanding models tend to utilize dataset biases instead of learning the intended task, which always leads to performance degradation on out-of-distribution (OOD) samples. Toincrease the performance stability, previous debiasing methods empirically capture bias features from data to prevent the model from corresponding biases. However, our analyses show that the empirical debiasing methods may fail to capture part of the potential dataset biases and mistake semantic information of input text as biases, which limits the effectiveness of debiasing. To address these issues, we propose a debiasing framework IEGDB that comprehensively detects the dataset biases to induce a set of biased features, and then purifies the biased features with the guidance of information entropy. Experimental results show that IEGDB can consistently improve the stability of performance on OOD datasets for a set of widely adopted NLU models.
+Cite (Informal):Towards Stable Natural Language Understanding via Information Entropy Guided Debiasing (Du et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.161
+Bibkey:du-etal-2023-towards
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.161
+PDF:https://aclanthology.org/2023.acl-long.161.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Li Du, Xiao Ding, Zhouhao Sun, Ting Liu, Bing Qin, and Jingshuo Liu. 2023. Towards Stable Natural Language Understanding via Information Entropy Guided Debiasing. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 2868–2882, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:2868–2882
+DOI:10.18653/v1/2023.acl-long.161
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{du-etal-2023-towards,
+    title = "Towards Stable Natural Language Understanding via Information Entropy Guided Debiasing",
+    author = "Du, Li  and
+      Ding, Xiao  and
+      Sun, Zhouhao  and
+      Liu, Ting  and
+      Qin, Bing  and
+      Liu, Jingshuo",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.161",
+    doi = "10.18653/v1/2023.acl-long.161",
+    pages = "2868--2882",
+    abstract = "Although achieving promising performance, current Natural Language Understanding models tend to utilize dataset biases instead of learning the intended task, which always leads to performance degradation on out-of-distribution (OOD) samples. Toincrease the performance stability, previous debiasing methods \textit{empirically} capture bias features from data to prevent the model from corresponding biases. However, our analyses show that the empirical debiasing methods may fail to capture part of the potential dataset biases and mistake semantic information of input text as biases, which limits the effectiveness of debiasing. To address these issues, we propose a debiasing framework IEGDB that comprehensively detects the dataset biases to induce a set of biased features, and then purifies the biased features with the guidance of information entropy. Experimental results show that IEGDB can consistently improve the stability of performance on OOD datasets for a set of widely adopted NLU models.",
+}

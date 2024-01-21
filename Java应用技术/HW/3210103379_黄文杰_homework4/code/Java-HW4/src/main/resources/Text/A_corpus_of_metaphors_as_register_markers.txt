@@ -1,0 +1,38 @@
+Title: A corpus of metaphors as register markers
+Authors: Markus Egg, Valia Kordoni
+Abstract: The paper presents our work on corpus annotationfor metaphor in German. Metaphors denoteentities that are similar to their literal referent,e.g., when *Licht* ‘light’ is used in the senseof ‘hope’. We are interested in the relation betweenmetaphor and register, hence, the corpusincludes material from different registers. We focussed on metaphors that can serve asregister markers and can also be reliably indentifiedfor annotation. Our results show hugedifferences between registers in metaphor usage,which we interpret in terms of specificproperties of the registers.
+Cite (Informal):A corpus of metaphors as register markers (Egg & Kordoni, Findings 2023)
+Year:2023
+Venue:Findings
+Video:https://aclanthology.org/2023.findings-eacl.16.mp4
+Anthology ID:2023.findings-eacl.16
+Bibkey:egg-kordoni-2023-corpus
+Volume:Findings of the Association for Computational Linguistics: EACL 2023
+URL:https://aclanthology.org/2023.findings-eacl.16
+PDF:https://aclanthology.org/2023.findings-eacl.16.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Markus Egg and Valia Kordoni. 2023. A corpus of metaphors as register markers. In Findings of the Association for Computational Linguistics: EACL 2023, pages 220–226, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:220–226
+DOI:10.18653/v1/2023.findings-eacl.16
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{egg-kordoni-2023-corpus,
+    title = "A corpus of metaphors as register markers",
+    author = "Egg, Markus  and
+      Kordoni, Valia",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Findings of the Association for Computational Linguistics: EACL 2023",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.findings-eacl.16",
+    doi = "10.18653/v1/2023.findings-eacl.16",
+    pages = "220--226",
+    abstract = "The paper presents our work on corpus annotationfor metaphor in German. Metaphors denoteentities that are similar to their literal referent,e.g., when *Licht* {`}light{'} is used in the senseof {`}hope{'}. We are interested in the relation betweenmetaphor and register, hence, the corpusincludes material from different registers. We focussed on metaphors that can serve asregister markers and can also be reliably indentifiedfor annotation. Our results show hugedifferences between registers in metaphor usage,which we interpret in terms of specificproperties of the registers.",
+}

@@ -1,0 +1,40 @@
+Title: Robust Multi-bit Natural Language Watermarking through Invariant Features
+Authors: KiYoon Yoo, Wonhyuk Ahn, Jiho Jang, Nojun Kwak
+Abstract: Recent years have witnessed a proliferation of valuable original natural language contents found in subscription-based media outlets, web novel platforms, and outputs of large language models. However, these contents are susceptible to illegal piracy and potential misuse without proper security measures. This calls for a secure watermarking system to guarantee copyright protection through leakage tracing or ownership identification. To effectively combat piracy and protect copyrights, a multi-bit watermarking framework should be able to embed adequate bits of information and extract the watermarks in a robust manner despite possible corruption. In this work, we explore ways to advance both payload and robustness by following a well-known proposition from image watermarking and identify features in natural language that are invariant to minor corruption. Through a systematic analysis of the possible sources of errors, we further propose a corruption-resistant infill model. Our full method improves upon the previous work on robustness by +16.8% point on average on four datasets, three corruption types, and two corruption ratios
+Cite (Informal):Robust Multi-bit Natural Language Watermarking through Invariant Features (Yoo et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.117
+Bibkey:yoo-etal-2023-robust
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.117
+PDF:https://aclanthology.org/2023.acl-long.117.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):KiYoon Yoo, Wonhyuk Ahn, Jiho Jang, and Nojun Kwak. 2023. Robust Multi-bit Natural Language Watermarking through Invariant Features. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 2092–2115, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:2092–2115
+DOI:10.18653/v1/2023.acl-long.117
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{yoo-etal-2023-robust,
+    title = "Robust Multi-bit Natural Language Watermarking through Invariant Features",
+    author = "Yoo, KiYoon  and
+      Ahn, Wonhyuk  and
+      Jang, Jiho  and
+      Kwak, Nojun",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.117",
+    doi = "10.18653/v1/2023.acl-long.117",
+    pages = "2092--2115",
+    abstract = "Recent years have witnessed a proliferation of valuable original natural language contents found in subscription-based media outlets, web novel platforms, and outputs of large language models. However, these contents are susceptible to illegal piracy and potential misuse without proper security measures. This calls for a secure watermarking system to guarantee copyright protection through leakage tracing or ownership identification. To effectively combat piracy and protect copyrights, a multi-bit watermarking framework should be able to embed adequate bits of information and extract the watermarks in a robust manner despite possible corruption. In this work, we explore ways to advance both payload and robustness by following a well-known proposition from image watermarking and identify features in natural language that are invariant to minor corruption. Through a systematic analysis of the possible sources of errors, we further propose a corruption-resistant infill model. Our full method improves upon the previous work on robustness by +16.8{\%} point on average on four datasets, three corruption types, and two corruption ratios",
+}

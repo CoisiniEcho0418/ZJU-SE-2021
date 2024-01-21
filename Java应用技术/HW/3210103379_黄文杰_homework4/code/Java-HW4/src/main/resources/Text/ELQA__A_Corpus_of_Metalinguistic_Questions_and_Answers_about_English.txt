@@ -1,0 +1,40 @@
+Title: ELQA: A Corpus of Metalinguistic Questions and Answers about English
+Authors: Shabnam Behzad, Keisuke Sakaguchi, Nathan Schneider, Amir Zeldes
+Abstract: We present ELQA, a corpus of questions and answers in and about the English language. Collected from two online forums, the >70k questions (from English learners and others) cover wide-ranging topics including grammar, meaning, fluency, and etymology. The answers include descriptions of general properties of English vocabulary and grammar as well as explanations about specific (correct and incorrect) usage examples. Unlike most NLP datasets, this corpus is metalinguistic—it consists of language about language. As such, it can facilitate investigations of the metalinguistic capabilities of NLU models, as well as educational applications in the language learning domain. To study this, we define a free-form question answering task on our dataset and conduct evaluations on multiple LLMs (Large Language Models) to analyze their capacity to generate metalinguistic answers.
+Cite (Informal):ELQA: A Corpus of Metalinguistic Questions and Answers about English (Behzad et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.113
+Bibkey:behzad-etal-2023-elqa
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.113
+PDF:https://aclanthology.org/2023.acl-long.113.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Shabnam Behzad, Keisuke Sakaguchi, Nathan Schneider, and Amir Zeldes. 2023. ELQA: A Corpus of Metalinguistic Questions and Answers about English. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 2031–2047, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:2031–2047
+DOI:10.18653/v1/2023.acl-long.113
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{behzad-etal-2023-elqa,
+    title = "{ELQA}: A Corpus of Metalinguistic Questions and Answers about {E}nglish",
+    author = "Behzad, Shabnam  and
+      Sakaguchi, Keisuke  and
+      Schneider, Nathan  and
+      Zeldes, Amir",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.113",
+    doi = "10.18653/v1/2023.acl-long.113",
+    pages = "2031--2047",
+    abstract = "We present ELQA, a corpus of questions and answers in and about the English language. Collected from two online forums, the {\textgreater}70k questions (from English learners and others) cover wide-ranging topics including grammar, meaning, fluency, and etymology. The answers include descriptions of general properties of English vocabulary and grammar as well as explanations about specific (correct and incorrect) usage examples. Unlike most NLP datasets, this corpus is metalinguistic{---}it consists of language about language. As such, it can facilitate investigations of the metalinguistic capabilities of NLU models, as well as educational applications in the language learning domain. To study this, we define a free-form question answering task on our dataset and conduct evaluations on multiple LLMs (Large Language Models) to analyze their capacity to generate metalinguistic answers.",
+}

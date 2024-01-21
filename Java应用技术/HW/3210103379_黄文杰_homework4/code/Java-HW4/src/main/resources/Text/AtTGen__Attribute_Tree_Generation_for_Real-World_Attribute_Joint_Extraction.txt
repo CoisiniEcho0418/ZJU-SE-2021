@@ -1,0 +1,40 @@
+Title: AtTGen: Attribute Tree Generation for Real-World Attribute Joint Extraction
+Authors: Yanzeng Li, Bingcong Xue, Ruoyu Zhang, Lei Zou
+Abstract: Attribute extraction aims to identify attribute names and the corresponding values from descriptive texts, which is the foundation for extensive downstream applications such as knowledge graph construction, search engines, and e-Commerce. In previous studies, attribute extraction is generally treated as a classification problem for predicting attribute types or a sequence tagging problem for labeling attribute values, where two paradigms, i.e., closed-world and open-world assumption, are involved. However, both of these paradigms have limitations in terms of real-world applications. And prior studies attempting to integrate these paradigms through ensemble, pipeline, and co-training models, still face challenges like cascading errors, high computational overhead, and difficulty in training. To address these existing problems, this paper presents Attribute Tree, a unified formulation for real-world attribute extraction application, where closed-world, open-world, and semi-open attribute extraction tasks are modeled uniformly. Then a text-to-tree generation model, AtTGen, is proposed to learn annotations from different scenarios efficiently and consistently. Experiments demonstrate that our proposed paradigm well covers various scenarios for real-world applications, and the model achieves state-of-the-art, outperforming existing methods by a large margin on three datasets. Our code, pretrained model, and datasets are available at https://github.com/lsvih/AtTGen.
+Cite (Informal):AtTGen: Attribute Tree Generation for Real-World Attribute Joint Extraction (Li et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.119
+Bibkey:li-etal-2023-attgen
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.119
+PDF:https://aclanthology.org/2023.acl-long.119.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Yanzeng Li, Bingcong Xue, Ruoyu Zhang, and Lei Zou. 2023. AtTGen: Attribute Tree Generation for Real-World Attribute Joint Extraction. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 2139–2152, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:2139–2152
+DOI:10.18653/v1/2023.acl-long.119
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{li-etal-2023-attgen,
+    title = "{A}t{TG}en: Attribute Tree Generation for Real-World Attribute Joint Extraction",
+    author = "Li, Yanzeng  and
+      Xue, Bingcong  and
+      Zhang, Ruoyu  and
+      Zou, Lei",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.119",
+    doi = "10.18653/v1/2023.acl-long.119",
+    pages = "2139--2152",
+    abstract = "Attribute extraction aims to identify attribute names and the corresponding values from descriptive texts, which is the foundation for extensive downstream applications such as knowledge graph construction, search engines, and e-Commerce. In previous studies, attribute extraction is generally treated as a classification problem for predicting attribute types or a sequence tagging problem for labeling attribute values, where two paradigms, i.e., closed-world and open-world assumption, are involved. However, both of these paradigms have limitations in terms of real-world applications. And prior studies attempting to integrate these paradigms through ensemble, pipeline, and co-training models, still face challenges like cascading errors, high computational overhead, and difficulty in training. To address these existing problems, this paper presents Attribute Tree, a unified formulation for real-world attribute extraction application, where closed-world, open-world, and semi-open attribute extraction tasks are modeled uniformly. Then a text-to-tree generation model, AtTGen, is proposed to learn annotations from different scenarios efficiently and consistently. Experiments demonstrate that our proposed paradigm well covers various scenarios for real-world applications, and the model achieves state-of-the-art, outperforming existing methods by a large margin on three datasets. Our code, pretrained model, and datasets are available at \url{https://github.com/lsvih/AtTGen}.",
+}

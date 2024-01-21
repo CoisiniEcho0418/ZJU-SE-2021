@@ -1,0 +1,39 @@
+Title: COVID-VTS: Fact Extraction and Verification on Short Video Platforms
+Authors: Fuxiao Liu, Yaser Yacoob, Abhinav Shrivastava
+Abstract: We introduce a new benchmark, COVID-VTS, for fact-checking multi-modal information involving short-duration videos with COVID19- focused information from both the real world and machine generation. We propose, TwtrDetective, an effective model incorporating cross-media consistency checking to detect token-level malicious tampering in different modalities, and generate explanations. Due to the scarcity of training data, we also develop an efficient and scalable approach to automatically generate misleading video posts by event manipulation or adversarial matching. We investigate several state-of-the-art models and demonstrate the superiority of TwtrDetective.
+Cite (Informal):COVID-VTS: Fact Extraction and Verification on Short Video Platforms (Liu et al., EACL 2023)
+Year:2023
+Venue:EACL
+Video:https://aclanthology.org/2023.eacl-main.14.mp4
+Anthology ID:2023.eacl-main.14
+Bibkey:liu-etal-2023-covid
+Volume:Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics
+URL:https://aclanthology.org/2023.eacl-main.14
+PDF:https://aclanthology.org/2023.eacl-main.14.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Fuxiao Liu, Yaser Yacoob, and Abhinav Shrivastava. 2023. COVID-VTS: Fact Extraction and Verification on Short Video Platforms. In Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics, pages 178–188, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:178–188
+DOI:10.18653/v1/2023.eacl-main.14
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{liu-etal-2023-covid,
+    title = "{COVID}-{VTS}: Fact Extraction and Verification on Short Video Platforms",
+    author = "Liu, Fuxiao  and
+      Yacoob, Yaser  and
+      Shrivastava, Abhinav",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.eacl-main.14",
+    doi = "10.18653/v1/2023.eacl-main.14",
+    pages = "178--188",
+    abstract = "We introduce a new benchmark, COVID-VTS, for fact-checking multi-modal information involving short-duration videos with COVID19- focused information from both the real world and machine generation. We propose, TwtrDetective, an effective model incorporating cross-media consistency checking to detect token-level malicious tampering in different modalities, and generate explanations. Due to the scarcity of training data, we also develop an efficient and scalable approach to automatically generate misleading video posts by event manipulation or adversarial matching. We investigate several state-of-the-art models and demonstrate the superiority of TwtrDetective.",
+}

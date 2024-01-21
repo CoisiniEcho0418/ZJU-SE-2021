@@ -1,0 +1,40 @@
+Title: Assistive Recipe Editing through Critiquing
+Authors: Diego Antognini, Shuyang Li, Boi Faltings, Julian McAuley
+Abstract: There has recently been growing interest in the automatic generation of cooking recipes that satisfy some form of dietary restrictions, thanks in part to the availability of online recipe data. Prior studies have used pre-trained language models, or relied on small paired recipe data (e.g., a recipe paired with a similar one that satisfies a dietary constraint). However, pre-trained language models generate inconsistent or incoherent recipes, and paired datasets are not available at scale. We address these deficiencies with RecipeCrit, a hierarchical denoising auto-encoder that edits recipes given ingredient-level critiques. The model is trained for recipe completion to learn semantic relationships within recipes. Our work’s main innovation is our unsupervised critiquing module that allows users to edit recipes by interacting with the predicted ingredients; the system iteratively rewrites recipes to satisfy users’ feedback. Experiments onthe Recipe1M recipe dataset show that our model can more effectively edit recipes compared to strong language-modeling baselines, creating recipes that satisfy user constraints and are more correct, serendipitous, coherent, and relevant as measured by human judges.
+Cite (Informal):Assistive Recipe Editing through Critiquing (Antognini et al., EACL 2023)
+Year:2023
+Venue:EACL
+Video:https://aclanthology.org/2023.eacl-main.28.mp4
+Anthology ID:2023.eacl-main.28
+Bibkey:antognini-etal-2023-assistive
+Volume:Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics
+URL:https://aclanthology.org/2023.eacl-main.28
+PDF:https://aclanthology.org/2023.eacl-main.28.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Diego Antognini, Shuyang Li, Boi Faltings, and Julian McAuley. 2023. Assistive Recipe Editing through Critiquing. In Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics, pages 375–384, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:375–384
+DOI:10.18653/v1/2023.eacl-main.28
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{antognini-etal-2023-assistive,
+    title = "Assistive Recipe Editing through Critiquing",
+    author = "Antognini, Diego  and
+      Li, Shuyang  and
+      Faltings, Boi  and
+      McAuley, Julian",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.eacl-main.28",
+    doi = "10.18653/v1/2023.eacl-main.28",
+    pages = "375--384",
+    abstract = "There has recently been growing interest in the automatic generation of cooking recipes that satisfy some form of dietary restrictions, thanks in part to the availability of online recipe data. Prior studies have used pre-trained language models, or relied on small paired recipe data (e.g., a recipe paired with a similar one that satisfies a dietary constraint). However, pre-trained language models generate inconsistent or incoherent recipes, and paired datasets are not available at scale. We address these deficiencies with RecipeCrit, a hierarchical denoising auto-encoder that edits recipes given ingredient-level critiques. The model is trained for recipe completion to learn semantic relationships within recipes. Our work{'}s main innovation is our unsupervised critiquing module that allows users to edit recipes by interacting with the predicted ingredients; the system iteratively rewrites recipes to satisfy users{'} feedback. Experiments onthe Recipe1M recipe dataset show that our model can more effectively edit recipes compared to strong language-modeling baselines, creating recipes that satisfy user constraints and are more correct, serendipitous, coherent, and relevant as measured by human judges.",
+}

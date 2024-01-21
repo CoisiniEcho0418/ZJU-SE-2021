@@ -1,0 +1,41 @@
+Title: FastKASSIM: A Fast Tree Kernel-Based Syntactic Similarity Metric
+Authors: Maximillian Chen, Caitlyn Chen, Xiao Yu, Zhou Yu
+Abstract: Syntax is a fundamental component of language, yet few metrics have been employed to capture syntactic similarity or coherence at the utterance- and document-level. The existing standard document-level syntactic similarity metric is computationally expensive and performs inconsistently when faced with syntactically dissimilar documents. To address these challenges, we present FastKASSIM, a metric for utterance- and document-level syntactic similarity which pairs and averages the most similar constituency parse trees between a pair of documents based on tree kernels. FastKASSIM is more robust to syntactic dissimilarities and runs up to to 5.32 times faster than its predecessor over documents in the r/ChangeMyView corpus. FastKASSIM’s improvements allow us to examine hypotheses in two settings with large documents. We find that syntactically similar arguments on r/ChangeMyView tend to be more persuasive, and that syntax is predictive of authorship attribution in the Australian High Court Judgment corpus.
+Cite (Informal):FastKASSIM: A Fast Tree Kernel-Based Syntactic Similarity Metric (Chen et al., EACL 2023)
+Year:2023
+Venue:EACL
+Video:https://aclanthology.org/2023.eacl-main.17.mp4
+Anthology ID:2023.eacl-main.17
+Bibkey:chen-etal-2023-fastkassim
+Software:2023.eacl-main.17.software.zip
+Volume:Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics
+URL:https://aclanthology.org/2023.eacl-main.17
+PDF:https://aclanthology.org/2023.eacl-main.17.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Maximillian Chen, Caitlyn Chen, Xiao Yu, and Zhou Yu. 2023. FastKASSIM: A Fast Tree Kernel-Based Syntactic Similarity Metric. In Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics, pages 211–231, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:211–231
+DOI:10.18653/v1/2023.eacl-main.17
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{chen-etal-2023-fastkassim,
+    title = "{F}ast{KASSIM}: A Fast Tree Kernel-Based Syntactic Similarity Metric",
+    author = "Chen, Maximillian  and
+      Chen, Caitlyn  and
+      Yu, Xiao  and
+      Yu, Zhou",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.eacl-main.17",
+    doi = "10.18653/v1/2023.eacl-main.17",
+    pages = "211--231",
+    abstract = "Syntax is a fundamental component of language, yet few metrics have been employed to capture syntactic similarity or coherence at the utterance- and document-level. The existing standard document-level syntactic similarity metric is computationally expensive and performs inconsistently when faced with syntactically dissimilar documents. To address these challenges, we present FastKASSIM, a metric for utterance- and document-level syntactic similarity which pairs and averages the most similar constituency parse trees between a pair of documents based on tree kernels. FastKASSIM is more robust to syntactic dissimilarities and runs up to to 5.32 times faster than its predecessor over documents in the r/ChangeMyView corpus. FastKASSIM{'}s improvements allow us to examine hypotheses in two settings with large documents. We find that syntactically similar arguments on r/ChangeMyView tend to be more persuasive, and that syntax is predictive of authorship attribution in the Australian High Court Judgment corpus.",
+}

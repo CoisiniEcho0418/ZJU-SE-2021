@@ -1,0 +1,38 @@
+Title: On-the-fly Cross-lingual Masking for Multilingual Pre-training
+Authors: Xi Ai, Bin Fang
+Abstract: In multilingual pre-training with the objective of MLM (masked language modeling) on multiple monolingual corpora, multilingual models only learn cross-linguality implicitly from isomorphic spaces formed by overlapping different language spaces due to the lack of explicit cross-lingual forward pass. In this work, we present CLPM (Cross-lingual Prototype Masking), a dynamic and token-wise masking scheme, for multilingual pre-training, using a special token [𝒞]x to replace a random token x in the input sentence. [𝒞]x is a cross-lingual prototype for x and then forms an explicit cross-lingual forward pass. We instantiate CLPM for the multilingual pre-training phase of UNMT (unsupervised neural machine translation), and experiments show that CLPM can consistently improve the performance of UNMT models on {De, Ro, Ne } ↔ En. Beyond UNMT or bilingual tasks, we show that CLPM can consistently improve the performance of multilingual models on cross-lingual classification. [𝒞]x x [𝒞]x x {De, Ro, Ne } ↔ En
+Cite (Informal):On-the-fly Cross-lingual Masking for Multilingual Pre-training (Ai & Fang, ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.49
+Bibkey:ai-fang-2023-fly
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.49
+PDF:https://aclanthology.org/2023.acl-long.49.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Xi Ai and Bin Fang. 2023. On-the-fly Cross-lingual Masking for Multilingual Pre-training. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 855–876, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:855–876
+DOI:10.18653/v1/2023.acl-long.49
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{ai-fang-2023-fly,
+    title = "On-the-fly Cross-lingual Masking for Multilingual Pre-training",
+    author = "Ai, Xi  and
+      Fang, Bin",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.49",
+    doi = "10.18653/v1/2023.acl-long.49",
+    pages = "855--876",
+    abstract = "In multilingual pre-training with the objective of MLM (masked language modeling) on multiple monolingual corpora, multilingual models only learn cross-linguality implicitly from isomorphic spaces formed by overlapping different language spaces due to the lack of explicit cross-lingual forward pass. In this work, we present CLPM (Cross-lingual Prototype Masking), a dynamic and token-wise masking scheme, for multilingual pre-training, using a special token $[\mathcal{C}]_{x}$ to replace a random token $x$ in the input sentence. $[\mathcal{C}]_{x}$ is a cross-lingual prototype for $x$ and then forms an explicit cross-lingual forward pass. We instantiate CLPM for the multilingual pre-training phase of UNMT (unsupervised neural machine translation), and experiments show that CLPM can consistently improve the performance of UNMT models on $\{De, Ro, Ne \} \leftrightarrow En$. Beyond UNMT or bilingual tasks, we show that CLPM can consistently improve the performance of multilingual models on cross-lingual classification.",
+}

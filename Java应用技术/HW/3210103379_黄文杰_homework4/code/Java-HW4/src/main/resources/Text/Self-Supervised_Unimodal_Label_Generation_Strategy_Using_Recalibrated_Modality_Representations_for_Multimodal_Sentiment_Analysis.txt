@@ -1,0 +1,38 @@
+Title: Self-Supervised Unimodal Label Generation Strategy Using Recalibrated Modality Representations for Multimodal Sentiment Analysis
+Authors: Yewon Hwang, Jong-Hwan Kim
+Abstract: While multimodal sentiment analysis (MSA) has gained much attention over the last few years, the main focus of most work on MSA has been limited to constructing multimodal representations that capture interactions between different modalities in a single task. This was largely due to a lack of unimodal annotations in MSA benchmark datasets. However, training a model using only multimodal representations can lead to suboptimal performance due to insufficient learning of each uni-modal representation. In this work, to fully optimize learning representations from multimodal data, we propose SUGRM which jointly trains multimodal and unimodal tasks using recalibrated features. The features are recalibrated such that the model learns to weight the features differently based on the features of other modalities. Further, to leverage unimodal tasks, we auto-generate unimodal annotations via a unimodal label generation module (ULGM). The experiment results on two benchmark datasets demonstrate the efficacy of our framework.
+Cite (Informal):Self-Supervised Unimodal Label Generation Strategy Using Recalibrated Modality Representations for Multimodal Sentiment Analysis (Hwang & Kim, Findings 2023)
+Year:2023
+Venue:Findings
+Video:https://aclanthology.org/2023.findings-eacl.2.mp4
+Anthology ID:2023.findings-eacl.2
+Bibkey:hwang-kim-2023-self
+Volume:Findings of the Association for Computational Linguistics: EACL 2023
+URL:https://aclanthology.org/2023.findings-eacl.2
+PDF:https://aclanthology.org/2023.findings-eacl.2.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Yewon Hwang and Jong-Hwan Kim. 2023. Self-Supervised Unimodal Label Generation Strategy Using Recalibrated Modality Representations for Multimodal Sentiment Analysis. In Findings of the Association for Computational Linguistics: EACL 2023, pages 35–46, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:35–46
+DOI:10.18653/v1/2023.findings-eacl.2
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{hwang-kim-2023-self,
+    title = "Self-Supervised Unimodal Label Generation Strategy Using Recalibrated Modality Representations for Multimodal Sentiment Analysis",
+    author = "Hwang, Yewon  and
+      Kim, Jong-Hwan",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Findings of the Association for Computational Linguistics: EACL 2023",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.findings-eacl.2",
+    doi = "10.18653/v1/2023.findings-eacl.2",
+    pages = "35--46",
+    abstract = "While multimodal sentiment analysis (MSA) has gained much attention over the last few years, the main focus of most work on MSA has been limited to constructing multimodal representations that capture interactions between different modalities in a single task. This was largely due to a lack of unimodal annotations in MSA benchmark datasets. However, training a model using only multimodal representations can lead to suboptimal performance due to insufficient learning of each uni-modal representation. In this work, to fully optimize learning representations from multimodal data, we propose SUGRM which jointly trains multimodal and unimodal tasks using recalibrated features. The features are recalibrated such that the model learns to weight the features differently based on the features of other modalities. Further, to leverage unimodal tasks, we auto-generate unimodal annotations via a unimodal label generation module (ULGM). The experiment results on two benchmark datasets demonstrate the efficacy of our framework.",
+}

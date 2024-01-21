@@ -1,0 +1,39 @@
+Title: FVQA 2.0: Introducing Adversarial Samples into Fact-based Visual Question Answering
+Authors: Weizhe Lin, Zhilin Wang, Bill Byrne
+Abstract: The widely used Fact-based Visual Question Answering (FVQA) dataset contains visually-grounded questions that require information retrieval using common sense knowledge graphs to answer. It has been observed that the original dataset is highly imbalanced and concentrated on a small portion of its associated knowledge graph. We introduce FVQA 2.0 which contains adversarial variants of test questions to address this imbalance. We show that systems trained with the original FVQA train sets can be vulnerable to adversarial samples and we demonstrate an augmentation scheme to reduce this vulnerability without human annotations.
+Cite (Informal):FVQA 2.0: Introducing Adversarial Samples into Fact-based Visual Question Answering (Lin et al., Findings 2023)
+Year:2023
+Venue:Findings
+Video:https://aclanthology.org/2023.findings-eacl.11.mp4
+Anthology ID:2023.findings-eacl.11
+Bibkey:lin-etal-2023-fvqa
+Volume:Findings of the Association for Computational Linguistics: EACL 2023
+URL:https://aclanthology.org/2023.findings-eacl.11
+PDF:https://aclanthology.org/2023.findings-eacl.11.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Weizhe Lin, Zhilin Wang, and Bill Byrne. 2023. FVQA 2.0: Introducing Adversarial Samples into Fact-based Visual Question Answering. In Findings of the Association for Computational Linguistics: EACL 2023, pages 149–157, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:149–157
+DOI:10.18653/v1/2023.findings-eacl.11
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{lin-etal-2023-fvqa,
+    title = "{FVQA} 2.0: Introducing Adversarial Samples into Fact-based Visual Question Answering",
+    author = "Lin, Weizhe  and
+      Wang, Zhilin  and
+      Byrne, Bill",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Findings of the Association for Computational Linguistics: EACL 2023",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.findings-eacl.11",
+    doi = "10.18653/v1/2023.findings-eacl.11",
+    pages = "149--157",
+    abstract = "The widely used Fact-based Visual Question Answering (FVQA) dataset contains visually-grounded questions that require information retrieval using common sense knowledge graphs to answer. It has been observed that the original dataset is highly imbalanced and concentrated on a small portion of its associated knowledge graph. We introduce FVQA 2.0 which contains adversarial variants of test questions to address this imbalance. We show that systems trained with the original FVQA train sets can be vulnerable to adversarial samples and we demonstrate an augmentation scheme to reduce this vulnerability without human annotations.",
+}

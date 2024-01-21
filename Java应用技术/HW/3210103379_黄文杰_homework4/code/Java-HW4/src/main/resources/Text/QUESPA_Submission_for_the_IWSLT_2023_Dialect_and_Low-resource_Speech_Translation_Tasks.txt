@@ -1,0 +1,39 @@
+Title: QUESPA Submission for the IWSLT 2023 Dialect and Low-resource Speech Translation Tasks
+Authors: John E. Ortega, Rodolfo Zevallos, William Chen
+Abstract: This article describes the QUESPA team speech translation (ST) submissions for the Quechua to Spanish (QUE–SPA) track featured in the Evaluation Campaign of IWSLT 2023: low-resource and dialect speech translation. Two main submission types were supported in the campaign: constrained and unconstrained. We submitted six total systems of which our best (primary) constrained system consisted of an ST model based on the Fairseq S2T framework where the audio representations were created using log mel-scale filter banks as features and the translations were performed using a transformer. The best (primary) unconstrained system used a pipeline approach which combined automatic speech recognition (ASR) with machine translation (MT). The ASR transcriptions for the best unconstrained system were computed using a pre-trained XLS-R-based model along with a fine-tuned language model. Transcriptions were translated using a MT system based on a fine-tuned, pre-trained language model (PLM). The four other submissions are presented in this article (2 constrained and 2 unconstrained) for comparison because they consist of various architectures. Our results show that direct ST (ASR and MT combined together) can be more effective than a PLM in a low-resource (constrained) setting for Quechua to Spanish. On the other hand, we show that fine-tuning of any type on both the ASR and MT system is worthwhile, resulting in nearly 16 BLEU for the unconstrained task.
+Cite (Informal):QUESPA Submission for the IWSLT 2023 Dialect and Low-resource Speech Translation Tasks (E. Ortega et al., IWSLT 2023)
+Year:2023
+Venue:IWSLT
+Anthology ID:2023.iwslt-1.23
+Bibkey:e-ortega-etal-2023-quespa
+Volume:Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023)
+URL:https://aclanthology.org/2023.iwslt-1.23
+PDF:https://aclanthology.org/2023.iwslt-1.23.pdf
+Month:July
+SIG:SIGSLT
+Address:Toronto, Canada (in-person and online)
+Language:
+Cite (ACL):John E. Ortega, Rodolfo Zevallos, and William Chen. 2023. QUESPA Submission for the IWSLT 2023 Dialect and Low-resource Speech Translation Tasks. In Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023), pages 261–268, Toronto, Canada (in-person and online). Association for Computational Linguistics.
+Editors:Elizabeth Salesky,Marcello Federico,Marine Carpuat
+Note:
+Pages:261–268
+DOI:10.18653/v1/2023.iwslt-1.23
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{e-ortega-etal-2023-quespa,
+    title = "{QUESPA} Submission for the {IWSLT} 2023 Dialect and Low-resource Speech Translation Tasks",
+    author = "E. Ortega, John  and
+      Zevallos, Rodolfo  and
+      Chen, William",
+    editor = "Salesky, Elizabeth  and
+      Federico, Marcello  and
+      Carpuat, Marine",
+    booktitle = "Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada (in-person and online)",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.iwslt-1.23",
+    doi = "10.18653/v1/2023.iwslt-1.23",
+    pages = "261--268",
+    abstract = "This article describes the QUESPA team speech translation (ST) submissions for the Quechua to Spanish (QUE{--}SPA) track featured in the Evaluation Campaign of IWSLT 2023: low-resource and dialect speech translation. Two main submission types were supported in the campaign: constrained and unconstrained. We submitted six total systems of which our best (primary) constrained system consisted of an ST model based on the Fairseq S2T framework where the audio representations were created using log mel-scale filter banks as features and the translations were performed using a transformer. The best (primary) unconstrained system used a pipeline approach which combined automatic speech recognition (ASR) with machine translation (MT). The ASR transcriptions for the best unconstrained system were computed using a pre-trained XLS-R-based model along with a fine-tuned language model. Transcriptions were translated using a MT system based on a fine-tuned, pre-trained language model (PLM). The four other submissions are presented in this article (2 constrained and 2 unconstrained) for comparison because they consist of various architectures. Our results show that direct ST (ASR and MT combined together) can be more effective than a PLM in a low-resource (constrained) setting for Quechua to Spanish. On the other hand, we show that fine-tuning of any type on both the ASR and MT system is worthwhile, resulting in nearly 16 BLEU for the unconstrained task.",
+}

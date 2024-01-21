@@ -1,0 +1,38 @@
+Title: Breeding Machine Translations: Evolutionary approach to survive and thrive in the world of automated evaluation
+Authors: Josef Jon, Ondřej Bojar
+Abstract: We propose a genetic algorithm (GA) based method for modifying n-best lists produced by a machine translation (MT) system. Our method offers an innovative approach to improving MT quality and identifying weaknesses in evaluation metrics. Using common GA operations (mutation and crossover) on a list of hypotheses in combination with a fitness function (an arbitrary MT metric), we obtain novel and diverse outputs with high metric scores. With a combination of multiple MT metrics as the fitness function, the proposed method leads to an increase in translation quality as measured by other held-out automatic metrics.With a single metric (including popular ones such as COMET) as the fitness function, we find blind spots and flaws in the metric. This allows for an automated search for adversarial examples in an arbitrary metric, without prior assumptions on the form of such example. As a demonstration of the method, we create datasets of adversarial examples and use them to show that reference-free COMET is substantially less robust than the reference-based version. n
+Cite (Informal):Breeding Machine Translations: Evolutionary approach to survive and thrive in the world of automated evaluation (Jon & Bojar, ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.122
+Bibkey:jon-bojar-2023-breeding
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.122
+PDF:https://aclanthology.org/2023.acl-long.122.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Josef Jon and Ondřej Bojar. 2023. Breeding Machine Translations: Evolutionary approach to survive and thrive in the world of automated evaluation. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 2191–2212, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:2191–2212
+DOI:10.18653/v1/2023.acl-long.122
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{jon-bojar-2023-breeding,
+    title = "Breeding Machine Translations: Evolutionary approach to survive and thrive in the world of automated evaluation",
+    author = "Jon, Josef  and
+      Bojar, Ond{\v{r}}ej",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.122",
+    doi = "10.18653/v1/2023.acl-long.122",
+    pages = "2191--2212",
+    abstract = "We propose a genetic algorithm (GA) based method for modifying $n$-best lists produced by a machine translation (MT) system. Our method offers an innovative approach to improving MT quality and identifying weaknesses in evaluation metrics. Using common GA operations (mutation and crossover) on a list of hypotheses in combination with a fitness function (an arbitrary MT metric), we obtain novel and diverse outputs with high metric scores. With a combination of multiple MT metrics as the fitness function, the proposed method leads to an increase in translation quality as measured by other held-out automatic metrics.With a single metric (including popular ones such as COMET) as the fitness function, we find blind spots and flaws in the metric. This allows for an automated search for adversarial examples in an arbitrary metric, without prior assumptions on the form of such example. As a demonstration of the method, we create datasets of adversarial examples and use them to show that reference-free COMET is substantially less robust than the reference-based version.",
+}

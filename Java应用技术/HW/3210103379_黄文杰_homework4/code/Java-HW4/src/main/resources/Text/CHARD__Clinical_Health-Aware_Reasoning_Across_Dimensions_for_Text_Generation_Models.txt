@@ -1,0 +1,41 @@
+Title: CHARD: Clinical Health-Aware Reasoning Across Dimensions for Text Generation Models
+Authors: Steven Y. Feng, Vivek Khetan, Bogdan Sacaleanu, Anatole Gershman, Eduard Hovy
+Abstract: We motivate and introduce CHARD: Clinical Health-Aware Reasoning across Dimensions, to investigate the capability of text generation models to act as implicit clinical knowledge bases and generate free-flow textual explanations about various health-related conditions across several dimensions. We collect and present an associated dataset, CHARDat, consisting of explanations about 52 health conditions across three clinical dimensions. We conduct extensive experiments using BART and T5 along with data augmentation, and perform automatic, human, and qualitative analyses. We show that while our models can perform decently, CHARD is very challenging with strong potential for further exploration.
+Cite (Informal):CHARD: Clinical Health-Aware Reasoning Across Dimensions for Text Generation Models (Feng et al., EACL 2023)
+Year:2023
+Venue:EACL
+Video:https://aclanthology.org/2023.eacl-main.24.mp4
+Anthology ID:2023.eacl-main.24
+Bibkey:feng-etal-2023-chard
+Volume:Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics
+URL:https://aclanthology.org/2023.eacl-main.24
+PDF:https://aclanthology.org/2023.eacl-main.24.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Steven Y. Feng, Vivek Khetan, Bogdan Sacaleanu, Anatole Gershman, and Eduard Hovy. 2023. CHARD: Clinical Health-Aware Reasoning Across Dimensions for Text Generation Models. In Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics, pages 313–327, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:313–327
+DOI:10.18653/v1/2023.eacl-main.24
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{feng-etal-2023-chard,
+    title = "{CHARD}: Clinical Health-Aware Reasoning Across Dimensions for Text Generation Models",
+    author = "Feng, Steven Y.  and
+      Khetan, Vivek  and
+      Sacaleanu, Bogdan  and
+      Gershman, Anatole  and
+      Hovy, Eduard",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.eacl-main.24",
+    doi = "10.18653/v1/2023.eacl-main.24",
+    pages = "313--327",
+    abstract = "We motivate and introduce CHARD: Clinical Health-Aware Reasoning across Dimensions, to investigate the capability of text generation models to act as implicit clinical knowledge bases and generate free-flow textual explanations about various health-related conditions across several dimensions. We collect and present an associated dataset, CHARDat, consisting of explanations about 52 health conditions across three clinical dimensions. We conduct extensive experiments using BART and T5 along with data augmentation, and perform automatic, human, and qualitative analyses. We show that while our models can perform decently, CHARD is very challenging with strong potential for further exploration.",
+}

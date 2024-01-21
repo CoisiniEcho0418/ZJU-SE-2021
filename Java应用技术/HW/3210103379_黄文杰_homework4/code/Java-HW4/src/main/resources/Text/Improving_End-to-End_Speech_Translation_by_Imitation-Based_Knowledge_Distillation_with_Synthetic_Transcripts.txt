@@ -1,0 +1,39 @@
+Title: Improving End-to-End Speech Translation by Imitation-Based Knowledge Distillation with Synthetic Transcripts
+Authors: Rebekka Hubert, Artem Sokolov, Stefan Riezler
+Abstract: End-to-end automatic speech translation (AST) relies on data that combines audio inputs with text translation outputs. Previous work used existing large parallel corpora of transcriptions and translations in a knowledge distillation (KD) setup to distill a neural machine translation (NMT) into an AST student model. While KD allows using larger pretrained models, the reliance of previous KD approaches on manual audio transcripts in the data pipeline restricts the applicability of this framework to AST. We present an imitation learning approach where a teacher NMT system corrects the errors of an AST student without relying on manual transcripts. We show that the NMT teacher can recover from errors in automatic transcriptions and is able to correct erroneous translations of the AST student, leading to improvements of about 4 BLEU points over the standard AST end-to-end baseline on the English-German CoVoST-2 and MuST-C datasets, respectively. Code and data are publicly available: https://github.com/HubReb/imitkd_ast/releases/tag/v1.1
+Cite (Informal):Improving End-to-End Speech Translation by Imitation-Based Knowledge Distillation with Synthetic Transcripts (Hubert et al., IWSLT 2023)
+Year:2023
+Venue:IWSLT
+Anthology ID:2023.iwslt-1.4
+Bibkey:hubert-etal-2023-improving
+Volume:Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023)
+URL:https://aclanthology.org/2023.iwslt-1.4
+PDF:https://aclanthology.org/2023.iwslt-1.4.pdf
+Month:July
+SIG:SIGSLT
+Address:Toronto, Canada (in-person and online)
+Language:
+Cite (ACL):Rebekka Hubert, Artem Sokolov, and Stefan Riezler. 2023. Improving End-to-End Speech Translation by Imitation-Based Knowledge Distillation with Synthetic Transcripts. In Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023), pages 89–101, Toronto, Canada (in-person and online). Association for Computational Linguistics.
+Editors:Elizabeth Salesky,Marcello Federico,Marine Carpuat
+Note:
+Pages:89–101
+DOI:10.18653/v1/2023.iwslt-1.4
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{hubert-etal-2023-improving,
+    title = "Improving End-to-End Speech Translation by Imitation-Based Knowledge Distillation with Synthetic Transcripts",
+    author = "Hubert, Rebekka  and
+      Sokolov, Artem  and
+      Riezler, Stefan",
+    editor = "Salesky, Elizabeth  and
+      Federico, Marcello  and
+      Carpuat, Marine",
+    booktitle = "Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada (in-person and online)",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.iwslt-1.4",
+    doi = "10.18653/v1/2023.iwslt-1.4",
+    pages = "89--101",
+    abstract = "End-to-end automatic speech translation (AST) relies on data that combines audio inputs with text translation outputs. Previous work used existing large parallel corpora of transcriptions and translations in a knowledge distillation (KD) setup to distill a neural machine translation (NMT) into an AST student model. While KD allows using larger pretrained models, the reliance of previous KD approaches on manual audio transcripts in the data pipeline restricts the applicability of this framework to AST. We present an imitation learning approach where a teacher NMT system corrects the errors of an AST student without relying on manual transcripts. We show that the NMT teacher can recover from errors in automatic transcriptions and is able to correct erroneous translations of the AST student, leading to improvements of about 4 BLEU points over the standard AST end-to-end baseline on the English-German CoVoST-2 and MuST-C datasets, respectively. Code and data are publicly available: \url{https://github.com/HubReb/imitkd_ast/releases/tag/v1.1}",
+}

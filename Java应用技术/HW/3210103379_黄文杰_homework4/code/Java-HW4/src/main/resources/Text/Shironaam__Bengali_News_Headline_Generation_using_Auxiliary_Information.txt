@@ -1,0 +1,40 @@
+Title: Shironaam: Bengali News Headline Generation using Auxiliary Information
+Authors: Abu Ubaida Akash, Mir Tafseer Nayeem, Faisal Tareque Shohan, Tanvir Islam
+Abstract: Automatic headline generation systems have the potential to assist editors in finding interesting headlines to attract visitors or readers. However, the performance of headline generation systems remains challenging due to the unavailability of sufficient parallel data for low-resource languages like Bengali and the lack of ideal approaches to develop a system for headline generation using pre-trained language models, especially for long news articles. To address these challenges, we present Shironaam, a large-scale dataset in Bengali containing over 240K news article-headline pairings with auxiliary data such as image captions, topic words, and category information. Unlike other headline generation models, this paper uses this auxiliary information to better model this task. Furthermore, we utilize the contextualized language models to design encoder-decoder model for Bengali news headline generation and follow a simple yet cost-effective coarse-to-fine approach using topic-words to retrieve important sentences considering the fixed length requirement of the pre-trained language models. Finally, we conduct extensive experiments on our dataset containing news articles of 13 different categories to demonstrate the effectiveness of incorporating auxiliary information and evaluate our system on a wide range of metrics. The experimental results demonstrate that our methods bring significant improvements (i.e., 3 to 10 percentage points across all evaluation metrics) over the baselines. Also to illustrate the utility and robustness, we report experimental results in few-shot and non-few-shot settings.
+Cite (Informal):Shironaam: Bengali News Headline Generation using Auxiliary Information (Akash et al., EACL 2023)
+Year:2023
+Venue:EACL
+Video:https://aclanthology.org/2023.eacl-main.4.mp4
+Anthology ID:2023.eacl-main.4
+Bibkey:akash-etal-2023-shironaam
+Volume:Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics
+URL:https://aclanthology.org/2023.eacl-main.4
+PDF:https://aclanthology.org/2023.eacl-main.4.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Abu Ubaida Akash, Mir Tafseer Nayeem, Faisal Tareque Shohan, and Tanvir Islam. 2023. Shironaam: Bengali News Headline Generation using Auxiliary Information. In Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics, pages 52–67, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:52–67
+DOI:10.18653/v1/2023.eacl-main.4
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{akash-etal-2023-shironaam,
+    title = "Shironaam: {B}engali News Headline Generation using Auxiliary Information",
+    author = "Akash, Abu Ubaida  and
+      Nayeem, Mir Tafseer  and
+      Shohan, Faisal Tareque  and
+      Islam, Tanvir",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.eacl-main.4",
+    doi = "10.18653/v1/2023.eacl-main.4",
+    pages = "52--67",
+    abstract = "Automatic headline generation systems have the potential to assist editors in finding interesting headlines to attract visitors or readers. However, the performance of headline generation systems remains challenging due to the unavailability of sufficient parallel data for low-resource languages like Bengali and the lack of ideal approaches to develop a system for headline generation using pre-trained language models, especially for long news articles. To address these challenges, we present Shironaam, a large-scale dataset in Bengali containing over 240K news article-headline pairings with auxiliary data such as image captions, topic words, and category information. Unlike other headline generation models, this paper uses this auxiliary information to better model this task. Furthermore, we utilize the contextualized language models to design encoder-decoder model for Bengali news headline generation and follow a simple yet cost-effective coarse-to-fine approach using topic-words to retrieve important sentences considering the fixed length requirement of the pre-trained language models. Finally, we conduct extensive experiments on our dataset containing news articles of 13 different categories to demonstrate the effectiveness of incorporating auxiliary information and evaluate our system on a wide range of metrics. The experimental results demonstrate that our methods bring significant improvements (i.e., 3 to 10 percentage points across all evaluation metrics) over the baselines. Also to illustrate the utility and robustness, we report experimental results in few-shot and non-few-shot settings.",
+}

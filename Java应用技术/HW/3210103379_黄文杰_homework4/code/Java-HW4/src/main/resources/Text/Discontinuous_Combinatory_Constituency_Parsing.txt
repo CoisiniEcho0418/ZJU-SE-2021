@@ -1,0 +1,34 @@
+Title: Discontinuous Combinatory Constituency Parsing
+Authors: Zhousi Chen, Mamoru Komachi
+Abstract: We extend a pair of continuous combinator-based constituency parsers (one binary and one multi-branching) into a discontinuous pair. Our parsers iteratively compose constituent vectors from word embeddings without any grammar constraints. Their empirical complexities are subquadratic. Our extension includes 1) a swap action for the orientation-based binary model and 2) biaffine attention for the chunker-based multi-branching model. In tests conducted with the Discontinuous Penn Treebank and TIGER Treebank, we achieved state-of-the-art discontinuous accuracy with a significant speed advantage.
+Cite (Informal):Discontinuous Combinatory Constituency Parsing (Chen & Komachi, TACL 2023)
+Year:2023
+Venue:TACL
+Anthology ID:2023.tacl-1.16
+Bibkey:chen-komachi-2023-discontinuous
+Volume:Transactions of the Association for Computational Linguistics, Volume 11
+URL:https://aclanthology.org/2023.tacl-1.16
+PDF:https://aclanthology.org/2023.tacl-1.16.pdf
+Month:
+SIG:
+Address:Cambridge, MA
+Language:
+Cite (ACL):Zhousi Chen and Mamoru Komachi. 2023. Discontinuous Combinatory Constituency Parsing. Transactions of the Association for Computational Linguistics, 11:267–283.
+Note:
+Pages:267–283
+DOI:10.1162/tacl_a_00546
+Publisher:MIT Press
+BibTex: @article{chen-komachi-2023-discontinuous,
+    title = "Discontinuous Combinatory Constituency Parsing",
+    author = "Chen, Zhousi  and
+      Komachi, Mamoru",
+    journal = "Transactions of the Association for Computational Linguistics",
+    volume = "11",
+    year = "2023",
+    address = "Cambridge, MA",
+    publisher = "MIT Press",
+    url = "https://aclanthology.org/2023.tacl-1.16",
+    doi = "10.1162/tacl_a_00546",
+    pages = "267--283",
+    abstract = "We extend a pair of continuous combinator-based constituency parsers (one binary and one multi-branching) into a discontinuous pair. Our parsers iteratively compose constituent vectors from word embeddings without any grammar constraints. Their empirical complexities are subquadratic. Our extension includes 1) a swap action for the orientation-based binary model and 2) biaffine attention for the chunker-based multi-branching model. In tests conducted with the Discontinuous Penn Treebank and TIGER Treebank, we achieved state-of-the-art discontinuous accuracy with a significant speed advantage.",
+}

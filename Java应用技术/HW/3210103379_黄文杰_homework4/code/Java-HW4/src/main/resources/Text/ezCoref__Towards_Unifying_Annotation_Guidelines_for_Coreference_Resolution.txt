@@ -1,0 +1,44 @@
+Title: ezCoref: Towards Unifying Annotation Guidelines for Coreference Resolution
+Authors: Ankita Gupta, Marzena Karpinska, Wenlong Zhao, Kalpesh Krishna, Jack Merullo, Luke Yeh, Mohit Iyyer, Brendan O’Connor
+Abstract: Large-scale, high-quality corpora are critical for advancing research in coreference resolution. However, existing datasets vary in their definition of coreferences and have been collected via complex and lengthy guidelines that are curated for linguistic experts. These concerns have sparked a growing interest among researchers to curate a unified set of guidelines suitable for annotators with various backgrounds. In this work, we develop a crowdsourcing-friendly coreference annotation methodology, ezCoref, consisting of an annotation tool and an interactive tutorial. We use ezCoref to re-annotate 240 passages from seven existing English coreference datasets (spanning fiction, news, and multiple other domains) while teaching annotators only cases that are treated similarly across these datasets. Surprisingly, we find that reasonable quality annotations were already achievable (90% agreement between the crowd and expert annotations) even without extensive training. On carefully analyzing the remaining disagreements, we identify the presence of linguistic cases that our annotators unanimously agree upon but lack unified treatments (e.g., generic pronouns, appositives) in existing datasets. We propose the research community should revisit these phenomena when curating future unified annotation guidelines.
+Cite (Informal):ezCoref: Towards Unifying Annotation Guidelines for Coreference Resolution (Gupta et al., Findings 2023)
+Year:2023
+Venue:Findings
+Video:https://aclanthology.org/2023.findings-eacl.24.mp4
+Anthology ID:2023.findings-eacl.24
+Bibkey:gupta-etal-2023-ezcoref
+Volume:Findings of the Association for Computational Linguistics: EACL 2023
+URL:https://aclanthology.org/2023.findings-eacl.24
+PDF:https://aclanthology.org/2023.findings-eacl.24.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Ankita Gupta, Marzena Karpinska, Wenlong Zhao, Kalpesh Krishna, Jack Merullo, Luke Yeh, Mohit Iyyer, and Brendan O’Connor. 2023. ezCoref: Towards Unifying Annotation Guidelines for Coreference Resolution. In Findings of the Association for Computational Linguistics: EACL 2023, pages 312–330, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:312–330
+DOI:10.18653/v1/2023.findings-eacl.24
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{gupta-etal-2023-ezcoref,
+    title = "ez{C}oref: Towards Unifying Annotation Guidelines for Coreference Resolution",
+    author = "Gupta, Ankita  and
+      Karpinska, Marzena  and
+      Zhao, Wenlong  and
+      Krishna, Kalpesh  and
+      Merullo, Jack  and
+      Yeh, Luke  and
+      Iyyer, Mohit  and
+      O{'}Connor, Brendan",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Findings of the Association for Computational Linguistics: EACL 2023",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.findings-eacl.24",
+    doi = "10.18653/v1/2023.findings-eacl.24",
+    pages = "312--330",
+    abstract = "Large-scale, high-quality corpora are critical for advancing research in coreference resolution. However, existing datasets vary in their definition of coreferences and have been collected via complex and lengthy guidelines that are curated for linguistic experts. These concerns have sparked a growing interest among researchers to curate a unified set of guidelines suitable for annotators with various backgrounds. In this work, we develop a crowdsourcing-friendly coreference annotation methodology, ezCoref, consisting of an annotation tool and an interactive tutorial. We use ezCoref to re-annotate 240 passages from seven existing English coreference datasets (spanning fiction, news, and multiple other domains) while teaching annotators only cases that are treated similarly across these datasets. Surprisingly, we find that reasonable quality annotations were already achievable (90{\%} agreement between the crowd and expert annotations) even without extensive training. On carefully analyzing the remaining disagreements, we identify the presence of linguistic cases that our annotators unanimously agree upon but lack unified treatments (e.g., generic pronouns, appositives) in existing datasets. We propose the research community should revisit these phenomena when curating future unified annotation guidelines.",
+}

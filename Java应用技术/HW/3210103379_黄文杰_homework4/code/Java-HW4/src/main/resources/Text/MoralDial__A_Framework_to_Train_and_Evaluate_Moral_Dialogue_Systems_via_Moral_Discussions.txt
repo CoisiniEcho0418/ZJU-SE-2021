@@ -1,0 +1,45 @@
+Title: MoralDial: A Framework to Train and Evaluate Moral Dialogue Systems via Moral Discussions
+Authors: Hao Sun, Zhexin Zhang, Fei Mi, Yasheng Wang, Wei Liu, Jianwei Cui, Bin Wang, Qun Liu, Minlie Huang
+Abstract: Morality in dialogue systems has raised great attention in research recently. A moral dialogue system aligned with users’ values could enhance conversation engagement and user connections. In this paper, we propose a framework, MoralDial to train and evaluate moral dialogue systems. In our framework, we first explore the communication mechanisms of morality and resolve expressed morality into three parts, which indicate the roadmap for building a moral dialogue system. Based on that, we design a simple yet effective method: constructing moral discussions between simulated specific users and the dialogue system. The constructed discussions consist of expressing, explaining, revising, and inferring moral views in dialogue exchanges, which makes conversational models learn morality well in a natural manner. Furthermore, we propose a novel evaluation method under the framework. We evaluate the multiple aspects of morality by judging the relation between dialogue responses and human values in discussions, where the multifaceted nature of morality is particularly considered. Automatic and manual experiments demonstrate that our framework is promising to train and evaluate moral dialogue systems.
+Cite (Informal):MoralDial: A Framework to Train and Evaluate Moral Dialogue Systems via Moral Discussions (Sun et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.123
+Bibkey:sun-etal-2023-moraldial
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.123
+PDF:https://aclanthology.org/2023.acl-long.123.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Hao Sun, Zhexin Zhang, Fei Mi, Yasheng Wang, Wei Liu, Jianwei Cui, Bin Wang, Qun Liu, and Minlie Huang. 2023. MoralDial: A Framework to Train and Evaluate Moral Dialogue Systems via Moral Discussions. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 2213–2230, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:2213–2230
+DOI:10.18653/v1/2023.acl-long.123
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{sun-etal-2023-moraldial,
+    title = "{M}oral{D}ial: A Framework to Train and Evaluate Moral Dialogue Systems via Moral Discussions",
+    author = "Sun, Hao  and
+      Zhang, Zhexin  and
+      Mi, Fei  and
+      Wang, Yasheng  and
+      Liu, Wei  and
+      Cui, Jianwei  and
+      Wang, Bin  and
+      Liu, Qun  and
+      Huang, Minlie",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.123",
+    doi = "10.18653/v1/2023.acl-long.123",
+    pages = "2213--2230",
+    abstract = "Morality in dialogue systems has raised great attention in research recently. A moral dialogue system aligned with users{'} values could enhance conversation engagement and user connections. In this paper, we propose a framework, MoralDial to train and evaluate moral dialogue systems. In our framework, we first explore the communication mechanisms of morality and resolve expressed morality into three parts, which indicate the roadmap for building a moral dialogue system. Based on that, we design a simple yet effective method: constructing moral discussions between simulated specific users and the dialogue system. The constructed discussions consist of expressing, explaining, revising, and inferring moral views in dialogue exchanges, which makes conversational models learn morality well in a natural manner. Furthermore, we propose a novel evaluation method under the framework. We evaluate the multiple aspects of morality by judging the relation between dialogue responses and human values in discussions, where the multifaceted nature of morality is particularly considered. Automatic and manual experiments demonstrate that our framework is promising to train and evaluate moral dialogue systems.",
+}

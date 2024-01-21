@@ -1,0 +1,40 @@
+Title: UScore: An Effective Approach to Fully Unsupervised Evaluation Metrics for Machine Translation
+Authors: Jonas Belouadi, Steffen Eger
+Abstract: The vast majority of evaluation metrics for machine translation are supervised, i.e., (i) are trained on human scores, (ii) assume the existence of reference translations, or (iii) leverage parallel data. This hinders their applicability to cases where such supervision signals are not available. In this work, we develop fully unsupervised evaluation metrics. To do so, we leverage similarities and synergies between evaluation metric induction, parallel corpus mining, and MT systems. In particular, we use an unsupervised evaluation metric to mine pseudo-parallel data, which we use to remap deficient underlying vector spaces (in an iterative manner) and to induce an unsupervised MT system, which then provides pseudo-references as an additional component in the metric. Finally, we also induce unsupervised multilingual sentence embeddings from pseudo-parallel data. We show that our fully unsupervised metrics are effective, i.e., they beat supervised competitors on 4 out of our 5 evaluation datasets. We make our code publicly available.
+Cite (Informal):UScore: An Effective Approach to Fully Unsupervised Evaluation Metrics for Machine Translation (Belouadi & Eger, EACL 2023)
+Year:2023
+Venue:EACL
+Video:https://aclanthology.org/2023.eacl-main.27.mp4
+Anthology ID:2023.eacl-main.27
+Bibkey:belouadi-eger-2023-uscore
+Software:2023.eacl-main.27.software.zip
+Volume:Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics
+URL:https://aclanthology.org/2023.eacl-main.27
+PDF:https://aclanthology.org/2023.eacl-main.27.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Jonas Belouadi and Steffen Eger. 2023. UScore: An Effective Approach to Fully Unsupervised Evaluation Metrics for Machine Translation. In Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics, pages 358–374, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Award:EACL Outstanding Paper
+Pages:358–374
+DOI:10.18653/v1/2023.eacl-main.27
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{belouadi-eger-2023-uscore,
+    title = "{US}core: An Effective Approach to Fully Unsupervised Evaluation Metrics for Machine Translation",
+    author = "Belouadi, Jonas  and
+      Eger, Steffen",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.eacl-main.27",
+    doi = "10.18653/v1/2023.eacl-main.27",
+    pages = "358--374",
+    abstract = "The vast majority of evaluation metrics for machine translation are supervised, i.e., (i) are trained on human scores, (ii) assume the existence of reference translations, or (iii) leverage parallel data. This hinders their applicability to cases where such supervision signals are not available. In this work, we develop fully unsupervised evaluation metrics. To do so, we leverage similarities and synergies between evaluation metric induction, parallel corpus mining, and MT systems. In particular, we use an unsupervised evaluation metric to mine pseudo-parallel data, which we use to remap deficient underlying vector spaces (in an iterative manner) and to induce an unsupervised MT system, which then provides pseudo-references as an additional component in the metric. Finally, we also induce unsupervised multilingual sentence embeddings from pseudo-parallel data. We show that our fully unsupervised metrics are effective, i.e., they beat supervised competitors on 4 out of our 5 evaluation datasets. We make our code publicly available.",
+}

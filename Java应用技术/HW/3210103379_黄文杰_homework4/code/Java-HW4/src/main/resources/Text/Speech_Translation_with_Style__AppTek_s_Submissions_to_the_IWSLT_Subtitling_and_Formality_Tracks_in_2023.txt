@@ -1,0 +1,42 @@
+Title: Speech Translation with Style: AppTek’s Submissions to the IWSLT Subtitling and Formality Tracks in 2023
+Authors: Parnia Bahar, Patrick Wilken, Javier Iranzo-Sánchez, Mattia Di Gangi, Evgeny Matusov, Zoltán Tüske
+Abstract: AppTek participated in the subtitling and formality tracks of the IWSLT 2023 evaluation. This paper describes the details of our subtitling pipeline - speech segmentation, speech recognition, punctuation prediction and inverse text normalization, text machine translation and direct speech-to-text translation, intelligent line segmentation - and how we make use of the provided subtitling-specific data in training and fine-tuning. The evaluation results show that our final submissions are competitive, in particular outperforming the submissions by other participants by 5% absolute as measured by the SubER subtitle quality metric. For the formality track, we participate with our En-Ru and En-Pt production models, which support formality control via prefix tokens. Except for informal Portuguese, we achieve near perfect formality level accuracy while at the same time offering high general translation quality.
+Cite (Informal):Speech Translation with Style: AppTek’s Submissions to the IWSLT Subtitling and Formality Tracks in 2023 (Bahar et al., IWSLT 2023)
+Year:2023
+Venue:IWSLT
+Anthology ID:2023.iwslt-1.22
+Bibkey:bahar-etal-2023-speech
+Volume:Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023)
+URL:https://aclanthology.org/2023.iwslt-1.22
+PDF:https://aclanthology.org/2023.iwslt-1.22.pdf
+Month:July
+SIG:SIGSLT
+Address:Toronto, Canada (in-person and online)
+Language:
+Cite (ACL):Parnia Bahar, Patrick Wilken, Javier Iranzo-Sánchez, Mattia Di Gangi, Evgeny Matusov, and Zoltán Tüske. 2023. Speech Translation with Style: AppTek’s Submissions to the IWSLT Subtitling and Formality Tracks in 2023. In Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023), pages 251–260, Toronto, Canada (in-person and online). Association for Computational Linguistics.
+Editors:Elizabeth Salesky,Marcello Federico,Marine Carpuat
+Note:
+Pages:251–260
+DOI:10.18653/v1/2023.iwslt-1.22
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{bahar-etal-2023-speech,
+    title = "Speech Translation with Style: {A}pp{T}ek{'}s Submissions to the {IWSLT} Subtitling and Formality Tracks in 2023",
+    author = {Bahar, Parnia  and
+      Wilken, Patrick  and
+      Iranzo-S{\'a}nchez, Javier  and
+      Di Gangi, Mattia  and
+      Matusov, Evgeny  and
+      T{\"u}ske, Zolt{\'a}n},
+    editor = "Salesky, Elizabeth  and
+      Federico, Marcello  and
+      Carpuat, Marine",
+    booktitle = "Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada (in-person and online)",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.iwslt-1.22",
+    doi = "10.18653/v1/2023.iwslt-1.22",
+    pages = "251--260",
+    abstract = "AppTek participated in the subtitling and formality tracks of the IWSLT 2023 evaluation. This paper describes the details of our subtitling pipeline - speech segmentation, speech recognition, punctuation prediction and inverse text normalization, text machine translation and direct speech-to-text translation, intelligent line segmentation - and how we make use of the provided subtitling-specific data in training and fine-tuning. The evaluation results show that our final submissions are competitive, in particular outperforming the submissions by other participants by 5{\%} absolute as measured by the SubER subtitle quality metric. For the formality track, we participate with our En-Ru and En-Pt production models, which support formality control via prefix tokens. Except for informal Portuguese, we achieve near perfect formality level accuracy while at the same time offering high general translation quality.",
+}

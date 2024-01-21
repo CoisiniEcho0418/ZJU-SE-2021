@@ -1,0 +1,39 @@
+Title: A Two-Sided Discussion of Preregistration of NLP Research
+Authors: Anders Søgaard, Daniel Hershcovich, Miryam de Lhoneux
+Abstract: Van Miltenburg et al. (2021) suggest NLP research should adopt preregistration to prevent fishing expeditions and to promote publication of negative results. At face value, this is a very reasonable suggestion, seemingly solving many methodological problems with NLP research. We discuss pros and cons - some old, some new: a) Preregistration is challenged by the practice of retrieving hypotheses after the results are known; b) preregistration may bias NLP toward confirmatory research; c) preregistration must allow for reclassification of research as exploratory; d) preregistration may increase publication bias; e) preregistration may increase flag-planting; f) preregistration may increase p-hacking; and finally, g) preregistration may make us less risk tolerant. We cast our discussion as a dialogue, presenting both sides of the debate.
+Cite (Informal):A Two-Sided Discussion of Preregistration of NLP Research (Søgaard et al., EACL 2023)
+Year:2023
+Venue:EACL
+Video:https://aclanthology.org/2023.eacl-main.6.mp4
+Anthology ID:2023.eacl-main.6
+Bibkey:sogaard-etal-2023-two
+Volume:Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics
+URL:https://aclanthology.org/2023.eacl-main.6
+PDF:https://aclanthology.org/2023.eacl-main.6.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Anders Søgaard, Daniel Hershcovich, and Miryam de Lhoneux. 2023. A Two-Sided Discussion of Preregistration of NLP Research. In Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics, pages 83–93, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:83–93
+DOI:10.18653/v1/2023.eacl-main.6
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{sogaard-etal-2023-two,
+    title = "A Two-Sided Discussion of Preregistration of {NLP} Research",
+    author = "S{\o}gaard, Anders  and
+      Hershcovich, Daniel  and
+      de Lhoneux, Miryam",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.eacl-main.6",
+    doi = "10.18653/v1/2023.eacl-main.6",
+    pages = "83--93",
+    abstract = "Van Miltenburg et al. (2021) suggest NLP research should adopt preregistration to prevent fishing expeditions and to promote publication of negative results. At face value, this is a very reasonable suggestion, seemingly solving many methodological problems with NLP research. We discuss pros and cons - some old, some new: a) Preregistration is challenged by the practice of retrieving hypotheses after the results are known; b) preregistration may bias NLP toward confirmatory research; c) preregistration must allow for reclassification of research as exploratory; d) preregistration may increase publication bias; e) preregistration may increase flag-planting; f) preregistration may increase p-hacking; and finally, g) preregistration may make us less risk tolerant. We cast our discussion as a dialogue, presenting both sides of the debate.",
+}

@@ -1,0 +1,41 @@
+Title: Helping a Friend or Supporting a Cause? Disentangling Active and Passive Cosponsorship in the U.S. Congress
+Authors: Giuseppe Russo, Christoph Gote, Laurence Brandenberger, Sophia Schlosser, Frank Schweitzer
+Abstract: In the U.S. Congress, legislators can use active and passive cosponsorship to support bills. We show that these two types of cosponsorship are driven by two different motivations: the backing of political colleagues and the backing of the bill’s content. To this end, we develop an Encoder+RGCN based model that learns legislator representations from bill texts and speech transcripts. These representations predict active and passive cosponsorship with an F1-score of 0.88.Applying our representations to predict voting decisions, we show that they are interpretable and generalize to unseen tasks.
+Cite (Informal):Helping a Friend or Supporting a Cause? Disentangling Active and Passive Cosponsorship in the U.S. Congress (Russo et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.166
+Bibkey:russo-etal-2023-helping
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.166
+PDF:https://aclanthology.org/2023.acl-long.166.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Giuseppe Russo, Christoph Gote, Laurence Brandenberger, Sophia Schlosser, and Frank Schweitzer. 2023. Helping a Friend or Supporting a Cause? Disentangling Active and Passive Cosponsorship in the U.S. Congress. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 2952–2969, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:2952–2969
+DOI:10.18653/v1/2023.acl-long.166
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{russo-etal-2023-helping,
+    title = "Helping a Friend or Supporting a Cause? Disentangling Active and Passive Cosponsorship in the {U}.{S}. Congress",
+    author = "Russo, Giuseppe  and
+      Gote, Christoph  and
+      Brandenberger, Laurence  and
+      Schlosser, Sophia  and
+      Schweitzer, Frank",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.166",
+    doi = "10.18653/v1/2023.acl-long.166",
+    pages = "2952--2969",
+    abstract = "In the U.S. Congress, legislators can use active and passive cosponsorship to support bills. We show that these two types of cosponsorship are driven by two different motivations: the backing of political colleagues and the backing of the bill{'}s content. To this end, we develop an Encoder+RGCN based model that learns legislator representations from bill texts and speech transcripts. These representations predict active and passive cosponsorship with an F1-score of 0.88.Applying our representations to predict voting decisions, we show that they are interpretable and generalize to unseen tasks.",
+}

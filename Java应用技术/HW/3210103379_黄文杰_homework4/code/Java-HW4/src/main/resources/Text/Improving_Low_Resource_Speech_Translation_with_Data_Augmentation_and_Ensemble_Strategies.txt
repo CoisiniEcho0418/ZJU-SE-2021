@@ -1,0 +1,41 @@
+Title: Improving Low Resource Speech Translation with Data Augmentation and Ensemble Strategies
+Authors: Akshaya Vishnu Kudlu Shanbhogue, Ran Xue, Soumya Saha, Daniel Zhang, Ashwinkumar Ganesan
+Abstract: This paper describes the speech translation system submitted as part of the IWSLT 2023 shared task on low resource speech translation. The low resource task aids in building models for language pairs where the training corpus is limited. In this paper, we focus on two language pairs, namely, Tamasheq-French (Tmh→Fra) and Marathi-Hindi (Mr→Hi) and implement a speech translation system that is unconstrained. We evaluate three strategies in our system: (a) Data augmentation where we perform different operations on audio as well as text samples, (b) an ensemble model that integrates a set of models trained using a combination of augmentation strategies, and (c) post-processing techniques where we explore the use of large language models (LLMs) to improve the quality of sentences that are generated. Experiments show how data augmentation can relatively improve the BLEU score by 5.2% over the baseline system for Tmh→Fra while an ensemble model further improves performance by 17% for Tmh→Fra and 23% for Mr→Hi task.
+Cite (Informal):Improving Low Resource Speech Translation with Data Augmentation and Ensemble Strategies (Shanbhogue et al., IWSLT 2023)
+Year:2023
+Venue:IWSLT
+Anthology ID:2023.iwslt-1.21
+Bibkey:vishnu-kudlu-shanbhogue-etal-2023-improving
+Volume:Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023)
+URL:https://aclanthology.org/2023.iwslt-1.21
+PDF:https://aclanthology.org/2023.iwslt-1.21.pdf
+Month:July
+SIG:SIGSLT
+Address:Toronto, Canada (in-person and online)
+Language:
+Cite (ACL):Akshaya Vishnu Kudlu Shanbhogue, Ran Xue, Soumya Saha, Daniel Zhang, and Ashwinkumar Ganesan. 2023. Improving Low Resource Speech Translation with Data Augmentation and Ensemble Strategies. In Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023), pages 241–250, Toronto, Canada (in-person and online). Association for Computational Linguistics.
+Editors:Elizabeth Salesky,Marcello Federico,Marine Carpuat
+Note:
+Pages:241–250
+DOI:10.18653/v1/2023.iwslt-1.21
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{vishnu-kudlu-shanbhogue-etal-2023-improving,
+    title = "Improving Low Resource Speech Translation with Data Augmentation and Ensemble Strategies",
+    author = "Shanbhogue, Akshaya Vishnu Kudlu  and
+      Xue, Ran  and
+      Saha, Soumya  and
+      Zhang, Daniel  and
+      Ganesan, Ashwinkumar",
+    editor = "Salesky, Elizabeth  and
+      Federico, Marcello  and
+      Carpuat, Marine",
+    booktitle = "Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada (in-person and online)",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.iwslt-1.21",
+    doi = "10.18653/v1/2023.iwslt-1.21",
+    pages = "241--250",
+    abstract = "This paper describes the speech translation system submitted as part of the IWSLT 2023 shared task on low resource speech translation. The low resource task aids in building models for language pairs where the training corpus is limited. In this paper, we focus on two language pairs, namely, Tamasheq-French (Tmh→Fra) and Marathi-Hindi (Mr→Hi) and implement a speech translation system that is unconstrained. We evaluate three strategies in our system: (a) Data augmentation where we perform different operations on audio as well as text samples, (b) an ensemble model that integrates a set of models trained using a combination of augmentation strategies, and (c) post-processing techniques where we explore the use of large language models (LLMs) to improve the quality of sentences that are generated. Experiments show how data augmentation can relatively improve the BLEU score by 5.2{\%} over the baseline system for Tmh→Fra while an ensemble model further improves performance by 17{\%} for Tmh→Fra and 23{\%} for Mr→Hi task.",
+}

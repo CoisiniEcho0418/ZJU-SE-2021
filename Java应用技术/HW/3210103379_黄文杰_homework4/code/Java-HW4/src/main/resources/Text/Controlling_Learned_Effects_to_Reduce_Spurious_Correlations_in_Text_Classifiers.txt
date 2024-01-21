@@ -1,0 +1,38 @@
+Title: Controlling Learned Effects to Reduce Spurious Correlations in Text Classifiers
+Authors: Parikshit Bansal, Amit Sharma
+Abstract: To address the problem of NLP classifiers learning spurious correlations between training features and target labels, a common approach is to make the model’s predictions invariant to these features. However, this can be counter-productive when the features have a non-zero causal effect on the target label and thus are important for prediction. Therefore, using methods from the causal inference literature, we propose an algorithm to regularize the learnt effect of the features on the model’s prediction to the estimated effect of feature on label. This results in an automated augmentation method that leverages the estimated effect of a feature to appropriately change the labels for new augmented inputs. On toxicity and IMDB review datasets, the proposed algorithm minimises spurious correlations and improves the minority group (i.e., samples breaking spurious correlations) accuracy, while also improving the total accuracy compared to standard training.
+Cite (Informal):Controlling Learned Effects to Reduce Spurious Correlations in Text Classifiers (Bansal & Sharma, ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.127
+Bibkey:bansal-sharma-2023-controlling
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.127
+PDF:https://aclanthology.org/2023.acl-long.127.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Parikshit Bansal and Amit Sharma. 2023. Controlling Learned Effects to Reduce Spurious Correlations in Text Classifiers. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 2271–2287, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:2271–2287
+DOI:10.18653/v1/2023.acl-long.127
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{bansal-sharma-2023-controlling,
+    title = "Controlling Learned Effects to Reduce Spurious Correlations in Text Classifiers",
+    author = "Bansal, Parikshit  and
+      Sharma, Amit",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.127",
+    doi = "10.18653/v1/2023.acl-long.127",
+    pages = "2271--2287",
+    abstract = "To address the problem of NLP classifiers learning spurious correlations between training features and target labels, a common approach is to make the model{'}s predictions invariant to these features. However, this can be counter-productive when the features have a non-zero causal effect on the target label and thus are important for prediction. Therefore, using methods from the causal inference literature, we propose an algorithm to regularize the learnt effect of the features on the model{'}s prediction to the estimated effect of feature on label. This results in an automated augmentation method that leverages the estimated effect of a feature to appropriately change the labels for new augmented inputs. On toxicity and IMDB review datasets, the proposed algorithm minimises spurious correlations and improves the minority group (i.e., samples breaking spurious correlations) accuracy, while also improving the total accuracy compared to standard training.",
+}

@@ -1,0 +1,36 @@
+Title: Domain-Specific Word Embeddings with Structure Prediction
+Authors: David Lassner, Stephanie Brandl, Anne Baillot, Shinichi Nakajima
+Abstract: Complementary to finding good general word embeddings, an important question for representation learning is to find dynamic word embeddings, for example, across time or domain. Current methods do not offer a way to use or predict information on structure between sub-corpora, time or domain and dynamic embeddings can only be compared after post-alignment. We propose novel word embedding methods that provide general word representations for the whole corpus, domain- specific representations for each sub-corpus, sub-corpus structure, and embedding alignment simultaneously. We present an empirical evaluation on New York Times articles and two English Wikipedia datasets with articles on science and philosophy. Our method, called Word2Vec with Structure Prediction (W2VPred), provides better performance than baselines in terms of the general analogy tests, domain-specific analogy tests, and multiple specific word embedding evaluations as well as structure prediction performance when no structure is given a priori. As a use case in the field of Digital Humanities we demonstrate how to raise novel research questions for high literature from the German Text Archive.
+Cite (Informal):Domain-Specific Word Embeddings with Structure Prediction (Lassner et al., TACL 2023)
+Year:2023
+Venue:TACL
+Anthology ID:2023.tacl-1.19
+Bibkey:lassner-etal-2023-domain
+Volume:Transactions of the Association for Computational Linguistics, Volume 11
+URL:https://aclanthology.org/2023.tacl-1.19
+PDF:https://aclanthology.org/2023.tacl-1.19.pdf
+Month:
+SIG:
+Address:Cambridge, MA
+Language:
+Cite (ACL):David Lassner, Stephanie Brandl, Anne Baillot, and Shinichi Nakajima. 2023. Domain-Specific Word Embeddings with Structure Prediction. Transactions of the Association for Computational Linguistics, 11:320–335.
+Note:
+Pages:320–335
+DOI:10.1162/tacl_a_00538
+Publisher:MIT Press
+BibTex: @article{lassner-etal-2023-domain,
+    title = "Domain-Specific Word Embeddings with Structure Prediction",
+    author = "Lassner, David  and
+      Brandl, Stephanie  and
+      Baillot, Anne  and
+      Nakajima, Shinichi",
+    journal = "Transactions of the Association for Computational Linguistics",
+    volume = "11",
+    year = "2023",
+    address = "Cambridge, MA",
+    publisher = "MIT Press",
+    url = "https://aclanthology.org/2023.tacl-1.19",
+    doi = "10.1162/tacl_a_00538",
+    pages = "320--335",
+    abstract = "Complementary to finding good general word embeddings, an important question for representation learning is to find dynamic word embeddings, for example, across time or domain. Current methods do not offer a way to use or predict information on structure between sub-corpora, time or domain and dynamic embeddings can only be compared after post-alignment. We propose novel word embedding methods that provide general word representations for the whole corpus, domain- specific representations for each sub-corpus, sub-corpus structure, and embedding alignment simultaneously. We present an empirical evaluation on New York Times articles and two English Wikipedia datasets with articles on science and philosophy. Our method, called Word2Vec with Structure Prediction (W2VPred), provides better performance than baselines in terms of the general analogy tests, domain-specific analogy tests, and multiple specific word embedding evaluations as well as structure prediction performance when no structure is given a priori. As a use case in the field of Digital Humanities we demonstrate how to raise novel research questions for high literature from the German Text Archive.",
+}

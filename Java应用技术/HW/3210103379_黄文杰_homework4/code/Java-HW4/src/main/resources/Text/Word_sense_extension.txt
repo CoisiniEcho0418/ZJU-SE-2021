@@ -1,0 +1,38 @@
+Title: Word sense extension
+Authors: Lei Yu, Yang Xu
+Abstract: Humans often make creative use of words to expressnovel senses. A long-standing effort in natural language processing hasbeen focusing on word sense disambiguation (WSD), but little has been explored about how the sense inventory of a word may be extended toward novel meanings. We present a paradigm of word sense extension (WSE) thatenables words to spawn new senses toward novel context. We develop a framework that simulates novel word sense extension by first partitioning a polysemous word type into two pseudo-tokens that mark its different senses, and then inferring whether the meaning of a pseudo-token can be extended to convey the sense denoted by the token partitioned from the same word type. Our framework combines cognitivemodels of chaining with a learning scheme that transforms a language model embedding space to supportvarious types of word sense extension. We evaluate our frameworkagainst several competitive baselines and show that it is superior in predicting plausible novel senses for over 7,500 English words. Furthermore, we show that our WSE framework improves performance over a range of transformer-based WSD models in predicting rare word senses with few or zero mentions in the training data.
+Cite (Informal):Word sense extension (Yu & Xu, ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.184
+Bibkey:yu-xu-2023-word
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.184
+PDF:https://aclanthology.org/2023.acl-long.184.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Lei Yu and Yang Xu. 2023. Word sense extension. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 3281–3294, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:3281–3294
+DOI:10.18653/v1/2023.acl-long.184
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{yu-xu-2023-word,
+    title = "Word sense extension",
+    author = "Yu, Lei  and
+      Xu, Yang",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.184",
+    doi = "10.18653/v1/2023.acl-long.184",
+    pages = "3281--3294",
+    abstract = "Humans often make creative use of words to expressnovel senses. A long-standing effort in natural language processing hasbeen focusing on word sense disambiguation (WSD), but little has been explored about how the sense inventory of a word may be extended toward novel meanings. We present a paradigm of word sense extension (WSE) thatenables words to spawn new senses toward novel context. We develop a framework that simulates novel word sense extension by first partitioning a polysemous word type into two pseudo-tokens that mark its different senses, and then inferring whether the meaning of a pseudo-token can be extended to convey the sense denoted by the token partitioned from the same word type. Our framework combines cognitivemodels of chaining with a learning scheme that transforms a language model embedding space to supportvarious types of word sense extension. We evaluate our frameworkagainst several competitive baselines and show that it is superior in predicting plausible novel senses for over 7,500 English words. Furthermore, we show that our WSE framework improves performance over a range of transformer-based WSD models in predicting rare word senses with few or zero mentions in the training data.",
+}

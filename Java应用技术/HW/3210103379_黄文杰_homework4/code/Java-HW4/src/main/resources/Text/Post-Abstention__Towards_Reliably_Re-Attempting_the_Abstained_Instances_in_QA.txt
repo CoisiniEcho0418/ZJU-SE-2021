@@ -1,0 +1,38 @@
+Title: Post-Abstention: Towards Reliably Re-Attempting the Abstained Instances in QA
+Authors: Neeraj Varshney, Chitta Baral
+Abstract: Despite remarkable progress made in natural language processing, even the state-of-the-art models often make incorrect predictions. Such predictions hamper the reliability of systems and limit their widespread adoption in real-world applications. ‘Selective prediction’ partly addresses the above concern by enabling models to abstain from answering when their predictions are likely to be incorrect. While selective prediction is advantageous, it leaves us with a pertinent question ‘what to do after abstention’. To this end, we present an explorative study on ‘Post-Abstention’, a task that allows re-attempting the abstained instances with the aim of increasing **coverage** of the system without significantly sacrificing its **accuracy**. We first provide mathematical formulation of this task and then explore several methods to solve it. Comprehensive experiments on 11 QA datasets show that these methods lead to considerable risk improvements –performance metric of the Post-Abstention task– both in the in-domain and the out-of-domain settings. We also conduct a thorough analysis of these results which further leads to several interesting findings. Finally, we believe that our work will encourage and facilitate further research in this important area of addressing the reliability of NLP systems.
+Cite (Informal):Post-Abstention: Towards Reliably Re-Attempting the Abstained Instances in QA (Varshney & Baral, ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.55
+Bibkey:varshney-baral-2023-post
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.55
+PDF:https://aclanthology.org/2023.acl-long.55.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Neeraj Varshney and Chitta Baral. 2023. Post-Abstention: Towards Reliably Re-Attempting the Abstained Instances in QA. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 967–982, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:967–982
+DOI:10.18653/v1/2023.acl-long.55
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{varshney-baral-2023-post,
+    title = "Post-Abstention: Towards Reliably Re-Attempting the Abstained Instances in {QA}",
+    author = "Varshney, Neeraj  and
+      Baral, Chitta",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.55",
+    doi = "10.18653/v1/2023.acl-long.55",
+    pages = "967--982",
+    abstract = "Despite remarkable progress made in natural language processing, even the state-of-the-art models often make incorrect predictions. Such predictions hamper the reliability of systems and limit their widespread adoption in real-world applications. {`}Selective prediction{'} partly addresses the above concern by enabling models to abstain from answering when their predictions are likely to be incorrect. While selective prediction is advantageous, it leaves us with a pertinent question {`}what to do after abstention{'}. To this end, we present an explorative study on {`}Post-Abstention{'}, a task that allows re-attempting the abstained instances with the aim of increasing **coverage** of the system without significantly sacrificing its **accuracy**. We first provide mathematical formulation of this task and then explore several methods to solve it. Comprehensive experiments on 11 QA datasets show that these methods lead to considerable risk improvements {--}performance metric of the Post-Abstention task{--} both in the in-domain and the out-of-domain settings. We also conduct a thorough analysis of these results which further leads to several interesting findings. Finally, we believe that our work will encourage and facilitate further research in this important area of addressing the reliability of NLP systems.",
+}

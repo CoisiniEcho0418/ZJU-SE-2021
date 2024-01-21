@@ -1,0 +1,44 @@
+Title: CMU’s IWSLT 2023 Simultaneous Speech Translation System
+Authors: Brian Yan, Jiatong Shi, Soumi Maiti, William Chen, Xinjian Li, Yifan Peng, Siddhant Arora, Shinji Watanabe
+Abstract: This paper describes CMU’s submission to the IWSLT 2023 simultaneous speech translation shared task for translating English speech to both German text and speech in a streaming fashion. We first build offline speech-to-text (ST) models using the joint CTC/attention framework. These models also use WavLM front-end features and mBART decoder initialization. We adapt our offline ST models for simultaneous speech-to-text translation (SST) by 1) incrementally encoding chunks of input speech, re-computing encoder states for each new chunk and 2) incrementally decoding output text, pruning beam search hypotheses to 1-best after processing each chunk. We then build text-to-speech (TTS) models using the VITS framework and achieve simultaneous speech-to-speech translation (SS2ST) by cascading our SST and TTS models.
+Cite (Informal):CMU’s IWSLT 2023 Simultaneous Speech Translation System (Yan et al., IWSLT 2023)
+Year:2023
+Venue:IWSLT
+Anthology ID:2023.iwslt-1.20
+Bibkey:yan-etal-2023-cmus
+Volume:Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023)
+URL:https://aclanthology.org/2023.iwslt-1.20
+PDF:https://aclanthology.org/2023.iwslt-1.20.pdf
+Month:July
+SIG:SIGSLT
+Address:Toronto, Canada (in-person and online)
+Language:
+Cite (ACL):Brian Yan, Jiatong Shi, Soumi Maiti, William Chen, Xinjian Li, Yifan Peng, Siddhant Arora, and Shinji Watanabe. 2023. CMU’s IWSLT 2023 Simultaneous Speech Translation System. In Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023), pages 235–240, Toronto, Canada (in-person and online). Association for Computational Linguistics.
+Editors:Elizabeth Salesky,Marcello Federico,Marine Carpuat
+Note:
+Pages:235–240
+DOI:10.18653/v1/2023.iwslt-1.20
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{yan-etal-2023-cmus,
+    title = "{CMU}{'}s {IWSLT} 2023 Simultaneous Speech Translation System",
+    author = "Yan, Brian  and
+      Shi, Jiatong  and
+      Maiti, Soumi  and
+      Chen, William  and
+      Li, Xinjian  and
+      Peng, Yifan  and
+      Arora, Siddhant  and
+      Watanabe, Shinji",
+    editor = "Salesky, Elizabeth  and
+      Federico, Marcello  and
+      Carpuat, Marine",
+    booktitle = "Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada (in-person and online)",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.iwslt-1.20",
+    doi = "10.18653/v1/2023.iwslt-1.20",
+    pages = "235--240",
+    abstract = "This paper describes CMU{'}s submission to the IWSLT 2023 simultaneous speech translation shared task for translating English speech to both German text and speech in a streaming fashion. We first build offline speech-to-text (ST) models using the joint CTC/attention framework. These models also use WavLM front-end features and mBART decoder initialization. We adapt our offline ST models for simultaneous speech-to-text translation (SST) by 1) incrementally encoding chunks of input speech, re-computing encoder states for each new chunk and 2) incrementally decoding output text, pruning beam search hypotheses to 1-best after processing each chunk. We then build text-to-speech (TTS) models using the VITS framework and achieve simultaneous speech-to-speech translation (SS2ST) by cascading our SST and TTS models.",
+}

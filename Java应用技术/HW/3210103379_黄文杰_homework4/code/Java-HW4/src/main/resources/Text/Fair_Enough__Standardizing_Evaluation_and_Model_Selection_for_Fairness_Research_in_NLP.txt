@@ -1,0 +1,39 @@
+Title: Fair Enough: Standardizing Evaluation and Model Selection for Fairness Research in NLP
+Authors: Xudong Han, Timothy Baldwin, Trevor Cohn
+Abstract: Modern NLP systems exhibit a range of biases, which a growing literature on model debiasing attempts to correct. However, current progress is hampered by a plurality of definitions of bias, means of quantification, and oftentimes vague relation between debiasing algorithms and theoretical measures of bias. This paper seeks to clarify the current situation and plot a course for meaningful progress in fair learning, with two key contributions: (1) making clear inter-relations among the current gamut of methods, and their relation to fairness theory; and (2) addressing the practical problem of model selection, which involves a trade-off between fairness and accuracy and has led to systemic issues in fairness research. Putting them together, we make several recommendations to help shape future work.
+Cite (Informal):Fair Enough: Standardizing Evaluation and Model Selection for Fairness Research in NLP (Han et al., EACL 2023)
+Year:2023
+Venue:EACL
+Video:https://aclanthology.org/2023.eacl-main.23.mp4
+Anthology ID:2023.eacl-main.23
+Bibkey:han-etal-2023-fair
+Volume:Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics
+URL:https://aclanthology.org/2023.eacl-main.23
+PDF:https://aclanthology.org/2023.eacl-main.23.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Xudong Han, Timothy Baldwin, and Trevor Cohn. 2023. Fair Enough: Standardizing Evaluation and Model Selection for Fairness Research in NLP. In Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics, pages 297–312, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:297–312
+DOI:10.18653/v1/2023.eacl-main.23
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{han-etal-2023-fair,
+    title = "Fair Enough: Standardizing Evaluation and Model Selection for Fairness Research in {NLP}",
+    author = "Han, Xudong  and
+      Baldwin, Timothy  and
+      Cohn, Trevor",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.eacl-main.23",
+    doi = "10.18653/v1/2023.eacl-main.23",
+    pages = "297--312",
+    abstract = "Modern NLP systems exhibit a range of biases, which a growing literature on model debiasing attempts to correct. However, current progress is hampered by a plurality of definitions of bias, means of quantification, and oftentimes vague relation between debiasing algorithms and theoretical measures of bias. This paper seeks to clarify the current situation and plot a course for meaningful progress in fair learning, with two key contributions: (1) making clear inter-relations among the current gamut of methods, and their relation to fairness theory; and (2) addressing the practical problem of model selection, which involves a trade-off between fairness and accuracy and has led to systemic issues in fairness research. Putting them together, we make several recommendations to help shape future work.",
+}

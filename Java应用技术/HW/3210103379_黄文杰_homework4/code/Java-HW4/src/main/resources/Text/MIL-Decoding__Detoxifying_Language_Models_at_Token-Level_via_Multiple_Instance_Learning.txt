@@ -1,0 +1,38 @@
+Title: MIL-Decoding: Detoxifying Language Models at Token-Level via Multiple Instance Learning
+Authors: Xu Zhang, Xiaojun Wan
+Abstract: Despite advances in large pre-trained neural language models, they are prone to generating toxic language, which brings security risks to their applications. We introduce MIL-Decoding, which detoxifies language models at token-level by interpolating it with a trained multiple instance learning (MIL) network.MIL model is trained on a corpus with a toxicity label for each text to predict the overall toxicity and the toxicity of each token in its context. Intuitively, the MIL network computes a toxicity distribution over next tokens according to the generated context which supplements the original language model to avoid toxicity. We evaluate MIL-Decoding with automatic metrics and human evaluation, where MIL-Decoding outperforms other baselines in detoxification while it only hurts generation fluency a little bit.
+Cite (Informal):MIL-Decoding: Detoxifying Language Models at Token-Level via Multiple Instance Learning (Zhang & Wan, ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.11
+Bibkey:zhang-wan-2023-mil
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.11
+PDF:https://aclanthology.org/2023.acl-long.11.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Xu Zhang and Xiaojun Wan. 2023. MIL-Decoding: Detoxifying Language Models at Token-Level via Multiple Instance Learning. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 190–202, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:190–202
+DOI:10.18653/v1/2023.acl-long.11
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{zhang-wan-2023-mil,
+    title = "{MIL}-Decoding: Detoxifying Language Models at Token-Level via Multiple Instance Learning",
+    author = "Zhang, Xu  and
+      Wan, Xiaojun",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.11",
+    doi = "10.18653/v1/2023.acl-long.11",
+    pages = "190--202",
+    abstract = "Despite advances in large pre-trained neural language models, they are prone to generating toxic language, which brings security risks to their applications. We introduce MIL-Decoding, which detoxifies language models at token-level by interpolating it with a trained multiple instance learning (MIL) network.MIL model is trained on a corpus with a toxicity label for each text to predict the overall toxicity and the toxicity of each token in its context. Intuitively, the MIL network computes a toxicity distribution over next tokens according to the generated context which supplements the original language model to avoid toxicity. We evaluate MIL-Decoding with automatic metrics and human evaluation, where MIL-Decoding outperforms other baselines in detoxification while it only hurts generation fluency a little bit.",
+}

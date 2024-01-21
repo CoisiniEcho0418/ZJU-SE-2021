@@ -1,0 +1,42 @@
+Title: Better Simultaneous Translation with Monotonic Knowledge Distillation
+Authors: Shushu Wang, Jing Wu, Kai Fan, Wei Luo, Jun Xiao, Zhongqiang Huang
+Abstract: Simultaneous machine translation (SiMT) presents a unique challenge as it requires generating target tokens before the source sentence is fully consumed. This can lead to the hallucination problem, where target tokens are generated without support from the source sentence. The prefix-to-prefix training data used to train SiMT models are not always parallel, due to divergent word order between the source and target languages, and can contribute to the problem. In this paper, we propose a novel approach that leverages traditional translation models as teachers and employs a two-stage beam search algorithm to generate monotonic yet accurate reference translations for sequence-level knowledge distillation. Experimental results demonstrate the significant improvements achieved by our approach over multiple strong SiMT baselines, leading to new state-of-the-art performance across various language pairs. Notably, when evaluated on a monotonic version of the WMT15 De-En test set, which includes references generated in a more monotonic style by professional translators, our approach achieves even more substantial improvement over the baselines. The source code and data are publicly available for further exploration.
+Cite (Informal):Better Simultaneous Translation with Monotonic Knowledge Distillation (Wang et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.131
+Bibkey:wang-etal-2023-better
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.131
+PDF:https://aclanthology.org/2023.acl-long.131.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Shushu Wang, Jing Wu, Kai Fan, Wei Luo, Jun Xiao, and Zhongqiang Huang. 2023. Better Simultaneous Translation with Monotonic Knowledge Distillation. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 2334–2349, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:2334–2349
+DOI:10.18653/v1/2023.acl-long.131
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{wang-etal-2023-better,
+    title = "Better Simultaneous Translation with Monotonic Knowledge Distillation",
+    author = "Wang, Shushu  and
+      Wu, Jing  and
+      Fan, Kai  and
+      Luo, Wei  and
+      Xiao, Jun  and
+      Huang, Zhongqiang",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.131",
+    doi = "10.18653/v1/2023.acl-long.131",
+    pages = "2334--2349",
+    abstract = "Simultaneous machine translation (SiMT) presents a unique challenge as it requires generating target tokens before the source sentence is fully consumed. This can lead to the hallucination problem, where target tokens are generated without support from the source sentence. The prefix-to-prefix training data used to train SiMT models are not always parallel, due to divergent word order between the source and target languages, and can contribute to the problem. In this paper, we propose a novel approach that leverages traditional translation models as teachers and employs a two-stage beam search algorithm to generate monotonic yet accurate reference translations for sequence-level knowledge distillation. Experimental results demonstrate the significant improvements achieved by our approach over multiple strong SiMT baselines, leading to new state-of-the-art performance across various language pairs. Notably, when evaluated on a monotonic version of the WMT15 De-En test set, which includes references generated in a more monotonic style by professional translators, our approach achieves even more substantial improvement over the baselines. The source code and data are publicly available for further exploration.",
+}

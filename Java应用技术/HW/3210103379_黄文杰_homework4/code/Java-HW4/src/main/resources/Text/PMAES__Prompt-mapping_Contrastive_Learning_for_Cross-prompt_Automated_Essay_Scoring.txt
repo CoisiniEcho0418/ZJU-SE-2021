@@ -1,0 +1,38 @@
+Title: PMAES: Prompt-mapping Contrastive Learning for Cross-prompt Automated Essay Scoring
+Authors: Yuan Chen, Xia Li
+Abstract: Current cross-prompt automated essay scoring (AES) is a challenging task due to the large discrepancies between different prompts, such as different genres and expressions. The main goal of current cross-prompt AES systems is to learn enough shared features between the source and target prompts to grade well on the target prompt. However, because the features are captured based on the original prompt representation, they may be limited by being extracted directly between essays. In fact, when the representations of two prompts are more similar, we can gain more shared features between them. Based on this motivation, in this paper, we propose a learning strategy called “prompt-mapping” to learn about more consistent representations of source and target prompts. In this way, we can obtain more shared features between the two prompts and use them to better represent the essays for the target prompt. Experimental results on the ASAP++ dataset demonstrate the effectiveness of our method. We also design experiments in different settings to show that our method can be applied in different scenarios. Our code is available at https://github.com/gdufsnlp/PMAES.
+Cite (Informal):PMAES: Prompt-mapping Contrastive Learning for Cross-prompt Automated Essay Scoring (Chen & Li, ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.83
+Bibkey:chen-li-2023-pmaes
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.83
+PDF:https://aclanthology.org/2023.acl-long.83.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Yuan Chen and Xia Li. 2023. PMAES: Prompt-mapping Contrastive Learning for Cross-prompt Automated Essay Scoring. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 1489–1503, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:1489–1503
+DOI:10.18653/v1/2023.acl-long.83
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{chen-li-2023-pmaes,
+    title = "{PMAES}: Prompt-mapping Contrastive Learning for Cross-prompt Automated Essay Scoring",
+    author = "Chen, Yuan  and
+      Li, Xia",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.83",
+    doi = "10.18653/v1/2023.acl-long.83",
+    pages = "1489--1503",
+    abstract = "Current cross-prompt automated essay scoring (AES) is a challenging task due to the large discrepancies between different prompts, such as different genres and expressions. The main goal of current cross-prompt AES systems is to learn enough shared features between the source and target prompts to grade well on the target prompt. However, because the features are captured based on the original prompt representation, they may be limited by being extracted directly between essays. In fact, when the representations of two prompts are more similar, we can gain more shared features between them. Based on this motivation, in this paper, we propose a learning strategy called {``}prompt-mapping{''} to learn about more consistent representations of source and target prompts. In this way, we can obtain more shared features between the two prompts and use them to better represent the essays for the target prompt. Experimental results on the ASAP++ dataset demonstrate the effectiveness of our method. We also design experiments in different settings to show that our method can be applied in different scenarios. Our code is available at \url{https://github.com/gdufsnlp/PMAES}.",
+}

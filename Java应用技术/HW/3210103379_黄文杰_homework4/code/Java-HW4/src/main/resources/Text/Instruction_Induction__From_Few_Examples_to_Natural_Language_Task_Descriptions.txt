@@ -1,0 +1,40 @@
+Title: Instruction Induction: From Few Examples to Natural Language Task Descriptions
+Authors: Or Honovich, Uri Shaham, Samuel R. Bowman, Omer Levy
+Abstract: Large language models are able to perform a task by conditioning on a few input-output demonstrations - a paradigm known as in-context learning. We show that language models can explicitly infer an underlying task from a few demonstrations by prompting them to generate a natural language instruction that fits the examples. To explore this ability, we introduce the instruction induction challenge, compile a dataset consisting of 24 tasks, and define a novel evaluation metric based on executing the generated instruction. We discover that, to a large extent, the ability to generate instructions does indeed emerge when using a model that is both large enough and aligned to follow instructions; InstructGPT achieves 65.7% of human performance in our execution-based metric, while the original GPT-3 model reaches only 9.8% of human performance. This surprising result suggests that instruction induction might be a viable learning paradigm in and of itself, where instead of fitting a set of latent continuous parameters to the data, one searches for the best description in the natural language hypothesis space.
+Cite (Informal):Instruction Induction: From Few Examples to Natural Language Task Descriptions (Honovich et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.108
+Bibkey:honovich-etal-2023-instruction
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.108
+PDF:https://aclanthology.org/2023.acl-long.108.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Or Honovich, Uri Shaham, Samuel R. Bowman, and Omer Levy. 2023. Instruction Induction: From Few Examples to Natural Language Task Descriptions. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 1935–1952, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:1935–1952
+DOI:10.18653/v1/2023.acl-long.108
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{honovich-etal-2023-instruction,
+    title = "Instruction Induction: From Few Examples to Natural Language Task Descriptions",
+    author = "Honovich, Or  and
+      Shaham, Uri  and
+      Bowman, Samuel R.  and
+      Levy, Omer",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.108",
+    doi = "10.18653/v1/2023.acl-long.108",
+    pages = "1935--1952",
+    abstract = "Large language models are able to perform a task by conditioning on a few input-output demonstrations - a paradigm known as in-context learning. We show that language models can explicitly infer an underlying task from a few demonstrations by prompting them to generate a natural language instruction that fits the examples. To explore this ability, we introduce the instruction induction challenge, compile a dataset consisting of 24 tasks, and define a novel evaluation metric based on executing the generated instruction. We discover that, to a large extent, the ability to generate instructions does indeed emerge when using a model that is both large enough and aligned to follow instructions; InstructGPT achieves 65.7{\%} of human performance in our execution-based metric, while the original GPT-3 model reaches only 9.8{\%} of human performance. This surprising result suggests that instruction induction might be a viable learning paradigm in and of itself, where instead of fitting a set of latent continuous parameters to the data, one searches for the best description in the natural language hypothesis space.",
+}

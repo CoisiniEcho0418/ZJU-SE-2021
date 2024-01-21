@@ -1,0 +1,39 @@
+Title: Sentiment as an Ordinal Latent Variable
+Authors: Niklas Stoehr, Ryan Cotterell, Aaron Schein
+Abstract: Sentiment analysis has become a central tool in various disciplines outside of natural language processing. In particular in applied and domain-specific settings with strong requirements for interpretable methods, dictionary-based approaches are still a popular choice. However, existing dictionaries are often limited in coverage, static once annotation is completed and sentiment scales differ widely; some are discrete others continuous. We propose a Bayesian generative model that learns a composite sentiment dictionary as an interpolation between six existing dictionaries with different scales. We argue that sentiment is a latent concept with intrinsically ranking-based characteristics — the word “excellent” may be ranked more positive than “great” and “okay”, but it is hard to express how much more exactly. This prompts us to enforce an ordinal scale of ordered discrete sentiment values in our dictionary. We achieve this through an ordering transformation in the priors of our model. We evaluate the model intrinsically by imputing missing values in existing dictionaries. Moreover, we conduct extrinsic evaluations through sentiment classification tasks. Finally, we present two extension: first, we present a method to augment dictionary-based approaches with word embeddings to construct sentiment scales along new semantic axes. Second, we demonstrate a Latent Dirichlet Allocation-inspired variant of our model that learns document topics that are ordered by sentiment.
+Cite (Informal):Sentiment as an Ordinal Latent Variable (Stoehr et al., EACL 2023)
+Year:2023
+Venue:EACL
+Video:https://aclanthology.org/2023.eacl-main.8.mp4
+Anthology ID:2023.eacl-main.8
+Bibkey:stoehr-etal-2023-sentiment
+Volume:Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics
+URL:https://aclanthology.org/2023.eacl-main.8
+PDF:https://aclanthology.org/2023.eacl-main.8.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Niklas Stoehr, Ryan Cotterell, and Aaron Schein. 2023. Sentiment as an Ordinal Latent Variable. In Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics, pages 103–115, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:103–115
+DOI:10.18653/v1/2023.eacl-main.8
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{stoehr-etal-2023-sentiment,
+    title = "Sentiment as an Ordinal Latent Variable",
+    author = "Stoehr, Niklas  and
+      Cotterell, Ryan  and
+      Schein, Aaron",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.eacl-main.8",
+    doi = "10.18653/v1/2023.eacl-main.8",
+    pages = "103--115",
+    abstract = "Sentiment analysis has become a central tool in various disciplines outside of natural language processing. In particular in applied and domain-specific settings with strong requirements for interpretable methods, dictionary-based approaches are still a popular choice. However, existing dictionaries are often limited in coverage, static once annotation is completed and sentiment scales differ widely; some are discrete others continuous. We propose a Bayesian generative model that learns a composite sentiment dictionary as an interpolation between six existing dictionaries with different scales. We argue that sentiment is a latent concept with intrinsically ranking-based characteristics {---} the word {``}excellent{''} may be ranked more positive than {``}great{''} and {``}okay{''}, but it is hard to express how much more exactly. This prompts us to enforce an ordinal scale of ordered discrete sentiment values in our dictionary. We achieve this through an ordering transformation in the priors of our model. We evaluate the model intrinsically by imputing missing values in existing dictionaries. Moreover, we conduct extrinsic evaluations through sentiment classification tasks. Finally, we present two extension: first, we present a method to augment dictionary-based approaches with word embeddings to construct sentiment scales along new semantic axes. Second, we demonstrate a Latent Dirichlet Allocation-inspired variant of our model that learns document topics that are ordered by sentiment.",
+}

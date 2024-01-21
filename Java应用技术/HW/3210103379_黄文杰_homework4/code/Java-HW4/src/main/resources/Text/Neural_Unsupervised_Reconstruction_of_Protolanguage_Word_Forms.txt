@@ -1,0 +1,39 @@
+Title: Neural Unsupervised Reconstruction of Protolanguage Word Forms
+Authors: Andre He, Nicholas Tomlin, Dan Klein
+Abstract: We present a state-of-the-art neural approach to the unsupervised reconstruction of ancient word forms. Previous work in this domain used expectation-maximization to predict simple phonological changes between ancient word forms and their cognates in modern languages. We extend this work with neural models that can capture more complicated phonological and morphological changes. At the same time, we preserve the inductive biases from classical methods by building monotonic alignment constraints into the model and deliberately underfitting during the maximization step. We evaluate our performance on the task of reconstructing Latin from a dataset of cognates across five Romance languages, achieving a notable reduction in edit distance from the target word forms compared to previous methods.
+Cite (Informal):Neural Unsupervised Reconstruction of Protolanguage Word Forms (He et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.91
+Bibkey:he-etal-2023-neural
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.91
+PDF:https://aclanthology.org/2023.acl-long.91.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Andre He, Nicholas Tomlin, and Dan Klein. 2023. Neural Unsupervised Reconstruction of Protolanguage Word Forms. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 1636–1649, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:1636–1649
+DOI:10.18653/v1/2023.acl-long.91
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{he-etal-2023-neural,
+    title = "Neural Unsupervised Reconstruction of Protolanguage Word Forms",
+    author = "He, Andre  and
+      Tomlin, Nicholas  and
+      Klein, Dan",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.91",
+    doi = "10.18653/v1/2023.acl-long.91",
+    pages = "1636--1649",
+    abstract = "We present a state-of-the-art neural approach to the unsupervised reconstruction of ancient word forms. Previous work in this domain used expectation-maximization to predict simple phonological changes between ancient word forms and their cognates in modern languages. We extend this work with neural models that can capture more complicated phonological and morphological changes. At the same time, we preserve the inductive biases from classical methods by building monotonic alignment constraints into the model and deliberately underfitting during the maximization step. We evaluate our performance on the task of reconstructing Latin from a dataset of cognates across five Romance languages, achieving a notable reduction in edit distance from the target word forms compared to previous methods.",
+}

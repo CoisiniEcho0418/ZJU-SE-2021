@@ -1,0 +1,39 @@
+Title: I2R’s End-to-End Speech Translation System for IWSLT 2023 Offline Shared Task
+Authors: Muhammad Huzaifah, Kye Min Tan, Richeng Duan
+Abstract: This paper describes I2R’s submission to the offline speech translation track for IWSLT 2023. We focus on an end-to-end approach for translation from English audio to German text, one of the three available language directions in this year’s edition. The I2R system leverages on pretrained models that have been exposed to large-scale audio and text data for our base model. We introduce several stages of additional pretraining followed by fine-tuning to adapt the system for the downstream speech translation task. The strategy is supplemented by other techniques such as data augmentation, domain tagging, knowledge distillation, and model ensemble, among others. We evaluate the system on several publicly available test sets for comparison.
+Cite (Informal):I2R’s End-to-End Speech Translation System for IWSLT 2023 Offline Shared Task (Huzaifah et al., IWSLT 2023)
+Year:2023
+Venue:IWSLT
+Anthology ID:2023.iwslt-1.16
+Bibkey:huzaifah-etal-2023-i2rs
+Volume:Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023)
+URL:https://aclanthology.org/2023.iwslt-1.16
+PDF:https://aclanthology.org/2023.iwslt-1.16.pdf
+Month:July
+SIG:SIGSLT
+Address:Toronto, Canada (in-person and online)
+Language:
+Cite (ACL):Muhammad Huzaifah, Kye Min Tan, and Richeng Duan. 2023. I2R’s End-to-End Speech Translation System for IWSLT 2023 Offline Shared Task. In Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023), pages 202–210, Toronto, Canada (in-person and online). Association for Computational Linguistics.
+Editors:Elizabeth Salesky,Marcello Federico,Marine Carpuat
+Note:
+Pages:202–210
+DOI:10.18653/v1/2023.iwslt-1.16
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{huzaifah-etal-2023-i2rs,
+    title = "{I}2{R}{'}s End-to-End Speech Translation System for {IWSLT} 2023 Offline Shared Task",
+    author = "Huzaifah, Muhammad  and
+      Min Tan, Kye  and
+      Duan, Richeng",
+    editor = "Salesky, Elizabeth  and
+      Federico, Marcello  and
+      Carpuat, Marine",
+    booktitle = "Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada (in-person and online)",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.iwslt-1.16",
+    doi = "10.18653/v1/2023.iwslt-1.16",
+    pages = "202--210",
+    abstract = "This paper describes I2R{'}s submission to the offline speech translation track for IWSLT 2023. We focus on an end-to-end approach for translation from English audio to German text, one of the three available language directions in this year{'}s edition. The I2R system leverages on pretrained models that have been exposed to large-scale audio and text data for our base model. We introduce several stages of additional pretraining followed by fine-tuning to adapt the system for the downstream speech translation task. The strategy is supplemented by other techniques such as data augmentation, domain tagging, knowledge distillation, and model ensemble, among others. We evaluate the system on several publicly available test sets for comparison.",
+}

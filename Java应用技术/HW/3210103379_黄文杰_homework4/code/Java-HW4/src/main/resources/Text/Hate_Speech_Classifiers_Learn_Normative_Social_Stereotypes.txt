@@ -1,0 +1,36 @@
+Title: Hate Speech Classifiers Learn Normative Social Stereotypes
+Authors: Aida Mostafazadeh Davani, Mohammad Atari, Brendan Kennedy, Morteza Dehghani
+Abstract: Social stereotypes negatively impact individuals’ judgments about different groups and may have a critical role in understanding language directed toward marginalized groups. Here, we assess the role of social stereotypes in the automated detection of hate speech in the English language by examining the impact of social stereotypes on annotation behaviors, annotated datasets, and hate speech classifiers. Specifically, we first investigate the impact of novice annotators’ stereotypes on their hate-speech-annotation behavior. Then, we examine the effect of normative stereotypes in language on the aggregated annotators’ judgments in a large annotated corpus. Finally, we demonstrate how normative stereotypes embedded in language resources are associated with systematic prediction errors in a hate-speech classifier. The results demonstrate that hate-speech classifiers reflect social stereotypes against marginalized groups, which can perpetuate social inequalities when propagated at scale. This framework, combining social-psychological and computational-linguistic methods, provides insights into sources of bias in hate-speech moderation, informing ongoing debates regarding machine learning fairness.
+Cite (Informal):Hate Speech Classifiers Learn Normative Social Stereotypes (Davani et al., TACL 2023)
+Year:2023
+Venue:TACL
+Anthology ID:2023.tacl-1.18
+Bibkey:davani-etal-2023-hate
+Volume:Transactions of the Association for Computational Linguistics, Volume 11
+URL:https://aclanthology.org/2023.tacl-1.18
+PDF:https://aclanthology.org/2023.tacl-1.18.pdf
+Month:
+SIG:
+Address:Cambridge, MA
+Language:
+Cite (ACL):Aida Mostafazadeh Davani, Mohammad Atari, Brendan Kennedy, and Morteza Dehghani. 2023. Hate Speech Classifiers Learn Normative Social Stereotypes. Transactions of the Association for Computational Linguistics, 11:300–319.
+Note:
+Pages:300–319
+DOI:10.1162/tacl_a_00550
+Publisher:MIT Press
+BibTex: @article{davani-etal-2023-hate,
+    title = "Hate Speech Classifiers Learn Normative Social Stereotypes",
+    author = "Davani, Aida Mostafazadeh  and
+      Atari, Mohammad  and
+      Kennedy, Brendan  and
+      Dehghani, Morteza",
+    journal = "Transactions of the Association for Computational Linguistics",
+    volume = "11",
+    year = "2023",
+    address = "Cambridge, MA",
+    publisher = "MIT Press",
+    url = "https://aclanthology.org/2023.tacl-1.18",
+    doi = "10.1162/tacl_a_00550",
+    pages = "300--319",
+    abstract = "Social stereotypes negatively impact individuals{'} judgments about different groups and may have a critical role in understanding language directed toward marginalized groups. Here, we assess the role of social stereotypes in the automated detection of hate speech in the English language by examining the impact of social stereotypes on annotation behaviors, annotated datasets, and hate speech classifiers. Specifically, we first investigate the impact of novice annotators{'} stereotypes on their hate-speech-annotation behavior. Then, we examine the effect of normative stereotypes in language on the aggregated annotators{'} judgments in a large annotated corpus. Finally, we demonstrate how normative stereotypes embedded in language resources are associated with systematic prediction errors in a hate-speech classifier. The results demonstrate that hate-speech classifiers reflect social stereotypes against marginalized groups, which can perpetuate social inequalities when propagated at scale. This framework, combining social-psychological and computational-linguistic methods, provides insights into sources of bias in hate-speech moderation, informing ongoing debates regarding machine learning fairness.",
+}

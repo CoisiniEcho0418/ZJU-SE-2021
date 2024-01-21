@@ -1,0 +1,39 @@
+Title: Dependency resolution at the syntax-semantics interface: psycholinguistic and computational insights on control dependencies
+Authors: Iria de-Dios-Flores, Juan Garcia Amboage, Marcos Garcia
+Abstract: Using psycholinguistic and computational experiments we compare the ability of humans and several pre-trained masked language models to correctly identify control dependencies in Spanish sentences such as ‘José le prometió/ordenó a María ser ordenado/a’ (‘Joseph promised/ordered Mary to be tidy’). These structures underlie complex anaphoric and agreement relations at the interface of syntax and semantics, allowing us to study lexically-guided antecedent retrieval processes. Our results show that while humans correctly identify the (un)acceptability of the strings, language models often fail to identify the correct antecedent in non-adjacent dependencies, showing their reliance on linearity. Additional experiments on Galician reinforce these conclusions. Our findings are equally valuable for the evaluation of language models’ ability to capture linguistic generalizations, as well as for psycholinguistic theories of anaphor resolution.
+Cite (Informal):Dependency resolution at the syntax-semantics interface: psycholinguistic and computational insights on control dependencies (de-Dios-Flores et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.12
+Bibkey:de-dios-flores-etal-2023-dependency
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.12
+PDF:https://aclanthology.org/2023.acl-long.12.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Iria de-Dios-Flores, Juan Garcia Amboage, and Marcos Garcia. 2023. Dependency resolution at the syntax-semantics interface: psycholinguistic and computational insights on control dependencies. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 203–222, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:203–222
+DOI:10.18653/v1/2023.acl-long.12
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{de-dios-flores-etal-2023-dependency,
+    title = "Dependency resolution at the syntax-semantics interface: psycholinguistic and computational insights on control dependencies",
+    author = "de-Dios-Flores, Iria  and
+      Garcia Amboage, Juan  and
+      Garcia, Marcos",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.12",
+    doi = "10.18653/v1/2023.acl-long.12",
+    pages = "203--222",
+    abstract = "Using psycholinguistic and computational experiments we compare the ability of humans and several pre-trained masked language models to correctly identify control dependencies in Spanish sentences such as {`}Jos{\'e} le prometi{\'o}/orden{\'o} a Mar{\'\i}a ser ordenado/a{'} ({`}Joseph promised/ordered Mary to be tidy{'}). These structures underlie complex anaphoric and agreement relations at the interface of syntax and semantics, allowing us to study lexically-guided antecedent retrieval processes. Our results show that while humans correctly identify the (un)acceptability of the strings, language models often fail to identify the correct antecedent in non-adjacent dependencies, showing their reliance on linearity. Additional experiments on Galician reinforce these conclusions. Our findings are equally valuable for the evaluation of language models{'} ability to capture linguistic generalizations, as well as for psycholinguistic theories of anaphor resolution.",
+}

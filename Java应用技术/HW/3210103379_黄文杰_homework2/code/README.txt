@@ -1,0 +1,1 @@
+源代码封装在Java HW2/src/sudoku下，sudoku是package，其包含两个类SudokuGenerator和SudokuSolver

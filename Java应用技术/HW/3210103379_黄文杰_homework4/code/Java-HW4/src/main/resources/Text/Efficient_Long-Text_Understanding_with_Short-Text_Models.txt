@@ -1,0 +1,35 @@
+Title: Efficient Long-Text Understanding with Short-Text Models
+Authors: Maor Ivgi, Uri Shaham, Jonathan Berant
+Abstract: Transformer-based pretrained language models (LMs) are ubiquitous across natural language understanding, but cannot be applied to long sequences such as stories, scientific articles, and long documents due to their quadratic complexity. While a myriad of efficient transformer variants have been proposed, they are typically based on custom implementations that require expensive pretraining from scratch. In this work, we propose SLED: SLiding-Encoder and Decoder, a simple approach for processing long sequences that re-uses and leverages battle-tested short-text pretrained LMs. Specifically, we partition the input into overlapping chunks, encode each with a short-text LM encoder and use the pretrained decoder to fuse information across chunks (fusion-in-decoder). We illustrate through controlled experiments that SLED offers a viable strategy for long text understanding and evaluate our approach on SCROLLS, a benchmark with seven datasets across a wide range of language understanding tasks. We find that SLED is competitive with specialized models that are up to 50x larger and require a dedicated and expensive pretraining step.
+Cite (Informal):Efficient Long-Text Understanding with Short-Text Models (Ivgi et al., TACL 2023)
+Year:2023
+Venue:TACL
+Anthology ID:2023.tacl-1.17
+Bibkey:ivgi-etal-2023-efficient
+Volume:Transactions of the Association for Computational Linguistics, Volume 11
+URL:https://aclanthology.org/2023.tacl-1.17
+PDF:https://aclanthology.org/2023.tacl-1.17.pdf
+Month:
+SIG:
+Address:Cambridge, MA
+Language:
+Cite (ACL):Maor Ivgi, Uri Shaham, and Jonathan Berant. 2023. Efficient Long-Text Understanding with Short-Text Models. Transactions of the Association for Computational Linguistics, 11:284–299.
+Note:
+Pages:284–299
+DOI:10.1162/tacl_a_00547
+Publisher:MIT Press
+BibTex: @article{ivgi-etal-2023-efficient,
+    title = "Efficient Long-Text Understanding with Short-Text Models",
+    author = "Ivgi, Maor  and
+      Shaham, Uri  and
+      Berant, Jonathan",
+    journal = "Transactions of the Association for Computational Linguistics",
+    volume = "11",
+    year = "2023",
+    address = "Cambridge, MA",
+    publisher = "MIT Press",
+    url = "https://aclanthology.org/2023.tacl-1.17",
+    doi = "10.1162/tacl_a_00547",
+    pages = "284--299",
+    abstract = "Transformer-based pretrained language models (LMs) are ubiquitous across natural language understanding, but cannot be applied to long sequences such as stories, scientific articles, and long documents due to their quadratic complexity. While a myriad of efficient transformer variants have been proposed, they are typically based on custom implementations that require expensive pretraining from scratch. In this work, we propose SLED: SLiding-Encoder and Decoder, a simple approach for processing long sequences that re-uses and leverages battle-tested short-text pretrained LMs. Specifically, we partition the input into overlapping chunks, encode each with a short-text LM encoder and use the pretrained decoder to fuse information across chunks (fusion-in-decoder). We illustrate through controlled experiments that SLED offers a viable strategy for long text understanding and evaluate our approach on SCROLLS, a benchmark with seven datasets across a wide range of language understanding tasks. We find that SLED is competitive with specialized models that are up to 50x larger and require a dedicated and expensive pretraining step.",
+}

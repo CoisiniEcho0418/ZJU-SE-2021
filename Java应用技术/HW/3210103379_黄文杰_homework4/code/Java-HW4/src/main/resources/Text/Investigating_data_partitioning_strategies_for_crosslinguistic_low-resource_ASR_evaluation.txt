@@ -1,0 +1,39 @@
+Title: Investigating data partitioning strategies for crosslinguistic low-resource ASR evaluation
+Authors: Zoey Liu, Justin Spence, Emily Prud’hommeaux
+Abstract: Many automatic speech recognition (ASR) data sets include a single pre-defined test set consisting of one or more speakers whose speech never appears in the training set. This “hold-speaker(s)-out” data partitioning strategy, however, may not be ideal for data sets in which the number of speakers is very small. This study investigates ten different data split methods for five languages with minimal ASR training resources. We find that (1) model performance varies greatly depending on which speaker is selected for testing; (2) the average word error rate (WER) across all held-out speakers is comparable not only to the average WER over multiple random splits but also to any given individual random split; (3) WER is also generally comparable when the data is split heuristically or adversarially; (4) utterance duration and intensity are comparatively more predictive factors of variability regardless of the data split. These results suggest that the widely used hold-speakers-out approach to ASR data partitioning can yield results that do not reflect model performance on unseen data or speakers. Random splits can yield more reliable and generalizable estimates when facing data sparsity.
+Cite (Informal):Investigating data partitioning strategies for crosslinguistic low-resource ASR evaluation (Liu et al., EACL 2023)
+Year:2023
+Venue:EACL
+Video:https://aclanthology.org/2023.eacl-main.10.mp4
+Anthology ID:2023.eacl-main.10
+Bibkey:liu-etal-2023-investigating
+Volume:Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics
+URL:https://aclanthology.org/2023.eacl-main.10
+PDF:https://aclanthology.org/2023.eacl-main.10.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Zoey Liu, Justin Spence, and Emily Prud’hommeaux. 2023. Investigating data partitioning strategies for crosslinguistic low-resource ASR evaluation. In Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics, pages 123–131, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:123–131
+DOI:10.18653/v1/2023.eacl-main.10
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{liu-etal-2023-investigating,
+    title = "Investigating data partitioning strategies for crosslinguistic low-resource {ASR} evaluation",
+    author = "Liu, Zoey  and
+      Spence, Justin  and
+      Prud{'}hommeaux, Emily",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.eacl-main.10",
+    doi = "10.18653/v1/2023.eacl-main.10",
+    pages = "123--131",
+    abstract = "Many automatic speech recognition (ASR) data sets include a single pre-defined test set consisting of one or more speakers whose speech never appears in the training set. This {``}hold-speaker(s)-out{''} data partitioning strategy, however, may not be ideal for data sets in which the number of speakers is very small. This study investigates ten different data split methods for five languages with minimal ASR training resources. We find that (1) model performance varies greatly depending on which speaker is selected for testing; (2) the average word error rate (WER) across all held-out speakers is comparable not only to the average WER over multiple random splits but also to any given individual random split; (3) WER is also generally comparable when the data is split heuristically or adversarially; (4) utterance duration and intensity are comparatively more predictive factors of variability regardless of the data split. These results suggest that the widely used hold-speakers-out approach to ASR data partitioning can yield results that do not reflect model performance on unseen data or speakers. Random splits can yield more reliable and generalizable estimates when facing data sparsity.",
+}

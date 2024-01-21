@@ -1,0 +1,40 @@
+Title: Entity-Aware Dual Co-Attention Network for Fake News Detection
+Authors: Sin-han Yang, Chung-chi Chen, Hen-Hsen Huang, Hsin-Hsi Chen
+Abstract: Fake news and misinformation spread rapidly on the Internet. How to identify it and how to interpret the identification results have become important issues. In this paper, we propose a Dual Co-Attention Network (Dual-CAN) for fake news detection, which takes news content, social media replies, and external knowledge into consideration. Our experimental results support that the proposed Dual-CAN outperforms current representative models in two benchmark datasets. We further make in-depth discussions by comparing how models work in both datasets with empirical analysis of attention weights.
+Cite (Informal):Entity-Aware Dual Co-Attention Network for Fake News Detection (Yang et al., Findings 2023)
+Year:2023
+Venue:Findings
+Video:https://aclanthology.org/2023.findings-eacl.7.mp4
+Anthology ID:2023.findings-eacl.7
+Bibkey:yang-etal-2023-entity
+Volume:Findings of the Association for Computational Linguistics: EACL 2023
+URL:https://aclanthology.org/2023.findings-eacl.7
+PDF:https://aclanthology.org/2023.findings-eacl.7.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Sin-han Yang, Chung-chi Chen, Hen-Hsen Huang, and Hsin-Hsi Chen. 2023. Entity-Aware Dual Co-Attention Network for Fake News Detection. In Findings of the Association for Computational Linguistics: EACL 2023, pages 106–113, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:106–113
+DOI:10.18653/v1/2023.findings-eacl.7
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{yang-etal-2023-entity,
+    title = "Entity-Aware Dual Co-Attention Network for Fake News Detection",
+    author = "Yang, Sin-han  and
+      Chen, Chung-chi  and
+      Huang, Hen-Hsen  and
+      Chen, Hsin-Hsi",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Findings of the Association for Computational Linguistics: EACL 2023",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.findings-eacl.7",
+    doi = "10.18653/v1/2023.findings-eacl.7",
+    pages = "106--113",
+    abstract = "Fake news and misinformation spread rapidly on the Internet. How to identify it and how to interpret the identification results have become important issues. In this paper, we propose a Dual Co-Attention Network (Dual-CAN) for fake news detection, which takes news content, social media replies, and external knowledge into consideration. Our experimental results support that the proposed Dual-CAN outperforms current representative models in two benchmark datasets. We further make in-depth discussions by comparing how models work in both datasets with empirical analysis of attention weights.",
+}

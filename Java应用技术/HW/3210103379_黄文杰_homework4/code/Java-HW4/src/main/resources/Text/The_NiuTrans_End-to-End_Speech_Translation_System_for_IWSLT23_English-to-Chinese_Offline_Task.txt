@@ -1,0 +1,43 @@
+Title: The NiuTrans End-to-End Speech Translation System for IWSLT23 English-to-Chinese Offline Task
+Authors: Yuchen Han, Xiaoqian Liu, Hao Chen, Yuhao Zhang, Chen Xu, Tong Xiao, Jingbo Zhu
+Abstract: This paper describes the NiuTrans end-to-end speech translation system submitted for the IWSLT 2023 English-to-Chinese offline task. Our speech translation models are composed of pre-trained ASR and MT models under the SATE framework. Several pre-trained models with diverse architectures and input representations (e.g., log Mel-filterbank and waveform) were utilized. We proposed an IDA method to iteratively improve the performance of the MT models and generate the pseudo ST data through MT systems. We then trained ST models with different structures and data settings to enhance ensemble performance. Experimental results demonstrate that our NiuTrans system achieved a BLEU score of 29.22 on the MuST-C En-Zh tst-COMMON set, outperforming the previous year’s submission by 0.12 BLEU despite using less MT training data.
+Cite (Informal):The NiuTrans End-to-End Speech Translation System for IWSLT23 English-to-Chinese Offline Task (Han et al., IWSLT 2023)
+Year:2023
+Venue:IWSLT
+Anthology ID:2023.iwslt-1.17
+Bibkey:han-etal-2023-niutrans
+Volume:Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023)
+URL:https://aclanthology.org/2023.iwslt-1.17
+PDF:https://aclanthology.org/2023.iwslt-1.17.pdf
+Month:July
+SIG:SIGSLT
+Address:Toronto, Canada (in-person and online)
+Language:
+Cite (ACL):Yuchen Han, Xiaoqian Liu, Hao Chen, Yuhao Zhang, Chen Xu, Tong Xiao, and Jingbo Zhu. 2023. The NiuTrans End-to-End Speech Translation System for IWSLT23 English-to-Chinese Offline Task. In Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023), pages 211–218, Toronto, Canada (in-person and online). Association for Computational Linguistics.
+Editors:Elizabeth Salesky,Marcello Federico,Marine Carpuat
+Note:
+Pages:211–218
+DOI:10.18653/v1/2023.iwslt-1.17
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{han-etal-2023-niutrans,
+    title = "The {N}iu{T}rans End-to-End Speech Translation System for {IWSLT}23 {E}nglish-to-{C}hinese Offline Task",
+    author = "Han, Yuchen  and
+      Liu, Xiaoqian  and
+      Chen, Hao  and
+      Zhang, Yuhao  and
+      Xu, Chen  and
+      Xiao, Tong  and
+      Zhu, Jingbo",
+    editor = "Salesky, Elizabeth  and
+      Federico, Marcello  and
+      Carpuat, Marine",
+    booktitle = "Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada (in-person and online)",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.iwslt-1.17",
+    doi = "10.18653/v1/2023.iwslt-1.17",
+    pages = "211--218",
+    abstract = "This paper describes the NiuTrans end-to-end speech translation system submitted for the IWSLT 2023 English-to-Chinese offline task. Our speech translation models are composed of pre-trained ASR and MT models under the SATE framework. Several pre-trained models with diverse architectures and input representations (e.g., log Mel-filterbank and waveform) were utilized. We proposed an IDA method to iteratively improve the performance of the MT models and generate the pseudo ST data through MT systems. We then trained ST models with different structures and data settings to enhance ensemble performance. Experimental results demonstrate that our NiuTrans system achieved a BLEU score of 29.22 on the MuST-C En-Zh tst-COMMON set, outperforming the previous year{'}s submission by 0.12 BLEU despite using less MT training data.",
+}

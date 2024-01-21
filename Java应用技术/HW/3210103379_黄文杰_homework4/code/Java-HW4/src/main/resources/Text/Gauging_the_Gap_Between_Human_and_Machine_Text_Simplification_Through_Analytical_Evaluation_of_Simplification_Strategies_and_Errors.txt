@@ -1,0 +1,40 @@
+Title: Gauging the Gap Between Human and Machine Text Simplification Through Analytical Evaluation of Simplification Strategies and Errors
+Authors: Daichi Yamaguchi, Rei Miyata, Sayuka Shimada, Satoshi Sato
+Abstract: This study presents an analytical evaluation of neural text simplification (TS) systems. Because recent TS models are trained in an end-to-end fashion, it is difficult to grasp their abilities to perform particular simplification operations. For the advancement of TS research and development, we should understand in detail what current TS systems can and cannot perform in comparison with human performance. To that end, we first developed an analytical evaluation framework consisting of fine-grained taxonomies of simplification strategies (at both the surface and content levels) and errors. Using this framework, we annotated TS instances produced by professional human editors and multiple neural TS systems and compared the results. Our analyses concretely and quantitatively revealed a wide gap between humans and systems, specifically indicating that systems tend to perform deletions and local substitutions while excessively omitting important information, and that the systems can hardly perform information addition operations. Based on our analyses, we also provide detailed directions to address these limitations.
+Cite (Informal):Gauging the Gap Between Human and Machine Text Simplification Through Analytical Evaluation of Simplification Strategies and Errors (Yamaguchi et al., Findings 2023)
+Year:2023
+Venue:Findings
+Video:https://aclanthology.org/2023.findings-eacl.27.mp4
+Anthology ID:2023.findings-eacl.27
+Bibkey:yamaguchi-etal-2023-gauging
+Volume:Findings of the Association for Computational Linguistics: EACL 2023
+URL:https://aclanthology.org/2023.findings-eacl.27
+PDF:https://aclanthology.org/2023.findings-eacl.27.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Daichi Yamaguchi, Rei Miyata, Sayuka Shimada, and Satoshi Sato. 2023. Gauging the Gap Between Human and Machine Text Simplification Through Analytical Evaluation of Simplification Strategies and Errors. In Findings of the Association for Computational Linguistics: EACL 2023, pages 359–375, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:359–375
+DOI:10.18653/v1/2023.findings-eacl.27
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{yamaguchi-etal-2023-gauging,
+    title = "Gauging the Gap Between Human and Machine Text Simplification Through Analytical Evaluation of Simplification Strategies and Errors",
+    author = "Yamaguchi, Daichi  and
+      Miyata, Rei  and
+      Shimada, Sayuka  and
+      Sato, Satoshi",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Findings of the Association for Computational Linguistics: EACL 2023",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.findings-eacl.27",
+    doi = "10.18653/v1/2023.findings-eacl.27",
+    pages = "359--375",
+    abstract = "This study presents an analytical evaluation of neural text simplification (TS) systems. Because recent TS models are trained in an end-to-end fashion, it is difficult to grasp their abilities to perform particular simplification operations. For the advancement of TS research and development, we should understand in detail what current TS systems can and cannot perform in comparison with human performance. To that end, we first developed an analytical evaluation framework consisting of fine-grained taxonomies of simplification strategies (at both the surface and content levels) and errors. Using this framework, we annotated TS instances produced by professional human editors and multiple neural TS systems and compared the results. Our analyses concretely and quantitatively revealed a wide gap between humans and systems, specifically indicating that systems tend to perform deletions and local substitutions while excessively omitting important information, and that the systems can hardly perform information addition operations. Based on our analyses, we also provide detailed directions to address these limitations.",
+}

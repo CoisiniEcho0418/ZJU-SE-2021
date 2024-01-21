@@ -1,0 +1,41 @@
+Title: Enhancing Video Translation Context with Object Labels
+Authors: Jeremy Gwinnup, Tim Anderson, Brian Ore, Eric Hansen, Kevin Duh
+Abstract: We present a simple yet efficient method to enhance the quality of machine translation models trained on multimodal corpora by augmenting the training text with labels of detected objects in the corresponding video segments. We then test the effects of label augmentation in both baseline and two automatic speech recognition (ASR) conditions. In contrast with multimodal techniques that merge visual and textual features, our modular method is easy to implement and the results are more interpretable. Comparisons are made with Transformer translation architectures trained with baseline and augmented labels, showing improvements of up to +1.0 BLEU on the How2 dataset.
+Cite (Informal):Enhancing Video Translation Context with Object Labels (Gwinnup et al., IWSLT 2023)
+Year:2023
+Venue:IWSLT
+Anthology ID:2023.iwslt-1.8
+Bibkey:gwinnup-etal-2023-enhancing
+Volume:Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023)
+URL:https://aclanthology.org/2023.iwslt-1.8
+PDF:https://aclanthology.org/2023.iwslt-1.8.pdf
+Month:July
+SIG:SIGSLT
+Address:Toronto, Canada (in-person and online)
+Language:
+Cite (ACL):Jeremy Gwinnup, Tim Anderson, Brian Ore, Eric Hansen, and Kevin Duh. 2023. Enhancing Video Translation Context with Object Labels. In Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023), pages 130–137, Toronto, Canada (in-person and online). Association for Computational Linguistics.
+Editors:Elizabeth Salesky,Marcello Federico,Marine Carpuat
+Note:
+Pages:130–137
+DOI:10.18653/v1/2023.iwslt-1.8
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{gwinnup-etal-2023-enhancing,
+    title = "Enhancing Video Translation Context with Object Labels",
+    author = "Gwinnup, Jeremy  and
+      Anderson, Tim  and
+      Ore, Brian  and
+      Hansen, Eric  and
+      Duh, Kevin",
+    editor = "Salesky, Elizabeth  and
+      Federico, Marcello  and
+      Carpuat, Marine",
+    booktitle = "Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada (in-person and online)",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.iwslt-1.8",
+    doi = "10.18653/v1/2023.iwslt-1.8",
+    pages = "130--137",
+    abstract = "We present a simple yet efficient method to enhance the quality of machine translation models trained on multimodal corpora by augmenting the training text with labels of detected objects in the corresponding video segments. We then test the effects of label augmentation in both baseline and two automatic speech recognition (ASR) conditions. In contrast with multimodal techniques that merge visual and textual features, our modular method is easy to implement and the results are more interpretable. Comparisons are made with Transformer translation architectures trained with baseline and augmented labels, showing improvements of up to +1.0 BLEU on the How2 dataset.",
+}

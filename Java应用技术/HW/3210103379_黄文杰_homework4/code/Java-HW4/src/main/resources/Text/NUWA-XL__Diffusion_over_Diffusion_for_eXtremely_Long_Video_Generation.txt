@@ -1,0 +1,52 @@
+Title: NUWA-XL: Diffusion over Diffusion for eXtremely Long Video Generation
+Authors: Shengming Yin, Chenfei Wu, Huan Yang, Jianfeng Wang, Xiaodong Wang, Minheng Ni, Zhengyuan Yang, Linjie Li, Shuguang Liu, Fan Yang, Jianlong Fu, Ming Gong, Lijuan Wang, Zicheng Liu, Houqiang Li, Nan Duan
+Abstract: In this paper, we propose NUWA-XL, a novel Diffusion over Diffusion architecture for eXtremely Long video generation. Most current work generates long videos segment by segment sequentially, which normally leads to the gap between training on short videos and inferring long videos, and the sequential generation is inefficient. Instead, our approach adopts a “coarse-to-fine” process, in which the video can be generated in parallel at the same granularity. A global diffusion model is applied to generate the keyframes across the entire time range, and then local diffusion models recursively fill in the content between nearby frames. This simple yet effective strategy allows us to directly train on long videos (3376 frames) to reduce the training-inference gap and makes it possible to generate all segments in parallel. To evaluate our model, we build FlintstonesHD dataset, a new benchmark for long video generation. Experiments show that our model not only generates high-quality long videos with both global and local coherence, but also decreases the average inference time from 7.55min to 26s (by 94.26%) at the same hardware setting when generating 1024 frames. The homepage link is [NUWA-XL](https://msra-nuwa.azurewebsites.net)
+Cite (Informal):NUWA-XL: Diffusion over Diffusion for eXtremely Long Video Generation (Yin et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.73
+Bibkey:yin-etal-2023-nuwa
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.73
+PDF:https://aclanthology.org/2023.acl-long.73.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Shengming Yin, Chenfei Wu, Huan Yang, Jianfeng Wang, Xiaodong Wang, Minheng Ni, Zhengyuan Yang, Linjie Li, Shuguang Liu, Fan Yang, Jianlong Fu, Ming Gong, Lijuan Wang, Zicheng Liu, Houqiang Li, and Nan Duan. 2023. NUWA-XL: Diffusion over Diffusion for eXtremely Long Video Generation. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 1309–1320, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:1309–1320
+DOI:10.18653/v1/2023.acl-long.73
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{yin-etal-2023-nuwa,
+    title = "{NUWA}-{XL}: Diffusion over Diffusion for e{X}tremely Long Video Generation",
+    author = "Yin, Shengming  and
+      Wu, Chenfei  and
+      Yang, Huan  and
+      Wang, Jianfeng  and
+      Wang, Xiaodong  and
+      Ni, Minheng  and
+      Yang, Zhengyuan  and
+      Li, Linjie  and
+      Liu, Shuguang  and
+      Yang, Fan  and
+      Fu, Jianlong  and
+      Gong, Ming  and
+      Wang, Lijuan  and
+      Liu, Zicheng  and
+      Li, Houqiang  and
+      Duan, Nan",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.73",
+    doi = "10.18653/v1/2023.acl-long.73",
+    pages = "1309--1320",
+    abstract = "In this paper, we propose NUWA-XL, a novel Diffusion over Diffusion architecture for eXtremely Long video generation. Most current work generates long videos segment by segment sequentially, which normally leads to the gap between training on short videos and inferring long videos, and the sequential generation is inefficient. Instead, our approach adopts a {``}coarse-to-fine{''} process, in which the video can be generated in parallel at the same granularity. A global diffusion model is applied to generate the keyframes across the entire time range, and then local diffusion models recursively fill in the content between nearby frames. This simple yet effective strategy allows us to directly train on long videos (3376 frames) to reduce the training-inference gap and makes it possible to generate all segments in parallel. To evaluate our model, we build FlintstonesHD dataset, a new benchmark for long video generation. Experiments show that our model not only generates high-quality long videos with both global and local coherence, but also decreases the average inference time from 7.55min to 26s (by 94.26{\%}) at the same hardware setting when generating 1024 frames. The homepage link is [NUWA-XL](\url{https://msra-nuwa.azurewebsites.net})",
+}

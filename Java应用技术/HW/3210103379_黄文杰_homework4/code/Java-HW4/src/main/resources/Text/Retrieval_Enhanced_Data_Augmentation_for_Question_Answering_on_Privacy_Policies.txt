@@ -1,0 +1,41 @@
+Title: Retrieval Enhanced Data Augmentation for Question Answering on Privacy Policies
+Authors: Md Rizwan Parvez, Jianfeng Chi, Wasi Uddin Ahmad, Yuan Tian, Kai-Wei Chang
+Abstract: Prior studies in privacy policies frame the question answering (QA) task as identifying the most relevant text segment or a list of sentences from a policy document given a user query. Existing labeled datasets are heavily imbalanced (only a few relevant segments), limiting the QA performance in this domain. In this paper, we develop a data augmentation framework based on ensembling retriever models that captures the relevant text segments from unlabeled policy documents and expand the positive examples in the training set. In addition, to improve the diversity and quality of the augmented data, we leverage multiple pre-trained language models (LMs) and cascaded them with noise reduction oracles. Using our augmented data on the PrivacyQA benchmark, we elevate the existing baseline by a large margin (10% F1) and achieve a new state-of-the-art F1 score of 50%. Our ablation studies provide further insights into the effectiveness of our approach.
+Cite (Informal):Retrieval Enhanced Data Augmentation for Question Answering on Privacy Policies (Parvez et al., EACL 2023)
+Year:2023
+Venue:EACL
+Video:https://aclanthology.org/2023.eacl-main.16.mp4
+Anthology ID:2023.eacl-main.16
+Bibkey:parvez-etal-2023-retrieval
+Volume:Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics
+URL:https://aclanthology.org/2023.eacl-main.16
+PDF:https://aclanthology.org/2023.eacl-main.16.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Md Rizwan Parvez, Jianfeng Chi, Wasi Uddin Ahmad, Yuan Tian, and Kai-Wei Chang. 2023. Retrieval Enhanced Data Augmentation for Question Answering on Privacy Policies. In Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics, pages 201–210, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:201–210
+DOI:10.18653/v1/2023.eacl-main.16
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{parvez-etal-2023-retrieval,
+    title = "Retrieval Enhanced Data Augmentation for Question Answering on Privacy Policies",
+    author = "Parvez, Md Rizwan  and
+      Chi, Jianfeng  and
+      Ahmad, Wasi Uddin  and
+      Tian, Yuan  and
+      Chang, Kai-Wei",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.eacl-main.16",
+    doi = "10.18653/v1/2023.eacl-main.16",
+    pages = "201--210",
+    abstract = "Prior studies in privacy policies frame the question answering (QA) task as identifying the most relevant text segment or a list of sentences from a policy document given a user query. Existing labeled datasets are heavily imbalanced (only a few relevant segments), limiting the QA performance in this domain. In this paper, we develop a data augmentation framework based on ensembling retriever models that captures the relevant text segments from unlabeled policy documents and expand the positive examples in the training set. In addition, to improve the diversity and quality of the augmented data, we leverage multiple pre-trained language models (LMs) and cascaded them with noise reduction oracles. Using our augmented data on the PrivacyQA benchmark, we elevate the existing baseline by a large margin (10{\%} F1) and achieve a new state-of-the-art F1 score of 50{\%}. Our ablation studies provide further insights into the effectiveness of our approach.",
+}

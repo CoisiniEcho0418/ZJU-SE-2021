@@ -1,0 +1,43 @@
+Title: DiffusEmp: A Diffusion Model-Based Framework with Multi-Grained Control for Empathetic Response Generation
+Authors: Guanqun Bi, Lei Shen, Yanan Cao, Meng Chen, Yuqiang Xie, Zheng Lin, Xiaodong He
+Abstract: Empathy is a crucial factor in open-domain conversations, which naturally shows one’s caring and understanding to others. Though several methods have been proposed to generate empathetic responses, existing works often lead to monotonous empathy that refers to generic and safe expressions. In this paper, we propose to use explicit control to guide the empathy expression and design a framework DiffusEmp based on conditional diffusion language model to unify the utilization of dialogue context and attribute-oriented control signals. Specifically, communication mechanism, intent, and semantic frame are imported as multi-grained signals that control the empathy realization from coarse to fine levels. We then design a specific masking strategy to reflect the relationship between multi-grained signals and response tokens, and integrate it into the diffusion model to influence the generative process. Experimental results on a benchmark dataset EmpatheticDialogue show that our framework outperforms competitive baselines in terms of controllability, informativeness, and diversity without the loss of context-relatedness.
+Cite (Informal):DiffusEmp: A Diffusion Model-Based Framework with Multi-Grained Control for Empathetic Response Generation (Bi et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.158
+Bibkey:bi-etal-2023-diffusemp
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.158
+PDF:https://aclanthology.org/2023.acl-long.158.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Guanqun Bi, Lei Shen, Yanan Cao, Meng Chen, Yuqiang Xie, Zheng Lin, and Xiaodong He. 2023. DiffusEmp: A Diffusion Model-Based Framework with Multi-Grained Control for Empathetic Response Generation. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 2812–2831, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:2812–2831
+DOI:10.18653/v1/2023.acl-long.158
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{bi-etal-2023-diffusemp,
+    title = "{D}iffus{E}mp: A Diffusion Model-Based Framework with Multi-Grained Control for Empathetic Response Generation",
+    author = "Bi, Guanqun  and
+      Shen, Lei  and
+      Cao, Yanan  and
+      Chen, Meng  and
+      Xie, Yuqiang  and
+      Lin, Zheng  and
+      He, Xiaodong",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.158",
+    doi = "10.18653/v1/2023.acl-long.158",
+    pages = "2812--2831",
+    abstract = "Empathy is a crucial factor in open-domain conversations, which naturally shows one{'}s caring and understanding to others. Though several methods have been proposed to generate empathetic responses, existing works often lead to monotonous empathy that refers to generic and safe expressions. In this paper, we propose to use explicit control to guide the empathy expression and design a framework DiffusEmp based on conditional diffusion language model to unify the utilization of dialogue context and attribute-oriented control signals. Specifically, communication mechanism, intent, and semantic frame are imported as multi-grained signals that control the empathy realization from coarse to fine levels. We then design a specific masking strategy to reflect the relationship between multi-grained signals and response tokens, and integrate it into the diffusion model to influence the generative process. Experimental results on a benchmark dataset EmpatheticDialogue show that our framework outperforms competitive baselines in terms of controllability, informativeness, and diversity without the loss of context-relatedness.",
+}

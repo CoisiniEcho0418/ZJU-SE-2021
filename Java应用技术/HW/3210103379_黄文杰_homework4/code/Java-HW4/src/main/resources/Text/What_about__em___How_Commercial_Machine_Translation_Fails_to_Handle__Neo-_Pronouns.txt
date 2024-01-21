@@ -1,0 +1,41 @@
+Title: What about “em”? How Commercial Machine Translation Fails to Handle (Neo-)Pronouns
+Authors: Anne Lauscher, Debora Nozza, Ehm Miltersen, Archie Crowley, Dirk Hovy
+Abstract: As 3rd-person pronoun usage shifts to include novel forms, e.g., neopronouns, we need more research on identity-inclusive NLP. Exclusion is particularly harmful in one of the most popular NLP applications, machine translation (MT). Wrong pronoun translations can discriminate against marginalized groups, e.g., non-binary individuals (Dev et al., 2021). In this “reality check”, we study how three commercial MT systems translate 3rd-person pronouns. Concretely, we compare the translations of gendered vs. gender-neutral pronouns from English to five other languages (Danish, Farsi, French, German, Italian), and vice versa, from Danish to English.Our error analysis shows that the presence of a gender-neutral pronoun often leads to grammatical and semantic translation errors. Similarly, gender neutrality is often not preserved. By surveying the opinions of affected native speakers from diverse languages, we provide recommendations to address the issue in future MT research.
+Cite (Informal):What about “em”? How Commercial Machine Translation Fails to Handle (Neo-)Pronouns (Lauscher et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.23
+Bibkey:lauscher-etal-2023-em
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.23
+PDF:https://aclanthology.org/2023.acl-long.23.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Anne Lauscher, Debora Nozza, Ehm Miltersen, Archie Crowley, and Dirk Hovy. 2023. What about “em”? How Commercial Machine Translation Fails to Handle (Neo-)Pronouns. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 377–392, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:377–392
+DOI:10.18653/v1/2023.acl-long.23
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{lauscher-etal-2023-em,
+    title = "What about {``}em{''}? How Commercial Machine Translation Fails to Handle (Neo-)Pronouns",
+    author = "Lauscher, Anne  and
+      Nozza, Debora  and
+      Miltersen, Ehm  and
+      Crowley, Archie  and
+      Hovy, Dirk",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.23",
+    doi = "10.18653/v1/2023.acl-long.23",
+    pages = "377--392",
+    abstract = "As 3rd-person pronoun usage shifts to include novel forms, e.g., neopronouns, we need more research on identity-inclusive NLP. Exclusion is particularly harmful in one of the most popular NLP applications, machine translation (MT). Wrong pronoun translations can discriminate against marginalized groups, e.g., non-binary individuals (Dev et al., 2021). In this {``}reality check{''}, we study how three commercial MT systems translate 3rd-person pronouns. Concretely, we compare the translations of gendered vs. gender-neutral pronouns from English to five other languages (Danish, Farsi, French, German, Italian), and vice versa, from Danish to English.Our error analysis shows that the presence of a gender-neutral pronoun often leads to grammatical and semantic translation errors. Similarly, gender neutrality is often not preserved. By surveying the opinions of affected native speakers from diverse languages, we provide recommendations to address the issue in future MT research.",
+}

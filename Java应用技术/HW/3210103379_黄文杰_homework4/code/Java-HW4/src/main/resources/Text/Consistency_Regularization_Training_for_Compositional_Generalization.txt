@@ -1,0 +1,44 @@
+Title: Consistency Regularization Training for Compositional Generalization
+Authors: Yongjing Yin, Jiali Zeng, Yafu Li, Fandong Meng, Jie Zhou, Yue Zhang
+Abstract: Existing neural models have difficulty generalizing to unseen combinations of seen components. To achieve compositional generalization, models are required to consistently interpret (sub)expressions across contexts. Without modifying model architectures, we improve the capability of Transformer on compositional generalization through consistency regularization training, which promotes representation consistency across samples and prediction consistency for a single sample. Experimental results on semantic parsing and machine translation benchmarks empirically demonstrate the effectiveness and generality of our method. In addition, we find that the prediction consistency scores on in-distribution validation sets can be an alternative for evaluating models during training, when commonly-used metrics are not informative.
+Cite (Informal):Consistency Regularization Training for Compositional Generalization (Yin et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.72
+Version 2:2023.acl-long.72v2
+Bibkey:yin-etal-2023-consistency
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.72
+PDF:https://aclanthology.org/2023.acl-long.72.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Yongjing Yin, Jiali Zeng, Yafu Li, Fandong Meng, Jie Zhou, and Yue Zhang. 2023. Consistency Regularization Training for Compositional Generalization. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 1294–1308, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Original:2023.acl-long.72v1
+Pages:1294–1308
+DOI:10.18653/v1/2023.acl-long.72
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{yin-etal-2023-consistency,
+    title = "Consistency Regularization Training for Compositional Generalization",
+    author = "Yin, Yongjing  and
+      Zeng, Jiali  and
+      Li, Yafu  and
+      Meng, Fandong  and
+      Zhou, Jie  and
+      Zhang, Yue",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.72",
+    doi = "10.18653/v1/2023.acl-long.72",
+    pages = "1294--1308",
+    abstract = "Existing neural models have difficulty generalizing to unseen combinations of seen components. To achieve compositional generalization, models are required to consistently interpret (sub)expressions across contexts. Without modifying model architectures, we improve the capability of Transformer on compositional generalization through consistency regularization training, which promotes representation consistency across samples and prediction consistency for a single sample. Experimental results on semantic parsing and machine translation benchmarks empirically demonstrate the effectiveness and generality of our method. In addition, we find that the prediction consistency scores on in-distribution validation sets can be an alternative for evaluating models during training, when commonly-used metrics are not informative.",
+}

@@ -1,0 +1,42 @@
+Title: Bridging the Gap between Pre-Training and Fine-Tuning for Commonsense Generation
+Authors: Haoran Yang, Yan Wang, Piji Li, Wei Bi, Wai Lam, Chen Xu
+Abstract: Commonsense generation aims to generate a plausible sentence containing all given unordered concept words. Previous methods focusing on this task usually directly concatenate these words as the input of a pre-trained language model (PLM). However, in PLMs’ pre-training process, the inputs are often corrupted sentences with correct word order. This input distribution discrepancy between pre-training and fine-tuning makes the model difficult to fully utilize the knowledge of PLMs. In this paper, we propose a two-stage framework to alleviate this issue. Firstly, in pre-training stage, we design a new format of input to endow PLMs the ability to deal with masked sentences with incorrect word order. Secondly, during fine-tuning, we insert the special token [MASK] between two consecutive concept words to make the input distribution more similar to the input distribution in pre-training. We conduct extensive experiments and provide thorough analysis to demonstrate the effectiveness of our proposed method.
+Cite (Informal):Bridging the Gap between Pre-Training and Fine-Tuning for Commonsense Generation (Yang et al., Findings 2023)
+Year:2023
+Venue:Findings
+Video:https://aclanthology.org/2023.findings-eacl.28.mp4
+Anthology ID:2023.findings-eacl.28
+Bibkey:yang-etal-2023-bridging
+Volume:Findings of the Association for Computational Linguistics: EACL 2023
+URL:https://aclanthology.org/2023.findings-eacl.28
+PDF:https://aclanthology.org/2023.findings-eacl.28.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Haoran Yang, Yan Wang, Piji Li, Wei Bi, Wai Lam, and Chen Xu. 2023. Bridging the Gap between Pre-Training and Fine-Tuning for Commonsense Generation. In Findings of the Association for Computational Linguistics: EACL 2023, pages 376–383, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:376–383
+DOI:10.18653/v1/2023.findings-eacl.28
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{yang-etal-2023-bridging,
+    title = "Bridging the Gap between Pre-Training and Fine-Tuning for Commonsense Generation",
+    author = "Yang, Haoran  and
+      Wang, Yan  and
+      Li, Piji  and
+      Bi, Wei  and
+      Lam, Wai  and
+      Xu, Chen",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Findings of the Association for Computational Linguistics: EACL 2023",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.findings-eacl.28",
+    doi = "10.18653/v1/2023.findings-eacl.28",
+    pages = "376--383",
+    abstract = "Commonsense generation aims to generate a plausible sentence containing all given unordered concept words. Previous methods focusing on this task usually directly concatenate these words as the input of a pre-trained language model (PLM). However, in PLMs{'} pre-training process, the inputs are often corrupted sentences with correct word order. This input distribution discrepancy between pre-training and fine-tuning makes the model difficult to fully utilize the knowledge of PLMs. In this paper, we propose a two-stage framework to alleviate this issue. Firstly, in pre-training stage, we design a new format of input to endow PLMs the ability to deal with masked sentences with incorrect word order. Secondly, during fine-tuning, we insert the special token [MASK] between two consecutive concept words to make the input distribution more similar to the input distribution in pre-training. We conduct extensive experiments and provide thorough analysis to demonstrate the effectiveness of our proposed method.",
+}

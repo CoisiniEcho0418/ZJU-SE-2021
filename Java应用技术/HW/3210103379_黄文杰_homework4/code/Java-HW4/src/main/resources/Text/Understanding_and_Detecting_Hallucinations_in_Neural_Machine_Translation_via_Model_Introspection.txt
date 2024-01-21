@@ -1,0 +1,37 @@
+Title: Understanding and Detecting Hallucinations in Neural Machine Translation via Model Introspection
+Authors: Weijia Xu, Sweta Agrawal, Eleftheria Briakou, Marianna J. Martindale, Marine Carpuat
+Abstract: Neural sequence generation models are known to “hallucinate”, by producing outputs that are unrelated to the source text. These hallucinations are potentially harmful, yet it remains unclear in what conditions they arise and how to mitigate their impact. In this work, we first identify internal model symptoms of hallucinations by analyzing the relative token contributions to the generation in contrastive hallucinated vs. non-hallucinated outputs generated via source perturbations. We then show that these symptoms are reliable indicators of natural hallucinations, by using them to design a lightweight hallucination detector which outperforms both model-free baselines and strong classifiers based on quality estimation or large pre-trained models on manually annotated English-Chinese and German-English translation test beds.
+Cite (Informal):Understanding and Detecting Hallucinations in Neural Machine Translation via Model Introspection (Xu et al., TACL 2023)
+Year:2023
+Venue:TACL
+Anthology ID:2023.tacl-1.32
+Bibkey:xu-etal-2023-understanding
+Volume:Transactions of the Association for Computational Linguistics, Volume 11
+URL:https://aclanthology.org/2023.tacl-1.32
+PDF:https://aclanthology.org/2023.tacl-1.32.pdf
+Month:
+SIG:
+Address:Cambridge, MA
+Language:
+Cite (ACL):Weijia Xu, Sweta Agrawal, Eleftheria Briakou, Marianna J. Martindale, and Marine Carpuat. 2023. Understanding and Detecting Hallucinations in Neural Machine Translation via Model Introspection. Transactions of the Association for Computational Linguistics, 11:546–564.
+Note:
+Pages:546–564
+DOI:10.1162/tacl_a_00563
+Publisher:MIT Press
+BibTex: @article{xu-etal-2023-understanding,
+    title = "Understanding and Detecting Hallucinations in Neural Machine Translation via Model Introspection",
+    author = "Xu, Weijia  and
+      Agrawal, Sweta  and
+      Briakou, Eleftheria  and
+      Martindale, Marianna J.  and
+      Carpuat, Marine",
+    journal = "Transactions of the Association for Computational Linguistics",
+    volume = "11",
+    year = "2023",
+    address = "Cambridge, MA",
+    publisher = "MIT Press",
+    url = "https://aclanthology.org/2023.tacl-1.32",
+    doi = "10.1162/tacl_a_00563",
+    pages = "546--564",
+    abstract = "Neural sequence generation models are known to {``}hallucinate{''}, by producing outputs that are unrelated to the source text. These hallucinations are potentially harmful, yet it remains unclear in what conditions they arise and how to mitigate their impact. In this work, we first identify internal model symptoms of hallucinations by analyzing the relative token contributions to the generation in contrastive hallucinated vs. non-hallucinated outputs generated via source perturbations. We then show that these symptoms are reliable indicators of natural hallucinations, by using them to design a lightweight hallucination detector which outperforms both model-free baselines and strong classifiers based on quality estimation or large pre-trained models on manually annotated English-Chinese and German-English translation test beds.",
+}

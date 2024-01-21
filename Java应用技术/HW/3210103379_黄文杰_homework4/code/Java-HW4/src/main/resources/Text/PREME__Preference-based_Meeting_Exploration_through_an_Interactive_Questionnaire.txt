@@ -1,0 +1,43 @@
+Title: PREME: Preference-based Meeting Exploration through an Interactive Questionnaire
+Authors: Negar Arabzadeh, Ali Ahmadvand, Julia Kiseleva, Yang Liu, Ahmed Hassan Awadallah, Ming Zhong, Milad Shokouhi
+Abstract: The recent increase in the volume of online meetings necessitates automated tools for organizing the material, especially when an attendee has missed the discussion and needs assistance in quickly exploring it. In this work, we propose a novel end-to-end framework for generating interactive questionnaires for preference-based meeting exploration. As a result, users are supplied with a list of suggested questions reflecting their preferences. Since the task is new, we introduce an automatic evaluation strategy by measuring how much the generated questions via questionnaire are answerable to ensure factual correctness and covers the source meeting for the depth of possible exploration.
+Cite (Informal):PREME: Preference-based Meeting Exploration through an Interactive Questionnaire (Arabzadeh et al., Findings 2023)
+Year:2023
+Venue:Findings
+Video:https://aclanthology.org/2023.findings-eacl.25.mp4
+Anthology ID:2023.findings-eacl.25
+Bibkey:arabzadeh-etal-2023-preme
+Volume:Findings of the Association for Computational Linguistics: EACL 2023
+URL:https://aclanthology.org/2023.findings-eacl.25
+PDF:https://aclanthology.org/2023.findings-eacl.25.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Negar Arabzadeh, Ali Ahmadvand, Julia Kiseleva, Yang Liu, Ahmed Hassan Awadallah, Ming Zhong, and Milad Shokouhi. 2023. PREME: Preference-based Meeting Exploration through an Interactive Questionnaire. In Findings of the Association for Computational Linguistics: EACL 2023, pages 331–342, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:331–342
+DOI:10.18653/v1/2023.findings-eacl.25
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{arabzadeh-etal-2023-preme,
+    title = "{PREME}: Preference-based Meeting Exploration through an Interactive Questionnaire",
+    author = "Arabzadeh, Negar  and
+      Ahmadvand, Ali  and
+      Kiseleva, Julia  and
+      Liu, Yang  and
+      Awadallah, Ahmed Hassan  and
+      Zhong, Ming  and
+      Shokouhi, Milad",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Findings of the Association for Computational Linguistics: EACL 2023",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.findings-eacl.25",
+    doi = "10.18653/v1/2023.findings-eacl.25",
+    pages = "331--342",
+    abstract = "The recent increase in the volume of online meetings necessitates automated tools for organizing the material, especially when an attendee has missed the discussion and needs assistance in quickly exploring it. In this work, we propose a novel end-to-end framework for generating interactive questionnaires for preference-based meeting exploration. As a result, users are supplied with a list of suggested questions reflecting their preferences. Since the task is new, we introduce an automatic evaluation strategy by measuring how much the generated questions via questionnaire are answerable to ensure factual correctness and covers the source meeting for the depth of possible exploration.",
+}

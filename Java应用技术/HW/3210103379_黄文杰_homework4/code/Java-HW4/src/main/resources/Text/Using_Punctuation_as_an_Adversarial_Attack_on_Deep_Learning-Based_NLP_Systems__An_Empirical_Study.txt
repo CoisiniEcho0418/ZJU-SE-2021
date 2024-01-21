@@ -1,0 +1,41 @@
+Title: Using Punctuation as an Adversarial Attack on Deep Learning-Based NLP Systems: An Empirical Study
+Authors: Brian Formento, Chuan Sheng Foo, Luu Anh Tuan, See Kiong Ng
+Abstract: This work empirically investigates punctuation insertions as adversarial attacks on NLP systems. Data from experiments on three tasks, five datasets, and six models with four attacks show that punctuation insertions, when limited to a few symbols (apostrophes and hyphens), are a superior attack vector compared to character insertions due to 1) a lower after-attack accuracy (Aaft-atk) than alphabetical character insertions; 2) higher semantic similarity between the resulting and original texts; and 3) a resulting text that is easier and faster to read as assessed with the Test of Word Reading Efficiency (TOWRE)). The tests also indicate that 4) grammar checking does not mitigate punctuation insertions and 5) punctuation insertions outperform word-level attacks in settings with a limited number of word synonyms and queries to the victim’s model. Our findings indicate that inserting a few punctuation types that result in easy-to-read samples is a general attack mechanism. In light of this threat, we assess the impact of punctuation insertions, potential mitigations, the mitigation’s tradeoffs, punctuation insertion’s worst-case scenarios and summarize our findings in a qualitative casual map, so that developers can design safer, more secure systems. Aaft-atk
+Cite (Informal):Using Punctuation as an Adversarial Attack on Deep Learning-Based NLP Systems: An Empirical Study (Formento et al., Findings 2023)
+Year:2023
+Venue:Findings
+Video:https://aclanthology.org/2023.findings-eacl.1.mp4
+Anthology ID:2023.findings-eacl.1
+Bibkey:formento-etal-2023-using
+Software:2023.findings-eacl.1.software.zip
+Volume:Findings of the Association for Computational Linguistics: EACL 2023
+URL:https://aclanthology.org/2023.findings-eacl.1
+PDF:https://aclanthology.org/2023.findings-eacl.1.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Brian Formento, Chuan Sheng Foo, Luu Anh Tuan, and See Kiong Ng. 2023. Using Punctuation as an Adversarial Attack on Deep Learning-Based NLP Systems: An Empirical Study. In Findings of the Association for Computational Linguistics: EACL 2023, pages 1–34, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:1–34
+DOI:10.18653/v1/2023.findings-eacl.1
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{formento-etal-2023-using,
+    title = "Using Punctuation as an Adversarial Attack on Deep Learning-Based {NLP} Systems: An Empirical Study",
+    author = "Formento, Brian  and
+      Foo, Chuan Sheng  and
+      Tuan, Luu Anh  and
+      Ng, See Kiong",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Findings of the Association for Computational Linguistics: EACL 2023",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.findings-eacl.1",
+    doi = "10.18653/v1/2023.findings-eacl.1",
+    pages = "1--34",
+    abstract = "This work empirically investigates punctuation insertions as adversarial attacks on NLP systems. Data from experiments on three tasks, five datasets, and six models with four attacks show that punctuation insertions, when limited to a few symbols (apostrophes and hyphens), are a superior attack vector compared to character insertions due to 1) a lower after-attack accuracy ($A_{aft-atk}$) than alphabetical character insertions; 2) higher semantic similarity between the resulting and original texts; and 3) a resulting text that is easier and faster to read as assessed with the Test of Word Reading Efficiency (TOWRE)). The tests also indicate that 4) grammar checking does not mitigate punctuation insertions and 5) punctuation insertions outperform word-level attacks in settings with a limited number of word synonyms and queries to the victim{'}s model. Our findings indicate that inserting a few punctuation types that result in easy-to-read samples is a general attack mechanism. In light of this threat, we assess the impact of punctuation insertions, potential mitigations, the mitigation{'}s tradeoffs, punctuation insertion{'}s worst-case scenarios and summarize our findings in a qualitative casual map, so that developers can design safer, more secure systems.",
+}

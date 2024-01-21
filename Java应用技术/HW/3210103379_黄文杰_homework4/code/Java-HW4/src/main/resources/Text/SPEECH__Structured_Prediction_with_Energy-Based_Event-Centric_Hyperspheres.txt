@@ -1,0 +1,40 @@
+Title: SPEECH: Structured Prediction with Energy-Based Event-Centric Hyperspheres
+Authors: Shumin Deng, Shengyu Mao, Ningyu Zhang, Bryan Hooi
+Abstract: Event-centric structured prediction involves predicting structured outputs of events. In most NLP cases, event structures are complex with manifold dependency, and it is challenging to effectively represent these complicated structured events. To address these issues, we propose Structured Prediction with Energy-based Event-Centric Hyperspheres (SPEECH). SPEECH models complex dependency among event structured components with energy-based modeling, and represents event classes with simple but effective hyperspheres. Experiments on two unified-annotated event datasets indicate that SPEECH is predominant in event detection and event-relation extraction tasks.
+Cite (Informal):SPEECH: Structured Prediction with Energy-Based Event-Centric Hyperspheres (Deng et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.21
+Bibkey:deng-etal-2023-speech
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.21
+PDF:https://aclanthology.org/2023.acl-long.21.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Shumin Deng, Shengyu Mao, Ningyu Zhang, and Bryan Hooi. 2023. SPEECH: Structured Prediction with Energy-Based Event-Centric Hyperspheres. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 351–363, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:351–363
+DOI:10.18653/v1/2023.acl-long.21
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{deng-etal-2023-speech,
+    title = "{SPEECH}: Structured Prediction with Energy-Based Event-Centric Hyperspheres",
+    author = "Deng, Shumin  and
+      Mao, Shengyu  and
+      Zhang, Ningyu  and
+      Hooi, Bryan",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.21",
+    doi = "10.18653/v1/2023.acl-long.21",
+    pages = "351--363",
+    abstract = "Event-centric structured prediction involves predicting structured outputs of events. In most NLP cases, event structures are complex with manifold dependency, and it is challenging to effectively represent these complicated structured events. To address these issues, we propose Structured Prediction with Energy-based Event-Centric Hyperspheres (SPEECH). SPEECH models complex dependency among event structured components with energy-based modeling, and represents event classes with simple but effective hyperspheres. Experiments on two unified-annotated event datasets indicate that SPEECH is predominant in event detection and event-relation extraction tasks.",
+}

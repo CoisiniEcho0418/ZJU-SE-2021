@@ -1,0 +1,37 @@
+Title: The BIGAI Offline Speech Translation Systems for IWSLT 2023 Evaluation
+Authors: Zhihang Xie
+Abstract: This paper describes the BIGAI’s submission to IWSLT 2023 Offline Speech Translation task on three language tracks from English to Chinese, German and Japanese. The end-to-end systems are built upon a Wav2Vec2 model for speech recognition and mBART50 models for machine translation. An adapter module is applied to bridge the speech module and the translation module. The CTC loss between speech features and source token sequence is incorporated during training. Experiments show that the systems can generate reasonable translations on three languages. The proposed models achieve BLEU scores of 22.3 for en→de, 10.7 for en→ja and 33.0 for en→zh on tst2023 TED datasets. However, the performance is decreased by a significant margin on complex scenarios like persentations and interview.
+Cite (Informal):The BIGAI Offline Speech Translation Systems for IWSLT 2023 Evaluation (Xie, IWSLT 2023)
+Year:2023
+Venue:IWSLT
+Anthology ID:2023.iwslt-1.7
+Bibkey:xie-2023-bigai
+Volume:Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023)
+URL:https://aclanthology.org/2023.iwslt-1.7
+PDF:https://aclanthology.org/2023.iwslt-1.7.pdf
+Month:July
+SIG:SIGSLT
+Address:Toronto, Canada (in-person and online)
+Language:
+Cite (ACL):Zhihang Xie. 2023. The BIGAI Offline Speech Translation Systems for IWSLT 2023 Evaluation. In Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023), pages 123–129, Toronto, Canada (in-person and online). Association for Computational Linguistics.
+Editors:Elizabeth Salesky,Marcello Federico,Marine Carpuat
+Note:
+Pages:123–129
+DOI:10.18653/v1/2023.iwslt-1.7
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{xie-2023-bigai,
+    title = "The {BIGAI} Offline Speech Translation Systems for {IWSLT} 2023 Evaluation",
+    author = "Xie, Zhihang",
+    editor = "Salesky, Elizabeth  and
+      Federico, Marcello  and
+      Carpuat, Marine",
+    booktitle = "Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada (in-person and online)",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.iwslt-1.7",
+    doi = "10.18653/v1/2023.iwslt-1.7",
+    pages = "123--129",
+    abstract = "This paper describes the BIGAI{'}s submission to IWSLT 2023 Offline Speech Translation task on three language tracks from English to Chinese, German and Japanese. The end-to-end systems are built upon a Wav2Vec2 model for speech recognition and mBART50 models for machine translation. An adapter module is applied to bridge the speech module and the translation module. The CTC loss between speech features and source token sequence is incorporated during training. Experiments show that the systems can generate reasonable translations on three languages. The proposed models achieve BLEU scores of 22.3 for en→de, 10.7 for en→ja and 33.0 for en→zh on tst2023 TED datasets. However, the performance is decreased by a significant margin on complex scenarios like persentations and interview.",
+}

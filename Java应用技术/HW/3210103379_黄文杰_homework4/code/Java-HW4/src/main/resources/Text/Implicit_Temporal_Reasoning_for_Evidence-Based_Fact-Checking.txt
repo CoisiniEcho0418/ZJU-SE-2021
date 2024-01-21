@@ -1,0 +1,40 @@
+Title: Implicit Temporal Reasoning for Evidence-Based Fact-Checking
+Authors: Liesbeth Allein, Marlon Saelens, Ruben Cartuyvels, Marie-Francine Moens
+Abstract: Leveraging contextual knowledge has become standard practice in automated claim verification, yet the impact of temporal reasoning has been largely overlooked. Our study demonstrates that time positively influences the claim verification process of evidence-based fact-checking. The temporal aspects and relations between claims and evidence are first established through grounding on shared timelines, which are constructed using publication dates and time expressions extracted from their text. Temporal information is then provided to RNN-based and Transformer-based classifiers before or after claim and evidence encoding. Our time-aware fact-checking models surpass base models by up to 9% Micro F1 (64.17%) and 15% Macro F1 (47.43%) on the MultiFC dataset. They also outperform prior methods that explicitly model temporal relations between evidence. Our findings show that the presence of temporal information and the manner in which timelines are constructed greatly influence how fact-checking models determine the relevance and supporting or refuting character of evidence documents.
+Cite (Informal):Implicit Temporal Reasoning for Evidence-Based Fact-Checking (Allein et al., Findings 2023)
+Year:2023
+Venue:Findings
+Video:https://aclanthology.org/2023.findings-eacl.13.mp4
+Anthology ID:2023.findings-eacl.13
+Bibkey:allein-etal-2023-implicit
+Volume:Findings of the Association for Computational Linguistics: EACL 2023
+URL:https://aclanthology.org/2023.findings-eacl.13
+PDF:https://aclanthology.org/2023.findings-eacl.13.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Liesbeth Allein, Marlon Saelens, Ruben Cartuyvels, and Marie-Francine Moens. 2023. Implicit Temporal Reasoning for Evidence-Based Fact-Checking. In Findings of the Association for Computational Linguistics: EACL 2023, pages 176–189, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:176–189
+DOI:10.18653/v1/2023.findings-eacl.13
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{allein-etal-2023-implicit,
+    title = "Implicit Temporal Reasoning for Evidence-Based Fact-Checking",
+    author = "Allein, Liesbeth  and
+      Saelens, Marlon  and
+      Cartuyvels, Ruben  and
+      Moens, Marie-Francine",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Findings of the Association for Computational Linguistics: EACL 2023",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.findings-eacl.13",
+    doi = "10.18653/v1/2023.findings-eacl.13",
+    pages = "176--189",
+    abstract = "Leveraging contextual knowledge has become standard practice in automated claim verification, yet the impact of temporal reasoning has been largely overlooked. Our study demonstrates that time positively influences the claim verification process of evidence-based fact-checking. The temporal aspects and relations between claims and evidence are first established through grounding on shared timelines, which are constructed using publication dates and time expressions extracted from their text. Temporal information is then provided to RNN-based and Transformer-based classifiers before or after claim and evidence encoding. Our time-aware fact-checking models surpass base models by up to 9{\%} Micro F1 (64.17{\%}) and 15{\%} Macro F1 (47.43{\%}) on the MultiFC dataset. They also outperform prior methods that explicitly model temporal relations between evidence. Our findings show that the presence of temporal information and the manner in which timelines are constructed greatly influence how fact-checking models determine the relevance and supporting or refuting character of evidence documents.",
+}

@@ -1,0 +1,42 @@
+Title: Summary-Oriented Vision Modeling for Multimodal Abstractive Summarization
+Authors: Yunlong Liang, Fandong Meng, Jinan Xu, Jiaan Wang, Yufeng Chen, Jie Zhou
+Abstract: The goal of multimodal abstractive summarization (MAS) is to produce a concise summary given the multimodal data (text and vision). Existing studies on MAS mainly focus on how to effectively use the extracted visual features, having achieved impressive success on the high-resource English dataset. However, less attention has been paid to the quality of the visual features to the summary, which may limit the model performance, especially in the low- and zero-resource scenarios. In this paper, we propose to improve the summary quality through summary-oriented visual features. To this end, we devise two auxiliary tasks including vision to summary task and masked image modeling task. Together with the main summarization task, we optimize the MAS model via the training objectives of all these tasks. By these means, the MAS model can be enhanced by capturing the summary-oriented visual features, thereby yielding more accurate summaries. Experiments on 44 languages, covering mid-high-, low-, and zero-resource scenarios, verify the effectiveness and superiority of the proposed approach, which achieves state-of-the-art performance under all scenarios. Additionally, we will contribute a large-scale multilingual multimodal abstractive summarization (MM-Sum) dataset to the research community.
+Cite (Informal):Summary-Oriented Vision Modeling for Multimodal Abstractive Summarization (Liang et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.165
+Bibkey:liang-etal-2023-summary
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.165
+PDF:https://aclanthology.org/2023.acl-long.165.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Yunlong Liang, Fandong Meng, Jinan Xu, Jiaan Wang, Yufeng Chen, and Jie Zhou. 2023. Summary-Oriented Vision Modeling for Multimodal Abstractive Summarization. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 2934–2951, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:2934–2951
+DOI:10.18653/v1/2023.acl-long.165
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{liang-etal-2023-summary,
+    title = "Summary-Oriented Vision Modeling for Multimodal Abstractive Summarization",
+    author = "Liang, Yunlong  and
+      Meng, Fandong  and
+      Xu, Jinan  and
+      Wang, Jiaan  and
+      Chen, Yufeng  and
+      Zhou, Jie",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.165",
+    doi = "10.18653/v1/2023.acl-long.165",
+    pages = "2934--2951",
+    abstract = "The goal of multimodal abstractive summarization (MAS) is to produce a concise summary given the multimodal data (text and vision). Existing studies on MAS mainly focus on how to effectively use the extracted visual features, having achieved impressive success on the high-resource English dataset. However, less attention has been paid to the quality of the visual features to the summary, which may limit the model performance, especially in the low- and zero-resource scenarios. In this paper, we propose to improve the summary quality through summary-oriented visual features. To this end, we devise two auxiliary tasks including vision to summary task and masked image modeling task. Together with the main summarization task, we optimize the MAS model via the training objectives of all these tasks. By these means, the MAS model can be enhanced by capturing the summary-oriented visual features, thereby yielding more accurate summaries. Experiments on 44 languages, covering mid-high-, low-, and zero-resource scenarios, verify the effectiveness and superiority of the proposed approach, which achieves state-of-the-art performance under all scenarios. Additionally, we will contribute a large-scale multilingual multimodal abstractive summarization (MM-Sum) dataset to the research community.",
+}

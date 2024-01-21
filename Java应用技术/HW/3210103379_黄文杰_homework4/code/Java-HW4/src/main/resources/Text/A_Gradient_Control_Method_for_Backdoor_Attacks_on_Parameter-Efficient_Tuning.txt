@@ -1,0 +1,42 @@
+Title: A Gradient Control Method for Backdoor Attacks on Parameter-Efficient Tuning
+Authors: Naibin Gu, Peng Fu, Xiyu Liu, Zhengxiao Liu, Zheng Lin, Weiping Wang
+Abstract: Parameter-Efficient Tuning (PET) has shown remarkable performance by fine-tuning only a small number of parameters of the pre-trained language models (PLMs) for the downstream tasks, while it is also possible to construct backdoor attacks due to the vulnerability of pre-trained weights. However, a large reduction in the number of attackable parameters in PET will cause the user’s fine-tuning to greatly affect the effectiveness of backdoor attacks, resulting in backdoor forgetting. We find that the backdoor injection process can be regarded as multi-task learning, which has a convergence imbalance problem between the training of clean and poisoned data. And this problem might result in forgetting the backdoor. Based on this finding, we propose a gradient control method to consolidate the attack effect, comprising two strategies. One controls the gradient magnitude distribution cross layers within one task and the other prevents the conflict of gradient directions between tasks. Compared with previous backdoor attack methods in the scenario of PET, our method improve the effect of the attack on sentiment classification and spam detection respectively, which shows that our method is widely applicable to different tasks.
+Cite (Informal):A Gradient Control Method for Backdoor Attacks on Parameter-Efficient Tuning (Gu et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.194
+Bibkey:gu-etal-2023-gradient
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.194
+PDF:https://aclanthology.org/2023.acl-long.194.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Naibin Gu, Peng Fu, Xiyu Liu, Zhengxiao Liu, Zheng Lin, and Weiping Wang. 2023. A Gradient Control Method for Backdoor Attacks on Parameter-Efficient Tuning. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 3508–3520, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:3508–3520
+DOI:10.18653/v1/2023.acl-long.194
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{gu-etal-2023-gradient,
+    title = "A Gradient Control Method for Backdoor Attacks on Parameter-Efficient Tuning",
+    author = "Gu, Naibin  and
+      Fu, Peng  and
+      Liu, Xiyu  and
+      Liu, Zhengxiao  and
+      Lin, Zheng  and
+      Wang, Weiping",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.194",
+    doi = "10.18653/v1/2023.acl-long.194",
+    pages = "3508--3520",
+    abstract = "Parameter-Efficient Tuning (PET) has shown remarkable performance by fine-tuning only a small number of parameters of the pre-trained language models (PLMs) for the downstream tasks, while it is also possible to construct backdoor attacks due to the vulnerability of pre-trained weights. However, a large reduction in the number of attackable parameters in PET will cause the user{'}s fine-tuning to greatly affect the effectiveness of backdoor attacks, resulting in backdoor forgetting. We find that the backdoor injection process can be regarded as multi-task learning, which has a convergence imbalance problem between the training of clean and poisoned data. And this problem might result in forgetting the backdoor. Based on this finding, we propose a gradient control method to consolidate the attack effect, comprising two strategies. One controls the gradient magnitude distribution cross layers within one task and the other prevents the conflict of gradient directions between tasks. Compared with previous backdoor attack methods in the scenario of PET, our method improve the effect of the attack on sentiment classification and spam detection respectively, which shows that our method is widely applicable to different tasks.",
+}

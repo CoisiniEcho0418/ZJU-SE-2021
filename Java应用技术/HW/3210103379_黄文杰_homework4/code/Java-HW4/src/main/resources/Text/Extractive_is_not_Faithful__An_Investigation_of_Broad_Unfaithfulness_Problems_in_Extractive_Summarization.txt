@@ -1,0 +1,39 @@
+Title: Extractive is not Faithful: An Investigation of Broad Unfaithfulness Problems in Extractive Summarization
+Authors: Shiyue Zhang, David Wan, Mohit Bansal
+Abstract: The problems of unfaithful summaries have been widely discussed under the context of abstractive summarization. Though extractive summarization is less prone to the common unfaithfulness issues of abstractive summaries, does that mean extractive is equal to faithful? Turns out that the answer is no. In this work, we define a typology with five types of broad unfaithfulness problems (including and beyond not-entailment) that can appear in extractive summaries, including incorrect coreference, incomplete coreference, incorrect discourse, incomplete discourse, as well as other misleading information. We ask humans to label these problems out of 1600 English summaries produced by 16 diverse extractive systems. We find that 30% of the summaries have at least one of the five issues. To automatically detect these problems, we find that 5 existing faithfulness evaluation metrics for summarization have poor correlations with human judgment. To remedy this, we propose a new metric, ExtEval, that is designed for detecting unfaithful extractive summaries and is shown to have the best performance. We hope our work can increase the awareness of unfaithfulness problems in extractive summarization and help future work to evaluate and resolve these issues.
+Cite (Informal):Extractive is not Faithful: An Investigation of Broad Unfaithfulness Problems in Extractive Summarization (Zhang et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.120
+Bibkey:zhang-etal-2023-extractive
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.120
+PDF:https://aclanthology.org/2023.acl-long.120.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Shiyue Zhang, David Wan, and Mohit Bansal. 2023. Extractive is not Faithful: An Investigation of Broad Unfaithfulness Problems in Extractive Summarization. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 2153–2174, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:2153–2174
+DOI:10.18653/v1/2023.acl-long.120
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{zhang-etal-2023-extractive,
+    title = "Extractive is not Faithful: An Investigation of Broad Unfaithfulness Problems in Extractive Summarization",
+    author = "Zhang, Shiyue  and
+      Wan, David  and
+      Bansal, Mohit",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.120",
+    doi = "10.18653/v1/2023.acl-long.120",
+    pages = "2153--2174",
+    abstract = "The problems of unfaithful summaries have been widely discussed under the context of abstractive summarization. Though extractive summarization is less prone to the common unfaithfulness issues of abstractive summaries, does that mean extractive is equal to faithful? Turns out that the answer is no. In this work, we define a typology with five types of broad unfaithfulness problems (including and beyond not-entailment) that can appear in extractive summaries, including incorrect coreference, incomplete coreference, incorrect discourse, incomplete discourse, as well as other misleading information. We ask humans to label these problems out of 1600 English summaries produced by 16 diverse extractive systems. We find that 30{\%} of the summaries have at least one of the five issues. To automatically detect these problems, we find that 5 existing faithfulness evaluation metrics for summarization have poor correlations with human judgment. To remedy this, we propose a new metric, ExtEval, that is designed for detecting unfaithful extractive summaries and is shown to have the best performance. We hope our work can increase the awareness of unfaithfulness problems in extractive summarization and help future work to evaluate and resolve these issues.",
+}

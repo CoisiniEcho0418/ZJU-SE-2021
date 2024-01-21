@@ -1,0 +1,34 @@
+Title: Meta-Learning a Cross-lingual Manifold for Semantic Parsing
+Authors: Tom Sherborne, Mirella Lapata
+Abstract: Localizing a semantic parser to support new languages requires effective cross-lingual generalization. Recent work has found success with machine-translation or zero-shot methods, although these approaches can struggle to model how native speakers ask questions. We consider how to effectively leverage minimal annotated examples in new languages for few-shot cross-lingual semantic parsing. We introduce a first-order meta-learning algorithm to train a semantic parser with maximal sample efficiency during cross-lingual transfer. Our algorithm uses high-resource languages to train the parser and simultaneously optimizes for cross-lingual generalization to lower-resource languages. Results across six languages on ATIS demonstrate that our combination of generalization steps yields accurate semantic parsers sampling ≤10% of source training data in each new language. Our approach also trains a competitive model on Spider using English with generalization to Chinese similarly sampling ≤10% of training data.1
+Cite (Informal):Meta-Learning a Cross-lingual Manifold for Semantic Parsing (Sherborne & Lapata, TACL 2023)
+Year:2023
+Venue:TACL
+Anthology ID:2023.tacl-1.4
+Bibkey:sherborne-lapata-2023-meta
+Volume:Transactions of the Association for Computational Linguistics, Volume 11
+URL:https://aclanthology.org/2023.tacl-1.4
+PDF:https://aclanthology.org/2023.tacl-1.4.pdf
+Month:
+SIG:
+Address:Cambridge, MA
+Language:
+Cite (ACL):Tom Sherborne and Mirella Lapata. 2023. Meta-Learning a Cross-lingual Manifold for Semantic Parsing. Transactions of the Association for Computational Linguistics, 11:49–67.
+Note:
+Pages:49–67
+DOI:10.1162/tacl_a_00533
+Publisher:MIT Press
+BibTex: @article{sherborne-lapata-2023-meta,
+    title = "Meta-Learning a Cross-lingual Manifold for Semantic Parsing",
+    author = "Sherborne, Tom  and
+      Lapata, Mirella",
+    journal = "Transactions of the Association for Computational Linguistics",
+    volume = "11",
+    year = "2023",
+    address = "Cambridge, MA",
+    publisher = "MIT Press",
+    url = "https://aclanthology.org/2023.tacl-1.4",
+    doi = "10.1162/tacl_a_00533",
+    pages = "49--67",
+    abstract = "Localizing a semantic parser to support new languages requires effective cross-lingual generalization. Recent work has found success with machine-translation or zero-shot methods, although these approaches can struggle to model how native speakers ask questions. We consider how to effectively leverage minimal annotated examples in new languages for few-shot cross-lingual semantic parsing. We introduce a first-order meta-learning algorithm to train a semantic parser with maximal sample efficiency during cross-lingual transfer. Our algorithm uses high-resource languages to train the parser and simultaneously optimizes for cross-lingual generalization to lower-resource languages. Results across six languages on ATIS demonstrate that our combination of generalization steps yields accurate semantic parsers sampling {\mbox{$\leq$}}10{\%} of source training data in each new language. Our approach also trains a competitive model on Spider using English with generalization to Chinese similarly sampling {\mbox{$\leq$}}10{\%} of training data.1",
+}

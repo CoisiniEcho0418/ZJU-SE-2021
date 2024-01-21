@@ -1,0 +1,40 @@
+Title: MS-DETR: Natural Language Video Localization with Sampling Moment-Moment Interaction
+Authors: Wang Jing, Aixin Sun, Hao Zhang, Xiaoli Li
+Abstract: Given a text query, the task of Natural Language Video Localization (NLVL) is to localize a temporal moment in an untrimmed video that semantically matches the query. In this paper, we adopt a proposal-based solution that generates proposals (i.e. candidate moments) and then select the best matching proposal. On top of modeling the cross-modal interaction between candidate moments and the query, our proposed Moment Sampling DETR (MS-DETR) enables efficient moment-moment relation modeling. The core idea is to sample a subset of moments guided by the learnable templates with an adopted DETR framework. To achieve this, we design a multi-scale visual-linguistic encoder, and an anchor-guided moment decoder paired with a set of learnable templates. Experimental results on three public datasets demonstrate the superior performance of MS-DETR.
+Cite (Informal):MS-DETR: Natural Language Video Localization with Sampling Moment-Moment Interaction (Jing et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.77
+Bibkey:jing-etal-2023-ms
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.77
+PDF:https://aclanthology.org/2023.acl-long.77.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Wang Jing, Aixin Sun, Hao Zhang, and Xiaoli Li. 2023. MS-DETR: Natural Language Video Localization with Sampling Moment-Moment Interaction. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 1387–1400, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:1387–1400
+DOI:10.18653/v1/2023.acl-long.77
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{jing-etal-2023-ms,
+    title = "{MS}-{DETR}: Natural Language Video Localization with Sampling Moment-Moment Interaction",
+    author = "Jing, Wang  and
+      Sun, Aixin  and
+      Zhang, Hao  and
+      Li, Xiaoli",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.77",
+    doi = "10.18653/v1/2023.acl-long.77",
+    pages = "1387--1400",
+    abstract = "Given a text query, the task of Natural Language Video Localization (NLVL) is to localize a temporal moment in an untrimmed video that semantically matches the query. In this paper, we adopt a proposal-based solution that generates proposals (i.e. candidate moments) and then select the best matching proposal. On top of modeling the cross-modal interaction between candidate moments and the query, our proposed Moment Sampling DETR (MS-DETR) enables efficient moment-moment relation modeling. The core idea is to sample a subset of moments guided by the learnable templates with an adopted DETR framework. To achieve this, we design a multi-scale visual-linguistic encoder, and an anchor-guided moment decoder paired with a set of learnable templates. Experimental results on three public datasets demonstrate the superior performance of MS-DETR.",
+}

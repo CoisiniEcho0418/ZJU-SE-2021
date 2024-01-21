@@ -1,0 +1,38 @@
+Title: HuCurl: Human-induced Curriculum Discovery
+Authors: Mohamed Elgaar, Hadi Amiri
+Abstract: We introduce the problem of curriculum discovery and describe a curriculum learning framework capable of discovering effective curricula in a curriculum space based on prior knowledge about sample difficulty. Using annotation entropy and loss as measures of difficulty, we show that (i): the top-performing discovered curricula for a given model and dataset are often non-monotonic as apposed to monotonic curricula in existing literature, (ii): the prevailing easy-to-hard or hard-to-easy transition curricula are often at the risk of underperforming, and (iii): the curricula discovered for smaller datasets and models perform well on larger datasets and models respectively. The proposed framework encompasses some of the existing curriculum learning approaches and can discover curricula that outperform them across several NLP tasks.
+Cite (Informal):HuCurl: Human-induced Curriculum Discovery (Elgaar & Amiri, ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.104
+Bibkey:elgaar-amiri-2023-hucurl
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.104
+PDF:https://aclanthology.org/2023.acl-long.104.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Mohamed Elgaar and Hadi Amiri. 2023. HuCurl: Human-induced Curriculum Discovery. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 1862–1877, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:1862–1877
+DOI:10.18653/v1/2023.acl-long.104
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{elgaar-amiri-2023-hucurl,
+    title = "{H}u{C}url: Human-induced Curriculum Discovery",
+    author = "Elgaar, Mohamed  and
+      Amiri, Hadi",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.104",
+    doi = "10.18653/v1/2023.acl-long.104",
+    pages = "1862--1877",
+    abstract = "We introduce the problem of curriculum discovery and describe a curriculum learning framework capable of discovering effective curricula in a curriculum space based on prior knowledge about sample difficulty. Using annotation entropy and loss as measures of difficulty, we show that (i): the top-performing discovered curricula for a given model and dataset are often non-monotonic as apposed to monotonic curricula in existing literature, (ii): the prevailing easy-to-hard or hard-to-easy transition curricula are often at the risk of underperforming, and (iii): the curricula discovered for smaller datasets and models perform well on larger datasets and models respectively. The proposed framework encompasses some of the existing curriculum learning approaches and can discover curricula that outperform them across several NLP tasks.",
+}

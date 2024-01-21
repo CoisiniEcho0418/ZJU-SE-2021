@@ -1,0 +1,39 @@
+Title: A Theory of Unsupervised Speech Recognition
+Authors: Liming Wang, Mark Hasegawa-Johnson, Chang Yoo
+Abstract: Unsupervised speech recognition ({pasted macro ‘ASRU’}/) is the problem of learning automatic speech recognition (ASR) systems from unpaired speech-only and text-only corpora. While various algorithms exist to solve this problem, a theoretical framework is missing to study their properties and address such issues as sensitivity to hyperparameters and training instability. In this paper, we proposed a general theoretical framework to study the properties of {pasted macro ‘ASRU’}/ systems based on random matrix theory and the theory of neural tangent kernels. Such a framework allows us to prove various learnability conditions and sample complexity bounds of {pasted macro ‘ASRU’}/. Extensive {pasted macro ‘ASRU’}/ experiments on synthetic languages with three classes of transition graphs provide strong empirical evidence for our theory (code available at https://github.com/cactuswiththoughts/UnsupASRTheory.gitcactuswiththoughts/UnsupASRTheory.git).
+Cite (Informal):A Theory of Unsupervised Speech Recognition (Wang et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.67
+Bibkey:wang-etal-2023-theory
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.67
+PDF:https://aclanthology.org/2023.acl-long.67.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Liming Wang, Mark Hasegawa-Johnson, and Chang Yoo. 2023. A Theory of Unsupervised Speech Recognition. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 1192–1215, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:1192–1215
+DOI:10.18653/v1/2023.acl-long.67
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{wang-etal-2023-theory,
+    title = "A Theory of Unsupervised Speech Recognition",
+    author = "Wang, Liming  and
+      Hasegawa-Johnson, Mark  and
+      Yoo, Chang",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.67",
+    doi = "10.18653/v1/2023.acl-long.67",
+    pages = "1192--1215",
+    abstract = "Unsupervised speech recognition ({pasted macro {`}ASRU{'}}/) is the problem of learning automatic speech recognition (ASR) systems from \textit{unpaired} speech-only and text-only corpora. While various algorithms exist to solve this problem, a theoretical framework is missing to study their properties and address such issues as sensitivity to hyperparameters and training instability. In this paper, we proposed a general theoretical framework to study the properties of {pasted macro {`}ASRU{'}}/ systems based on random matrix theory and the theory of neural tangent kernels. Such a framework allows us to prove various learnability conditions and sample complexity bounds of {pasted macro {`}ASRU{'}}/. Extensive {pasted macro {`}ASRU{'}}/ experiments on synthetic languages with three classes of transition graphs provide strong empirical evidence for our theory (code available at \url{https://github.com/cactuswiththoughts/UnsupASRTheory.gitcactuswiththoughts/UnsupASRTheory.git}).",
+}

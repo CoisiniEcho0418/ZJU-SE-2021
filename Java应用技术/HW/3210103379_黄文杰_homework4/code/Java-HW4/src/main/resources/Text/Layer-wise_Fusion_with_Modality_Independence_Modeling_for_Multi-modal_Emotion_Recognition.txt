@@ -1,0 +1,46 @@
+Title: Layer-wise Fusion with Modality Independence Modeling for Multi-modal Emotion Recognition
+Authors: Jun Sun, Shoukang Han, Yu-Ping Ruan, Xiaoning Zhang, Shu-Kai Zheng, Yulong Liu, Yuxin Huang, Taihao Li
+Abstract: Multi-modal emotion recognition has gained increasing attention in recent years due to its widespread applications and the advances in multi-modal learning approaches. However, previous studies primarily focus on developing models that exploit the unification of multiple modalities. In this paper, we propose that maintaining modality independence is beneficial for the model performance. According to this principle, we construct a dataset, and devise a multi-modal transformer model. The new dataset, CHinese Emotion Recognition dataset with Modality-wise Annotions, abbreviated as CHERMA, provides uni-modal labels for each individual modality, and multi-modal labels for all modalities jointly observed. The model consists of uni-modal transformer modules that learn representations for each modality, and a multi-modal transformer module that fuses all modalities. All the modules are supervised by their corresponding labels separately, and the forward information flow is uni-directionally from the uni-modal modules to the multi-modal module. The supervision strategy and the model architecture guarantee each individual modality learns its representation independently, and meanwhile the multi-modal module aggregates all information. Extensive empirical results demonstrate that our proposed scheme outperforms state-of-the-art alternatives, corroborating the importance of modality independence in multi-modal emotion recognition. The dataset and codes are availabel at https://github.com/sunjunaimer/LFMIM
+Cite (Informal):Layer-wise Fusion with Modality Independence Modeling for Multi-modal Emotion Recognition (Sun et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.39
+Version 2:2023.acl-long.39v2
+Bibkey:sun-etal-2023-layer
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.39
+PDF:https://aclanthology.org/2023.acl-long.39.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Jun Sun, Shoukang Han, Yu-Ping Ruan, Xiaoning Zhang, Shu-Kai Zheng, Yulong Liu, Yuxin Huang, and Taihao Li. 2023. Layer-wise Fusion with Modality Independence Modeling for Multi-modal Emotion Recognition. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 658–670, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Original:2023.acl-long.39v1
+Pages:658–670
+DOI:10.18653/v1/2023.acl-long.39
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{sun-etal-2023-layer,
+    title = "Layer-wise Fusion with Modality Independence Modeling for Multi-modal Emotion Recognition",
+    author = "Sun, Jun  and
+      Han, Shoukang  and
+      Ruan, Yu-Ping  and
+      Zhang, Xiaoning  and
+      Zheng, Shu-Kai  and
+      Liu, Yulong  and
+      Huang, Yuxin  and
+      Li, Taihao",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.39",
+    doi = "10.18653/v1/2023.acl-long.39",
+    pages = "658--670",
+    abstract = "Multi-modal emotion recognition has gained increasing attention in recent years due to its widespread applications and the advances in multi-modal learning approaches. However, previous studies primarily focus on developing models that exploit the unification of multiple modalities. In this paper, we propose that maintaining modality independence is beneficial for the model performance. According to this principle, we construct a dataset, and devise a multi-modal transformer model. The new dataset, CHinese Emotion Recognition dataset with Modality-wise Annotions, abbreviated as CHERMA, provides uni-modal labels for each individual modality, and multi-modal labels for all modalities jointly observed. The model consists of uni-modal transformer modules that learn representations for each modality, and a multi-modal transformer module that fuses all modalities. All the modules are supervised by their corresponding labels separately, and the forward information flow is uni-directionally from the uni-modal modules to the multi-modal module. The supervision strategy and the model architecture guarantee each individual modality learns its representation independently, and meanwhile the multi-modal module aggregates all information. Extensive empirical results demonstrate that our proposed scheme outperforms state-of-the-art alternatives, corroborating the importance of modality independence in multi-modal emotion recognition. The dataset and codes are availabel at \url{https://github.com/sunjunaimer/LFMIM}",
+}

@@ -1,0 +1,45 @@
+Title: The MineTrans Systems for IWSLT 2023 Offline Speech Translation and Speech-to-Speech Translation Tasks
+Authors: Yichao Du, Guo Zhengsheng, Jinchuan Tian, Zhirui Zhang, Xing Wang, Jianwei Yu, Zhaopeng Tu, Tong Xu, Enhong Chen
+Abstract: This paper presents the extscMineTrans English-to-Chinese speech translation systems developed for two challenge tracks of IWSLT 2023, i.e., Offline Speech Translation (S2T) and Speech-to-Speech Translation (S2ST). For the S2T track, extscMineTrans employs a practical cascaded system to explore the limits of translation performance in both constrained and unconstrained settings, where the whole system consists of automatic speech recognition (ASR), punctuation recognition (PC), and machine translation (MT) modules. We also investigate the effectiveness of multiple ASR architectures and explore two MT strategies: supervised in-domain fine-tuning and prompt-guided translation using a large language model. For the S2ST track, we explore a speech-to-unit (S2U) framework to build an end-to-end S2ST system. This system encodes the target speech as discrete units via our trained HuBERT. Then it leverages the standard sequence-to-sequence model to directly learn the mapping between source speech and discrete units without any auxiliary recognition tasks (i.e., ASR and MT tasks). Various efforts are made to improve the extscMineTrans’s performance, such as acoustic model pre-training on large-scale data, data filtering, data augmentation, speech segmentation, knowledge distillation, consistency training, model ensembles, etc.
+Cite (Informal):The MineTrans Systems for IWSLT 2023 Offline Speech Translation and Speech-to-Speech Translation Tasks (Du et al., IWSLT 2023)
+Year:2023
+Venue:IWSLT
+Anthology ID:2023.iwslt-1.3
+Bibkey:du-etal-2023-minetrans
+Volume:Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023)
+URL:https://aclanthology.org/2023.iwslt-1.3
+PDF:https://aclanthology.org/2023.iwslt-1.3.pdf
+Month:July
+SIG:SIGSLT
+Address:Toronto, Canada (in-person and online)
+Language:
+Cite (ACL):Yichao Du, Guo Zhengsheng, Jinchuan Tian, Zhirui Zhang, Xing Wang, Jianwei Yu, Zhaopeng Tu, Tong Xu, and Enhong Chen. 2023. The MineTrans Systems for IWSLT 2023 Offline Speech Translation and Speech-to-Speech Translation Tasks. In Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023), pages 79–88, Toronto, Canada (in-person and online). Association for Computational Linguistics.
+Editors:Elizabeth Salesky,Marcello Federico,Marine Carpuat
+Note:
+Pages:79–88
+DOI:10.18653/v1/2023.iwslt-1.3
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{du-etal-2023-minetrans,
+    title = "The {M}ine{T}rans Systems for {IWSLT} 2023 Offline Speech Translation and Speech-to-Speech Translation Tasks",
+    author = "Du, Yichao  and
+      Zhengsheng, Guo  and
+      Tian, Jinchuan  and
+      Zhang, Zhirui  and
+      Wang, Xing  and
+      Yu, Jianwei  and
+      Tu, Zhaopeng  and
+      Xu, Tong  and
+      Chen, Enhong",
+    editor = "Salesky, Elizabeth  and
+      Federico, Marcello  and
+      Carpuat, Marine",
+    booktitle = "Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada (in-person and online)",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.iwslt-1.3",
+    doi = "10.18653/v1/2023.iwslt-1.3",
+    pages = "79--88",
+    abstract = "This paper presents the extscMineTrans English-to-Chinese speech translation systems developed for two challenge tracks of IWSLT 2023, i.e., Offline Speech Translation (S2T) and Speech-to-Speech Translation (S2ST). For the S2T track, extscMineTrans employs a practical cascaded system to explore the limits of translation performance in both constrained and unconstrained settings, where the whole system consists of automatic speech recognition (ASR), punctuation recognition (PC), and machine translation (MT) modules. We also investigate the effectiveness of multiple ASR architectures and explore two MT strategies: supervised in-domain fine-tuning and prompt-guided translation using a large language model. For the S2ST track, we explore a speech-to-unit (S2U) framework to build an end-to-end S2ST system. This system encodes the target speech as discrete units via our trained HuBERT. Then it leverages the standard sequence-to-sequence model to directly learn the mapping between source speech and discrete units without any auxiliary recognition tasks (i.e., ASR and MT tasks). Various efforts are made to improve the extscMineTrans{'}s performance, such as acoustic model pre-training on large-scale data, data filtering, data augmentation, speech segmentation, knowledge distillation, consistency training, model ensembles, etc.",
+}

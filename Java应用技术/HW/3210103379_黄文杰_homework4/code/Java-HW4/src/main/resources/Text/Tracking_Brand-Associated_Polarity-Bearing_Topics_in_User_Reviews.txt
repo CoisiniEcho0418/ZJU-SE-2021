@@ -1,0 +1,36 @@
+Title: Tracking Brand-Associated Polarity-Bearing Topics in User Reviews
+Authors: Runcong Zhao, Lin Gui, Hanqi Yan, Yulan He
+Abstract: Monitoring online customer reviews is important for business organizations to measure customer satisfaction and better manage their reputations. In this paper, we propose a novel dynamic Brand-Topic Model (dBTM) which is able to automatically detect and track brand-associated sentiment scores and polarity-bearing topics from product reviews organized in temporally ordered time intervals. dBTM models the evolution of the latent brand polarity scores and the topic-word distributions over time by Gaussian state space models. It also incorporates a meta learning strategy to control the update of the topic-word distribution in each time interval in order to ensure smooth topic transitions and better brand score predictions. It has been evaluated on a dataset constructed from MakeupAlley reviews and a hotel review dataset. Experimental results show that dBTM outperforms a number of competitive baselines in brand ranking, achieving a good balance of topic coherence and uniqueness, and extracting well-separated polarity-bearing topics across time intervals.1
+Cite (Informal):Tracking Brand-Associated Polarity-Bearing Topics in User Reviews (Zhao et al., TACL 2023)
+Year:2023
+Venue:TACL
+Anthology ID:2023.tacl-1.24
+Bibkey:zhao-etal-2023-tracking
+Volume:Transactions of the Association for Computational Linguistics, Volume 11
+URL:https://aclanthology.org/2023.tacl-1.24
+PDF:https://aclanthology.org/2023.tacl-1.24.pdf
+Month:
+SIG:
+Address:Cambridge, MA
+Language:
+Cite (ACL):Runcong Zhao, Lin Gui, Hanqi Yan, and Yulan He. 2023. Tracking Brand-Associated Polarity-Bearing Topics in User Reviews. Transactions of the Association for Computational Linguistics, 11:404–418.
+Note:
+Pages:404–418
+DOI:10.1162/tacl_a_00555
+Publisher:MIT Press
+BibTex: @article{zhao-etal-2023-tracking,
+    title = "Tracking Brand-Associated Polarity-Bearing Topics in User Reviews",
+    author = "Zhao, Runcong  and
+      Gui, Lin  and
+      Yan, Hanqi  and
+      He, Yulan",
+    journal = "Transactions of the Association for Computational Linguistics",
+    volume = "11",
+    year = "2023",
+    address = "Cambridge, MA",
+    publisher = "MIT Press",
+    url = "https://aclanthology.org/2023.tacl-1.24",
+    doi = "10.1162/tacl_a_00555",
+    pages = "404--418",
+    abstract = "Monitoring online customer reviews is important for business organizations to measure customer satisfaction and better manage their reputations. In this paper, we propose a novel dynamic Brand-Topic Model (dBTM) which is able to automatically detect and track brand-associated sentiment scores and polarity-bearing topics from product reviews organized in temporally ordered time intervals. dBTM models the evolution of the latent brand polarity scores and the topic-word distributions over time by Gaussian state space models. It also incorporates a meta learning strategy to control the update of the topic-word distribution in each time interval in order to ensure smooth topic transitions and better brand score predictions. It has been evaluated on a dataset constructed from MakeupAlley reviews and a hotel review dataset. Experimental results show that dBTM outperforms a number of competitive baselines in brand ranking, achieving a good balance of topic coherence and uniqueness, and extracting well-separated polarity-bearing topics across time intervals.1",
+}

@@ -1,0 +1,39 @@
+Title: Being Right for Whose Right Reasons?
+Authors: Terne Sasha Thorn Jakobsen, Laura Cabello, Anders Søgaard
+Abstract: Explainability methods are used to benchmark the extent to which model predictions align with human rationales i.e., are ‘right for the right reasons’. Previous work has failed to acknowledge, however, that what counts as a rationale is sometimes subjective. This paper presents what we think is a first of its kind, a collection of human rationale annotations augmented with the annotators demographic information. We cover three datasets spanning sentiment analysis and common-sense reasoning, and six demographic groups (balanced across age and ethnicity). Such data enables us to ask both what demographics our predictions align with and whose reasoning patterns our models’ rationales align with. We find systematic inter-group annotator disagreement and show how 16 Transformer-based models align better with rationales provided by certain demographic groups: We find that models are biased towards aligning best with older and/or white annotators. We zoom in on the effects of model size and model distillation, finding –contrary to our expectations– negative correlations between model size and rationale agreement as well as no evidence that either model size or model distillation improves fairness.
+Cite (Informal):Being Right for Whose Right Reasons? (Thorn Jakobsen et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.59
+Bibkey:thorn-jakobsen-etal-2023-right
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.59
+PDF:https://aclanthology.org/2023.acl-long.59.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Terne Sasha Thorn Jakobsen, Laura Cabello, and Anders Søgaard. 2023. Being Right for Whose Right Reasons?. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 1033–1054, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:1033–1054
+DOI:10.18653/v1/2023.acl-long.59
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{thorn-jakobsen-etal-2023-right,
+    title = "Being Right for Whose Right Reasons?",
+    author = "Thorn Jakobsen, Terne Sasha  and
+      Cabello, Laura  and
+      S{\o}gaard, Anders",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.59",
+    doi = "10.18653/v1/2023.acl-long.59",
+    pages = "1033--1054",
+    abstract = "Explainability methods are used to benchmark the extent to which model predictions align with human rationales i.e., are {`}right for the right reasons{'}. Previous work has failed to acknowledge, however, that what counts as a rationale is sometimes subjective. This paper presents what we think is a first of its kind, a collection of human rationale annotations augmented with the annotators demographic information. We cover three datasets spanning sentiment analysis and common-sense reasoning, and six demographic groups (balanced across age and ethnicity). Such data enables us to ask both what demographics our predictions align with and whose reasoning patterns our models{'} rationales align with. We find systematic inter-group annotator disagreement and show how 16 Transformer-based models align better with rationales provided by certain demographic groups: We find that models are biased towards aligning best with older and/or white annotators. We zoom in on the effects of model size and model distillation, finding {--}contrary to our expectations{--} negative correlations between model size and rationale agreement as well as no evidence that either model size or model distillation improves fairness.",
+}

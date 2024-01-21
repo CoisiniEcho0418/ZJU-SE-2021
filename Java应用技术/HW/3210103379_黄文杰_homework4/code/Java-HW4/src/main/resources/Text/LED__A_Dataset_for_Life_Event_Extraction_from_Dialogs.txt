@@ -1,0 +1,41 @@
+Title: LED: A Dataset for Life Event Extraction from Dialogs
+Authors: Yi-Pei Chen, An-Zi Yen, Hen-Hsen Huang, Hideki Nakayama, Hsin-Hsi Chen
+Abstract: Lifelogging has gained more attention due to its wide applications, such as personalized recommendations or memory assistance. The issues of collecting and extracting personal life events have emerged. People often share their life experiences with others through conversations. However, extracting life events from conversations is rarely explored. In this paper, we present Life Event Dialog, a dataset containing fine-grained life event annotations on conversational data. In addition, we initiate a novel Conversational Life Event Extraction task and differentiate the task from the public event extraction or the life event extraction from other sources like microblogs. We explore three information extraction (IE) frameworks to address the Conversational Life Event Extraction task: OpenIE, relation extraction, and event extraction. A comprehensive empirical analysis of the three baselines is established. The results suggest that the current event extraction model still struggles with extracting life events from human daily conversations. Our proposed Life Event Dialog dataset and in-depth analysis of IE frameworks will facilitate future research on life event extraction from conversations.
+Cite (Informal):LED: A Dataset for Life Event Extraction from Dialogs (Chen et al., Findings 2023)
+Year:2023
+Venue:Findings
+Video:https://aclanthology.org/2023.findings-eacl.29.mp4
+Anthology ID:2023.findings-eacl.29
+Bibkey:chen-etal-2023-led
+Volume:Findings of the Association for Computational Linguistics: EACL 2023
+URL:https://aclanthology.org/2023.findings-eacl.29
+PDF:https://aclanthology.org/2023.findings-eacl.29.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Yi-Pei Chen, An-Zi Yen, Hen-Hsen Huang, Hideki Nakayama, and Hsin-Hsi Chen. 2023. LED: A Dataset for Life Event Extraction from Dialogs. In Findings of the Association for Computational Linguistics: EACL 2023, pages 384–398, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:384–398
+DOI:10.18653/v1/2023.findings-eacl.29
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{chen-etal-2023-led,
+    title = "{LED}: A Dataset for Life Event Extraction from Dialogs",
+    author = "Chen, Yi-Pei  and
+      Yen, An-Zi  and
+      Huang, Hen-Hsen  and
+      Nakayama, Hideki  and
+      Chen, Hsin-Hsi",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Findings of the Association for Computational Linguistics: EACL 2023",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.findings-eacl.29",
+    doi = "10.18653/v1/2023.findings-eacl.29",
+    pages = "384--398",
+    abstract = "Lifelogging has gained more attention due to its wide applications, such as personalized recommendations or memory assistance. The issues of collecting and extracting personal life events have emerged. People often share their life experiences with others through conversations. However, extracting life events from conversations is rarely explored. In this paper, we present Life Event Dialog, a dataset containing fine-grained life event annotations on conversational data. In addition, we initiate a novel Conversational Life Event Extraction task and differentiate the task from the public event extraction or the life event extraction from other sources like microblogs. We explore three information extraction (IE) frameworks to address the Conversational Life Event Extraction task: OpenIE, relation extraction, and event extraction. A comprehensive empirical analysis of the three baselines is established. The results suggest that the current event extraction model still struggles with extracting life events from human daily conversations. Our proposed Life Event Dialog dataset and in-depth analysis of IE frameworks will facilitate future research on life event extraction from conversations.",
+}

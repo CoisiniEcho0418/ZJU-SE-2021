@@ -1,0 +1,35 @@
+Title: Aggretriever: A Simple Approach to Aggregate Textual Representations for Robust Dense Passage Retrieval
+Authors: Sheng-Chieh Lin, Minghan Li, Jimmy Lin
+Abstract: Pre-trained language models have been successful in many knowledge-intensive NLP tasks. However, recent work has shown that models such as BERT are not “structurally ready” to aggregate textual information into a [CLS] vector for dense passage retrieval (DPR). This “lack of readiness” results from the gap between language model pre-training and DPR fine-tuning. Previous solutions call for computationally expensive techniques such as hard negative mining, cross-encoder distillation, and further pre-training to learn a robust DPR model. In this work, we instead propose to fully exploit knowledge in a pre-trained language model for DPR by aggregating the contextualized token embeddings into a dense vector, which we call agg★. By concatenating vectors from the [CLS] token and agg★, our Aggretriever model substantially improves the effectiveness of dense retrieval models on both in-domain and zero-shot evaluations without introducing substantial training overhead. Code is available at https://github.com/castorini/dhr.
+Cite (Informal):Aggretriever: A Simple Approach to Aggregate Textual Representations for Robust Dense Passage Retrieval (Lin et al., TACL 2023)
+Year:2023
+Venue:TACL
+Anthology ID:2023.tacl-1.26
+Bibkey:lin-etal-2023-aggretriever
+Volume:Transactions of the Association for Computational Linguistics, Volume 11
+URL:https://aclanthology.org/2023.tacl-1.26
+PDF:https://aclanthology.org/2023.tacl-1.26.pdf
+Month:
+SIG:
+Address:Cambridge, MA
+Language:
+Cite (ACL):Sheng-Chieh Lin, Minghan Li, and Jimmy Lin. 2023. Aggretriever: A Simple Approach to Aggregate Textual Representations for Robust Dense Passage Retrieval. Transactions of the Association for Computational Linguistics, 11:436–452.
+Note:
+Pages:436–452
+DOI:10.1162/tacl_a_00556
+Publisher:MIT Press
+BibTex: @article{lin-etal-2023-aggretriever,
+    title = "Aggretriever: A Simple Approach to Aggregate Textual Representations for Robust Dense Passage Retrieval",
+    author = "Lin, Sheng-Chieh  and
+      Li, Minghan  and
+      Lin, Jimmy",
+    journal = "Transactions of the Association for Computational Linguistics",
+    volume = "11",
+    year = "2023",
+    address = "Cambridge, MA",
+    publisher = "MIT Press",
+    url = "https://aclanthology.org/2023.tacl-1.26",
+    doi = "10.1162/tacl_a_00556",
+    pages = "436--452",
+    abstract = "Pre-trained language models have been successful in many knowledge-intensive NLP tasks. However, recent work has shown that models such as BERT are not {``}structurally ready{''} to aggregate textual information into a [CLS] vector for dense passage retrieval (DPR). This {``}lack of readiness{''} results from the gap between language model pre-training and DPR fine-tuning. Previous solutions call for computationally expensive techniques such as hard negative mining, cross-encoder distillation, and further pre-training to learn a robust DPR model. In this work, we instead propose to fully exploit knowledge in a pre-trained language model for DPR by aggregating the contextualized token embeddings into a dense vector, which we call agg★. By concatenating vectors from the [CLS] token and agg★, our Aggretriever model substantially improves the effectiveness of dense retrieval models on both in-domain and zero-shot evaluations without introducing substantial training overhead. Code is available at \url{https://github.com/castorini/dhr}.",
+}

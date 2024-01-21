@@ -1,0 +1,38 @@
+Title: Pretrained Bidirectional Distillation for Machine Translation
+Authors: Yimeng Zhuang, Mei Tu
+Abstract: Knowledge transfer can boost neural machine translation (NMT), for example, by finetuning a pretrained masked language model (LM). However, it may suffer from the forgetting problem and the structural inconsistency between pretrained LMs and NMT models. Knowledge distillation (KD) may be a potential solution to alleviate these issues, but few studies have investigated language knowledge transfer from pretrained language models to NMT models through KD. In this paper, we propose Pretrained Bidirectional Distillation (PBD) for NMT, which aims to efficiently transfer bidirectional language knowledge from masked language pretraining to NMT models. Its advantages are reflected in efficiency and effectiveness through a globally defined and bidirectional context-aware distillation objective. Bidirectional language knowledge of the entire sequence is transferred to an NMT model concurrently during translation training. Specifically, we propose self-distilled masked language pretraining to obtain the PBD objective. We also design PBD losses to efficiently distill the language knowledge, in the form of token probabilities, to the encoder and decoder of an NMT model using the PBD objective. Extensive experiments reveal that pretrained bidirectional distillation can significantly improve machine translation performance and achieve competitive or even better results than previous pretrain-finetune or unified multilingual translation methods in supervised, unsupervised, and zero-shot scenarios. Empirically, it is concluded that pretrained bidirectional distillation is an effective and efficient method for transferring language knowledge from pretrained language models to NMT models.
+Cite (Informal):Pretrained Bidirectional Distillation for Machine Translation (Zhuang & Tu, ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.63
+Bibkey:zhuang-tu-2023-pretrained
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.63
+PDF:https://aclanthology.org/2023.acl-long.63.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Yimeng Zhuang and Mei Tu. 2023. Pretrained Bidirectional Distillation for Machine Translation. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 1132–1145, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:1132–1145
+DOI:10.18653/v1/2023.acl-long.63
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{zhuang-tu-2023-pretrained,
+    title = "Pretrained Bidirectional Distillation for Machine Translation",
+    author = "Zhuang, Yimeng  and
+      Tu, Mei",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.63",
+    doi = "10.18653/v1/2023.acl-long.63",
+    pages = "1132--1145",
+    abstract = "Knowledge transfer can boost neural machine translation (NMT), for example, by finetuning a pretrained masked language model (LM). However, it may suffer from the forgetting problem and the structural inconsistency between pretrained LMs and NMT models. Knowledge distillation (KD) may be a potential solution to alleviate these issues, but few studies have investigated language knowledge transfer from pretrained language models to NMT models through KD. In this paper, we propose Pretrained Bidirectional Distillation (PBD) for NMT, which aims to efficiently transfer bidirectional language knowledge from masked language pretraining to NMT models. Its advantages are reflected in efficiency and effectiveness through a globally defined and bidirectional context-aware distillation objective. Bidirectional language knowledge of the entire sequence is transferred to an NMT model concurrently during translation training. Specifically, we propose self-distilled masked language pretraining to obtain the PBD objective. We also design PBD losses to efficiently distill the language knowledge, in the form of token probabilities, to the encoder and decoder of an NMT model using the PBD objective. Extensive experiments reveal that pretrained bidirectional distillation can significantly improve machine translation performance and achieve competitive or even better results than previous pretrain-finetune or unified multilingual translation methods in supervised, unsupervised, and zero-shot scenarios. Empirically, it is concluded that pretrained bidirectional distillation is an effective and efficient method for transferring language knowledge from pretrained language models to NMT models.",
+}

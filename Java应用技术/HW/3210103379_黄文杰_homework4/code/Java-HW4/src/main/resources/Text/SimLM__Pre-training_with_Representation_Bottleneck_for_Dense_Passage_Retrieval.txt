@@ -1,0 +1,44 @@
+Title: SimLM: Pre-training with Representation Bottleneck for Dense Passage Retrieval
+Authors: Liang Wang, Nan Yang, Xiaolong Huang, Binxing Jiao, Linjun Yang, Daxin Jiang, Rangan Majumder, Furu Wei
+Abstract: In this paper, we propose SimLM (Similarity matching with Language Model pre-training), a simple yet effective pre-training method for dense passage retrieval. It employs a simple bottleneck architecture that learns to compress the passage information into a dense vector through self-supervised pre-training. We use a replaced language modeling objective, which is inspired by ELECTRA (Clark et al., 2020), to improve the sample efficiency and reduce the mismatch of the input distribution between pre-training and fine-tuning. SimLM only requires access to an unlabeled corpus and is more broadly applicable when there are no labeled data or queries. We conduct experiments on several large-scale passage retrieval datasets and show substantial improvements over strong baselines under various settings. Remarkably, SimLM even outperforms multi-vector approaches such as ColBERTv2 (Santhanam et al., 2021) which incurs significantly more storage cost. Our code and model checkpoints are available at https://github.com/microsoft/unilm/tree/master/simlm .
+Cite (Informal):SimLM: Pre-training with Representation Bottleneck for Dense Passage Retrieval (Wang et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.125
+Bibkey:wang-etal-2023-simlm
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.125
+PDF:https://aclanthology.org/2023.acl-long.125.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Liang Wang, Nan Yang, Xiaolong Huang, Binxing Jiao, Linjun Yang, Daxin Jiang, Rangan Majumder, and Furu Wei. 2023. SimLM: Pre-training with Representation Bottleneck for Dense Passage Retrieval. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 2244–2258, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:2244–2258
+DOI:10.18653/v1/2023.acl-long.125
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{wang-etal-2023-simlm,
+    title = "{S}im{LM}: Pre-training with Representation Bottleneck for Dense Passage Retrieval",
+    author = "Wang, Liang  and
+      Yang, Nan  and
+      Huang, Xiaolong  and
+      Jiao, Binxing  and
+      Yang, Linjun  and
+      Jiang, Daxin  and
+      Majumder, Rangan  and
+      Wei, Furu",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.125",
+    doi = "10.18653/v1/2023.acl-long.125",
+    pages = "2244--2258",
+    abstract = "In this paper, we propose SimLM (Similarity matching with Language Model pre-training), a simple yet effective pre-training method for dense passage retrieval. It employs a simple bottleneck architecture that learns to compress the passage information into a dense vector through self-supervised pre-training. We use a replaced language modeling objective, which is inspired by ELECTRA (Clark et al., 2020), to improve the sample efficiency and reduce the mismatch of the input distribution between pre-training and fine-tuning. SimLM only requires access to an unlabeled corpus and is more broadly applicable when there are no labeled data or queries. We conduct experiments on several large-scale passage retrieval datasets and show substantial improvements over strong baselines under various settings. Remarkably, SimLM even outperforms multi-vector approaches such as ColBERTv2 (Santhanam et al., 2021) which incurs significantly more storage cost. Our code and model checkpoints are available at \url{https://github.com/microsoft/unilm/tree/master/simlm} .",
+}

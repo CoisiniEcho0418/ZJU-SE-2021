@@ -1,0 +1,39 @@
+Title: Low-Resource Formality Controlled NMT Using Pre-trained LM
+Authors: Priyesh Vakharia, Shree Vignesh S, Pranjali Basmatkar
+Abstract: This paper describes the UCSC’s submission to the shared task on formality control for spoken language translation at IWSLT 2023. For this task, we explored the use of ‘additive style intervention’ using a pre-trained multilingual translation model, namely mBART. Compared to prior approaches where a single style-vector was added to all tokens in the encoder output, we explored an alternative approach in which we learn a unique style-vector for each input token. We believe this approach, which we call ‘style embedding intervention,’ is better suited for formality control as it can potentially learn which specific input tokens to modify during decoding. While the proposed approach obtained similar performance to ‘additive style intervention’ for the supervised English-to-Vietnamese task, it performed significantly better for English-to-Korean, in which it achieved an average matched accuracy of 90.6 compared to 85.2 for the baseline. When we constrained the model further to only perform style intervention on the <bos> (beginning of sentence) token, the average matched accuracy improved further to 92.0, indicating that the model could learn to control the formality of the translation output based solely on the embedding of the <bos> token.
+Cite (Informal):Low-Resource Formality Controlled NMT Using Pre-trained LM (Vakharia et al., IWSLT 2023)
+Year:2023
+Venue:IWSLT
+Anthology ID:2023.iwslt-1.30
+Bibkey:vakharia-etal-2023-low
+Volume:Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023)
+URL:https://aclanthology.org/2023.iwslt-1.30
+PDF:https://aclanthology.org/2023.iwslt-1.30.pdf
+Month:July
+SIG:SIGSLT
+Address:Toronto, Canada (in-person and online)
+Language:
+Cite (ACL):Priyesh Vakharia, Shree Vignesh S, and Pranjali Basmatkar. 2023. Low-Resource Formality Controlled NMT Using Pre-trained LM. In Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023), pages 321–329, Toronto, Canada (in-person and online). Association for Computational Linguistics.
+Editors:Elizabeth Salesky,Marcello Federico,Marine Carpuat
+Note:
+Pages:321–329
+DOI:10.18653/v1/2023.iwslt-1.30
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{vakharia-etal-2023-low,
+    title = "Low-Resource Formality Controlled {NMT} Using Pre-trained {LM}",
+    author = "Vakharia, Priyesh  and
+      Vignesh S, Shree  and
+      Basmatkar, Pranjali",
+    editor = "Salesky, Elizabeth  and
+      Federico, Marcello  and
+      Carpuat, Marine",
+    booktitle = "Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada (in-person and online)",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.iwslt-1.30",
+    doi = "10.18653/v1/2023.iwslt-1.30",
+    pages = "321--329",
+    abstract = "This paper describes the UCSC{'}s submission to the shared task on formality control for spoken language translation at IWSLT 2023. For this task, we explored the use of {`}additive style intervention{'} using a pre-trained multilingual translation model, namely mBART. Compared to prior approaches where a single style-vector was added to all tokens in the encoder output, we explored an alternative approach in which we learn a unique style-vector for each input token. We believe this approach, which we call {`}style embedding intervention,{'} is better suited for formality control as it can potentially learn which specific input tokens to modify during decoding. While the proposed approach obtained similar performance to {`}additive style intervention{'} for the supervised English-to-Vietnamese task, it performed significantly better for English-to-Korean, in which it achieved an average matched accuracy of 90.6 compared to 85.2 for the baseline. When we constrained the model further to only perform style intervention on the {\textless}bos{\textgreater} (beginning of sentence) token, the average matched accuracy improved further to 92.0, indicating that the model could learn to control the formality of the translation output based solely on the embedding of the {\textless}bos{\textgreater} token.",
+}

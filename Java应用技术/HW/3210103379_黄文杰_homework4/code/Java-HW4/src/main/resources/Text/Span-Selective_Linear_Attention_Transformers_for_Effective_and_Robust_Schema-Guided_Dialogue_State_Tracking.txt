@@ -1,0 +1,38 @@
+Title: Span-Selective Linear Attention Transformers for Effective and Robust Schema-Guided Dialogue State Tracking
+Authors: Björn Bebensee, Haejun Lee
+Abstract: In schema-guided dialogue state tracking models estimate the current state of a conversation using natural language descriptions of the service schema for generalization to unseen services. Prior generative approaches which decode slot values sequentially do not generalize well to variations in schema, while discriminative approaches separately encode history and schema and fail to account for inter-slot and intent-slot dependencies. We introduce SPLAT, a novel architecture which achieves better generalization and efficiency than prior approaches by constraining outputs to a limited prediction space. At the same time, our model allows for rich attention among descriptions and history while keeping computation costs constrained by incorporating linear-time attention. We demonstrate the effectiveness of our model on the Schema-Guided Dialogue (SGD) and MultiWOZ datasets. Our approach significantly improves upon existing models achieving 85.3 JGA on the SGD dataset. Further, we show increased robustness on the SGD-X benchmark: our model outperforms the more than 30x larger D3ST-XXL model by 5.0 points.
+Cite (Informal):Span-Selective Linear Attention Transformers for Effective and Robust Schema-Guided Dialogue State Tracking (Bebensee & Lee, ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.6
+Bibkey:bebensee-lee-2023-span
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.6
+PDF:https://aclanthology.org/2023.acl-long.6.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Björn Bebensee and Haejun Lee. 2023. Span-Selective Linear Attention Transformers for Effective and Robust Schema-Guided Dialogue State Tracking. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 78–91, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:78–91
+DOI:10.18653/v1/2023.acl-long.6
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{bebensee-lee-2023-span,
+    title = "Span-Selective Linear Attention Transformers for Effective and Robust Schema-Guided Dialogue State Tracking",
+    author = {Bebensee, Bj{\"o}rn  and
+      Lee, Haejun},
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.6",
+    doi = "10.18653/v1/2023.acl-long.6",
+    pages = "78--91",
+    abstract = "In schema-guided dialogue state tracking models estimate the current state of a conversation using natural language descriptions of the service schema for generalization to unseen services. Prior generative approaches which decode slot values sequentially do not generalize well to variations in schema, while discriminative approaches separately encode history and schema and fail to account for inter-slot and intent-slot dependencies. We introduce SPLAT, a novel architecture which achieves better generalization and efficiency than prior approaches by constraining outputs to a limited prediction space. At the same time, our model allows for rich attention among descriptions and history while keeping computation costs constrained by incorporating linear-time attention. We demonstrate the effectiveness of our model on the Schema-Guided Dialogue (SGD) and MultiWOZ datasets. Our approach significantly improves upon existing models achieving 85.3 JGA on the SGD dataset. Further, we show increased robustness on the SGD-X benchmark: our model outperforms the more than 30x larger D3ST-XXL model by 5.0 points.",
+}

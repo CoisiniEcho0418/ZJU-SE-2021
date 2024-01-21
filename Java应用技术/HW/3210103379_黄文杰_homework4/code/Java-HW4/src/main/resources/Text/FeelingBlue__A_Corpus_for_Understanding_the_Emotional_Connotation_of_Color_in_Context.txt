@@ -1,0 +1,35 @@
+Title: FeelingBlue: A Corpus for Understanding the Emotional Connotation of Color in Context
+Authors: Amith Ananthram, Olivia Winn, Smaranda Muresan
+Abstract: While the link between color and emotion has been widely studied, how context-based changes in color impact the intensity of perceived emotions is not well understood. In this work, we present a new multimodal dataset for exploring the emotional connotation of color as mediated by line, stroke, texture, shape, and language. Our dataset, FeelingBlue, is a collection of 19,788 4-tuples of abstract art ranked by annotators according to their evoked emotions and paired with rationales for those annotations. Using this corpus, we present a baseline for a new task: Justified Affect Transformation. Given an image I, the task is to 1) recolor I to enhance a specified emotion e and 2) provide a textual justification for the change in e. Our model is an ensemble of deep neural networks which takes I, generates an emotionally transformed color palette p conditioned on I, applies p to I, and then justifies the color transformation in text via a visual-linguistic model. Experimental results shed light on the emotional connotation of color in context, demonstrating both the promise of our approach on this challenging task and the considerable potential for future investigations enabled by our corpus.1
+Cite (Informal):FeelingBlue: A Corpus for Understanding the Emotional Connotation of Color in Context (Ananthram et al., TACL 2023)
+Year:2023
+Venue:TACL
+Anthology ID:2023.tacl-1.11
+Bibkey:ananthram-etal-2023-feelingblue
+Volume:Transactions of the Association for Computational Linguistics, Volume 11
+URL:https://aclanthology.org/2023.tacl-1.11
+PDF:https://aclanthology.org/2023.tacl-1.11.pdf
+Month:
+SIG:
+Address:Cambridge, MA
+Language:
+Cite (ACL):Amith Ananthram, Olivia Winn, and Smaranda Muresan. 2023. FeelingBlue: A Corpus for Understanding the Emotional Connotation of Color in Context. Transactions of the Association for Computational Linguistics, 11:176–190.
+Note:
+Pages:176–190
+DOI:10.1162/tacl_a_00540
+Publisher:MIT Press
+BibTex: @article{ananthram-etal-2023-feelingblue,
+    title = "{F}eeling{B}lue: A Corpus for Understanding the Emotional Connotation of Color in Context",
+    author = "Ananthram, Amith  and
+      Winn, Olivia  and
+      Muresan, Smaranda",
+    journal = "Transactions of the Association for Computational Linguistics",
+    volume = "11",
+    year = "2023",
+    address = "Cambridge, MA",
+    publisher = "MIT Press",
+    url = "https://aclanthology.org/2023.tacl-1.11",
+    doi = "10.1162/tacl_a_00540",
+    pages = "176--190",
+    abstract = "While the link between color and emotion has been widely studied, how context-based changes in color impact the intensity of perceived emotions is not well understood. In this work, we present a new multimodal dataset for exploring the emotional connotation of color as mediated by line, stroke, texture, shape, and language. Our dataset, FeelingBlue, is a collection of 19,788 4-tuples of abstract art ranked by annotators according to their evoked emotions and paired with rationales for those annotations. Using this corpus, we present a baseline for a new task: Justified Affect Transformation. Given an image I, the task is to 1) recolor I to enhance a specified emotion e and 2) provide a textual justification for the change in e. Our model is an ensemble of deep neural networks which takes I, generates an emotionally transformed color palette p conditioned on I, applies p to I, and then justifies the color transformation in text via a visual-linguistic model. Experimental results shed light on the emotional connotation of color in context, demonstrating both the promise of our approach on this challenging task and the considerable potential for future investigations enabled by our corpus.1",
+}

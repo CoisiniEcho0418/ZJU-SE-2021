@@ -1,0 +1,34 @@
+Title: The Parallelism Tradeoff: Limitations of Log-Precision Transformers
+Authors: William Merrill, Ashish Sabharwal
+Abstract: Despite their omnipresence in modern NLP, characterizing the computational power of transformer neural nets remains an interesting open question. We prove that transformers whose arithmetic precision is logarithmic in the number of input tokens (and whose feedforward nets are computable using space linear in their input) can be simulated by constant-depth logspace-uniform threshold circuits. This provides insight on the power of transformers using known results in complexity theory. For example, if L≠P (i.e., not all poly-time problems can be solved using logarithmic space), then transformers cannot even accurately solve linear equalities or check membership in an arbitrary context-free grammar with empty productions. Our result intuitively emerges from the transformer architecture’s high parallelizability. We thus speculatively introduce the idea of a fundamental parallelism tradeoff: any model architecture as parallelizable as the transformer will obey limitations similar to it. Since parallelism is key to training models at massive scale, this suggests a potential inherent weakness of the scaling paradigm.
+Cite (Informal):The Parallelism Tradeoff: Limitations of Log-Precision Transformers (Merrill & Sabharwal, TACL 2023)
+Year:2023
+Venue:TACL
+Anthology ID:2023.tacl-1.31
+Bibkey:merrill-sabharwal-2023-parallelism
+Volume:Transactions of the Association for Computational Linguistics, Volume 11
+URL:https://aclanthology.org/2023.tacl-1.31
+PDF:https://aclanthology.org/2023.tacl-1.31.pdf
+Month:
+SIG:
+Address:Cambridge, MA
+Language:
+Cite (ACL):William Merrill and Ashish Sabharwal. 2023. The Parallelism Tradeoff: Limitations of Log-Precision Transformers. Transactions of the Association for Computational Linguistics, 11:531–545.
+Note:
+Pages:531–545
+DOI:10.1162/tacl_a_00562
+Publisher:MIT Press
+BibTex: @article{merrill-sabharwal-2023-parallelism,
+    title = "The Parallelism Tradeoff: Limitations of Log-Precision Transformers",
+    author = "Merrill, William  and
+      Sabharwal, Ashish",
+    journal = "Transactions of the Association for Computational Linguistics",
+    volume = "11",
+    year = "2023",
+    address = "Cambridge, MA",
+    publisher = "MIT Press",
+    url = "https://aclanthology.org/2023.tacl-1.31",
+    doi = "10.1162/tacl_a_00562",
+    pages = "531--545",
+    abstract = "Despite their omnipresence in modern NLP, characterizing the computational power of transformer neural nets remains an interesting open question. We prove that transformers whose arithmetic precision is logarithmic in the number of input tokens (and whose feedforward nets are computable using space linear in their input) can be simulated by constant-depth logspace-uniform threshold circuits. This provides insight on the power of transformers using known results in complexity theory. For example, if L{\mbox{$\neq$}}P (i.e., not all poly-time problems can be solved using logarithmic space), then transformers cannot even accurately solve linear equalities or check membership in an arbitrary context-free grammar with empty productions. Our result intuitively emerges from the transformer architecture{'}s high parallelizability. We thus speculatively introduce the idea of a fundamental parallelism tradeoff: any model architecture as parallelizable as the transformer will obey limitations similar to it. Since parallelism is key to training models at massive scale, this suggests a potential inherent weakness of the scaling paradigm.",
+}

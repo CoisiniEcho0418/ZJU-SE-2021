@@ -1,0 +1,44 @@
+Title: Fighting FIRe with FIRE: Assessing the Validity of Text-to-Video Retrieval Benchmarks
+Authors: Pedro Rodriguez, Mahmoud Azab, Becka Silvert, Renato Sanchez, Linzy Labson, Hardik Shah, Seungwhan Moon
+Abstract: Searching troves of videos with textual descriptions is a core multimodal retrieval task. Owing to the lack of a purpose-built dataset for text-to-video retrieval, video captioning datasets have been re-purposed to evaluate models by (1) treating captions as positive matches to their respective videos and (2) assuming all other videos to be negatives. However, this methodology leads to a fundamental flaw during evaluation: since captions are marked as relevant only to their original video, many alternate videos also match the caption, which introduces false-negative caption-video pairs. We show that when these false negatives are corrected, a recent state-of-the-art model gains 25% recall points—a difference that threatens the validity of the benchmark itself. To diagnose and mitigate this issue, we annotate and release 683K additional caption-video pairs. Using these, we recompute effectiveness scores for three models on two standard benchmarks (MSR-VTT and MSVD). We find that (1) the recomputed metrics are up to 25% recall points higher for the best models, (2) these benchmarks are nearing saturation for Recall@10, (3) caption length (generality) is related to the number of positives, and (4) annotation costs can be mitigated through sampling. We recommend retiring these benchmarks in their current form, and we make recommendations for future text-to-video retrieval benchmarks.
+Cite (Informal):Fighting FIRe with FIRE: Assessing the Validity of Text-to-Video Retrieval Benchmarks (Rodriguez et al., Findings 2023)
+Year:2023
+Venue:Findings
+Video:https://aclanthology.org/2023.findings-eacl.3.mp4
+Anthology ID:2023.findings-eacl.3
+Bibkey:rodriguez-etal-2023-fighting
+Dataset:2023.findings-eacl.3.dataset.zip
+Volume:Findings of the Association for Computational Linguistics: EACL 2023
+URL:https://aclanthology.org/2023.findings-eacl.3
+PDF:https://aclanthology.org/2023.findings-eacl.3.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Pedro Rodriguez, Mahmoud Azab, Becka Silvert, Renato Sanchez, Linzy Labson, Hardik Shah, and Seungwhan Moon. 2023. Fighting FIRe with FIRE: Assessing the Validity of Text-to-Video Retrieval Benchmarks. In Findings of the Association for Computational Linguistics: EACL 2023, pages 47–68, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:47–68
+DOI:10.18653/v1/2023.findings-eacl.3
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{rodriguez-etal-2023-fighting,
+    title = "Fighting {FIR}e with {FIRE}: Assessing the Validity of Text-to-Video Retrieval Benchmarks",
+    author = "Rodriguez, Pedro  and
+      Azab, Mahmoud  and
+      Silvert, Becka  and
+      Sanchez, Renato  and
+      Labson, Linzy  and
+      Shah, Hardik  and
+      Moon, Seungwhan",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Findings of the Association for Computational Linguistics: EACL 2023",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.findings-eacl.3",
+    doi = "10.18653/v1/2023.findings-eacl.3",
+    pages = "47--68",
+    abstract = "Searching troves of videos with textual descriptions is a core multimodal retrieval task. Owing to the lack of a purpose-built dataset for text-to-video retrieval, video captioning datasets have been re-purposed to evaluate models by (1) treating captions as positive matches to their respective videos and (2) assuming all other videos to be negatives. However, this methodology leads to a fundamental flaw during evaluation: since captions are marked as relevant only to their original video, many alternate videos also match the caption, which introduces false-negative caption-video pairs. We show that when these false negatives are corrected, a recent state-of-the-art model gains 25{\%} recall points{---}a difference that threatens the validity of the benchmark itself. To diagnose and mitigate this issue, we annotate and release 683K additional caption-video pairs. Using these, we recompute effectiveness scores for three models on two standard benchmarks (MSR-VTT and MSVD). We find that (1) the recomputed metrics are up to 25{\%} recall points higher for the best models, (2) these benchmarks are nearing saturation for Recall@10, (3) caption length (generality) is related to the number of positives, and (4) annotation costs can be mitigated through sampling. We recommend retiring these benchmarks in their current form, and we make recommendations for future text-to-video retrieval benchmarks.",
+}

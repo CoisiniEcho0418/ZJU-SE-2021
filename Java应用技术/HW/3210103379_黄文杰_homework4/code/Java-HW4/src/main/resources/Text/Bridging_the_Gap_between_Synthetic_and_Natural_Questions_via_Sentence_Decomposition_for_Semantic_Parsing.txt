@@ -1,0 +1,38 @@
+Title: Bridging the Gap between Synthetic and Natural Questions via Sentence Decomposition for Semantic Parsing
+Authors: Yilin Niu, Fei Huang, Wei Liu, Jianwei Cui, Bin Wang, Minlie Huang
+Abstract: Semantic parsing maps natural language questions into logical forms, which can be executed against a knowledge base for answers. In real-world applications, the performance of a parser is often limited by the lack of training data. To facilitate zero-shot learning, data synthesis has been widely studied to automatically generate paired questions and logical forms. However, data synthesis methods can hardly cover the diverse structures in natural languages, leading to a large gap in sentence structure between synthetic and natural questions. In this paper, we propose a decomposition-based method to unify the sentence structures of questions, which benefits the generalization to natural questions. Experiments demonstrate that our method significantly improves the semantic parser trained on synthetic data (+7.9% on KQA and +8.9% on ComplexWebQuestions in terms of exact match accuracy). Extensive analysis demonstrates that our method can better generalize to natural questions with novel text expressions compared with baselines. Besides semantic parsing, our idea potentially benefits other semantic understanding tasks by mitigating the distracting structure features. To illustrate this, we extend our method to the task of sentence embedding learning, and observe substantial improvements on sentence retrieval (+13.1% for Hit@1).
+Cite (Informal):Bridging the Gap between Synthetic and Natural Questions via Sentence Decomposition for Semantic Parsing (Niu et al., TACL 2023)
+Year:2023
+Venue:TACL
+Anthology ID:2023.tacl-1.22
+Bibkey:niu-etal-2023-bridging
+Volume:Transactions of the Association for Computational Linguistics, Volume 11
+URL:https://aclanthology.org/2023.tacl-1.22
+PDF:https://aclanthology.org/2023.tacl-1.22.pdf
+Month:
+SIG:
+Address:Cambridge, MA
+Language:
+Cite (ACL):Yilin Niu, Fei Huang, Wei Liu, Jianwei Cui, Bin Wang, and Minlie Huang. 2023. Bridging the Gap between Synthetic and Natural Questions via Sentence Decomposition for Semantic Parsing. Transactions of the Association for Computational Linguistics, 11:367–383.
+Note:
+Pages:367–383
+DOI:10.1162/tacl_a_00552
+Publisher:MIT Press
+BibTex: @article{niu-etal-2023-bridging,
+    title = "Bridging the Gap between Synthetic and Natural Questions via Sentence Decomposition for Semantic Parsing",
+    author = "Niu, Yilin  and
+      Huang, Fei  and
+      Liu, Wei  and
+      Cui, Jianwei  and
+      Wang, Bin  and
+      Huang, Minlie",
+    journal = "Transactions of the Association for Computational Linguistics",
+    volume = "11",
+    year = "2023",
+    address = "Cambridge, MA",
+    publisher = "MIT Press",
+    url = "https://aclanthology.org/2023.tacl-1.22",
+    doi = "10.1162/tacl_a_00552",
+    pages = "367--383",
+    abstract = "Semantic parsing maps natural language questions into logical forms, which can be executed against a knowledge base for answers. In real-world applications, the performance of a parser is often limited by the lack of training data. To facilitate zero-shot learning, data synthesis has been widely studied to automatically generate paired questions and logical forms. However, data synthesis methods can hardly cover the diverse structures in natural languages, leading to a large gap in sentence structure between synthetic and natural questions. In this paper, we propose a decomposition-based method to unify the sentence structures of questions, which benefits the generalization to natural questions. Experiments demonstrate that our method significantly improves the semantic parser trained on synthetic data (+7.9{\%} on KQA and +8.9{\%} on ComplexWebQuestions in terms of exact match accuracy). Extensive analysis demonstrates that our method can better generalize to natural questions with novel text expressions compared with baselines. Besides semantic parsing, our idea potentially benefits other semantic understanding tasks by mitigating the distracting structure features. To illustrate this, we extend our method to the task of sentence embedding learning, and observe substantial improvements on sentence retrieval (+13.1{\%} for Hit@1).",
+}

@@ -1,0 +1,44 @@
+Title: Submission of USTC’s System for the IWSLT 2023 - Offline Speech Translation Track
+Authors: Xinyuan Zhou, Jianwei Cui, Zhongyi Ye, Yichi Wang, Luzhen Xu, Hanyi Zhang, Weitai Zhang, Lirong Dai
+Abstract: This paper describes the submissions of the research group USTC-NELSLIP to the 2023 IWSLT Offline Speech Translation competition, which involves translating spoken English into written Chinese. We utilize both cascaded models and end-to-end models for this task. To improve the performance of the cascaded models, we introduce Whisper to reduce errors in the intermediate source language text, achieving a significant improvement in ASR recognition performance. For end-to-end models, we propose Stacked Acoustic-and-Textual En- coding extension (SATE-ex), which feeds the output of the acoustic decoder into the textual decoder for information fusion and to prevent error propagation. Additionally, we improve the performance of the end-to-end system in translating speech by combining the SATE-ex model with the encoder-decoder model through ensembling.
+Cite (Informal):Submission of USTC’s System for the IWSLT 2023 - Offline Speech Translation Track (Zhou et al., IWSLT 2023)
+Year:2023
+Venue:IWSLT
+Anthology ID:2023.iwslt-1.15
+Bibkey:zhou-etal-2023-submission
+Volume:Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023)
+URL:https://aclanthology.org/2023.iwslt-1.15
+PDF:https://aclanthology.org/2023.iwslt-1.15.pdf
+Month:July
+SIG:SIGSLT
+Address:Toronto, Canada (in-person and online)
+Language:
+Cite (ACL):Xinyuan Zhou, Jianwei Cui, Zhongyi Ye, Yichi Wang, Luzhen Xu, Hanyi Zhang, Weitai Zhang, and Lirong Dai. 2023. Submission of USTC’s System for the IWSLT 2023 - Offline Speech Translation Track. In Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023), pages 194–201, Toronto, Canada (in-person and online). Association for Computational Linguistics.
+Editors:Elizabeth Salesky,Marcello Federico,Marine Carpuat
+Note:
+Pages:194–201
+DOI:10.18653/v1/2023.iwslt-1.15
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{zhou-etal-2023-submission,
+    title = "Submission of {USTC}{'}s System for the {IWSLT} 2023 - Offline Speech Translation Track",
+    author = "Zhou, Xinyuan  and
+      Cui, Jianwei  and
+      Ye, Zhongyi  and
+      Wang, Yichi  and
+      Xu, Luzhen  and
+      Zhang, Hanyi  and
+      Zhang, Weitai  and
+      Dai, Lirong",
+    editor = "Salesky, Elizabeth  and
+      Federico, Marcello  and
+      Carpuat, Marine",
+    booktitle = "Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada (in-person and online)",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.iwslt-1.15",
+    doi = "10.18653/v1/2023.iwslt-1.15",
+    pages = "194--201",
+    abstract = "This paper describes the submissions of the research group USTC-NELSLIP to the 2023 IWSLT Offline Speech Translation competition, which involves translating spoken English into written Chinese. We utilize both cascaded models and end-to-end models for this task. To improve the performance of the cascaded models, we introduce Whisper to reduce errors in the intermediate source language text, achieving a significant improvement in ASR recognition performance. For end-to-end models, we propose Stacked Acoustic-and-Textual En- coding extension (SATE-ex), which feeds the output of the acoustic decoder into the textual decoder for information fusion and to prevent error propagation. Additionally, we improve the performance of the end-to-end system in translating speech by combining the SATE-ex model with the encoder-decoder model through ensembling.",
+}

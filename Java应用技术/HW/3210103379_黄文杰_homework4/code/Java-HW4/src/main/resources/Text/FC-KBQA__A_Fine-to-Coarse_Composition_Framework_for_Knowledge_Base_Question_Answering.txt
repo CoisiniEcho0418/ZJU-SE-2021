@@ -1,0 +1,44 @@
+Title: FC-KBQA: A Fine-to-Coarse Composition Framework for Knowledge Base Question Answering
+Authors: Lingxi Zhang, Jing Zhang, Yanling Wang, Shulin Cao, Xinmei Huang, Cuiping Li, Hong Chen, Juanzi Li
+Abstract: The generalization problem on KBQA has drawn considerable attention. Existing research suffers from the generalization issue brought by the entanglement in the coarse-grained modeling of the logical expression, or inexecutability issues due to the fine-grained modeling of disconnected classes and relations in real KBs. We propose a Fine-to-Coarse Composition framework for KBQA (FC-KBQA) to both ensure the generalization ability and executability of the logical expression. The main idea of FC-KBQA is to extract relevant fine-grained knowledge components from KB and reformulate them into middle-grained knowledge pairs for generating the final logical expressions. FC-KBQA derives new state-of-the-art performance on GrailQA and WebQSP, and runs 4 times faster than the baseline. Our code is now available at GitHub https://github.com/RUCKBReasoning/FC-KBQA.
+Cite (Informal):FC-KBQA: A Fine-to-Coarse Composition Framework for Knowledge Base Question Answering (Zhang et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.57
+Bibkey:zhang-etal-2023-fc
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.57
+PDF:https://aclanthology.org/2023.acl-long.57.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Lingxi Zhang, Jing Zhang, Yanling Wang, Shulin Cao, Xinmei Huang, Cuiping Li, Hong Chen, and Juanzi Li. 2023. FC-KBQA: A Fine-to-Coarse Composition Framework for Knowledge Base Question Answering. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 1002–1017, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:1002–1017
+DOI:10.18653/v1/2023.acl-long.57
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{zhang-etal-2023-fc,
+    title = "{FC}-{KBQA}: A Fine-to-Coarse Composition Framework for Knowledge Base Question Answering",
+    author = "Zhang, Lingxi  and
+      Zhang, Jing  and
+      Wang, Yanling  and
+      Cao, Shulin  and
+      Huang, Xinmei  and
+      Li, Cuiping  and
+      Chen, Hong  and
+      Li, Juanzi",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.57",
+    doi = "10.18653/v1/2023.acl-long.57",
+    pages = "1002--1017",
+    abstract = "The generalization problem on KBQA has drawn considerable attention. Existing research suffers from the generalization issue brought by the entanglement in the coarse-grained modeling of the logical expression, or inexecutability issues due to the fine-grained modeling of disconnected classes and relations in real KBs. We propose a Fine-to-Coarse Composition framework for KBQA (FC-KBQA) to both ensure the generalization ability and executability of the logical expression. The main idea of FC-KBQA is to extract relevant fine-grained knowledge components from KB and reformulate them into middle-grained knowledge pairs for generating the final logical expressions. FC-KBQA derives new state-of-the-art performance on GrailQA and WebQSP, and runs 4 times faster than the baseline. Our code is now available at GitHub \url{https://github.com/RUCKBReasoning/FC-KBQA}.",
+}

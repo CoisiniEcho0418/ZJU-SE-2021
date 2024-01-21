@@ -1,0 +1,42 @@
+Title: What Are You Token About? Dense Retrieval as Distributions Over the Vocabulary
+Authors: Ori Ram, Liat Bezalel, Adi Zicher, Yonatan Belinkov, Jonathan Berant, Amir Globerson
+Abstract: Dual encoders are now the dominant architecture for dense retrieval. Yet, we have little understanding of how they represent text, and why this leads to good performance. In this work, we shed light on this question via distributions over the vocabulary. We propose to interpret the vector representations produced by dual encoders by projecting them into the model’s vocabulary space. We show that the resulting projections contain rich semantic information, and draw connection between them and sparse retrieval. We find that this view can offer an explanation for some of the failure cases of dense retrievers. For example, we observe that the inability of models to handle tail entities is correlated with a tendency of the token distributions to forget some of the tokens of those entities. We leverage this insight and propose a simple way to enrich query and passage representations with lexical information at inference time, and show that this significantly improves performance compared to the original model in zero-shot settings, and specifically on the BEIR benchmark.
+Cite (Informal):What Are You Token About? Dense Retrieval as Distributions Over the Vocabulary (Ram et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.140
+Bibkey:ram-etal-2023-token
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.140
+PDF:https://aclanthology.org/2023.acl-long.140.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Ori Ram, Liat Bezalel, Adi Zicher, Yonatan Belinkov, Jonathan Berant, and Amir Globerson. 2023. What Are You Token About? Dense Retrieval as Distributions Over the Vocabulary. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 2481–2498, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:2481–2498
+DOI:10.18653/v1/2023.acl-long.140
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{ram-etal-2023-token,
+    title = "What Are You Token About? Dense Retrieval as Distributions Over the Vocabulary",
+    author = "Ram, Ori  and
+      Bezalel, Liat  and
+      Zicher, Adi  and
+      Belinkov, Yonatan  and
+      Berant, Jonathan  and
+      Globerson, Amir",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.140",
+    doi = "10.18653/v1/2023.acl-long.140",
+    pages = "2481--2498",
+    abstract = "Dual encoders are now the dominant architecture for dense retrieval. Yet, we have little understanding of how they represent text, and why this leads to good performance. In this work, we shed light on this question via distributions over the vocabulary. We propose to interpret the vector representations produced by dual encoders by projecting them into the model{'}s vocabulary space. We show that the resulting projections contain rich semantic information, and draw connection between them and sparse retrieval. We find that this view can offer an explanation for some of the failure cases of dense retrievers. For example, we observe that the inability of models to handle tail entities is correlated with a tendency of the token distributions to forget some of the tokens of those entities. We leverage this insight and propose a simple way to enrich query and passage representations with lexical information at inference time, and show that this significantly improves performance compared to the original model in zero-shot settings, and specifically on the BEIR benchmark.",
+}

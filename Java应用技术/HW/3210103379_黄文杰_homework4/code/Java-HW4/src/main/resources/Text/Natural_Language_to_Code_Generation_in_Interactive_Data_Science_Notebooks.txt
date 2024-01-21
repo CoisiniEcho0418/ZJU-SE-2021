@@ -1,0 +1,48 @@
+Title: Natural Language to Code Generation in Interactive Data Science Notebooks
+Authors: Pengcheng Yin, Wen-Ding Li, Kefan Xiao, Abhishek Rao, Yeming Wen, Kensen Shi, Joshua Howland, Paige Bailey, Michele Catasta, Henryk Michalewski, Oleksandr Polozov, Charles Sutton
+Abstract: Computational notebooks, such as Jupyter notebooks, are interactive computing environments that are ubiquitous among data scientists to perform data wrangling and analytic tasks. To measure the performance of AI pair programmers that automatically synthesize programs for those tasks given natural language (NL) intents from users, we build ARCADE, a benchmark of 1078 code generation problems using the pandas data analysis framework in data science notebooks. ARCADE features multiple rounds of NL-to-code problems from the same notebook. It requires a model to understand rich multi-modal contexts, such as existing notebook cells and their execution states as well as previous turns of interaction. To establish a strong baseline on this challenging task, we develop PaChiNCo, a 62B code language model (LM) for Python computational notebooks, which significantly outperforms public code LMs. Finally, we explore few-shot prompting strategies to elicit better code with step-by-step decomposition and NL explanation, showing the potential to improve the diversity and explainability of model predictions. Arcade is publicly available at https://github.com/google-research/arcade-nl2code/.
+Cite (Informal):Natural Language to Code Generation in Interactive Data Science Notebooks (Yin et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.9
+Bibkey:yin-etal-2023-natural
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.9
+PDF:https://aclanthology.org/2023.acl-long.9.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Pengcheng Yin, Wen-Ding Li, Kefan Xiao, Abhishek Rao, Yeming Wen, Kensen Shi, Joshua Howland, Paige Bailey, Michele Catasta, Henryk Michalewski, Oleksandr Polozov, and Charles Sutton. 2023. Natural Language to Code Generation in Interactive Data Science Notebooks. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 126–173, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:126–173
+DOI:10.18653/v1/2023.acl-long.9
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{yin-etal-2023-natural,
+    title = "Natural Language to Code Generation in Interactive Data Science Notebooks",
+    author = "Yin, Pengcheng  and
+      Li, Wen-Ding  and
+      Xiao, Kefan  and
+      Rao, Abhishek  and
+      Wen, Yeming  and
+      Shi, Kensen  and
+      Howland, Joshua  and
+      Bailey, Paige  and
+      Catasta, Michele  and
+      Michalewski, Henryk  and
+      Polozov, Oleksandr  and
+      Sutton, Charles",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.9",
+    doi = "10.18653/v1/2023.acl-long.9",
+    pages = "126--173",
+    abstract = "Computational notebooks, such as Jupyter notebooks, are interactive computing environments that are ubiquitous among data scientists to perform data wrangling and analytic tasks. To measure the performance of AI pair programmers that automatically synthesize programs for those tasks given natural language (NL) intents from users, we build ARCADE, a benchmark of 1078 code generation problems using the pandas data analysis framework in data science notebooks. ARCADE features multiple rounds of NL-to-code problems from the same notebook. It requires a model to understand rich multi-modal contexts, such as existing notebook cells and their execution states as well as previous turns of interaction. To establish a strong baseline on this challenging task, we develop PaChiNCo, a 62B code language model (LM) for Python computational notebooks, which significantly outperforms public code LMs. Finally, we explore few-shot prompting strategies to elicit better code with step-by-step decomposition and NL explanation, showing the potential to improve the diversity and explainability of model predictions. Arcade is publicly available at \url{https://github.com/google-research/arcade-nl2code/}.",
+}

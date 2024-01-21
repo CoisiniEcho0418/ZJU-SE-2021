@@ -1,0 +1,42 @@
+Title: Evaluating Open-Domain Dialogues in Latent Space with Next Sentence Prediction and Mutual Information
+Authors: Kun Zhao, Bohao Yang, Chenghua Lin, Wenge Rong, Aline Villavicencio, Xiaohui Cui
+Abstract: The long-standing one-to-many issue of the open-domain dialogues poses significant challenges for automatic evaluation methods, i.e., there may be multiple suitable responses which differ in semantics for a given conversational context. To tackle this challenge, we propose a novel learning-based automatic evaluation metric (CMN), which can robustly evaluate open-domain dialogues by augmenting Conditional Variational Autoencoders (CVAEs) with a Next Sentence Prediction (NSP) objective and employing Mutual Information (MI) to model the semantic similarity of text in the latent space. Experimental results on two open-domain dialogue datasets demonstrate the superiority of our method compared with a wide range of baselines, especially in handling responses which are distant to the “golden” reference responses in semantics.
+Cite (Informal):Evaluating Open-Domain Dialogues in Latent Space with Next Sentence Prediction and Mutual Information (Zhao et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.33
+Bibkey:zhao-etal-2023-evaluating
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.33
+PDF:https://aclanthology.org/2023.acl-long.33.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Kun Zhao, Bohao Yang, Chenghua Lin, Wenge Rong, Aline Villavicencio, and Xiaohui Cui. 2023. Evaluating Open-Domain Dialogues in Latent Space with Next Sentence Prediction and Mutual Information. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 562–574, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:562–574
+DOI:10.18653/v1/2023.acl-long.33
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{zhao-etal-2023-evaluating,
+    title = "Evaluating Open-Domain Dialogues in Latent Space with Next Sentence Prediction and Mutual Information",
+    author = "Zhao, Kun  and
+      Yang, Bohao  and
+      Lin, Chenghua  and
+      Rong, Wenge  and
+      Villavicencio, Aline  and
+      Cui, Xiaohui",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.33",
+    doi = "10.18653/v1/2023.acl-long.33",
+    pages = "562--574",
+    abstract = "The long-standing one-to-many issue of the open-domain dialogues poses significant challenges for automatic evaluation methods, i.e., there may be multiple suitable responses which differ in semantics for a given conversational context. To tackle this challenge, we propose a novel learning-based automatic evaluation metric (CMN), which can robustly evaluate open-domain dialogues by augmenting Conditional Variational Autoencoders (CVAEs) with a Next Sentence Prediction (NSP) objective and employing Mutual Information (MI) to model the semantic similarity of text in the latent space. Experimental results on two open-domain dialogue datasets demonstrate the superiority of our method compared with a wide range of baselines, especially in handling responses which are distant to the {``}golden{''} reference responses in semantics.",
+}

@@ -1,0 +1,41 @@
+Title: Prompt Tuning with Contradictory Intentions for Sarcasm Recognition
+Authors: Yiyi Liu, Ruqing Zhang, Yixing Fan, Jiafeng Guo, Xueqi Cheng
+Abstract: Recently, prompt tuning has achieved promising results in a variety of natural language processing (NLP) tasks. The typical approach is to insert text pieces (i.e. templates) into the input and transform downstream tasks into the same form as pre-training. In essence, a high-quality template is the foundation of prompt tuning to support the performance of the converted cloze-style task. However, for sarcasm recognition, it is time-consuming and requires increasingly sophisticated domain knowledge to determine the appropriate templates and label words due to its highly figurative nature. In this work, we propose SarcPrompt, to incorporate the prior knowledge about contradictory intentions into prompt tuning for sarcasm recognition. SarcPrompt is inspired by that the speaker usually says the opposite of what they actually mean in the sarcastic text. Based on this idea, we explicitly mimic the actual intention by prompt construction and indicate whether the actual intention is contradictory to the literal content by verbalizer engineering. Experiments on three public datasets with standard and low-resource settings demonstrate the effectiveness of our SarcPrompt for sarcasm recognition.
+Cite (Informal):Prompt Tuning with Contradictory Intentions for Sarcasm Recognition (Liu et al., EACL 2023)
+Year:2023
+Venue:EACL
+Video:https://aclanthology.org/2023.eacl-main.25.mp4
+Anthology ID:2023.eacl-main.25
+Bibkey:liu-etal-2023-prompt
+Volume:Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics
+URL:https://aclanthology.org/2023.eacl-main.25
+PDF:https://aclanthology.org/2023.eacl-main.25.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Yiyi Liu, Ruqing Zhang, Yixing Fan, Jiafeng Guo, and Xueqi Cheng. 2023. Prompt Tuning with Contradictory Intentions for Sarcasm Recognition. In Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics, pages 328–339, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:328–339
+DOI:10.18653/v1/2023.eacl-main.25
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{liu-etal-2023-prompt,
+    title = "Prompt Tuning with Contradictory Intentions for Sarcasm Recognition",
+    author = "Liu, Yiyi  and
+      Zhang, Ruqing  and
+      Fan, Yixing  and
+      Guo, Jiafeng  and
+      Cheng, Xueqi",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.eacl-main.25",
+    doi = "10.18653/v1/2023.eacl-main.25",
+    pages = "328--339",
+    abstract = "Recently, prompt tuning has achieved promising results in a variety of natural language processing (NLP) tasks. The typical approach is to insert text pieces (i.e. templates) into the input and transform downstream tasks into the same form as pre-training. In essence, a high-quality template is the foundation of prompt tuning to support the performance of the converted cloze-style task. However, for sarcasm recognition, it is time-consuming and requires increasingly sophisticated domain knowledge to determine the appropriate templates and label words due to its highly figurative nature. In this work, we propose SarcPrompt, to incorporate the prior knowledge about contradictory intentions into prompt tuning for sarcasm recognition. SarcPrompt is inspired by that the speaker usually says the opposite of what they actually mean in the sarcastic text. Based on this idea, we explicitly mimic the actual intention by prompt construction and indicate whether the actual intention is contradictory to the literal content by verbalizer engineering. Experiments on three public datasets with standard and low-resource settings demonstrate the effectiveness of our SarcPrompt for sarcasm recognition.",
+}

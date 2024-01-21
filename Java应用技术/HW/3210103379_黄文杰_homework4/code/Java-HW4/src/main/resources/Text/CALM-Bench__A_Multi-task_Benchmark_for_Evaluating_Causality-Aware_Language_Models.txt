@@ -1,0 +1,39 @@
+Title: CALM-Bench: A Multi-task Benchmark for Evaluating Causality-Aware Language Models
+Authors: Dhairya Dalal, Paul Buitelaar, Mihael Arcan
+Abstract: Causal reasoning is a critical component of human cognition and is required across a range of question-answering (QA) tasks (such as abductive reasoning, commonsense QA, and procedural reasoning). Research on causal QA has been underdefined, task-specific, and limited in complexity. Recent advances in foundation language models (such as BERT, ERNIE, and T5) have shown the efficacy of pre-trained models across diverse QA tasks. However, there is limited research exploring the causal reasoning capabilities of those language models and no standard evaluation benchmark. To unify causal QA research, we propose CALM-Bench, a multi-task benchmark for evaluating causality-aware language models (CALM). We present a standardized definition of causal QA tasks and show empirically that causal reasoning can be generalized and transferred across different QA tasks. Additionally, we share a strong multi-task baseline model which outperforms single-task fine-tuned models on the CALM-Bench tasks.
+Cite (Informal):CALM-Bench: A Multi-task Benchmark for Evaluating Causality-Aware Language Models (Dalal et al., Findings 2023)
+Year:2023
+Venue:Findings
+Video:https://aclanthology.org/2023.findings-eacl.23.mp4
+Anthology ID:2023.findings-eacl.23
+Bibkey:dalal-etal-2023-calm
+Volume:Findings of the Association for Computational Linguistics: EACL 2023
+URL:https://aclanthology.org/2023.findings-eacl.23
+PDF:https://aclanthology.org/2023.findings-eacl.23.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Dhairya Dalal, Paul Buitelaar, and Mihael Arcan. 2023. CALM-Bench: A Multi-task Benchmark for Evaluating Causality-Aware Language Models. In Findings of the Association for Computational Linguistics: EACL 2023, pages 296–311, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:296–311
+DOI:10.18653/v1/2023.findings-eacl.23
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{dalal-etal-2023-calm,
+    title = "{CALM}-Bench: A Multi-task Benchmark for Evaluating Causality-Aware Language Models",
+    author = "Dalal, Dhairya  and
+      Buitelaar, Paul  and
+      Arcan, Mihael",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Findings of the Association for Computational Linguistics: EACL 2023",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.findings-eacl.23",
+    doi = "10.18653/v1/2023.findings-eacl.23",
+    pages = "296--311",
+    abstract = "Causal reasoning is a critical component of human cognition and is required across a range of question-answering (QA) tasks (such as abductive reasoning, commonsense QA, and procedural reasoning). Research on causal QA has been underdefined, task-specific, and limited in complexity. Recent advances in foundation language models (such as BERT, ERNIE, and T5) have shown the efficacy of pre-trained models across diverse QA tasks. However, there is limited research exploring the causal reasoning capabilities of those language models and no standard evaluation benchmark. To unify causal QA research, we propose CALM-Bench, a multi-task benchmark for evaluating causality-aware language models (CALM). We present a standardized definition of causal QA tasks and show empirically that causal reasoning can be generalized and transferred across different QA tasks. Additionally, we share a strong multi-task baseline model which outperforms single-task fine-tuned models on the CALM-Bench tasks.",
+}

@@ -1,0 +1,39 @@
+Title: PCC: Paraphrasing with Bottom-k Sampling and Cyclic Learning for Curriculum Data Augmentation
+Authors: Hongyuan Lu, Wai Lam
+Abstract: Curriculum Data Augmentation (CDA) improves neural models by presenting synthetic data with increasing difficulties from easy to hard. However, traditional CDA simply treats the ratio of word perturbation as the difficulty measure and goes through the curriculums only once. This paper presents PCC: Paraphrasing with Bottom-k Sampling and Cyclic Learning for Curriculum Data Augmentation, a novel CDA framework via paraphrasing, which exploits the textual paraphrase similarity as the curriculum difficulty measure. We propose a curriculum-aware paraphrase generation module composed of three units: a paraphrase candidate generator with bottom-k sampling, a filtering mechanism and a difficulty measure. We also propose a cyclic learning strategy that passes through the curriculums multiple times. The bottom-k sampling is proposed to generate super-hard instances for the later curriculums. Experimental results on few-shot text classification as well as dialogue generation indicate that PCC surpasses competitive baselines. Human evaluation and extensive case studies indicate that bottom-k sampling effectively generates super-hard instances, and PCC significantly improves the baseline dialogue agent.
+Cite (Informal):PCC: Paraphrasing with Bottom-k Sampling and Cyclic Learning for Curriculum Data Augmentation (Lu & Lam, EACL 2023)
+Year:2023
+Venue:EACL
+Video:https://aclanthology.org/2023.eacl-main.5.mp4
+Anthology ID:2023.eacl-main.5
+Bibkey:lu-lam-2023-pcc
+Volume:Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics
+URL:https://aclanthology.org/2023.eacl-main.5
+PDF:https://aclanthology.org/2023.eacl-main.5.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Hongyuan Lu and Wai Lam. 2023. PCC: Paraphrasing with Bottom-k Sampling and Cyclic Learning for Curriculum Data Augmentation. In Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics, pages 68–82, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Award:EACL Outstanding Paper
+Pages:68–82
+DOI:10.18653/v1/2023.eacl-main.5
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{lu-lam-2023-pcc,
+    title = "{PCC}: Paraphrasing with Bottom-k Sampling and Cyclic Learning for Curriculum Data Augmentation",
+    author = "Lu, Hongyuan  and
+      Lam, Wai",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.eacl-main.5",
+    doi = "10.18653/v1/2023.eacl-main.5",
+    pages = "68--82",
+    abstract = "Curriculum Data Augmentation (CDA) improves neural models by presenting synthetic data with increasing difficulties from easy to hard. However, traditional CDA simply treats the ratio of word perturbation as the difficulty measure and goes through the curriculums only once. This paper presents \textbf{PCC}: \textbf{P}araphrasing with Bottom-k Sampling and \textbf{C}yclic Learning for \textbf{C}urriculum Data Augmentation, a novel CDA framework via paraphrasing, which exploits the textual paraphrase similarity as the curriculum difficulty measure. We propose a curriculum-aware paraphrase generation module composed of three units: a paraphrase candidate generator with bottom-k sampling, a filtering mechanism and a difficulty measure. We also propose a cyclic learning strategy that passes through the curriculums multiple times. The bottom-k sampling is proposed to generate super-hard instances for the later curriculums. Experimental results on few-shot text classification as well as dialogue generation indicate that PCC surpasses competitive baselines. Human evaluation and extensive case studies indicate that bottom-k sampling effectively generates super-hard instances, and PCC significantly improves the baseline dialogue agent.",
+}

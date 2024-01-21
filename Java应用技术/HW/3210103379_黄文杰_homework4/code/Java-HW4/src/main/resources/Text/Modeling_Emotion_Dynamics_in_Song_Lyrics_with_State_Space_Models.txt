@@ -1,0 +1,34 @@
+Title: Modeling Emotion Dynamics in Song Lyrics with State Space Models
+Authors: Yingjin Song, Daniel Beck
+Abstract: Most previous work in music emotion recognition assumes a single or a few song-level labels for the whole song. While it is known that different emotions can vary in intensity within a song, annotated data for this setup is scarce and difficult to obtain. In this work, we propose a method to predict emotion dynamics in song lyrics without song-level supervision. We frame each song as a time series and employ a State Space Model (SSM), combining a sentence-level emotion predictor with an Expectation-Maximization (EM) procedure to generate the full emotion dynamics. Our experiments show that applying our method consistently improves the performance of sentence-level baselines without requiring any annotated songs, making it ideal for limited training data scenarios. Further analysis through case studies shows the benefits of our method while also indicating the limitations and pointing to future directions.
+Cite (Informal):Modeling Emotion Dynamics in Song Lyrics with State Space Models (Song & Beck, TACL 2023)
+Year:2023
+Venue:TACL
+Anthology ID:2023.tacl-1.10
+Bibkey:song-beck-2023-modeling
+Volume:Transactions of the Association for Computational Linguistics, Volume 11
+URL:https://aclanthology.org/2023.tacl-1.10
+PDF:https://aclanthology.org/2023.tacl-1.10.pdf
+Month:
+SIG:
+Address:Cambridge, MA
+Language:
+Cite (ACL):Yingjin Song and Daniel Beck. 2023. Modeling Emotion Dynamics in Song Lyrics with State Space Models. Transactions of the Association for Computational Linguistics, 11:157–175.
+Note:
+Pages:157–175
+DOI:10.1162/tacl_a_00541
+Publisher:MIT Press
+BibTex: @article{song-beck-2023-modeling,
+    title = "Modeling Emotion Dynamics in Song Lyrics with State Space Models",
+    author = "Song, Yingjin  and
+      Beck, Daniel",
+    journal = "Transactions of the Association for Computational Linguistics",
+    volume = "11",
+    year = "2023",
+    address = "Cambridge, MA",
+    publisher = "MIT Press",
+    url = "https://aclanthology.org/2023.tacl-1.10",
+    doi = "10.1162/tacl_a_00541",
+    pages = "157--175",
+    abstract = "Most previous work in music emotion recognition assumes a single or a few song-level labels for the whole song. While it is known that different emotions can vary in intensity within a song, annotated data for this setup is scarce and difficult to obtain. In this work, we propose a method to predict emotion dynamics in song lyrics without song-level supervision. We frame each song as a time series and employ a State Space Model (SSM), combining a sentence-level emotion predictor with an Expectation-Maximization (EM) procedure to generate the full emotion dynamics. Our experiments show that applying our method consistently improves the performance of sentence-level baselines without requiring any annotated songs, making it ideal for limited training data scenarios. Further analysis through case studies shows the benefits of our method while also indicating the limitations and pointing to future directions.",
+}

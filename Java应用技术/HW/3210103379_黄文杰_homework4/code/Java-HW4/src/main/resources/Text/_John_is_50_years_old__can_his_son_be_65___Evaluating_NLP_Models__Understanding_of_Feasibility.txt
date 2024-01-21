@@ -1,0 +1,44 @@
+Title: “John is 50 years old, can his son be 65?” Evaluating NLP Models’ Understanding of Feasibility
+Authors: Himanshu Gupta, Neeraj Varshney, Swaroop Mishra, Kuntal Kumar Pal, Saurabh Arjun Sawant, Kevin Scaria, Siddharth Goyal, Chitta Baral
+Abstract: In current NLP research, large-scale language models and their abilities are widely being discussed. Some recent works have also found notable failures of these models. Often these failure examples involve complex reasoning abilities. This work focuses on a simple commonsense ability, reasoning about when an action (or its effect) is feasible. To this end, we introduce FeasibilityQA, a question-answering dataset involving binary classification (BCQ) and multi-choice multi-correct questions (MCQ) that test understanding of feasibility. We show that even state-of-the-art models such as GPT-3, GPT-2, and T5 struggle to answer the feasibility questions correctly. Specifically, on (MCQ, BCQ) questions, GPT-3 achieves accuracy of just (19%, 62%) and (25%, 64%) in zero-shot and few-shot settings, respectively. We also evaluate models by providing relevant knowledge statements required to answer the question and find that the additional knowledge leads to a 7% gain in performance, but the overall performance still remains low. These results make one wonder how much commonsense knowledge about action feasibility is encoded in state-of-the-art models and how well they can reason about it.
+Cite (Informal):“John is 50 years old, can his son be 65?” Evaluating NLP Models’ Understanding of Feasibility (Gupta et al., EACL 2023)
+Year:2023
+Venue:EACL
+Video:https://aclanthology.org/2023.eacl-main.30.mp4
+Anthology ID:2023.eacl-main.30
+Bibkey:gupta-etal-2023-john
+Volume:Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics
+URL:https://aclanthology.org/2023.eacl-main.30
+PDF:https://aclanthology.org/2023.eacl-main.30.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Himanshu Gupta, Neeraj Varshney, Swaroop Mishra, Kuntal Kumar Pal, Saurabh Arjun Sawant, Kevin Scaria, Siddharth Goyal, and Chitta Baral. 2023. “John is 50 years old, can his son be 65?” Evaluating NLP Models’ Understanding of Feasibility. In Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics, pages 407–417, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:407–417
+DOI:10.18653/v1/2023.eacl-main.30
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{gupta-etal-2023-john,
+    title = "{``}John is 50 years old, can his son be 65?{''} Evaluating {NLP} Models{'} Understanding of Feasibility",
+    author = "Gupta, Himanshu  and
+      Varshney, Neeraj  and
+      Mishra, Swaroop  and
+      Pal, Kuntal Kumar  and
+      Sawant, Saurabh Arjun  and
+      Scaria, Kevin  and
+      Goyal, Siddharth  and
+      Baral, Chitta",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.eacl-main.30",
+    doi = "10.18653/v1/2023.eacl-main.30",
+    pages = "407--417",
+    abstract = "In current NLP research, large-scale language models and their abilities are widely being discussed. Some recent works have also found notable failures of these models. Often these failure examples involve complex reasoning abilities. This work focuses on a simple commonsense ability, reasoning about when an action (or its effect) is feasible. To this end, we introduce FeasibilityQA, a question-answering dataset involving binary classification (BCQ) and multi-choice multi-correct questions (MCQ) that test understanding of feasibility. We show that even state-of-the-art models such as GPT-3, GPT-2, and T5 struggle to answer the feasibility questions correctly. Specifically, on (MCQ, BCQ) questions, GPT-3 achieves accuracy of just (19{\%}, 62{\%}) and (25{\%}, 64{\%}) in zero-shot and few-shot settings, respectively. We also evaluate models by providing relevant knowledge statements required to answer the question and find that the additional knowledge leads to a 7{\%} gain in performance, but the overall performance still remains low. These results make one wonder how much commonsense knowledge about action feasibility is encoded in state-of-the-art models and how well they can reason about it.",
+}

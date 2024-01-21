@@ -1,0 +1,35 @@
+Title: Less is More: Mitigate Spurious Correlations for Open-Domain Dialogue Response Generation Models by Causal Discovery
+Authors: Tao Feng, Lizhen Qu, Gholamreza Haffari
+Abstract: In this paper, we conduct the first study on spurious correlations for open-domain response generation models based on a corpus CGDialog curated by ourselves. The current models indeed suffer from spurious correlations and have a tendency to generate irrelevant and generic responses. Inspired by causal discovery algorithms, we propose a novel model-agnostic method for training and inference using a conditional independence classifier. The classifier is trained by a constrained self-training method, coined ConSTrain, to overcome data sparsity. The experimental results based on both human and automatic evaluation show that our method significantly outperforms the competitive baselines in terms of relevance, informativeness, and fluency.
+Cite (Informal):Less is More: Mitigate Spurious Correlations for Open-Domain Dialogue Response Generation Models by Causal Discovery (Feng et al., TACL 2023)
+Year:2023
+Venue:TACL
+Anthology ID:2023.tacl-1.30
+Bibkey:feng-etal-2023-less
+Volume:Transactions of the Association for Computational Linguistics, Volume 11
+URL:https://aclanthology.org/2023.tacl-1.30
+PDF:https://aclanthology.org/2023.tacl-1.30.pdf
+Month:
+SIG:
+Address:Cambridge, MA
+Language:
+Cite (ACL):Tao Feng, Lizhen Qu, and Gholamreza Haffari. 2023. Less is More: Mitigate Spurious Correlations for Open-Domain Dialogue Response Generation Models by Causal Discovery. Transactions of the Association for Computational Linguistics, 11:511–530.
+Note:
+Pages:511–530
+DOI:10.1162/tacl_a_00561
+Publisher:MIT Press
+BibTex: @article{feng-etal-2023-less,
+    title = "Less is More: Mitigate Spurious Correlations for Open-Domain Dialogue Response Generation Models by Causal Discovery",
+    author = "Feng, Tao  and
+      Qu, Lizhen  and
+      Haffari, Gholamreza",
+    journal = "Transactions of the Association for Computational Linguistics",
+    volume = "11",
+    year = "2023",
+    address = "Cambridge, MA",
+    publisher = "MIT Press",
+    url = "https://aclanthology.org/2023.tacl-1.30",
+    doi = "10.1162/tacl_a_00561",
+    pages = "511--530",
+    abstract = "In this paper, we conduct the first study on spurious correlations for open-domain response generation models based on a corpus CGDialog curated by ourselves. The current models indeed suffer from spurious correlations and have a tendency to generate irrelevant and generic responses. Inspired by causal discovery algorithms, we propose a novel model-agnostic method for training and inference using a conditional independence classifier. The classifier is trained by a constrained self-training method, coined ConSTrain, to overcome data sparsity. The experimental results based on both human and automatic evaluation show that our method significantly outperforms the competitive baselines in terms of relevance, informativeness, and fluency.",
+}

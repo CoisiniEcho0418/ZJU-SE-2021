@@ -1,0 +1,41 @@
+Title: BREAK: Breaking the Dialogue State Tracking Barrier with Beam Search and Re-ranking
+Authors: Seungpil Won, Heeyoung Kwak, Joongbo Shin, Janghoon Han, Kyomin Jung
+Abstract: Despite the recent advances in dialogue state tracking (DST), the joint goal accuracy (JGA) of the existing methods on MultiWOZ 2.1 still remains merely 60%. In our preliminary error analysis, we find that beam search produces a pool of candidates that is likely to include the correct dialogue state. Motivated by this observation, we introduce a novel framework, called BREAK (Beam search and RE-rAnKing), that achieves outstanding performance on DST. BREAK performs DST in two stages: (i) generating k-best dialogue state candidates with beam search and (ii) re-ranking the candidates to select the correct dialogue state. This simple yet powerful framework shows state-of-the-art performance on all versions of MultiWOZ and M2M datasets. Most notably, we push the joint goal accuracy to 80-90% on MultiWOZ 2.1-2.4, which is an improvement of 23.6%, 26.3%, 21.7%, and 10.8% over the previous best-performing models, respectively. The data and code will be available at https://github.com/tony-won/DST-BREAK
+Cite (Informal):BREAK: Breaking the Dialogue State Tracking Barrier with Beam Search and Re-ranking (Won et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.159
+Bibkey:won-etal-2023-break
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.159
+PDF:https://aclanthology.org/2023.acl-long.159.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Seungpil Won, Heeyoung Kwak, Joongbo Shin, Janghoon Han, and Kyomin Jung. 2023. BREAK: Breaking the Dialogue State Tracking Barrier with Beam Search and Re-ranking. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 2832–2846, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:2832–2846
+DOI:10.18653/v1/2023.acl-long.159
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{won-etal-2023-break,
+    title = "{BREAK}: Breaking the Dialogue State Tracking Barrier with Beam Search and Re-ranking",
+    author = "Won, Seungpil  and
+      Kwak, Heeyoung  and
+      Shin, Joongbo  and
+      Han, Janghoon  and
+      Jung, Kyomin",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.159",
+    doi = "10.18653/v1/2023.acl-long.159",
+    pages = "2832--2846",
+    abstract = "Despite the recent advances in dialogue state tracking (DST), the joint goal accuracy (JGA) of the existing methods on MultiWOZ 2.1 still remains merely 60{\%}. In our preliminary error analysis, we find that beam search produces a pool of candidates that is likely to include the correct dialogue state. Motivated by this observation, we introduce a novel framework, called BREAK (Beam search and RE-rAnKing), that achieves outstanding performance on DST. BREAK performs DST in two stages: (i) generating k-best dialogue state candidates with beam search and (ii) re-ranking the candidates to select the correct dialogue state. This simple yet powerful framework shows state-of-the-art performance on all versions of MultiWOZ and M2M datasets. Most notably, we push the joint goal accuracy to 80-90{\%} on MultiWOZ 2.1-2.4, which is an improvement of 23.6{\%}, 26.3{\%}, 21.7{\%}, and 10.8{\%} over the previous best-performing models, respectively. The data and code will be available at \url{https://github.com/tony-won/DST-BREAK}",
+}

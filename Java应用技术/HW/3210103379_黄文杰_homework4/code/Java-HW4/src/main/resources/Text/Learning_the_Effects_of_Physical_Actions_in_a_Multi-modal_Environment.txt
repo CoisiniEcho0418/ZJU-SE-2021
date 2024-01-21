@@ -1,0 +1,39 @@
+Title: Learning the Effects of Physical Actions in a Multi-modal Environment
+Authors: Gautier Dagan, Frank Keller, Alex Lascarides
+Abstract: Large Language Models (LLMs) handle physical commonsense information inadequately. As a result of being trained in a disembodied setting, LLMs often fail to predict an action’s outcome in a given environment. However, predicting the effects of an action before it is executed is crucial in planning, where coherent sequences of actions are often needed to achieve a goal. Therefore, we introduce the multi-modal task of predicting the outcomes of actions solely from realistic sensory inputs (images and text). Next, we extend an LLM to model latent representations of objects to better predict action outcomes in an environment. We show that multi-modal models can capture physical commonsense when augmented with visual information. Finally, we evaluate our model’s performance on novel actions and objects and find that combining modalities help models to generalize and learn physical commonsense reasoning better.
+Cite (Informal):Learning the Effects of Physical Actions in a Multi-modal Environment (Dagan et al., Findings 2023)
+Year:2023
+Venue:Findings
+Video:https://aclanthology.org/2023.findings-eacl.10.mp4
+Anthology ID:2023.findings-eacl.10
+Bibkey:dagan-etal-2023-learning
+Volume:Findings of the Association for Computational Linguistics: EACL 2023
+URL:https://aclanthology.org/2023.findings-eacl.10
+PDF:https://aclanthology.org/2023.findings-eacl.10.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Gautier Dagan, Frank Keller, and Alex Lascarides. 2023. Learning the Effects of Physical Actions in a Multi-modal Environment. In Findings of the Association for Computational Linguistics: EACL 2023, pages 133–148, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:133–148
+DOI:10.18653/v1/2023.findings-eacl.10
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{dagan-etal-2023-learning,
+    title = "Learning the Effects of Physical Actions in a Multi-modal Environment",
+    author = "Dagan, Gautier  and
+      Keller, Frank  and
+      Lascarides, Alex",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Findings of the Association for Computational Linguistics: EACL 2023",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.findings-eacl.10",
+    doi = "10.18653/v1/2023.findings-eacl.10",
+    pages = "133--148",
+    abstract = "Large Language Models (LLMs) handle physical commonsense information inadequately. As a result of being trained in a disembodied setting, LLMs often fail to predict an action{'}s outcome in a given environment. However, predicting the effects of an action before it is executed is crucial in planning, where coherent sequences of actions are often needed to achieve a goal. Therefore, we introduce the multi-modal task of predicting the outcomes of actions solely from realistic sensory inputs (images and text). Next, we extend an LLM to model latent representations of objects to better predict action outcomes in an environment. We show that multi-modal models can capture physical commonsense when augmented with visual information. Finally, we evaluate our model{'}s performance on novel actions and objects and find that combining modalities help models to generalize and learn physical commonsense reasoning better.",
+}

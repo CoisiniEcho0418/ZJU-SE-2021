@@ -1,0 +1,47 @@
+Title: Glot500: Scaling Multilingual Corpora and Language Models to 500 Languages
+Authors: Ayyoob ImaniGooghari, Peiqin Lin, Amir Hossein Kargaran, Silvia Severini, Masoud Jalili Sabet, Nora Kassner, Chunlan Ma, Helmut Schmid, André Martins, François Yvon, Hinrich Schütze
+Abstract: The NLP community has mainly focused on scaling Large Language Models (LLMs) vertically, i.e., making them better for about 100 languages. We instead scale LLMs horizontally: we create, through continued pretraining, Glot500-m, an LLM that covers 511 predominantly low-resource languages. An important part of this effort is to collect and clean Glot500-c, a corpus that covers these 511 languages and allows us to train Glot500-m. We evaluate Glot500-m on five diverse tasks across these languages. We observe large improvements for both high-resource and low-resource languages compared to an XLM-R baseline. Our analysis shows that no single factor explains the quality of multilingual LLM representations. Rather, a combination of factors determines quality including corpus size, script, “help” from related languages and the total capacity of the model. Our work addresses an important goal of NLP research: we should notlimit NLP to a small fraction of the world’s languages and instead strive to support as many languages as possible to bring the benefits of NLP technology to all languages and cultures. Code, data and models are available at https://github.com/cisnlp/Glot500.
+Cite (Informal):Glot500: Scaling Multilingual Corpora and Language Models to 500 Languages (ImaniGooghari et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.61
+Bibkey:imanigooghari-etal-2023-glot500
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.61
+PDF:https://aclanthology.org/2023.acl-long.61.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Ayyoob ImaniGooghari, Peiqin Lin, Amir Hossein Kargaran, Silvia Severini, Masoud Jalili Sabet, Nora Kassner, Chunlan Ma, Helmut Schmid, André Martins, François Yvon, and Hinrich Schütze. 2023. Glot500: Scaling Multilingual Corpora and Language Models to 500 Languages. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 1082–1117, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:1082–1117
+DOI:10.18653/v1/2023.acl-long.61
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{imanigooghari-etal-2023-glot500,
+    title = "Glot500: Scaling Multilingual Corpora and Language Models to 500 Languages",
+    author = {ImaniGooghari, Ayyoob  and
+      Lin, Peiqin  and
+      Kargaran, Amir Hossein  and
+      Severini, Silvia  and
+      Jalili Sabet, Masoud  and
+      Kassner, Nora  and
+      Ma, Chunlan  and
+      Schmid, Helmut  and
+      Martins, Andr{\'e}  and
+      Yvon, Fran{\c{c}}ois  and
+      Sch{\"u}tze, Hinrich},
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.61",
+    doi = "10.18653/v1/2023.acl-long.61",
+    pages = "1082--1117",
+    abstract = "The NLP community has mainly focused on scaling Large Language Models (LLMs) vertically, i.e., making them better for about 100 languages. We instead scale LLMs horizontally: we create, through continued pretraining, Glot500-m, an LLM that covers 511 predominantly low-resource languages. An important part of this effort is to collect and clean Glot500-c, a corpus that covers these 511 languages and allows us to train Glot500-m. We evaluate Glot500-m on five diverse tasks across these languages. We observe large improvements for both high-resource and low-resource languages compared to an XLM-R baseline. Our analysis shows that no single factor explains the quality of multilingual LLM representations. Rather, a combination of factors determines quality including corpus size, script, {``}help{''} from related languages and the total capacity of the model. Our work addresses an important goal of NLP research: we should notlimit NLP to a small fraction of the world{'}s languages and instead strive to support as many languages as possible to bring the benefits of NLP technology to all languages and cultures. Code, data and models are available at \url{https://github.com/cisnlp/Glot500}.",
+}

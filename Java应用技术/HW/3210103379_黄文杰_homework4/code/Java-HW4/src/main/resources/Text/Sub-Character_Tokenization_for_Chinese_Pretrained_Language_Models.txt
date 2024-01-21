@@ -1,0 +1,41 @@
+Title: Sub-Character Tokenization for Chinese Pretrained Language Models
+Authors: Chenglei Si, Zhengyan Zhang, Yingfa Chen, Fanchao Qi, Xiaozhi Wang, Zhiyuan Liu, Yasheng Wang, Qun Liu, Maosong Sun
+Abstract: Tokenization is fundamental to pretrained language models (PLMs). Existing tokenization methods for Chinese PLMs typically treat each character as an indivisible token. However, they ignore the unique feature of the Chinese writing system where additional linguistic information exists below the character level, i.e., at the sub-character level. To utilize such information, we propose sub-character (SubChar for short) tokenization. Specifically, we first encode the input text by converting each Chinese character into a short sequence based on its glyph or pronunciation, and then construct the vocabulary based on the encoded text with sub-word segmentation. Experimental results show that SubChar tokenizers have two main advantages over existing tokenizers: 1) They can tokenize inputs into much shorter sequences, thus improving the computational efficiency. 2) Pronunciation-based SubChar tokenizers can encode Chinese homophones into the same transliteration sequences and produce the same tokenization output, hence being robust to homophone typos. At the same time, models trained with SubChar tokenizers perform competitively on downstream tasks. We release our code and models at https://github.com/thunlp/SubCharTokenization to facilitate future work.
+Cite (Informal):Sub-Character Tokenization for Chinese Pretrained Language Models (Si et al., TACL 2023)
+Year:2023
+Venue:TACL
+Anthology ID:2023.tacl-1.28
+Bibkey:si-etal-2023-sub
+Volume:Transactions of the Association for Computational Linguistics, Volume 11
+URL:https://aclanthology.org/2023.tacl-1.28
+PDF:https://aclanthology.org/2023.tacl-1.28.pdf
+Month:
+SIG:
+Address:Cambridge, MA
+Language:
+Cite (ACL):Chenglei Si, Zhengyan Zhang, Yingfa Chen, Fanchao Qi, Xiaozhi Wang, Zhiyuan Liu, Yasheng Wang, Qun Liu, and Maosong Sun. 2023. Sub-Character Tokenization for Chinese Pretrained Language Models. Transactions of the Association for Computational Linguistics, 11:469–487.
+Note:
+Pages:469–487
+DOI:10.1162/tacl_a_00560
+Publisher:MIT Press
+BibTex: @article{si-etal-2023-sub,
+    title = "Sub-Character Tokenization for {C}hinese Pretrained Language Models",
+    author = "Si, Chenglei  and
+      Zhang, Zhengyan  and
+      Chen, Yingfa  and
+      Qi, Fanchao  and
+      Wang, Xiaozhi  and
+      Liu, Zhiyuan  and
+      Wang, Yasheng  and
+      Liu, Qun  and
+      Sun, Maosong",
+    journal = "Transactions of the Association for Computational Linguistics",
+    volume = "11",
+    year = "2023",
+    address = "Cambridge, MA",
+    publisher = "MIT Press",
+    url = "https://aclanthology.org/2023.tacl-1.28",
+    doi = "10.1162/tacl_a_00560",
+    pages = "469--487",
+    abstract = "Tokenization is fundamental to pretrained language models (PLMs). Existing tokenization methods for Chinese PLMs typically treat each character as an indivisible token. However, they ignore the unique feature of the Chinese writing system where additional linguistic information exists below the character level, i.e., at the sub-character level. To utilize such information, we propose sub-character (SubChar for short) tokenization. Specifically, we first encode the input text by converting each Chinese character into a short sequence based on its glyph or pronunciation, and then construct the vocabulary based on the encoded text with sub-word segmentation. Experimental results show that SubChar tokenizers have two main advantages over existing tokenizers: 1) They can tokenize inputs into much shorter sequences, thus improving the computational efficiency. 2) Pronunciation-based SubChar tokenizers can encode Chinese homophones into the same transliteration sequences and produce the same tokenization output, hence being robust to homophone typos. At the same time, models trained with SubChar tokenizers perform competitively on downstream tasks. We release our code and models at \url{https://github.com/thunlp/SubCharTokenization} to facilitate future work.",
+}

@@ -1,0 +1,39 @@
+Title: Socratic Question Generation: A Novel Dataset, Models, and Evaluation
+Authors: Beng Heng Ang, Sujatha Das Gollapalli, See-Kiong Ng
+Abstract: Socratic questioning is a form of reflective inquiry often employed in education to encourage critical thinking in students, and to elicit awareness of beliefs and perspectives in a subject during therapeutic counseling. Specific types of Socratic questions are employed for enabling reasoning and alternate views against the context of individual personal opinions on a topic. Socratic contexts are different from traditional question generation contexts where “answer-seeking” questions are generated against a given formal passage on a topic, narrative stories or conversations. We present SocratiQ, the first large dataset of 110K (question, context) pairs for enabling studies on Socratic Question Generation (SoQG). We provide an in-depth study on the various types of Socratic questions and present models for generating Socratic questions against a given context through prompt tuning. Our automated and human evaluation results demonstrate that our SoQG models can produce realistic, type-sensitive, human-like Socratic questions enabling potential applications in counseling and coaching.
+Cite (Informal):Socratic Question Generation: A Novel Dataset, Models, and Evaluation (Ang et al., EACL 2023)
+Year:2023
+Venue:EACL
+Video:https://aclanthology.org/2023.eacl-main.12.mp4
+Anthology ID:2023.eacl-main.12
+Bibkey:ang-etal-2023-socratic
+Volume:Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics
+URL:https://aclanthology.org/2023.eacl-main.12
+PDF:https://aclanthology.org/2023.eacl-main.12.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Beng Heng Ang, Sujatha Das Gollapalli, and See-Kiong Ng. 2023. Socratic Question Generation: A Novel Dataset, Models, and Evaluation. In Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics, pages 147–165, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:147–165
+DOI:10.18653/v1/2023.eacl-main.12
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{ang-etal-2023-socratic,
+    title = "Socratic Question Generation: A Novel Dataset, Models, and Evaluation",
+    author = "Ang, Beng Heng  and
+      Gollapalli, Sujatha Das  and
+      Ng, See-Kiong",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.eacl-main.12",
+    doi = "10.18653/v1/2023.eacl-main.12",
+    pages = "147--165",
+    abstract = "Socratic questioning is a form of reflective inquiry often employed in education to encourage critical thinking in students, and to elicit awareness of beliefs and perspectives in a subject during therapeutic counseling. Specific types of Socratic questions are employed for enabling reasoning and alternate views against the context of individual personal opinions on a topic. Socratic contexts are different from traditional question generation contexts where {``}answer-seeking{''} questions are generated against a given formal passage on a topic, narrative stories or conversations. We present SocratiQ, the first large dataset of 110K (question, context) pairs for enabling studies on Socratic Question Generation (SoQG). We provide an in-depth study on the various types of Socratic questions and present models for generating Socratic questions against a given context through prompt tuning. Our automated and human evaluation results demonstrate that our SoQG models can produce realistic, type-sensitive, human-like Socratic questions enabling potential applications in counseling and coaching.",
+}

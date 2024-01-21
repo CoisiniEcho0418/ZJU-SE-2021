@@ -1,0 +1,43 @@
+Title: Generative Spoken Dialogue Language Modeling
+Authors: Tu Anh Nguyen, Eugene Kharitonov, Jade Copet, Yossi Adi, Wei-Ning Hsu, Ali Elkahky, Paden Tomasello, Robin Algayres, Benoît Sagot, Abdelrahman Mohamed, Emmanuel Dupoux
+Abstract: We introduce dGSLM, the first “textless” model able to generate audio samples of naturalistic spoken dialogues. It uses recent work on unsupervised spoken unit discovery coupled with a dual-tower transformer architecture with cross-attention trained on 2000 hours of two-channel raw conversational audio (Fisher dataset) without any text or labels. We show that our model is able to generate speech, laughter, and other paralinguistic signals in the two channels simultaneously and reproduces more naturalistic and fluid turn taking compared to a text-based cascaded model.1,2
+Cite (Informal):Generative Spoken Dialogue Language Modeling (Nguyen et al., TACL 2023)
+Year:2023
+Venue:TACL
+Anthology ID:2023.tacl-1.15
+Bibkey:nguyen-etal-2023-generative
+Volume:Transactions of the Association for Computational Linguistics, Volume 11
+URL:https://aclanthology.org/2023.tacl-1.15
+PDF:https://aclanthology.org/2023.tacl-1.15.pdf
+Month:
+SIG:
+Address:Cambridge, MA
+Language:
+Cite (ACL):Tu Anh Nguyen, Eugene Kharitonov, Jade Copet, Yossi Adi, Wei-Ning Hsu, Ali Elkahky, Paden Tomasello, Robin Algayres, Benoît Sagot, Abdelrahman Mohamed, and Emmanuel Dupoux. 2023. Generative Spoken Dialogue Language Modeling. Transactions of the Association for Computational Linguistics, 11:250–266.
+Note:
+Pages:250–266
+DOI:10.1162/tacl_a_00545
+Publisher:MIT Press
+BibTex: @article{nguyen-etal-2023-generative,
+    title = "Generative Spoken Dialogue Language Modeling",
+    author = "Nguyen, Tu Anh  and
+      Kharitonov, Eugene  and
+      Copet, Jade  and
+      Adi, Yossi  and
+      Hsu, Wei-Ning  and
+      Elkahky, Ali  and
+      Tomasello, Paden  and
+      Algayres, Robin  and
+      Sagot, Beno{\^\i}t  and
+      Mohamed, Abdelrahman  and
+      Dupoux, Emmanuel",
+    journal = "Transactions of the Association for Computational Linguistics",
+    volume = "11",
+    year = "2023",
+    address = "Cambridge, MA",
+    publisher = "MIT Press",
+    url = "https://aclanthology.org/2023.tacl-1.15",
+    doi = "10.1162/tacl_a_00545",
+    pages = "250--266",
+    abstract = "We introduce dGSLM, the first {``}textless{''} model able to generate audio samples of naturalistic spoken dialogues. It uses recent work on unsupervised spoken unit discovery coupled with a dual-tower transformer architecture with cross-attention trained on 2000 hours of two-channel raw conversational audio (Fisher dataset) without any text or labels. We show that our model is able to generate speech, laughter, and other paralinguistic signals in the two channels simultaneously and reproduces more naturalistic and fluid turn taking compared to a text-based cascaded model.1,2",
+}

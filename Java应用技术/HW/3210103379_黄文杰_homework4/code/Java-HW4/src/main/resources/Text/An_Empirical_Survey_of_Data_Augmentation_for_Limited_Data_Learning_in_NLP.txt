@@ -1,0 +1,37 @@
+Title: An Empirical Survey of Data Augmentation for Limited Data Learning in NLP
+Authors: Jiaao Chen, Derek Tam, Colin Raffel, Mohit Bansal, Diyi Yang
+Abstract: NLP has achieved great progress in the past decade through the use of neural models and large labeled datasets. The dependence on abundant data prevents NLP models from being applied to low-resource settings or novel tasks where significant time, money, or expertise is required to label massive amounts of textual data. Recently, data augmentation methods have been explored as a means of improving data efficiency in NLP. To date, there has been no systematic empirical overview of data augmentation for NLP in the limited labeled data setting, making it difficult to understand which methods work in which settings. In this paper, we provide an empirical survey of recent progress on data augmentation for NLP in the limited labeled data setting, summarizing the landscape of methods (including token-level augmentations, sentence-level augmentations, adversarial augmentations, and hidden-space augmentations) and carrying out experiments on 11 datasets covering topics/news classification, inference tasks, paraphrasing tasks, and single-sentence tasks. Based on the results, we draw several conclusions to help practitioners choose appropriate augmentations in different settings and discuss the current challenges and future directions for limited data learning in NLP.
+Cite (Informal):An Empirical Survey of Data Augmentation for Limited Data Learning in NLP (Chen et al., TACL 2023)
+Year:2023
+Venue:TACL
+Anthology ID:2023.tacl-1.12
+Bibkey:chen-etal-2023-empirical
+Volume:Transactions of the Association for Computational Linguistics, Volume 11
+URL:https://aclanthology.org/2023.tacl-1.12
+PDF:https://aclanthology.org/2023.tacl-1.12.pdf
+Month:
+SIG:
+Address:Cambridge, MA
+Language:
+Cite (ACL):Jiaao Chen, Derek Tam, Colin Raffel, Mohit Bansal, and Diyi Yang. 2023. An Empirical Survey of Data Augmentation for Limited Data Learning in NLP. Transactions of the Association for Computational Linguistics, 11:191–211.
+Note:
+Pages:191–211
+DOI:10.1162/tacl_a_00542
+Publisher:MIT Press
+BibTex: @article{chen-etal-2023-empirical,
+    title = "An Empirical Survey of Data Augmentation for Limited Data Learning in {NLP}",
+    author = "Chen, Jiaao  and
+      Tam, Derek  and
+      Raffel, Colin  and
+      Bansal, Mohit  and
+      Yang, Diyi",
+    journal = "Transactions of the Association for Computational Linguistics",
+    volume = "11",
+    year = "2023",
+    address = "Cambridge, MA",
+    publisher = "MIT Press",
+    url = "https://aclanthology.org/2023.tacl-1.12",
+    doi = "10.1162/tacl_a_00542",
+    pages = "191--211",
+    abstract = "NLP has achieved great progress in the past decade through the use of neural models and large labeled datasets. The dependence on abundant data prevents NLP models from being applied to low-resource settings or novel tasks where significant time, money, or expertise is required to label massive amounts of textual data. Recently, data augmentation methods have been explored as a means of improving data efficiency in NLP. To date, there has been no systematic empirical overview of data augmentation for NLP in the limited labeled data setting, making it difficult to understand which methods work in which settings. In this paper, we provide an empirical survey of recent progress on data augmentation for NLP in the limited labeled data setting, summarizing the landscape of methods (including token-level augmentations, sentence-level augmentations, adversarial augmentations, and hidden-space augmentations) and carrying out experiments on 11 datasets covering topics/news classification, inference tasks, paraphrasing tasks, and single-sentence tasks. Based on the results, we draw several conclusions to help practitioners choose appropriate augmentations in different settings and discuss the current challenges and future directions for limited data learning in NLP.",
+}

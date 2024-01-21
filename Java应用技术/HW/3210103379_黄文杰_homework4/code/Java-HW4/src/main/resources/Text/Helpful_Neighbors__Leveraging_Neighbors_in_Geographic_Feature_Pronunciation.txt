@@ -1,0 +1,36 @@
+Title: Helpful Neighbors: Leveraging Neighbors in Geographic Feature Pronunciation
+Authors: Llion Jones, Richard Sproat, Haruko Ishikawa, Alexander Gutkin
+Abstract: If one sees the place name Houston Mercer Dog Run in New York, how does one know how to pronounce it? Assuming one knows that Houston in New York is pronounced /ˈhaʊstən/ and not like the Texas city (/ˈhjuːstən/), then one can probably guess that /ˈhaʊstən/ is also used in the name of the dog park. We present a novel architecture that learns to use the pronunciations of neighboring names in order to guess the pronunciation of a given target feature. Applied to Japanese place names, we demonstrate the utility of the model to finding and proposing corrections for errors in Google Maps. To demonstrate the utility of this approach to structurally similar problems, we also report on an application to a totally different task: Cognate reflex prediction in comparative historical linguistics. A version of the code has been open-sourced.1
+Cite (Informal):Helpful Neighbors: Leveraging Neighbors in Geographic Feature Pronunciation (Jones et al., TACL 2023)
+Year:2023
+Venue:TACL
+Anthology ID:2023.tacl-1.6
+Bibkey:jones-etal-2023-helpful
+Volume:Transactions of the Association for Computational Linguistics, Volume 11
+URL:https://aclanthology.org/2023.tacl-1.6
+PDF:https://aclanthology.org/2023.tacl-1.6.pdf
+Month:
+SIG:
+Address:Cambridge, MA
+Language:
+Cite (ACL):Llion Jones, Richard Sproat, Haruko Ishikawa, and Alexander Gutkin. 2023. Helpful Neighbors: Leveraging Neighbors in Geographic Feature Pronunciation. Transactions of the Association for Computational Linguistics, 11:85–101.
+Note:
+Pages:85–101
+DOI:10.1162/tacl_a_00535
+Publisher:MIT Press
+BibTex: @article{jones-etal-2023-helpful,
+    title = "Helpful Neighbors: Leveraging Neighbors in Geographic Feature Pronunciation",
+    author = "Jones, Llion  and
+      Sproat, Richard  and
+      Ishikawa, Haruko  and
+      Gutkin, Alexander",
+    journal = "Transactions of the Association for Computational Linguistics",
+    volume = "11",
+    year = "2023",
+    address = "Cambridge, MA",
+    publisher = "MIT Press",
+    url = "https://aclanthology.org/2023.tacl-1.6",
+    doi = "10.1162/tacl_a_00535",
+    pages = "85--101",
+    abstract = "If one sees the place name Houston Mercer Dog Run in New York, how does one know how to pronounce it? Assuming one knows that Houston in New York is pronounced /ˈhaʊstən/ and not like the Texas city (/ˈhjuːstən/), then one can probably guess that /ˈhaʊstən/ is also used in the name of the dog park. We present a novel architecture that learns to use the pronunciations of neighboring names in order to guess the pronunciation of a given target feature. Applied to Japanese place names, we demonstrate the utility of the model to finding and proposing corrections for errors in Google Maps. To demonstrate the utility of this approach to structurally similar problems, we also report on an application to a totally different task: Cognate reflex prediction in comparative historical linguistics. A version of the code has been open-sourced.1",
+}

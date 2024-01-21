@@ -1,0 +1,42 @@
+Title: CIKQA: Learning Commonsense Inference with a Unified Knowledge-in-the-loop QA Paradigm
+Authors: Hongming Zhang, Yintong Huo, Yanai Elazar, Yangqiu Song, Yoav Goldberg, Dan Roth
+Abstract: We propose a new commonsense reasoning benchmark to motivate commonsense reasoning progress from two perspectives: (1) Evaluating whether models can distinguish knowledge quality by predicting if the knowledge is enough to answer the question; (2) Evaluating whether models can develop commonsense inference capabilities that generalize across tasks. We first extract supporting knowledge for each question and ask humans to annotate whether the auto-extracted knowledge is enough to answer the question or not. After that, we convert different tasks into a unified question-answering format to evaluate the models’ generalization capabilities. We name the benchmark Commonsense Inference with Knowledge-in-the-loop Question Answering (\name). Experiments show that with our learning paradigm, models demonstrate encouraging generalization capabilities. At the same time, we also notice that distinguishing knowledge quality remains challenging for current commonsense reasoning models.
+Cite (Informal):CIKQA: Learning Commonsense Inference with a Unified Knowledge-in-the-loop QA Paradigm (Zhang et al., Findings 2023)
+Year:2023
+Venue:Findings
+Video:https://aclanthology.org/2023.findings-eacl.8.mp4
+Anthology ID:2023.findings-eacl.8
+Bibkey:zhang-etal-2023-cikqa
+Volume:Findings of the Association for Computational Linguistics: EACL 2023
+URL:https://aclanthology.org/2023.findings-eacl.8
+PDF:https://aclanthology.org/2023.findings-eacl.8.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Hongming Zhang, Yintong Huo, Yanai Elazar, Yangqiu Song, Yoav Goldberg, and Dan Roth. 2023. CIKQA: Learning Commonsense Inference with a Unified Knowledge-in-the-loop QA Paradigm. In Findings of the Association for Computational Linguistics: EACL 2023, pages 114–124, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:114–124
+DOI:10.18653/v1/2023.findings-eacl.8
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{zhang-etal-2023-cikqa,
+    title = "{CIKQA}: Learning Commonsense Inference with a Unified Knowledge-in-the-loop {QA} Paradigm",
+    author = "Zhang, Hongming  and
+      Huo, Yintong  and
+      Elazar, Yanai  and
+      Song, Yangqiu  and
+      Goldberg, Yoav  and
+      Roth, Dan",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Findings of the Association for Computational Linguistics: EACL 2023",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.findings-eacl.8",
+    doi = "10.18653/v1/2023.findings-eacl.8",
+    pages = "114--124",
+    abstract = "We propose a new commonsense reasoning benchmark to motivate commonsense reasoning progress from two perspectives: (1) Evaluating whether models can distinguish knowledge quality by predicting if the knowledge is enough to answer the question; (2) Evaluating whether models can develop commonsense inference capabilities that generalize across tasks. We first extract supporting knowledge for each question and ask humans to annotate whether the auto-extracted knowledge is enough to answer the question or not. After that, we convert different tasks into a unified question-answering format to evaluate the models{'} generalization capabilities. We name the benchmark Commonsense Inference with Knowledge-in-the-loop Question Answering ({\textbackslash}name). Experiments show that with our learning paradigm, models demonstrate encouraging generalization capabilities. At the same time, we also notice that distinguishing knowledge quality remains challenging for current commonsense reasoning models.",
+}

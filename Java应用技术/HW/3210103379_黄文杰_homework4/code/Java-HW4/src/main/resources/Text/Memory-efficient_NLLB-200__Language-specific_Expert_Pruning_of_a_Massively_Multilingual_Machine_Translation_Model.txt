@@ -1,0 +1,39 @@
+Title: Memory-efficient NLLB-200: Language-specific Expert Pruning of a Massively Multilingual Machine Translation Model
+Authors: Yeskendir Koishekenov, Alexandre Berard, Vassilina Nikoulina
+Abstract: The recently released NLLB-200 is a set of multilingual Neural Machine Translation models that cover 202 languages. The largest model is based on a Mixture of Experts architecture and achieves SoTA results across many language pairs. It contains 54.5B parameters and requires at least four 32GB GPUs just for inference. In this work, we propose a pruning method that enables the removal of up to 80% of experts without further finetuning and with a negligible loss in translation quality, which makes it feasible to run the model on a single 32GB GPU. Further analysis suggests that our pruning metrics can identify language-specific experts.
+Cite (Informal):Memory-efficient NLLB-200: Language-specific Expert Pruning of a Massively Multilingual Machine Translation Model (Koishekenov et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.198
+Bibkey:koishekenov-etal-2023-memory
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.198
+PDF:https://aclanthology.org/2023.acl-long.198.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Yeskendir Koishekenov, Alexandre Berard, and Vassilina Nikoulina. 2023. Memory-efficient NLLB-200: Language-specific Expert Pruning of a Massively Multilingual Machine Translation Model. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 3567–3585, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:3567–3585
+DOI:10.18653/v1/2023.acl-long.198
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{koishekenov-etal-2023-memory,
+    title = "Memory-efficient {NLLB}-200: Language-specific Expert Pruning of a Massively Multilingual Machine Translation Model",
+    author = "Koishekenov, Yeskendir  and
+      Berard, Alexandre  and
+      Nikoulina, Vassilina",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.198",
+    doi = "10.18653/v1/2023.acl-long.198",
+    pages = "3567--3585",
+    abstract = "The recently released NLLB-200 is a set of multilingual Neural Machine Translation models that cover 202 languages. The largest model is based on a Mixture of Experts architecture and achieves SoTA results across many language pairs. It contains 54.5B parameters and requires at least four 32GB GPUs just for inference. In this work, we propose a pruning method that enables the removal of up to 80{\%} of experts without further finetuning and with a negligible loss in translation quality, which makes it feasible to run the model on a single 32GB GPU. Further analysis suggests that our pruning metrics can identify language-specific experts.",
+}

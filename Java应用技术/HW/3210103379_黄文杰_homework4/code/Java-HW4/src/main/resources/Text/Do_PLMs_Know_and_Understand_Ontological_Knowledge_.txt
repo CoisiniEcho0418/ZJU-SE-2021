@@ -1,0 +1,41 @@
+Title: Do PLMs Know and Understand Ontological Knowledge?
+Authors: Weiqi Wu, Chengyue Jiang, Yong Jiang, Pengjun Xie, Kewei Tu
+Abstract: Ontological knowledge, which comprises classes and properties and their relationships, is integral to world knowledge. It is significant to explore whether Pretrained Language Models (PLMs) know and understand such knowledge. However, existing PLM-probing studies focus mainly on factual knowledge, lacking a system- atic probing of ontological knowledge. In this paper, we focus on probing whether PLMs store ontological knowledge and have a semantic un- derstanding of the knowledge rather than rote memorization of the surface form. To probe whether PLMs know ontological knowledge, we investigate how well PLMs memorize: (1) types of entities; (2) hierarchical relationships among classes and properties, e.g., Person is a subclass of Animal and Member of Sports Team is a subproperty of Member of ; (3) domain and range constraints of properties, e.g., the subject of Member of Sports Team should be a Person and the object should be a Sports Team. To further probe whether PLMs truly understand ontological knowledge beyond memorization, we comprehensively study whether they can reliably perform logical reasoning with given knowledge according to ontological entailment rules. Our probing results show that PLMs can memorize certain ontological knowledge and utilize implicit knowledge in reasoning. How- ever, both the memorizing and reasoning per- formances are less than perfect, indicating in- complete knowledge and understanding.
+Cite (Informal):Do PLMs Know and Understand Ontological Knowledge? (Wu et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.173
+Bibkey:wu-etal-2023-plms
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.173
+PDF:https://aclanthology.org/2023.acl-long.173.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Weiqi Wu, Chengyue Jiang, Yong Jiang, Pengjun Xie, and Kewei Tu. 2023. Do PLMs Know and Understand Ontological Knowledge?. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 3080–3101, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:3080–3101
+DOI:10.18653/v1/2023.acl-long.173
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{wu-etal-2023-plms,
+    title = "Do {PLM}s Know and Understand Ontological Knowledge?",
+    author = "Wu, Weiqi  and
+      Jiang, Chengyue  and
+      Jiang, Yong  and
+      Xie, Pengjun  and
+      Tu, Kewei",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.173",
+    doi = "10.18653/v1/2023.acl-long.173",
+    pages = "3080--3101",
+    abstract = "Ontological knowledge, which comprises classes and properties and their relationships, is integral to world knowledge. It is significant to explore whether Pretrained Language Models (PLMs) know and understand such knowledge. However, existing PLM-probing studies focus mainly on factual knowledge, lacking a system- atic probing of ontological knowledge. In this paper, we focus on probing whether PLMs store ontological knowledge and have a semantic un- derstanding of the knowledge rather than rote memorization of the surface form. To probe whether PLMs know ontological knowledge, we investigate how well PLMs memorize: (1) types of entities; (2) hierarchical relationships among classes and properties, e.g., Person is a subclass of Animal and Member of Sports Team is a subproperty of Member of ; (3) domain and range constraints of properties, e.g., the subject of Member of Sports Team should be a Person and the object should be a Sports Team. To further probe whether PLMs truly understand ontological knowledge beyond memorization, we comprehensively study whether they can reliably perform logical reasoning with given knowledge according to ontological entailment rules. Our probing results show that PLMs can memorize certain ontological knowledge and utilize implicit knowledge in reasoning. How- ever, both the memorizing and reasoning per- formances are less than perfect, indicating in- complete knowledge and understanding.",
+}

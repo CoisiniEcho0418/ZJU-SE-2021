@@ -1,0 +1,53 @@
+Title: Improving Neural Machine Translation Formality Control with Domain Adaptation and Reranking-based Transductive Learning
+Authors: Zhanglin Wu, Zongyao Li, Daimeng Wei, Hengchao Shang, Jiaxin Guo, Xiaoyu Chen, Zhiqiang Rao, Zhengzhe Yu, Jinlong Yang, Shaojun Li, Yuhao Xie, Bin Wei, Jiawei Zheng, Ming Zhu, Lizhi Lei, Hao Yang, Yanfei Jiang
+Abstract: This paper presents Huawei Translation Service Center (HW-TSC)’s submission on the IWSLT 2023 formality control task, which provides two training scenarios: supervised and zero-shot, each containing two language pairs, and sets constrained and unconstrained conditions. We train the formality control models for these four language pairs under these two conditions respectively, and submit the corresponding translation results. Our efforts are divided into two fronts: enhancing general translation quality and improving formality control capability. According to the different requirements of the formality control task, we use a multi-stage pre-training method to train a bilingual or multilingual neural machine translation (NMT) model as the basic model, which can improve the general translation quality of the base model to a relatively high level. Then, under the premise of affecting the general translation quality of the basic model as little as possible, we adopt domain adaptation and reranking-based transductive learning methods to improve the formality control capability of the model.
+Cite (Informal):Improving Neural Machine Translation Formality Control with Domain Adaptation and Reranking-based Transductive Learning (Wu et al., IWSLT 2023)
+Year:2023
+Venue:IWSLT
+Anthology ID:2023.iwslt-1.13
+Bibkey:wu-etal-2023-improving
+Volume:Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023)
+URL:https://aclanthology.org/2023.iwslt-1.13
+PDF:https://aclanthology.org/2023.iwslt-1.13.pdf
+Month:July
+SIG:SIGSLT
+Address:Toronto, Canada (in-person and online)
+Language:
+Cite (ACL):Zhanglin Wu, Zongyao Li, Daimeng Wei, Hengchao Shang, Jiaxin Guo, Xiaoyu Chen, Zhiqiang Rao, Zhengzhe Yu, Jinlong Yang, Shaojun Li, Yuhao Xie, Bin Wei, Jiawei Zheng, Ming Zhu, Lizhi Lei, Hao Yang, and Yanfei Jiang. 2023. Improving Neural Machine Translation Formality Control with Domain Adaptation and Reranking-based Transductive Learning. In Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023), pages 180–186, Toronto, Canada (in-person and online). Association for Computational Linguistics.
+Editors:Elizabeth Salesky,Marcello Federico,Marine Carpuat
+Note:
+Pages:180–186
+DOI:10.18653/v1/2023.iwslt-1.13
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{wu-etal-2023-improving,
+    title = "Improving Neural Machine Translation Formality Control with Domain Adaptation and Reranking-based Transductive Learning",
+    author = "Wu, Zhanglin  and
+      Li, Zongyao  and
+      Wei, Daimeng  and
+      Shang, Hengchao  and
+      Guo, Jiaxin  and
+      Chen, Xiaoyu  and
+      Rao, Zhiqiang  and
+      Yu, Zhengzhe  and
+      Yang, Jinlong  and
+      Li, Shaojun  and
+      Xie, Yuhao  and
+      Wei, Bin  and
+      Zheng, Jiawei  and
+      Zhu, Ming  and
+      Lei, Lizhi  and
+      Yang, Hao  and
+      Jiang, Yanfei",
+    editor = "Salesky, Elizabeth  and
+      Federico, Marcello  and
+      Carpuat, Marine",
+    booktitle = "Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada (in-person and online)",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.iwslt-1.13",
+    doi = "10.18653/v1/2023.iwslt-1.13",
+    pages = "180--186",
+    abstract = "This paper presents Huawei Translation Service Center (HW-TSC){'}s submission on the IWSLT 2023 formality control task, which provides two training scenarios: supervised and zero-shot, each containing two language pairs, and sets constrained and unconstrained conditions. We train the formality control models for these four language pairs under these two conditions respectively, and submit the corresponding translation results. Our efforts are divided into two fronts: enhancing general translation quality and improving formality control capability. According to the different requirements of the formality control task, we use a multi-stage pre-training method to train a bilingual or multilingual neural machine translation (NMT) model as the basic model, which can improve the general translation quality of the base model to a relatively high level. Then, under the premise of affecting the general translation quality of the basic model as little as possible, we adopt domain adaptation and reranking-based transductive learning methods to improve the formality control capability of the model.",
+}

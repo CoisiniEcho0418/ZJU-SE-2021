@@ -1,0 +1,43 @@
+Title: Plan-then-Seam: Towards Efficient Table-to-Text Generation
+Authors: Liang Li, Ruiying Geng, Chengyang Fang, Bing Li, Can Ma, Binhua Li, Yongbin Li
+Abstract: Table-to-text generation aims at automatically generating text to help people conveniently obtain salient information in tables. Recent works explicitly decompose the generation process into content planning and surface generation stages, employing two autoregressive networks for them respectively. However, they are computationally expensive due to the non-parallelizable nature of autoregressive decoding and the redundant parameters of two networks. In this paper, we propose the first totally non-autoregressive table-to-text model (Plan-then-Seam, PTS) that produces its outputs in parallel with one single network.PTS firstly writes and calibrates one plan of the content to be generated with a novel rethinking pointer predictor, and then takes the plan as the context for seaming to decode the description. These two steps share parameters and perform iteratively to capture token inter-dependency while keeping parallel decoding. Experiments on two public benchmarks show that PTS achieves 3.0 5.6 times speedup for inference time, reducing 50% parameters, while maintaining as least comparable performance against strong two-stage table-to-text competitors.
+Cite (Informal):Plan-then-Seam: Towards Efficient Table-to-Text Generation (Li et al., Findings 2023)
+Year:2023
+Venue:Findings
+Video:https://aclanthology.org/2023.findings-eacl.15.mp4
+Anthology ID:2023.findings-eacl.15
+Bibkey:li-etal-2023-plan
+Volume:Findings of the Association for Computational Linguistics: EACL 2023
+URL:https://aclanthology.org/2023.findings-eacl.15
+PDF:https://aclanthology.org/2023.findings-eacl.15.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Liang Li, Ruiying Geng, Chengyang Fang, Bing Li, Can Ma, Binhua Li, and Yongbin Li. 2023. Plan-then-Seam: Towards Efficient Table-to-Text Generation. In Findings of the Association for Computational Linguistics: EACL 2023, pages 205–219, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:205–219
+DOI:10.18653/v1/2023.findings-eacl.15
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{li-etal-2023-plan,
+    title = "Plan-then-Seam: Towards Efficient Table-to-Text Generation",
+    author = "Li, Liang  and
+      Geng, Ruiying  and
+      Fang, Chengyang  and
+      Li, Bing  and
+      Ma, Can  and
+      Li, Binhua  and
+      Li, Yongbin",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Findings of the Association for Computational Linguistics: EACL 2023",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.findings-eacl.15",
+    doi = "10.18653/v1/2023.findings-eacl.15",
+    pages = "205--219",
+    abstract = "Table-to-text generation aims at automatically generating text to help people conveniently obtain salient information in tables. Recent works explicitly decompose the generation process into content planning and surface generation stages, employing two autoregressive networks for them respectively. However, they are computationally expensive due to the non-parallelizable nature of autoregressive decoding and the redundant parameters of two networks. In this paper, we propose the first totally non-autoregressive table-to-text model (Plan-then-Seam, PTS) that produces its outputs in parallel with one single network.PTS firstly writes and calibrates one plan of the content to be generated with a novel rethinking pointer predictor, and then takes the plan as the context for seaming to decode the description. These two steps share parameters and perform iteratively to capture token inter-dependency while keeping parallel decoding. Experiments on two public benchmarks show that PTS achieves 3.0 5.6 times speedup for inference time, reducing 50{\%} parameters, while maintaining as least comparable performance against strong two-stage table-to-text competitors.",
+}

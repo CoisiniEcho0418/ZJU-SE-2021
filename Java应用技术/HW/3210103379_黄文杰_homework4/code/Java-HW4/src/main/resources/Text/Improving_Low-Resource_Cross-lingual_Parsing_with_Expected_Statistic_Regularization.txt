@@ -1,0 +1,34 @@
+Title: Improving Low-Resource Cross-lingual Parsing with Expected Statistic Regularization
+Authors: Thomas Effland, Michael Collins
+Abstract: We present Expected Statistic Regulariza tion (ESR), a novel regularization technique that utilizes low-order multi-task structural statistics to shape model distributions for semi- supervised learning on low-resource datasets. We study ESR in the context of cross-lingual transfer for syntactic analysis (POS tagging and labeled dependency parsing) and present several classes of low-order statistic functions that bear on model behavior. Experimentally, we evaluate the proposed statistics with ESR for unsupervised transfer on 5 diverse target languages and show that all statistics, when estimated accurately, yield improvements to both POS and LAS, with the best statistic improving POS by +7.0 and LAS by +8.5 on average. We also present semi-supervised transfer and learning curve experiments that show ESR provides significant gains over strong cross-lingual-transfer-plus-fine-tuning baselines for modest amounts of label data. These results indicate that ESR is a promising and complementary approach to model-transfer approaches for cross-lingual parsing.1
+Cite (Informal):Improving Low-Resource Cross-lingual Parsing with Expected Statistic Regularization (Effland & Collins, TACL 2023)
+Year:2023
+Venue:TACL
+Anthology ID:2023.tacl-1.8
+Bibkey:effland-collins-2023-improving
+Volume:Transactions of the Association for Computational Linguistics, Volume 11
+URL:https://aclanthology.org/2023.tacl-1.8
+PDF:https://aclanthology.org/2023.tacl-1.8.pdf
+Month:
+SIG:
+Address:Cambridge, MA
+Language:
+Cite (ACL):Thomas Effland and Michael Collins. 2023. Improving Low-Resource Cross-lingual Parsing with Expected Statistic Regularization. Transactions of the Association for Computational Linguistics, 11:122–138.
+Note:
+Pages:122–138
+DOI:10.1162/tacl_a_00537
+Publisher:MIT Press
+BibTex: @article{effland-collins-2023-improving,
+    title = "Improving Low-Resource Cross-lingual Parsing with Expected Statistic Regularization",
+    author = "Effland, Thomas  and
+      Collins, Michael",
+    journal = "Transactions of the Association for Computational Linguistics",
+    volume = "11",
+    year = "2023",
+    address = "Cambridge, MA",
+    publisher = "MIT Press",
+    url = "https://aclanthology.org/2023.tacl-1.8",
+    doi = "10.1162/tacl_a_00537",
+    pages = "122--138",
+    abstract = "We present Expected Statistic Regulariza tion (ESR), a novel regularization technique that utilizes low-order multi-task structural statistics to shape model distributions for semi- supervised learning on low-resource datasets. We study ESR in the context of cross-lingual transfer for syntactic analysis (POS tagging and labeled dependency parsing) and present several classes of low-order statistic functions that bear on model behavior. Experimentally, we evaluate the proposed statistics with ESR for unsupervised transfer on 5 diverse target languages and show that all statistics, when estimated accurately, yield improvements to both POS and LAS, with the best statistic improving POS by +7.0 and LAS by +8.5 on average. We also present semi-supervised transfer and learning curve experiments that show ESR provides significant gains over strong cross-lingual-transfer-plus-fine-tuning baselines for modest amounts of label data. These results indicate that ESR is a promising and complementary approach to model-transfer approaches for cross-lingual parsing.1",
+}

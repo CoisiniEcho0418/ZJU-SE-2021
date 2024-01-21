@@ -1,0 +1,35 @@
+Title: Assessing the Capacity of Transformer to Abstract Syntactic Representations: A Contrastive Analysis Based on Long-distance Agreement
+Authors: Bingzhi Li, Guillaume Wisniewski, Benoît Crabbé
+Abstract: Many studies have shown that transformers are able to predict subject-verb agreement, demonstrating their ability to uncover an abstract representation of the sentence in an unsupervised way. Recently, Li et al. (2021) found that transformers were also able to predict the object-past participle agreement in French, the modeling of which in formal grammar is fundamentally different from that of subject-verb agreement and relies on a movement and an anaphora resolution. To better understand transformers’ internal working, we propose to contrast how they handle these two kinds of agreement. Using probing and counterfactual analysis methods, our experiments on French agreements show that (i) the agreement task suffers from several confounders that partially question the conclusions drawn so far and (ii) transformers handle subject-verb and object-past participle agreements in a way that is consistent with their modeling in theoretical linguistics.
+Cite (Informal):Assessing the Capacity of Transformer to Abstract Syntactic Representations: A Contrastive Analysis Based on Long-distance Agreement (Li et al., TACL 2023)
+Year:2023
+Venue:TACL
+Anthology ID:2023.tacl-1.2
+Bibkey:li-etal-2023-assessing
+Volume:Transactions of the Association for Computational Linguistics, Volume 11
+URL:https://aclanthology.org/2023.tacl-1.2
+PDF:https://aclanthology.org/2023.tacl-1.2.pdf
+Month:
+SIG:
+Address:Cambridge, MA
+Language:
+Cite (ACL):Bingzhi Li, Guillaume Wisniewski, and Benoît Crabbé. 2023. Assessing the Capacity of Transformer to Abstract Syntactic Representations: A Contrastive Analysis Based on Long-distance Agreement. Transactions of the Association for Computational Linguistics, 11:18–33.
+Note:
+Pages:18–33
+DOI:10.1162/tacl_a_00531
+Publisher:MIT Press
+BibTex: @article{li-etal-2023-assessing,
+    title = "Assessing the Capacity of Transformer to Abstract Syntactic Representations: A Contrastive Analysis Based on Long-distance Agreement",
+    author = "Li, Bingzhi  and
+      Wisniewski, Guillaume  and
+      Crabb{\'e}, Beno{\^\i}t",
+    journal = "Transactions of the Association for Computational Linguistics",
+    volume = "11",
+    year = "2023",
+    address = "Cambridge, MA",
+    publisher = "MIT Press",
+    url = "https://aclanthology.org/2023.tacl-1.2",
+    doi = "10.1162/tacl_a_00531",
+    pages = "18--33",
+    abstract = "Many studies have shown that transformers are able to predict subject-verb agreement, demonstrating their ability to uncover an abstract representation of the sentence in an unsupervised way. Recently, Li et al. (2021) found that transformers were also able to predict the object-past participle agreement in French, the modeling of which in formal grammar is fundamentally different from that of subject-verb agreement and relies on a movement and an anaphora resolution. To better understand transformers{'} internal working, we propose to contrast how they handle these two kinds of agreement. Using probing and counterfactual analysis methods, our experiments on French agreements show that (i) the agreement task suffers from several confounders that partially question the conclusions drawn so far and (ii) transformers handle subject-verb and object-past participle agreements in a way that is consistent with their modeling in theoretical linguistics.",
+}

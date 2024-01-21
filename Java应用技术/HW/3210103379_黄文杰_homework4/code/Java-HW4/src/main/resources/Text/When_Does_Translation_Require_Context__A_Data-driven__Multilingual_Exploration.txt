@@ -1,0 +1,41 @@
+Title: When Does Translation Require Context? A Data-driven, Multilingual Exploration
+Authors: Patrick Fernandes, Kayo Yin, Emmy Liu, André Martins, Graham Neubig
+Abstract: Although proper handling of discourse significantly contributes to the quality of machine translation (MT), these improvements are not adequately measured in common translation quality metrics. Recent works in context-aware MT attempt to target a small set of discourse phenomena during evaluation, however not in a fully systematic way. In this paper, we develop the Multilingual Discourse-Aware (MuDA) benchmark, a series of taggers that identify and evaluate model performance on discourse phenomena in any given dataset. The choice of phenomena is inspired by a novel methodology to systematically identify translations that require context. This methodology confirms the difficulty of previously studied phenomena while uncovering others which were not previously addressed. We find that commonly studied context-aware MT models make only marginal improvements over context-agnostic models, which suggests these models do not handle these ambiguities effectively. We release code and data for 14 language pairs to encourage the MT community to focus on accurately capturing discourse phenomena. Code available at https://github.com/neulab/contextual-mt
+Cite (Informal):When Does Translation Require Context? A Data-driven, Multilingual Exploration (Fernandes et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.36
+Bibkey:fernandes-etal-2023-translation
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.36
+PDF:https://aclanthology.org/2023.acl-long.36.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Patrick Fernandes, Kayo Yin, Emmy Liu, André Martins, and Graham Neubig. 2023. When Does Translation Require Context? A Data-driven, Multilingual Exploration. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 606–626, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:606–626
+DOI:10.18653/v1/2023.acl-long.36
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{fernandes-etal-2023-translation,
+    title = "When Does Translation Require Context? A Data-driven, Multilingual Exploration",
+    author = "Fernandes, Patrick  and
+      Yin, Kayo  and
+      Liu, Emmy  and
+      Martins, Andr{\'e}  and
+      Neubig, Graham",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.36",
+    doi = "10.18653/v1/2023.acl-long.36",
+    pages = "606--626",
+    abstract = "Although proper handling of discourse significantly contributes to the quality of machine translation (MT), these improvements are not adequately measured in common translation quality metrics. Recent works in context-aware MT attempt to target a small set of discourse phenomena during evaluation, however not in a fully systematic way. In this paper, we develop the Multilingual Discourse-Aware (MuDA) benchmark, a series of taggers that identify and evaluate model performance on discourse phenomena in any given dataset. The choice of phenomena is inspired by a novel methodology to systematically identify translations that require context. This methodology confirms the difficulty of previously studied phenomena while uncovering others which were not previously addressed. We find that commonly studied context-aware MT models make only marginal improvements over context-agnostic models, which suggests these models do not handle these ambiguities effectively. We release code and data for 14 language pairs to encourage the MT community to focus on accurately capturing discourse phenomena. Code available at \url{https://github.com/neulab/contextual-mt}",
+}

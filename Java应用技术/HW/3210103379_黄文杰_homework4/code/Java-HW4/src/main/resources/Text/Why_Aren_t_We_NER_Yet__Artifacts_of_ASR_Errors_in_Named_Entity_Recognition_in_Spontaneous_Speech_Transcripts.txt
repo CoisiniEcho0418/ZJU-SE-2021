@@ -1,0 +1,42 @@
+Title: Why Aren’t We NER Yet? Artifacts of ASR Errors in Named Entity Recognition in Spontaneous Speech Transcripts
+Authors: Piotr Szymański, Lukasz Augustyniak, Mikolaj Morzy, Adrian Szymczak, Krzysztof Surdyk, Piotr Żelasko
+Abstract: Transcripts of spontaneous human speech present a significant obstacle for traditional NER models. The lack of grammatical structure of spoken utterances and word errors introduced by the ASR make downstream NLP tasks challenging. In this paper, we examine in detail the complex relationship between ASR and NER errors which limit the ability of NER models to recover entity mentions from spontaneous speech transcripts. Using publicly available benchmark datasets (SWNE, Earnings-21, OntoNotes), we present the full taxonomy of ASR-NER errors and measure their true impact on entity recognition. We find that NER models fail spectacularly even if no word errors are introduced by the ASR. We also show why the F1 score is inadequate to evaluate NER models on conversational transcripts.
+Cite (Informal):Why Aren’t We NER Yet? Artifacts of ASR Errors in Named Entity Recognition in Spontaneous Speech Transcripts (Szymański et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.98
+Bibkey:szymanski-etal-2023-arent
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.98
+PDF:https://aclanthology.org/2023.acl-long.98.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Piotr Szymański, Lukasz Augustyniak, Mikolaj Morzy, Adrian Szymczak, Krzysztof Surdyk, and Piotr Żelasko. 2023. Why Aren’t We NER Yet? Artifacts of ASR Errors in Named Entity Recognition in Spontaneous Speech Transcripts. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 1746–1761, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:1746–1761
+DOI:10.18653/v1/2023.acl-long.98
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{szymanski-etal-2023-arent,
+    title = "Why Aren{'}t We {NER} Yet? Artifacts of {ASR} Errors in Named Entity Recognition in Spontaneous Speech Transcripts",
+    author = "Szyma{\'n}ski, Piotr  and
+      Augustyniak, Lukasz  and
+      Morzy, Mikolaj  and
+      Szymczak, Adrian  and
+      Surdyk, Krzysztof  and
+      {\.Z}elasko, Piotr",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.98",
+    doi = "10.18653/v1/2023.acl-long.98",
+    pages = "1746--1761",
+    abstract = "Transcripts of spontaneous human speech present a significant obstacle for traditional NER models. The lack of grammatical structure of spoken utterances and word errors introduced by the ASR make downstream NLP tasks challenging. In this paper, we examine in detail the complex relationship between ASR and NER errors which limit the ability of NER models to recover entity mentions from spontaneous speech transcripts. Using publicly available benchmark datasets (SWNE, Earnings-21, OntoNotes), we present the full taxonomy of ASR-NER errors and measure their true impact on entity recognition. We find that NER models fail spectacularly even if no word errors are introduced by the ASR. We also show why the F1 score is inadequate to evaluate NER models on conversational transcripts.",
+}

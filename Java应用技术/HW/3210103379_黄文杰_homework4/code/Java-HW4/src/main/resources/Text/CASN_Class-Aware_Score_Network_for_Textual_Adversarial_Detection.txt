@@ -1,0 +1,41 @@
+Title: CASN:Class-Aware Score Network for Textual Adversarial Detection
+Authors: Rong Bao, Rui Zheng, Liang Ding, Qi Zhang, Dacheng Tao
+Abstract: Adversarial detection aims to detect adversarial samples that threaten the security of deep neural networks, which is an essential step toward building robust AI systems. Density-based estimation is widely considered as an effective technique by explicitly modeling the distribution of normal data and identifying adversarial ones as outliers. However, these methods suffer from significant performance degradation when the adversarial samples lie close to the non-adversarial data manifold. To address this limitation, we propose a score-based generative method to implicitly model the data distribution. Our approach utilizes the gradient of the log-density data distribution and calculates the distribution gap between adversarial and normal samples through multi-step iterations using Langevin dynamics. In addition, we use supervised contrastive learning to guide the gradient estimation using label information, which avoids collapsing to a single data manifold and better preserves the anisotropy of the different labeled data distributions. Experimental results on three text classification tasks upon four advanced attack algorithms show that our approach is a significant improvement (average +15.2 F1 score against previous SOTA) over previous detection methods.
+Cite (Informal):CASN:Class-Aware Score Network for Textual Adversarial Detection (Bao et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.40
+Bibkey:bao-etal-2023-casn
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.40
+PDF:https://aclanthology.org/2023.acl-long.40.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Rong Bao, Rui Zheng, Liang Ding, Qi Zhang, and Dacheng Tao. 2023. CASN:Class-Aware Score Network for Textual Adversarial Detection. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 671–687, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:671–687
+DOI:10.18653/v1/2023.acl-long.40
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{bao-etal-2023-casn,
+    title = "{CASN}:Class-Aware Score Network for Textual Adversarial Detection",
+    author = "Bao, Rong  and
+      Zheng, Rui  and
+      Ding, Liang  and
+      Zhang, Qi  and
+      Tao, Dacheng",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.40",
+    doi = "10.18653/v1/2023.acl-long.40",
+    pages = "671--687",
+    abstract = "Adversarial detection aims to detect adversarial samples that threaten the security of deep neural networks, which is an essential step toward building robust AI systems. Density-based estimation is widely considered as an effective technique by explicitly modeling the distribution of normal data and identifying adversarial ones as outliers. However, these methods suffer from significant performance degradation when the adversarial samples lie close to the non-adversarial data manifold. To address this limitation, we propose a score-based generative method to implicitly model the data distribution. Our approach utilizes the gradient of the log-density data distribution and calculates the distribution gap between adversarial and normal samples through multi-step iterations using Langevin dynamics. In addition, we use supervised contrastive learning to guide the gradient estimation using label information, which avoids collapsing to a single data manifold and better preserves the anisotropy of the different labeled data distributions. Experimental results on three text classification tasks upon four advanced attack algorithms show that our approach is a significant improvement (average +15.2 F1 score against previous SOTA) over previous detection methods.",
+}

@@ -1,0 +1,44 @@
+Title: Causal Reasoning of Entities and Events in Procedural Texts
+Authors: Li Zhang, Hainiu Xu, Yue Yang, Shuyan Zhou, Weiqiu You, Manni Arora, Chris Callison-Burch
+Abstract: Entities and events are crucial to natural language reasoning and common in procedural texts. Existing work has focused either exclusively on entity state tracking (e.g., whether a pan is hot) or on event reasoning (e.g., whether one would burn themselves by touching the pan), while these two tasks are often causally related. We propose CREPE, the first benchmark on causal reasoning of event plausibility and entity states. We show that most language models, including GPT-3, perform close to chance at .35 F1, lagging far behind human at .87 F1. We boost model performance to .59 F1 by creatively representing events as programming languages while prompting language models pretrained on code. By injecting the causal relations between entities and events as intermediate reasoning steps in our representation, we further boost the performance to .67 F1. Our findings indicate not only the challenge that CREPE brings for language models, but also the efficacy of code-like prompting combined with chain-of-thought prompting for multihop event reasoning.
+Cite (Informal):Causal Reasoning of Entities and Events in Procedural Texts (Zhang et al., Findings 2023)
+Year:2023
+Venue:Findings
+Video:https://aclanthology.org/2023.findings-eacl.31.mp4
+Anthology ID:2023.findings-eacl.31
+Bibkey:zhang-etal-2023-causal
+Dataset:2023.findings-eacl.31.dataset.zip
+Volume:Findings of the Association for Computational Linguistics: EACL 2023
+URL:https://aclanthology.org/2023.findings-eacl.31
+PDF:https://aclanthology.org/2023.findings-eacl.31.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Li Zhang, Hainiu Xu, Yue Yang, Shuyan Zhou, Weiqiu You, Manni Arora, and Chris Callison-Burch. 2023. Causal Reasoning of Entities and Events in Procedural Texts. In Findings of the Association for Computational Linguistics: EACL 2023, pages 415–431, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:415–431
+DOI:10.18653/v1/2023.findings-eacl.31
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{zhang-etal-2023-causal,
+    title = "Causal Reasoning of Entities and Events in Procedural Texts",
+    author = "Zhang, Li  and
+      Xu, Hainiu  and
+      Yang, Yue  and
+      Zhou, Shuyan  and
+      You, Weiqiu  and
+      Arora, Manni  and
+      Callison-Burch, Chris",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Findings of the Association for Computational Linguistics: EACL 2023",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.findings-eacl.31",
+    doi = "10.18653/v1/2023.findings-eacl.31",
+    pages = "415--431",
+    abstract = "Entities and events are crucial to natural language reasoning and common in procedural texts. Existing work has focused either exclusively on entity state tracking (e.g., whether a pan is hot) or on event reasoning (e.g., whether one would burn themselves by touching the pan), while these two tasks are often causally related. We propose CREPE, the first benchmark on causal reasoning of event plausibility and entity states. We show that most language models, including GPT-3, perform close to chance at .35 F1, lagging far behind human at .87 F1. We boost model performance to .59 F1 by creatively representing events as programming languages while prompting language models pretrained on code. By injecting the causal relations between entities and events as intermediate reasoning steps in our representation, we further boost the performance to .67 F1. Our findings indicate not only the challenge that CREPE brings for language models, but also the efficacy of code-like prompting combined with chain-of-thought prompting for multihop event reasoning.",
+}

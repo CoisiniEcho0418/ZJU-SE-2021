@@ -1,0 +1,39 @@
+Title: Infusing Context and Knowledge Awareness in Multi-turn Dialog Understanding
+Authors: Ting-Wei Wu, Biing-Hwang Juang
+Abstract: In multi-turn dialog understanding, semantic frames are constructed by detecting intents and slots within each user utterance. However, recent works lack the capability of modeling multi-turn dynamics within a dialog in natural language understanding (NLU), instead leaving them for updating dialog states only. Moreover, humans usually associate relevant background knowledge with the current dialog contexts to better illustrate slot semantics revealed from word connotations, where previous works have explored such possibility mostly in knowledge-grounded response generation. In this paper, we propose to amend the research gap by equipping a BERT-based NLU framework with knowledge and context awareness. We first encode dialog contexts with a unidirectional context-aware transformer encoder and select relevant inter-word knowledge with the current word and previous history based on a knowledge attention mechanism. Experimental results in two complicated multi-turn dialog datasets have demonstrated significant improvements of our proposed framework. Attention visualization also demonstrates how our modules leverage knowledge across the utterance.
+Cite (Informal):Infusing Context and Knowledge Awareness in Multi-turn Dialog Understanding (Wu & Juang, Findings 2023)
+Year:2023
+Venue:Findings
+Video:https://aclanthology.org/2023.findings-eacl.19.mp4
+Anthology ID:2023.findings-eacl.19
+Bibkey:wu-juang-2023-infusing
+Software:2023.findings-eacl.19.software.zip
+Volume:Findings of the Association for Computational Linguistics: EACL 2023
+URL:https://aclanthology.org/2023.findings-eacl.19
+PDF:https://aclanthology.org/2023.findings-eacl.19.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Ting-Wei Wu and Biing-Hwang Juang. 2023. Infusing Context and Knowledge Awareness in Multi-turn Dialog Understanding. In Findings of the Association for Computational Linguistics: EACL 2023, pages 254–264, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:254–264
+DOI:10.18653/v1/2023.findings-eacl.19
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{wu-juang-2023-infusing,
+    title = "Infusing Context and Knowledge Awareness in Multi-turn Dialog Understanding",
+    author = "Wu, Ting-Wei  and
+      Juang, Biing-Hwang",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Findings of the Association for Computational Linguistics: EACL 2023",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.findings-eacl.19",
+    doi = "10.18653/v1/2023.findings-eacl.19",
+    pages = "254--264",
+    abstract = "In multi-turn dialog understanding, semantic frames are constructed by detecting intents and slots within each user utterance. However, recent works lack the capability of modeling multi-turn dynamics within a dialog in natural language understanding (NLU), instead leaving them for updating dialog states only. Moreover, humans usually associate relevant background knowledge with the current dialog contexts to better illustrate slot semantics revealed from word connotations, where previous works have explored such possibility mostly in knowledge-grounded response generation. In this paper, we propose to amend the research gap by equipping a BERT-based NLU framework with knowledge and context awareness. We first encode dialog contexts with a unidirectional context-aware transformer encoder and select relevant inter-word knowledge with the current word and previous history based on a knowledge attention mechanism. Experimental results in two complicated multi-turn dialog datasets have demonstrated significant improvements of our proposed framework. Attention visualization also demonstrates how our modules leverage knowledge across the utterance.",
+}

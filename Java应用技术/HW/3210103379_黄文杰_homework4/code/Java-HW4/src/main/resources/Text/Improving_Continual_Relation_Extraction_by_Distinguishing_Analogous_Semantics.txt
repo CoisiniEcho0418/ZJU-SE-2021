@@ -1,0 +1,39 @@
+Title: Improving Continual Relation Extraction by Distinguishing Analogous Semantics
+Authors: Wenzheng Zhao, Yuanning Cui, Wei Hu
+Abstract: Continual relation extraction (RE) aims to learn constantly emerging relations while avoiding forgetting the learned relations. Existing works store a small number of typical samples to re-train the model for alleviating forgetting. However, repeatedly replaying these samples may cause the overfitting problem. We conduct an empirical study on existing works and observe that their performance is severely affected by analogous relations. To address this issue, we propose a novel continual extraction model for analogous relations. Specifically, we design memory-insensitive relation prototypes and memory augmentation to overcome the overfitting problem. We also introduce integrated training and focal knowledge distillation to enhance the performance on analogous relations. Experimental results show the superiority of our model and demonstrate its effectiveness in distinguishing analogous relations and overcoming overfitting.
+Cite (Informal):Improving Continual Relation Extraction by Distinguishing Analogous Semantics (Zhao et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.65
+Bibkey:zhao-etal-2023-improving
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.65
+PDF:https://aclanthology.org/2023.acl-long.65.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Wenzheng Zhao, Yuanning Cui, and Wei Hu. 2023. Improving Continual Relation Extraction by Distinguishing Analogous Semantics. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 1162–1175, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:1162–1175
+DOI:10.18653/v1/2023.acl-long.65
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{zhao-etal-2023-improving,
+    title = "Improving Continual Relation Extraction by Distinguishing Analogous Semantics",
+    author = "Zhao, Wenzheng  and
+      Cui, Yuanning  and
+      Hu, Wei",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.65",
+    doi = "10.18653/v1/2023.acl-long.65",
+    pages = "1162--1175",
+    abstract = "Continual relation extraction (RE) aims to learn constantly emerging relations while avoiding forgetting the learned relations. Existing works store a small number of typical samples to re-train the model for alleviating forgetting. However, repeatedly replaying these samples may cause the overfitting problem. We conduct an empirical study on existing works and observe that their performance is severely affected by analogous relations. To address this issue, we propose a novel continual extraction model for analogous relations. Specifically, we design memory-insensitive relation prototypes and memory augmentation to overcome the overfitting problem. We also introduce integrated training and focal knowledge distillation to enhance the performance on analogous relations. Experimental results show the superiority of our model and demonstrate its effectiveness in distinguishing analogous relations and overcoming overfitting.",
+}

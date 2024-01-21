@@ -1,0 +1,38 @@
+Title: Cross-lingual Science Journalism: Select, Simplify and Rewrite Summaries for Non-expert Readers
+Authors: Mehwish Fatima, Michael Strube
+Abstract: Automating Cross-lingual Science Journalism (CSJ) aims to generate popular science summaries from English scientific texts for non-expert readers in their local language. We introduce CSJ as a downstream task of text simplification and cross-lingual scientific summarization to facilitate science journalists’ work. We analyze the performance of possible existing solutions as baselines for the CSJ task. Based on these findings, we propose to combine the three components - SELECT, SIMPLIFY and REWRITE (SSR) to produce cross-lingual simplified science summaries for non-expert readers. Our empirical evaluation on the Wikipedia dataset shows that SSR significantly outperforms the baselines for the CSJ task and can serve as a strong baseline for future work. We also perform an ablation study investigating the impact of individual components of SSR. Further, we analyze the performance of SSR on a high-quality, real-world CSJ dataset with human evaluation and in-depth analysis, demonstrating the superior performance of SSR for CSJ.
+Cite (Informal):Cross-lingual Science Journalism: Select, Simplify and Rewrite Summaries for Non-expert Readers (Fatima & Strube, ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.103
+Bibkey:fatima-strube-2023-cross
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.103
+PDF:https://aclanthology.org/2023.acl-long.103.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Mehwish Fatima and Michael Strube. 2023. Cross-lingual Science Journalism: Select, Simplify and Rewrite Summaries for Non-expert Readers. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 1843–1861, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:1843–1861
+DOI:10.18653/v1/2023.acl-long.103
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{fatima-strube-2023-cross,
+    title = "Cross-lingual Science Journalism: Select, Simplify and Rewrite Summaries for Non-expert Readers",
+    author = "Fatima, Mehwish  and
+      Strube, Michael",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.103",
+    doi = "10.18653/v1/2023.acl-long.103",
+    pages = "1843--1861",
+    abstract = "Automating Cross-lingual Science Journalism (CSJ) aims to generate popular science summaries from English scientific texts for non-expert readers in their local language. We introduce CSJ as a downstream task of text simplification and cross-lingual scientific summarization to facilitate science journalists{'} work. We analyze the performance of possible existing solutions as baselines for the CSJ task. Based on these findings, we propose to combine the three components - SELECT, SIMPLIFY and REWRITE (SSR) to produce cross-lingual simplified science summaries for non-expert readers. Our empirical evaluation on the Wikipedia dataset shows that SSR significantly outperforms the baselines for the CSJ task and can serve as a strong baseline for future work. We also perform an ablation study investigating the impact of individual components of SSR. Further, we analyze the performance of SSR on a high-quality, real-world CSJ dataset with human evaluation and in-depth analysis, demonstrating the superior performance of SSR for CSJ.",
+}

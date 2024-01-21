@@ -1,0 +1,43 @@
+Title: Explainable Recommendation with Personalized Review Retrieval and Aspect Learning
+Authors: Hao Cheng, Shuo Wang, Wensheng Lu, Wei Zhang, Mingyang Zhou, Kezhong Lu, Hao Liao
+Abstract: Explainable recommendation is a technique that combines prediction and generation tasks to produce more persuasive results. Among these tasks, textual generation demands large amounts of data to achieve satisfactory accuracy. However, historical user reviews of items are often insufficient, making it challenging to ensure the precision of generated explanation text. To address this issue, we propose a novel model, ERRA (Explainable Recommendation by personalized Review retrieval and Aspect learning). With retrieval enhancement, ERRA can obtain additional information from the training sets. With this additional information, we can generate more accurate and informative explanations. Furthermore, to better capture users’ preferences, we incorporate an aspect enhancement component into our model. By selecting the top-n aspects that users are most concerned about for different items, we can model user representation with more relevant details, making the explanation more persuasive. To verify the effectiveness of our model, extensive experiments on three datasets show that our model outperforms state-of-the-art baselines (for example, 3.4% improvement in prediction and 15.8% improvement in explanation for TripAdvisor).
+Cite (Informal):Explainable Recommendation with Personalized Review Retrieval and Aspect Learning (Cheng et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.4
+Bibkey:cheng-etal-2023-explainable
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.4
+PDF:https://aclanthology.org/2023.acl-long.4.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Hao Cheng, Shuo Wang, Wensheng Lu, Wei Zhang, Mingyang Zhou, Kezhong Lu, and Hao Liao. 2023. Explainable Recommendation with Personalized Review Retrieval and Aspect Learning. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 51–64, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:51–64
+DOI:10.18653/v1/2023.acl-long.4
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{cheng-etal-2023-explainable,
+    title = "Explainable Recommendation with Personalized Review Retrieval and Aspect Learning",
+    author = "Cheng, Hao  and
+      Wang, Shuo  and
+      Lu, Wensheng  and
+      Zhang, Wei  and
+      Zhou, Mingyang  and
+      Lu, Kezhong  and
+      Liao, Hao",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.4",
+    doi = "10.18653/v1/2023.acl-long.4",
+    pages = "51--64",
+    abstract = "Explainable recommendation is a technique that combines prediction and generation tasks to produce more persuasive results. Among these tasks, textual generation demands large amounts of data to achieve satisfactory accuracy. However, historical user reviews of items are often insufficient, making it challenging to ensure the precision of generated explanation text. To address this issue, we propose a novel model, ERRA (Explainable Recommendation by personalized Review retrieval and Aspect learning). With retrieval enhancement, ERRA can obtain additional information from the training sets. With this additional information, we can generate more accurate and informative explanations. Furthermore, to better capture users{'} preferences, we incorporate an aspect enhancement component into our model. By selecting the top-n aspects that users are most concerned about for different items, we can model user representation with more relevant details, making the explanation more persuasive. To verify the effectiveness of our model, extensive experiments on three datasets show that our model outperforms state-of-the-art baselines (for example, 3.4{\%} improvement in prediction and 15.8{\%} improvement in explanation for TripAdvisor).",
+}

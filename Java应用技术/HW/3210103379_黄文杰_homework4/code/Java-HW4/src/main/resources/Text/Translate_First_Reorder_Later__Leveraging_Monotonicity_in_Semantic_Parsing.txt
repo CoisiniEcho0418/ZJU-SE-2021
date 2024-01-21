@@ -1,0 +1,40 @@
+Title: Translate First Reorder Later: Leveraging Monotonicity in Semantic Parsing
+Authors: Francesco Cazzaro, Davide Locatelli, Ariadna Quattoni, Xavier Carreras
+Abstract: Prior work in semantic parsing has shown that conventional seq2seq models fail at compositional generalization tasks. This limitation led to a resurgence of methods that model alignments between sentences and their corresponding meaning representations, either implicitly through latent variables or explicitly by taking advantage of alignment annotations. We take the second direction and propose TPol, a two-step approach that first translates input sentences monotonically and then reorders them to obtain the correct output. This is achieved with a modular framework comprising a Translator and a Reorderer component. We test our approach on two popular semantic parsing datasets. Our experiments show that by means of the monotonic translations, TPol can learn reliable lexico-logical patterns from aligned data, significantly improving compositional generalization both over conventional seq2seq models, as well as over other approaches that exploit gold alignments.
+Cite (Informal):Translate First Reorder Later: Leveraging Monotonicity in Semantic Parsing (Cazzaro et al., Findings 2023)
+Year:2023
+Venue:Findings
+Video:https://aclanthology.org/2023.findings-eacl.17.mp4
+Anthology ID:2023.findings-eacl.17
+Bibkey:cazzaro-etal-2023-translate
+Volume:Findings of the Association for Computational Linguistics: EACL 2023
+URL:https://aclanthology.org/2023.findings-eacl.17
+PDF:https://aclanthology.org/2023.findings-eacl.17.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Francesco Cazzaro, Davide Locatelli, Ariadna Quattoni, and Xavier Carreras. 2023. Translate First Reorder Later: Leveraging Monotonicity in Semantic Parsing. In Findings of the Association for Computational Linguistics: EACL 2023, pages 227–238, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:227–238
+DOI:10.18653/v1/2023.findings-eacl.17
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{cazzaro-etal-2023-translate,
+    title = "Translate First Reorder Later: Leveraging Monotonicity in Semantic Parsing",
+    author = "Cazzaro, Francesco  and
+      Locatelli, Davide  and
+      Quattoni, Ariadna  and
+      Carreras, Xavier",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Findings of the Association for Computational Linguistics: EACL 2023",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.findings-eacl.17",
+    doi = "10.18653/v1/2023.findings-eacl.17",
+    pages = "227--238",
+    abstract = "Prior work in semantic parsing has shown that conventional seq2seq models fail at compositional generalization tasks. This limitation led to a resurgence of methods that model alignments between sentences and their corresponding meaning representations, either implicitly through latent variables or explicitly by taking advantage of alignment annotations. We take the second direction and propose TPol, a two-step approach that first translates input sentences monotonically and then reorders them to obtain the correct output. This is achieved with a modular framework comprising a Translator and a Reorderer component. We test our approach on two popular semantic parsing datasets. Our experiments show that by means of the monotonic translations, TPol can learn reliable lexico-logical patterns from aligned data, significantly improving compositional generalization both over conventional seq2seq models, as well as over other approaches that exploit gold alignments.",
+}

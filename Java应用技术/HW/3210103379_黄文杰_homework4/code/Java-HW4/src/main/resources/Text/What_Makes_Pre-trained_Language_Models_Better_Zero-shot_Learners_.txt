@@ -1,0 +1,42 @@
+Title: What Makes Pre-trained Language Models Better Zero-shot Learners?
+Authors: Jinghui Lu, Dongsheng Zhu, Weidong Han, Rui Zhao, Brian Mac Namee, Fei Tan
+Abstract: Current methods for prompt learning in zero-shot scenarios widely rely on a development set with sufficient human-annotated data to select the best-performing prompt template a posteriori. This is not ideal because in a real-world zero-shot scenario of practical relevance, no labelled data is available. Thus, we propose a simple yet effective method for screening reasonable prompt templates in zero-shot text classification: Perplexity Selection (Perplection). We hypothesize that language discrepancy can be used to measure the efficacy of prompt templates, and thereby develop a substantiated perplexity-based scheme allowing for forecasting the performance of prompt templates in advance. Experiments show that our method leads to improved prediction performance in a realistic zero-shot setting, eliminating the need for any labelled examples.
+Cite (Informal):What Makes Pre-trained Language Models Better Zero-shot Learners? (Lu et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.128
+Bibkey:lu-etal-2023-makes
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.128
+PDF:https://aclanthology.org/2023.acl-long.128.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Jinghui Lu, Dongsheng Zhu, Weidong Han, Rui Zhao, Brian Mac Namee, and Fei Tan. 2023. What Makes Pre-trained Language Models Better Zero-shot Learners?. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 2288–2303, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:2288–2303
+DOI:10.18653/v1/2023.acl-long.128
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{lu-etal-2023-makes,
+    title = "What Makes Pre-trained Language Models Better Zero-shot Learners?",
+    author = "Lu, Jinghui  and
+      Zhu, Dongsheng  and
+      Han, Weidong  and
+      Zhao, Rui  and
+      Mac Namee, Brian  and
+      Tan, Fei",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.128",
+    doi = "10.18653/v1/2023.acl-long.128",
+    pages = "2288--2303",
+    abstract = "Current methods for prompt learning in zero-shot scenarios widely rely on a development set with sufficient human-annotated data to select the best-performing prompt template a posteriori. This is not ideal because in a real-world zero-shot scenario of practical relevance, no labelled data is available. Thus, we propose a simple yet effective method for screening reasonable prompt templates in zero-shot text classification: Perplexity Selection (Perplection). We hypothesize that language discrepancy can be used to measure the efficacy of prompt templates, and thereby develop a substantiated perplexity-based scheme allowing for forecasting the performance of prompt templates in advance. Experiments show that our method leads to improved prediction performance in a realistic zero-shot setting, eliminating the need for any labelled examples.",
+}

@@ -1,0 +1,41 @@
+Title: When to Use What: An In-Depth Comparative Empirical Analysis of OpenIE Systems for Downstream Applications
+Authors: Kevin Pei, Ishan Jindal, Kevin Chen-Chuan Chang, ChengXiang Zhai, Yunyao Li
+Abstract: Open Information Extraction (OpenIE) has been used in the pipelines of various NLP tasks. Unfortunately, there is no clear consensus on which models to use in which tasks. Muddying things further is the lack of comparisons that take differing training sets into account. In this paper, we present an application-focused empirical survey of neural OpenIE models, training sets, and benchmarks in an effort to help users choose the most suitable OpenIE systems for their applications. We find that the different assumptions made by different models and datasets have a statistically significant effect on performance, making it important to choose the most appropriate model for one’s applications. We demonstrate the applicability of our recommendations on a downstream Complex QA application.
+Cite (Informal):When to Use What: An In-Depth Comparative Empirical Analysis of OpenIE Systems for Downstream Applications (Pei et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.53
+Bibkey:pei-etal-2023-use
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.53
+PDF:https://aclanthology.org/2023.acl-long.53.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Kevin Pei, Ishan Jindal, Kevin Chen-Chuan Chang, ChengXiang Zhai, and Yunyao Li. 2023. When to Use What: An In-Depth Comparative Empirical Analysis of OpenIE Systems for Downstream Applications. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 929–949, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:929–949
+DOI:10.18653/v1/2023.acl-long.53
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{pei-etal-2023-use,
+    title = "When to Use What: An In-Depth Comparative Empirical Analysis of {O}pen{IE} Systems for Downstream Applications",
+    author = "Pei, Kevin  and
+      Jindal, Ishan  and
+      Chang, Kevin Chen-Chuan  and
+      Zhai, ChengXiang  and
+      Li, Yunyao",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.53",
+    doi = "10.18653/v1/2023.acl-long.53",
+    pages = "929--949",
+    abstract = "Open Information Extraction (OpenIE) has been used in the pipelines of various NLP tasks. Unfortunately, there is no clear consensus on which models to use in which tasks. Muddying things further is the lack of comparisons that take differing training sets into account. In this paper, we present an application-focused empirical survey of neural OpenIE models, training sets, and benchmarks in an effort to help users choose the most suitable OpenIE systems for their applications. We find that the different assumptions made by different models and datasets have a statistically significant effect on performance, making it important to choose the most appropriate model for one{'}s applications. We demonstrate the applicability of our recommendations on a downstream Complex QA application.",
+}

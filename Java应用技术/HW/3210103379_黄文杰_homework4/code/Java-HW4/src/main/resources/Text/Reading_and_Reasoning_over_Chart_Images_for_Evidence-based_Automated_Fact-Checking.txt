@@ -1,0 +1,39 @@
+Title: Reading and Reasoning over Chart Images for Evidence-based Automated Fact-Checking
+Authors: Mubashara Akhtar, Oana Cocarascu, Elena Simperl
+Abstract: Evidence data for automated fact-checking (AFC) can be in multiple modalities such as text, tables, images, audio, or video. While there is increasing interest in using images for AFC, previous works mostly focus on detecting manipulated or fake images. We propose a novel task, chart-based fact-checking, and introduce ChartBERT as the first model for AFC against chart evidence. ChartBERT leverages textual, structural and visual information of charts to determine the veracity of textual claims. For evaluation, we create ChartFC, a new dataset of 15,886 charts. We systematically evaluate 75 different vision-language (VL) baselines and show that ChartBERT outperforms VL models, achieving 63.8% accuracy. Our results suggest that the task is complex yet feasible, with many challenges ahead.
+Cite (Informal):Reading and Reasoning over Chart Images for Evidence-based Automated Fact-Checking (Akhtar et al., Findings 2023)
+Year:2023
+Venue:Findings
+Video:https://aclanthology.org/2023.findings-eacl.30.mp4
+Anthology ID:2023.findings-eacl.30
+Bibkey:akhtar-etal-2023-reading
+Volume:Findings of the Association for Computational Linguistics: EACL 2023
+URL:https://aclanthology.org/2023.findings-eacl.30
+PDF:https://aclanthology.org/2023.findings-eacl.30.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Mubashara Akhtar, Oana Cocarascu, and Elena Simperl. 2023. Reading and Reasoning over Chart Images for Evidence-based Automated Fact-Checking. In Findings of the Association for Computational Linguistics: EACL 2023, pages 399–414, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:399–414
+DOI:10.18653/v1/2023.findings-eacl.30
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{akhtar-etal-2023-reading,
+    title = "Reading and Reasoning over Chart Images for Evidence-based Automated Fact-Checking",
+    author = "Akhtar, Mubashara  and
+      Cocarascu, Oana  and
+      Simperl, Elena",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Findings of the Association for Computational Linguistics: EACL 2023",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.findings-eacl.30",
+    doi = "10.18653/v1/2023.findings-eacl.30",
+    pages = "399--414",
+    abstract = "Evidence data for automated fact-checking (AFC) can be in multiple modalities such as text, tables, images, audio, or video. While there is increasing interest in using images for AFC, previous works mostly focus on detecting manipulated or fake images. We propose a novel task, chart-based fact-checking, and introduce ChartBERT as the first model for AFC against chart evidence. ChartBERT leverages textual, structural and visual information of charts to determine the veracity of textual claims. For evaluation, we create ChartFC, a new dataset of 15,886 charts. We systematically evaluate 75 different vision-language (VL) baselines and show that ChartBERT outperforms VL models, achieving 63.8{\%} accuracy. Our results suggest that the task is complex yet feasible, with many challenges ahead.",
+}

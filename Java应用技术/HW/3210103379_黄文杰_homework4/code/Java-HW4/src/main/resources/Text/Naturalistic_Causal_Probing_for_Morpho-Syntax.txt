@@ -1,0 +1,36 @@
+Title: Naturalistic Causal Probing for Morpho-Syntax
+Authors: Afra Amini, Tiago Pimentel, Clara Meister, Ryan Cotterell
+Abstract: Probing has become a go-to methodology for interpreting and analyzing deep neural models in natural language processing. However, there is still a lack of understanding of the limitations and weaknesses of various types of probes. In this work, we suggest a strategy for input-level intervention on naturalistic sentences. Using our approach, we intervene on the morpho-syntactic features of a sentence, while keeping the rest of the sentence unchanged. Such an intervention allows us to causally probe pre-trained models. We apply our naturalistic causal probing framework to analyze the effects of grammatical gender and number on contextualized representations extracted from three pre-trained models in Spanish, the multilingual versions of BERT, RoBERTa, and GPT-2. Our experiments suggest that naturalistic interventions lead to stable estimates of the causal effects of various linguistic properties. Moreover, our experiments demonstrate the importance of naturalistic causal probing when analyzing pre-trained models. https://github.com/rycolab/naturalistic-causal-probing
+Cite (Informal):Naturalistic Causal Probing for Morpho-Syntax (Amini et al., TACL 2023)
+Year:2023
+Venue:TACL
+Anthology ID:2023.tacl-1.23
+Bibkey:amini-etal-2023-naturalistic
+Volume:Transactions of the Association for Computational Linguistics, Volume 11
+URL:https://aclanthology.org/2023.tacl-1.23
+PDF:https://aclanthology.org/2023.tacl-1.23.pdf
+Month:
+SIG:
+Address:Cambridge, MA
+Language:
+Cite (ACL):Afra Amini, Tiago Pimentel, Clara Meister, and Ryan Cotterell. 2023. Naturalistic Causal Probing for Morpho-Syntax. Transactions of the Association for Computational Linguistics, 11:384–403.
+Note:
+Pages:384–403
+DOI:10.1162/tacl_a_00554
+Publisher:MIT Press
+BibTex: @article{amini-etal-2023-naturalistic,
+    title = "Naturalistic Causal Probing for Morpho-Syntax",
+    author = "Amini, Afra  and
+      Pimentel, Tiago  and
+      Meister, Clara  and
+      Cotterell, Ryan",
+    journal = "Transactions of the Association for Computational Linguistics",
+    volume = "11",
+    year = "2023",
+    address = "Cambridge, MA",
+    publisher = "MIT Press",
+    url = "https://aclanthology.org/2023.tacl-1.23",
+    doi = "10.1162/tacl_a_00554",
+    pages = "384--403",
+    abstract = "Probing has become a go-to methodology for interpreting and analyzing deep neural models in natural language processing. However, there is still a lack of understanding of the limitations and weaknesses of various types of probes. In this work, we suggest a strategy for input-level intervention on naturalistic sentences. Using our approach, we intervene on the morpho-syntactic features of a sentence, while keeping the rest of the sentence unchanged. Such an intervention allows us to causally probe pre-trained models. We apply our naturalistic causal probing framework to analyze the effects of grammatical gender and number on contextualized representations extracted from three pre-trained models in Spanish, the multilingual versions of BERT, RoBERTa, and GPT-2. Our experiments suggest that naturalistic interventions lead to stable estimates of the causal effects of various linguistic properties. Moreover, our experiments demonstrate the importance of naturalistic causal probing when analyzing pre-trained models. \url{https://github.com/rycolab/naturalistic-causal-probing}",
+}

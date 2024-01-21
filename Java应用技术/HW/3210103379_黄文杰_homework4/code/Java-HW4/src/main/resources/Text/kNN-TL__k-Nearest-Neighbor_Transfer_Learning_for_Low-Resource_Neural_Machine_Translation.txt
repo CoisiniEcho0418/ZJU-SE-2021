@@ -1,0 +1,43 @@
+Title: kNN-TL: k-Nearest-Neighbor Transfer Learning for Low-Resource Neural Machine Translation
+Authors: Shudong Liu, Xuebo Liu, Derek F. Wong, Zhaocong Li, Wenxiang Jiao, Lidia S. Chao, Min Zhang
+Abstract: Transfer learning has been shown to be an effective technique for enhancing the performance of low-resource neural machine translation (NMT). This is typically achieved through either fine-tuning a child model with a pre-trained parent model, or by utilizing the out- put of the parent model during the training of the child model. However, these methods do not make use of the parent knowledge during the child inference, which may limit the translation performance. In this paper, we propose a k-Nearest-Neighbor Transfer Learning (kNN-TL) approach for low-resource NMT, which leverages the parent knowledge throughout the entire developing process of the child model. Our approach includes a parent-child representation alignment method, which ensures consistency in the output representations between the two models, and a child-aware datastore construction method that improves inference efficiency by selectively distilling the parent datastore based on relevance to the child model. Experimental results on four low-resource translation tasks show that kNN-TL outperforms strong baselines. Extensive analyses further demonstrate the effectiveness of our approach. Code and scripts are freely available at https://github.com/NLP2CT/kNN-TL.
+Cite (Informal):kNN-TL: k-Nearest-Neighbor Transfer Learning for Low-Resource Neural Machine Translation (Liu et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.105
+Bibkey:liu-etal-2023-knn
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.105
+PDF:https://aclanthology.org/2023.acl-long.105.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Shudong Liu, Xuebo Liu, Derek F. Wong, Zhaocong Li, Wenxiang Jiao, Lidia S. Chao, and Min Zhang. 2023. kNN-TL: k-Nearest-Neighbor Transfer Learning for Low-Resource Neural Machine Translation. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 1878–1891, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:1878–1891
+DOI:10.18653/v1/2023.acl-long.105
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{liu-etal-2023-knn,
+    title = "k{NN}-{TL}: k-Nearest-Neighbor Transfer Learning for Low-Resource Neural Machine Translation",
+    author = "Liu, Shudong  and
+      Liu, Xuebo  and
+      Wong, Derek F.  and
+      Li, Zhaocong  and
+      Jiao, Wenxiang  and
+      Chao, Lidia S.  and
+      Zhang, Min",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.105",
+    doi = "10.18653/v1/2023.acl-long.105",
+    pages = "1878--1891",
+    abstract = "Transfer learning has been shown to be an effective technique for enhancing the performance of low-resource neural machine translation (NMT). This is typically achieved through either fine-tuning a child model with a pre-trained parent model, or by utilizing the out- put of the parent model during the training of the child model. However, these methods do not make use of the parent knowledge during the child inference, which may limit the translation performance. In this paper, we propose a k-Nearest-Neighbor Transfer Learning (kNN-TL) approach for low-resource NMT, which leverages the parent knowledge throughout the entire developing process of the child model. Our approach includes a parent-child representation alignment method, which ensures consistency in the output representations between the two models, and a child-aware datastore construction method that improves inference efficiency by selectively distilling the parent datastore based on relevance to the child model. Experimental results on four low-resource translation tasks show that kNN-TL outperforms strong baselines. Extensive analyses further demonstrate the effectiveness of our approach. Code and scripts are freely available at \url{https://github.com/NLP2CT/kNN-TL}.",
+}

@@ -1,0 +1,39 @@
+Title: InSCIt: Information-Seeking Conversations with Mixed-Initiative Interactions
+Authors: Zeqiu Wu, Ryu Parish, Hao Cheng, Sewon Min, Prithviraj Ammanabrolu, Mari Ostendorf, Hannaneh Hajishirzi
+Abstract: In an information-seeking conversation, a user may ask questions that are under-specified or unanswerable. An ideal agent would interact by initiating different response types according to the available knowledge sources. However, most current studies either fail to or artificially incorporate such agent-side initiative. This work presents InSCIt, a dataset for Information-Seeking Conversations with mixed-initiative Interactions. It contains 4.7K user-agent turns from 805 human-human conversations where the agent searches over Wikipedia and either directly answers, asks for clarification, or provides relevant information to address user queries. The data supports two subtasks, evidence passage identification and response generation, as well as a human evaluation protocol to assess model performance. We report results of two systems based on state-of-the-art models of conversational knowledge identification and open-domain question answering. Both systems significantly underperform humans, suggesting ample room for improvement in future studies.1
+Cite (Informal):InSCIt: Information-Seeking Conversations with Mixed-Initiative Interactions (Wu et al., TACL 2023)
+Year:2023
+Venue:TACL
+Anthology ID:2023.tacl-1.27
+Bibkey:wu-etal-2023-inscit
+Volume:Transactions of the Association for Computational Linguistics, Volume 11
+URL:https://aclanthology.org/2023.tacl-1.27
+PDF:https://aclanthology.org/2023.tacl-1.27.pdf
+Month:
+SIG:
+Address:Cambridge, MA
+Language:
+Cite (ACL):Zeqiu Wu, Ryu Parish, Hao Cheng, Sewon Min, Prithviraj Ammanabrolu, Mari Ostendorf, and Hannaneh Hajishirzi. 2023. InSCIt: Information-Seeking Conversations with Mixed-Initiative Interactions. Transactions of the Association for Computational Linguistics, 11:453–468.
+Note:
+Pages:453–468
+DOI:10.1162/tacl_a_00559
+Publisher:MIT Press
+BibTex: @article{wu-etal-2023-inscit,
+    title = "{I}n{SCI}t: Information-Seeking Conversations with Mixed-Initiative Interactions",
+    author = "Wu, Zeqiu  and
+      Parish, Ryu  and
+      Cheng, Hao  and
+      Min, Sewon  and
+      Ammanabrolu, Prithviraj  and
+      Ostendorf, Mari  and
+      Hajishirzi, Hannaneh",
+    journal = "Transactions of the Association for Computational Linguistics",
+    volume = "11",
+    year = "2023",
+    address = "Cambridge, MA",
+    publisher = "MIT Press",
+    url = "https://aclanthology.org/2023.tacl-1.27",
+    doi = "10.1162/tacl_a_00559",
+    pages = "453--468",
+    abstract = "In an information-seeking conversation, a user may ask questions that are under-specified or unanswerable. An ideal agent would interact by initiating different response types according to the available knowledge sources. However, most current studies either fail to or artificially incorporate such agent-side initiative. This work presents InSCIt, a dataset for Information-Seeking Conversations with mixed-initiative Interactions. It contains 4.7K user-agent turns from 805 human-human conversations where the agent searches over Wikipedia and either directly answers, asks for clarification, or provides relevant information to address user queries. The data supports two subtasks, evidence passage identification and response generation, as well as a human evaluation protocol to assess model performance. We report results of two systems based on state-of-the-art models of conversational knowledge identification and open-domain question answering. Both systems significantly underperform humans, suggesting ample room for improvement in future studies.1",
+}

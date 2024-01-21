@@ -1,0 +1,35 @@
+Title: Dubbing in Practice: A Large Scale Study of Human Localization With Insights for Automatic Dubbing
+Authors: William Brannon, Yogesh Virkar, Brian Thompson
+Abstract: We investigate how humans perform the task of dubbing video content from one language into another, leveraging a novel corpus of 319.57 hours of video from 54 professionally produced titles. This is the first such large-scale study we are aware of. The results challenge a number of assumptions commonly made in both qualitative literature on human dubbing and machine-learning literature on automatic dubbing, arguing for the importance of vocal naturalness and translation quality over commonly emphasized isometric (character length) and lip-sync constraints, and for a more qualified view of the importance of isochronic (timing) constraints. We also find substantial influence of the source-side audio on human dubs through channels other than the words of the translation, pointing to the need for research on ways to preserve speech characteristics, as well as transfer of semantic properties such as emphasis and emotion, in automatic dubbing systems.
+Cite (Informal):Dubbing in Practice: A Large Scale Study of Human Localization With Insights for Automatic Dubbing (Brannon et al., TACL 2023)
+Year:2023
+Venue:TACL
+Anthology ID:2023.tacl-1.25
+Bibkey:brannon-etal-2023-dubbing
+Volume:Transactions of the Association for Computational Linguistics, Volume 11
+URL:https://aclanthology.org/2023.tacl-1.25
+PDF:https://aclanthology.org/2023.tacl-1.25.pdf
+Month:
+SIG:
+Address:Cambridge, MA
+Language:
+Cite (ACL):William Brannon, Yogesh Virkar, and Brian Thompson. 2023. Dubbing in Practice: A Large Scale Study of Human Localization With Insights for Automatic Dubbing. Transactions of the Association for Computational Linguistics, 11:419–435.
+Note:
+Pages:419–435
+DOI:10.1162/tacl_a_00551
+Publisher:MIT Press
+BibTex: @article{brannon-etal-2023-dubbing,
+    title = "Dubbing in Practice: A Large Scale Study of Human Localization With Insights for Automatic Dubbing",
+    author = "Brannon, William  and
+      Virkar, Yogesh  and
+      Thompson, Brian",
+    journal = "Transactions of the Association for Computational Linguistics",
+    volume = "11",
+    year = "2023",
+    address = "Cambridge, MA",
+    publisher = "MIT Press",
+    url = "https://aclanthology.org/2023.tacl-1.25",
+    doi = "10.1162/tacl_a_00551",
+    pages = "419--435",
+    abstract = "We investigate how humans perform the task of dubbing video content from one language into another, leveraging a novel corpus of 319.57 hours of video from 54 professionally produced titles. This is the first such large-scale study we are aware of. The results challenge a number of assumptions commonly made in both qualitative literature on human dubbing and machine-learning literature on automatic dubbing, arguing for the importance of vocal naturalness and translation quality over commonly emphasized isometric (character length) and lip-sync constraints, and for a more qualified view of the importance of isochronic (timing) constraints. We also find substantial influence of the source-side audio on human dubs through channels other than the words of the translation, pointing to the need for research on ways to preserve speech characteristics, as well as transfer of semantic properties such as emphasis and emotion, in automatic dubbing systems.",
+}

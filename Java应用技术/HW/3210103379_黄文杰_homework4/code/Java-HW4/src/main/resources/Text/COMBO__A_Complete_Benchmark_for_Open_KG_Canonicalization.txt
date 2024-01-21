@@ -1,0 +1,42 @@
+Title: COMBO: A Complete Benchmark for Open KG Canonicalization
+Authors: Chengyue Jiang, Yong Jiang, Weiqi Wu, Yuting Zheng, Pengjun Xie, Kewei Tu
+Abstract: Open knowledge graph (KG) consists of (subject, relation, object) triples extracted from millions of raw text. The subject and object noun phrases and the relation in open KG have severe redundancy and ambiguity and need to be canonicalized. Existing datasets for open KG canonicalization only provide gold entity-level canonicalization for noun phrases. In this paper, we present COMBO, a Complete Benchmark for Open KG canonicalization. Compared with existing datasets, we additionally provide gold canonicalization for relation phrases, gold ontology-level canonicalization for noun phrases, as well as source sentences from which triples are extracted. We also propose metrics for evaluating each type of canonicalization. On the COMBO dataset, we empirically compare previously proposed canonicalization methods as well as a few simple baseline methods based on pretrained language models. We find that properly encoding the phrases in a triple using pretrained language models results in better relation canonicalization and ontology-level canonicalization of the noun phrase. We release our dataset, baselines, and evaluation scripts at path/to/url.
+Cite (Informal):COMBO: A Complete Benchmark for Open KG Canonicalization (Jiang et al., EACL 2023)
+Year:2023
+Venue:EACL
+Video:https://aclanthology.org/2023.eacl-main.26.mp4
+Anthology ID:2023.eacl-main.26
+Bibkey:jiang-etal-2023-combo
+Volume:Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics
+URL:https://aclanthology.org/2023.eacl-main.26
+PDF:https://aclanthology.org/2023.eacl-main.26.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Chengyue Jiang, Yong Jiang, Weiqi Wu, Yuting Zheng, Pengjun Xie, and Kewei Tu. 2023. COMBO: A Complete Benchmark for Open KG Canonicalization. In Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics, pages 340–357, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:340–357
+DOI:10.18653/v1/2023.eacl-main.26
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{jiang-etal-2023-combo,
+    title = "{COMBO}: A Complete Benchmark for Open {KG} Canonicalization",
+    author = "Jiang, Chengyue  and
+      Jiang, Yong  and
+      Wu, Weiqi  and
+      Zheng, Yuting  and
+      Xie, Pengjun  and
+      Tu, Kewei",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.eacl-main.26",
+    doi = "10.18653/v1/2023.eacl-main.26",
+    pages = "340--357",
+    abstract = "Open knowledge graph (KG) consists of (subject, relation, object) triples extracted from millions of raw text. The subject and object noun phrases and the relation in open KG have severe redundancy and ambiguity and need to be canonicalized. Existing datasets for open KG canonicalization only provide gold entity-level canonicalization for noun phrases. In this paper, we present COMBO, a Complete Benchmark for Open KG canonicalization. Compared with existing datasets, we additionally provide gold canonicalization for relation phrases, gold ontology-level canonicalization for noun phrases, as well as source sentences from which triples are extracted. We also propose metrics for evaluating each type of canonicalization. On the COMBO dataset, we empirically compare previously proposed canonicalization methods as well as a few simple baseline methods based on pretrained language models. We find that properly encoding the phrases in a triple using pretrained language models results in better relation canonicalization and ontology-level canonicalization of the noun phrase. We release our dataset, baselines, and evaluation scripts at path/to/url.",
+}

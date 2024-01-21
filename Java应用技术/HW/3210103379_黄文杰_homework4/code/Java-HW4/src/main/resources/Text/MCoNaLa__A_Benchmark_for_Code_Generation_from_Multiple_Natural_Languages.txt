@@ -1,0 +1,41 @@
+Title: MCoNaLa: A Benchmark for Code Generation from Multiple Natural Languages
+Authors: Zhiruo Wang, Grace Cuenca, Shuyan Zhou, Frank F. Xu, Graham Neubig
+Abstract: While there has been a recent burgeoning of applications at the intersection of natural and programming languages, such as code generation and code summarization, these applications are usually English-centric. This creates a barrier for program developers who are not proficient in English. To mitigate this gap in technology development across languages, we propose a multilingual dataset, MCoNaLa, to benchmark code generation from natural language commands extending beyond English. Modeled off of the methodology from the English Code/Natural Language Challenge (CoNaLa) dataset, we annotated a total of 896 NL-Code pairs in three languages: Spanish, Japanese, and Russian. We present a systematic evaluation on MCoNaLa by testing state-of-the-art code generation systems. Although the difficulties vary across three languages, all systems lag significantly behind their English counterparts, revealing the challenges in adapting code generation to new languages.
+Cite (Informal):MCoNaLa: A Benchmark for Code Generation from Multiple Natural Languages (Wang et al., Findings 2023)
+Year:2023
+Venue:Findings
+Video:https://aclanthology.org/2023.findings-eacl.20.mp4
+Anthology ID:2023.findings-eacl.20
+Bibkey:wang-etal-2023-mconala
+Volume:Findings of the Association for Computational Linguistics: EACL 2023
+URL:https://aclanthology.org/2023.findings-eacl.20
+PDF:https://aclanthology.org/2023.findings-eacl.20.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Zhiruo Wang, Grace Cuenca, Shuyan Zhou, Frank F. Xu, and Graham Neubig. 2023. MCoNaLa: A Benchmark for Code Generation from Multiple Natural Languages. In Findings of the Association for Computational Linguistics: EACL 2023, pages 265–273, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:265–273
+DOI:10.18653/v1/2023.findings-eacl.20
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{wang-etal-2023-mconala,
+    title = "{MC}o{N}a{L}a: A Benchmark for Code Generation from Multiple Natural Languages",
+    author = "Wang, Zhiruo  and
+      Cuenca, Grace  and
+      Zhou, Shuyan  and
+      Xu, Frank F.  and
+      Neubig, Graham",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Findings of the Association for Computational Linguistics: EACL 2023",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.findings-eacl.20",
+    doi = "10.18653/v1/2023.findings-eacl.20",
+    pages = "265--273",
+    abstract = "While there has been a recent burgeoning of applications at the intersection of natural and programming languages, such as code generation and code summarization, these applications are usually English-centric. This creates a barrier for program developers who are not proficient in English. To mitigate this gap in technology development across languages, we propose a multilingual dataset, MCoNaLa, to benchmark code generation from natural language commands extending beyond English. Modeled off of the methodology from the English Code/Natural Language Challenge (CoNaLa) dataset, we annotated a total of 896 NL-Code pairs in three languages: Spanish, Japanese, and Russian. We present a systematic evaluation on MCoNaLa by testing state-of-the-art code generation systems. Although the difficulties vary across three languages, all systems lag significantly behind their English counterparts, revealing the challenges in adapting code generation to new languages.",
+}

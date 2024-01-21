@@ -1,0 +1,40 @@
+Title: Compositional Data Augmentation for Abstractive Conversation Summarization
+Authors: Siru Ouyang, Jiaao Chen, Jiawei Han, Diyi Yang
+Abstract: Recent abstractive conversation summarization systems generally rely on large-scale datasets with annotated summaries. However, collecting and annotating these conversations can be a time-consuming and labor-intensive task. To address this issue, in this work, we present a sub-structure level compositional data augmentation method, Compo, for generating diverse and high-quality pairs of conversations and summaries. Specifically, Compo first extracts conversation structures like topic splits and action triples as basic units. Then we organize these semantically meaningful conversation snippets compositionally to create new training instances. Additionally, we explore noise-tolerant settings in both self-training and joint-training paradigms to make the most of these augmented samples. Our experiments on benchmark datasets, SAMSum and DialogSum, show that Compo substantially outperforms prior baseline methods by achieving a nearly 10% increase of ROUGE scores with limited data. Code is available at https://github.com/ozyyshr/Compo.
+Cite (Informal):Compositional Data Augmentation for Abstractive Conversation Summarization (Ouyang et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.82
+Bibkey:ouyang-etal-2023-compositional
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.82
+PDF:https://aclanthology.org/2023.acl-long.82.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Siru Ouyang, Jiaao Chen, Jiawei Han, and Diyi Yang. 2023. Compositional Data Augmentation for Abstractive Conversation Summarization. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 1471–1488, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:1471–1488
+DOI:10.18653/v1/2023.acl-long.82
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{ouyang-etal-2023-compositional,
+    title = "Compositional Data Augmentation for Abstractive Conversation Summarization",
+    author = "Ouyang, Siru  and
+      Chen, Jiaao  and
+      Han, Jiawei  and
+      Yang, Diyi",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.82",
+    doi = "10.18653/v1/2023.acl-long.82",
+    pages = "1471--1488",
+    abstract = "Recent abstractive conversation summarization systems generally rely on large-scale datasets with annotated summaries. However, collecting and annotating these conversations can be a time-consuming and labor-intensive task. To address this issue, in this work, we present a sub-structure level compositional data augmentation method, Compo, for generating diverse and high-quality pairs of conversations and summaries. Specifically, Compo first extracts conversation structures like topic splits and action triples as basic units. Then we organize these semantically meaningful conversation snippets compositionally to create new training instances. Additionally, we explore noise-tolerant settings in both self-training and joint-training paradigms to make the most of these augmented samples. Our experiments on benchmark datasets, SAMSum and DialogSum, show that Compo substantially outperforms prior baseline methods by achieving a nearly 10{\%} increase of ROUGE scores with limited data. Code is available at \url{https://github.com/ozyyshr/Compo}.",
+}

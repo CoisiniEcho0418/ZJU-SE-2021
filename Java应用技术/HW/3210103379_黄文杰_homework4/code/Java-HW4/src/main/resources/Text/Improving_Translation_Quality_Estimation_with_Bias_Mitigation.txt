@@ -1,0 +1,42 @@
+Title: Improving Translation Quality Estimation with Bias Mitigation
+Authors: Hui Huang, Shuangzhi Wu, Kehai Chen, Hui Di, Muyun Yang, Tiejun Zhao
+Abstract: State-of-the-art translation Quality Estimation (QE) models are proven to be biased. More specifically, they over-rely on monolingual features while ignoring the bilingual semantic alignment. In this work, we propose a novel method to mitigate the bias of the QE model and improve estimation performance. Our method is based on the contrastive learning between clean and noisy sentence pairs. We first introduce noise to the target side of the parallel sentence pair, forming the negative samples. With the original parallel pairs as the positive sample, the QE model is contrastively trained to distinguish the positive samples from the negative ones. This objective is jointly trained with the regression-style quality estimation, so as to prevent the QE model from overfitting to monolingual features. Experiments on WMT QE evaluation datasets demonstrate that our method improves the estimation performance by a large margin while mitigating the bias.
+Cite (Informal):Improving Translation Quality Estimation with Bias Mitigation (Huang et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.121
+Bibkey:huang-etal-2023-improving
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.121
+PDF:https://aclanthology.org/2023.acl-long.121.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Hui Huang, Shuangzhi Wu, Kehai Chen, Hui Di, Muyun Yang, and Tiejun Zhao. 2023. Improving Translation Quality Estimation with Bias Mitigation. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 2175–2190, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:2175–2190
+DOI:10.18653/v1/2023.acl-long.121
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{huang-etal-2023-improving,
+    title = "Improving Translation Quality Estimation with Bias Mitigation",
+    author = "Huang, Hui  and
+      Wu, Shuangzhi  and
+      Chen, Kehai  and
+      Di, Hui  and
+      Yang, Muyun  and
+      Zhao, Tiejun",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.121",
+    doi = "10.18653/v1/2023.acl-long.121",
+    pages = "2175--2190",
+    abstract = "State-of-the-art translation Quality Estimation (QE) models are proven to be biased. More specifically, they over-rely on monolingual features while ignoring the bilingual semantic alignment. In this work, we propose a novel method to mitigate the bias of the QE model and improve estimation performance. Our method is based on the contrastive learning between clean and noisy sentence pairs. We first introduce noise to the target side of the parallel sentence pair, forming the negative samples. With the original parallel pairs as the positive sample, the QE model is contrastively trained to distinguish the positive samples from the negative ones. This objective is jointly trained with the regression-style quality estimation, so as to prevent the QE model from overfitting to monolingual features. Experiments on WMT QE evaluation datasets demonstrate that our method improves the estimation performance by a large margin while mitigating the bias.",
+}

@@ -1,0 +1,39 @@
+Title: A Method for Studying Semantic Construal in Grammatical Constructions with Interpretable Contextual Embedding Spaces
+Authors: Gabriella Chronis, Kyle Mahowald, Katrin Erk
+Abstract: We study semantic construal in grammatical constructions using large language models. First, we project contextual word embeddings into three interpretable semantic spaces, each defined by a different set of psycholinguistic feature norms. We validate these interpretable spaces and then use them to automatically derive semantic characterizations of lexical items in two grammatical constructions: nouns in subject or object position within the same sentence, and the AANN construction (e.g., ‘a beautiful three days’). We show that a word in subject position is interpreted as more agentive than the very same word in object position, and that the nouns in the AANN construction are interpreted as more measurement-like than when in the canonical alternation. Our method can probe the distributional meaning of syntactic constructions at a templatic level, abstracted away from specific lexemes.
+Cite (Informal):A Method for Studying Semantic Construal in Grammatical Constructions with Interpretable Contextual Embedding Spaces (Chronis et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.14
+Bibkey:chronis-etal-2023-method
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.14
+PDF:https://aclanthology.org/2023.acl-long.14.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Gabriella Chronis, Kyle Mahowald, and Katrin Erk. 2023. A Method for Studying Semantic Construal in Grammatical Constructions with Interpretable Contextual Embedding Spaces. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 242–261, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:242–261
+DOI:10.18653/v1/2023.acl-long.14
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{chronis-etal-2023-method,
+    title = "A Method for Studying Semantic Construal in Grammatical Constructions with Interpretable Contextual Embedding Spaces",
+    author = "Chronis, Gabriella  and
+      Mahowald, Kyle  and
+      Erk, Katrin",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.14",
+    doi = "10.18653/v1/2023.acl-long.14",
+    pages = "242--261",
+    abstract = "We study semantic construal in grammatical constructions using large language models. First, we project contextual word embeddings into three interpretable semantic spaces, each defined by a different set of psycholinguistic feature norms. We validate these interpretable spaces and then use them to automatically derive semantic characterizations of lexical items in two grammatical constructions: nouns in subject or object position within the same sentence, and the AANN construction (e.g., {`}a beautiful three days{'}). We show that a word in subject position is interpreted as more agentive than the very same word in object position, and that the nouns in the AANN construction are interpreted as more measurement-like than when in the canonical alternation. Our method can probe the distributional meaning of syntactic constructions at a templatic level, abstracted away from specific lexemes.",
+}

@@ -1,0 +1,40 @@
+Title: Efficient Encoders for Streaming Sequence Tagging
+Authors: Ayush Kaushal, Aditya Gupta, Shyam Upadhyay, Manaal Faruqui
+Abstract: A naive application of state-of-the-art bidirectional encoders for streaming sequence tagging would require encoding each token from scratch for each new token in an incremental streaming input (like transcribed speech). The lack of re-usability of previous computation leads to a higher number of Floating Point Operations (or FLOPs) and higher number of unnecessary label flips. Increased FLOPs consequently lead to higher wall-clock time and increased label flipping leads to poorer streaming performance. In this work, we present a Hybrid Encoder with Adaptive Restart (HEAR) that addresses these issues while maintaining the performance of bidirectional encoders over the offline (or complete) and improving streaming (or incomplete) inputs. HEAR has a Hybrid unidirectional-bidirectional encoder architecture to perform sequence tagging, along with an Adaptive Restart Module (ARM) to selectively guide the restart of bidirectional portion of the encoder. Across four sequence tagging tasks, HEAR offers FLOP savings in streaming settings upto 71.1% and also outperforms bidirectional encoders for streaming predictions by upto +10% streaming exact match.
+Cite (Informal):Efficient Encoders for Streaming Sequence Tagging (Kaushal et al., EACL 2023)
+Year:2023
+Venue:EACL
+Video:https://aclanthology.org/2023.eacl-main.31.mp4
+Anthology ID:2023.eacl-main.31
+Bibkey:kaushal-etal-2023-efficient
+Volume:Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics
+URL:https://aclanthology.org/2023.eacl-main.31
+PDF:https://aclanthology.org/2023.eacl-main.31.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Ayush Kaushal, Aditya Gupta, Shyam Upadhyay, and Manaal Faruqui. 2023. Efficient Encoders for Streaming Sequence Tagging. In Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics, pages 418–429, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:418–429
+DOI:10.18653/v1/2023.eacl-main.31
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{kaushal-etal-2023-efficient,
+    title = "Efficient Encoders for Streaming Sequence Tagging",
+    author = "Kaushal, Ayush  and
+      Gupta, Aditya  and
+      Upadhyay, Shyam  and
+      Faruqui, Manaal",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.eacl-main.31",
+    doi = "10.18653/v1/2023.eacl-main.31",
+    pages = "418--429",
+    abstract = "A naive application of state-of-the-art bidirectional encoders for streaming sequence tagging would require encoding each token from scratch for each new token in an incremental streaming input (like transcribed speech). The lack of re-usability of previous computation leads to a higher number of Floating Point Operations (or FLOPs) and higher number of unnecessary label flips. Increased FLOPs consequently lead to higher wall-clock time and increased label flipping leads to poorer streaming performance. In this work, we present a Hybrid Encoder with Adaptive Restart (HEAR) that addresses these issues while maintaining the performance of bidirectional encoders over the offline (or complete) and improving streaming (or incomplete) inputs. HEAR has a Hybrid unidirectional-bidirectional encoder architecture to perform sequence tagging, along with an Adaptive Restart Module (ARM) to selectively guide the restart of bidirectional portion of the encoder. Across four sequence tagging tasks, HEAR offers FLOP savings in streaming settings upto 71.1{\%} and also outperforms bidirectional encoders for streaming predictions by upto +10{\%} streaming exact match.",
+}

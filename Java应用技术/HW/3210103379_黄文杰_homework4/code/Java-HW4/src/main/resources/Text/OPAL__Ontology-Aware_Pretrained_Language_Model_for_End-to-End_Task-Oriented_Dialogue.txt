@@ -1,0 +1,38 @@
+Title: OPAL: Ontology-Aware Pretrained Language Model for End-to-End Task-Oriented Dialogue
+Authors: Zhi Chen, Yuncong Liu, Lu Chen, Su Zhu, Mengyue Wu, Kai Yu
+Abstract: This paper presents an ontology-aware pretrained language model (OPAL) for end-to-end task-oriented dialogue (TOD). Unlike chit-chat dialogue models, task-oriented dialogue models fulfill at least two task-specific modules: Dialogue state tracker (DST) and response generator (RG). The dialogue state consists of the domain-slot-value triples, which are regarded as the user’s constraints to search the domain-related databases. The large-scale task-oriented dialogue data with the annotated structured dialogue state usually are inaccessible. It prevents the development of the pretrained language model for the task-oriented dialogue. We propose a simple yet effective pretraining method to alleviate this problem, which consists of two pretraining phases. The first phase is to pretrain on large-scale contextual text data, where the structured information of the text is extracted by the information extracting tool. To bridge the gap between the pretraining method and downstream tasks, we design two pretraining tasks: ontology-like triple recovery and next-text generation, which simulates the DST and RG, respectively. The second phase is to fine-tune the pretrained model on the TOD data. The experimental results show that our proposed method achieves an exciting boost and obtains competitive performance even without any TOD data on CamRest676 and MultiWOZ benchmarks.
+Cite (Informal):OPAL: Ontology-Aware Pretrained Language Model for End-to-End Task-Oriented Dialogue (Chen et al., TACL 2023)
+Year:2023
+Venue:TACL
+Anthology ID:2023.tacl-1.5
+Bibkey:chen-etal-2023-opal
+Volume:Transactions of the Association for Computational Linguistics, Volume 11
+URL:https://aclanthology.org/2023.tacl-1.5
+PDF:https://aclanthology.org/2023.tacl-1.5.pdf
+Month:
+SIG:
+Address:Cambridge, MA
+Language:
+Cite (ACL):Zhi Chen, Yuncong Liu, Lu Chen, Su Zhu, Mengyue Wu, and Kai Yu. 2023. OPAL: Ontology-Aware Pretrained Language Model for End-to-End Task-Oriented Dialogue. Transactions of the Association for Computational Linguistics, 11:68–84.
+Note:
+Pages:68–84
+DOI:10.1162/tacl_a_00534
+Publisher:MIT Press
+BibTex: @article{chen-etal-2023-opal,
+    title = "{OPAL}: Ontology-Aware Pretrained Language Model for End-to-End Task-Oriented Dialogue",
+    author = "Chen, Zhi  and
+      Liu, Yuncong  and
+      Chen, Lu  and
+      Zhu, Su  and
+      Wu, Mengyue  and
+      Yu, Kai",
+    journal = "Transactions of the Association for Computational Linguistics",
+    volume = "11",
+    year = "2023",
+    address = "Cambridge, MA",
+    publisher = "MIT Press",
+    url = "https://aclanthology.org/2023.tacl-1.5",
+    doi = "10.1162/tacl_a_00534",
+    pages = "68--84",
+    abstract = "This paper presents an ontology-aware pretrained language model (OPAL) for end-to-end task-oriented dialogue (TOD). Unlike chit-chat dialogue models, task-oriented dialogue models fulfill at least two task-specific modules: Dialogue state tracker (DST) and response generator (RG). The dialogue state consists of the domain-slot-value triples, which are regarded as the user{'}s constraints to search the domain-related databases. The large-scale task-oriented dialogue data with the annotated structured dialogue state usually are inaccessible. It prevents the development of the pretrained language model for the task-oriented dialogue. We propose a simple yet effective pretraining method to alleviate this problem, which consists of two pretraining phases. The first phase is to pretrain on large-scale contextual text data, where the structured information of the text is extracted by the information extracting tool. To bridge the gap between the pretraining method and downstream tasks, we design two pretraining tasks: ontology-like triple recovery and next-text generation, which simulates the DST and RG, respectively. The second phase is to fine-tune the pretrained model on the TOD data. The experimental results show that our proposed method achieves an exciting boost and obtains competitive performance even without any TOD data on CamRest676 and MultiWOZ benchmarks.",
+}

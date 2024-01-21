@@ -1,0 +1,41 @@
+Title: PePe: Personalized Post-editing Model utilizing User-generated Post-edits
+Authors: Jihyeon Lee, Taehee Kim, Yunwon Tae, Cheonbok Park, Jaegul Choo
+Abstract: Incorporating personal preference is crucial in advanced machine translation tasks. Despite the recent advancement of machine translation, it remains a demanding task to properly reflect personal style. In this paper, we introduce a personalized automatic post-editing framework to address this challenge, which effectively generates sentences considering distinct personal behaviors. To build this framework, we first collect post-editing data that connotes the user preference from a live machine translation system. Specifically, real-world users enter source sentences for translation and edit the machine-translated outputs according to the user’s preferred style. We then propose a model that combines a discriminator module and user-specific parameters on the APE framework. Experimental results show that the proposed method outperforms other baseline models on four different metrics (i.e., BLEU, TER, YiSi-1, and human evaluation).
+Cite (Informal):PePe: Personalized Post-editing Model utilizing User-generated Post-edits (Lee et al., Findings 2023)
+Year:2023
+Venue:Findings
+Video:https://aclanthology.org/2023.findings-eacl.18.mp4
+Anthology ID:2023.findings-eacl.18
+Bibkey:lee-etal-2023-pepe
+Volume:Findings of the Association for Computational Linguistics: EACL 2023
+URL:https://aclanthology.org/2023.findings-eacl.18
+PDF:https://aclanthology.org/2023.findings-eacl.18.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Jihyeon Lee, Taehee Kim, Yunwon Tae, Cheonbok Park, and Jaegul Choo. 2023. PePe: Personalized Post-editing Model utilizing User-generated Post-edits. In Findings of the Association for Computational Linguistics: EACL 2023, pages 239–253, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:239–253
+DOI:10.18653/v1/2023.findings-eacl.18
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{lee-etal-2023-pepe,
+    title = "{P}e{P}e: Personalized Post-editing Model utilizing User-generated Post-edits",
+    author = "Lee, Jihyeon  and
+      Kim, Taehee  and
+      Tae, Yunwon  and
+      Park, Cheonbok  and
+      Choo, Jaegul",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Findings of the Association for Computational Linguistics: EACL 2023",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.findings-eacl.18",
+    doi = "10.18653/v1/2023.findings-eacl.18",
+    pages = "239--253",
+    abstract = "Incorporating personal preference is crucial in advanced machine translation tasks. Despite the recent advancement of machine translation, it remains a demanding task to properly reflect personal style. In this paper, we introduce a personalized automatic post-editing framework to address this challenge, which effectively generates sentences considering distinct personal behaviors. To build this framework, we first collect post-editing data that connotes the user preference from a live machine translation system. Specifically, real-world users enter source sentences for translation and edit the machine-translated outputs according to the user{'}s preferred style. We then propose a model that combines a discriminator module and user-specific parameters on the APE framework. Experimental results show that the proposed method outperforms other baseline models on four different metrics (i.e., BLEU, TER, YiSi-1, and human evaluation).",
+}

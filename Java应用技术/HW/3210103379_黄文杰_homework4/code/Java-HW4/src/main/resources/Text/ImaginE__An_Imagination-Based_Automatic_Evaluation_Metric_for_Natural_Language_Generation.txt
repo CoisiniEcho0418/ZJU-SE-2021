@@ -1,0 +1,41 @@
+Title: ImaginE: An Imagination-Based Automatic Evaluation Metric for Natural Language Generation
+Authors: Wanrong Zhu, Xin Wang, An Yan, Miguel Eckstein, William Yang Wang
+Abstract: Automatic evaluations for natural language generation (NLG) conventionally rely on token-level or embedding-level comparisons with text references. This differs from human language processing, for which visual imagination often improves comprehension. In this work, we propose ImaginE, an imagination-based automatic evaluation metric for natural language generation. With the help of StableDiffusion, a state-of-the-art text-to-image generator, we automatically generate an image as the embodied imagination for the text snippet and compute the imagination similarity using contextual embeddings. Experiments spanning several text generation tasks demonstrate that adding machine-generated images with our ImaginE displays great potential in introducing multi-modal information into NLG evaluation, and improves existing automatic metrics’ correlations with human similarity judgments in both reference-based and reference-free evaluation scenarios.
+Cite (Informal):ImaginE: An Imagination-Based Automatic Evaluation Metric for Natural Language Generation (Zhu et al., Findings 2023)
+Year:2023
+Venue:Findings
+Video:https://aclanthology.org/2023.findings-eacl.6.mp4
+Anthology ID:2023.findings-eacl.6
+Bibkey:zhu-etal-2023-imagine
+Volume:Findings of the Association for Computational Linguistics: EACL 2023
+URL:https://aclanthology.org/2023.findings-eacl.6
+PDF:https://aclanthology.org/2023.findings-eacl.6.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Wanrong Zhu, Xin Wang, An Yan, Miguel Eckstein, and William Yang Wang. 2023. ImaginE: An Imagination-Based Automatic Evaluation Metric for Natural Language Generation. In Findings of the Association for Computational Linguistics: EACL 2023, pages 93–105, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:93–105
+DOI:10.18653/v1/2023.findings-eacl.6
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{zhu-etal-2023-imagine,
+    title = "{I}magin{E}: An Imagination-Based Automatic Evaluation Metric for Natural Language Generation",
+    author = "Zhu, Wanrong  and
+      Wang, Xin  and
+      Yan, An  and
+      Eckstein, Miguel  and
+      Wang, William Yang",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Findings of the Association for Computational Linguistics: EACL 2023",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.findings-eacl.6",
+    doi = "10.18653/v1/2023.findings-eacl.6",
+    pages = "93--105",
+    abstract = "Automatic evaluations for natural language generation (NLG) conventionally rely on token-level or embedding-level comparisons with text references. This differs from human language processing, for which visual imagination often improves comprehension. In this work, we propose ImaginE, an imagination-based automatic evaluation metric for natural language generation. With the help of StableDiffusion, a state-of-the-art text-to-image generator, we automatically generate an image as the embodied imagination for the text snippet and compute the imagination similarity using contextual embeddings. Experiments spanning several text generation tasks demonstrate that adding machine-generated images with our ImaginE displays great potential in introducing multi-modal information into NLG evaluation, and improves existing automatic metrics{'} correlations with human similarity judgments in both reference-based and reference-free evaluation scenarios.",
+}

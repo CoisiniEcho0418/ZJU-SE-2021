@@ -1,0 +1,41 @@
+Title: Measuring Progress in Fine-grained Vision-and-Language Understanding
+Authors: Emanuele Bugliarello, Laurent Sartran, Aishwarya Agrawal, Lisa Anne Hendricks, Aida Nematzadeh
+Abstract: While pretraining on large-scale image–text data from the Web has facilitated rapid progress on many vision-and-language (V&L) tasks, recent work has demonstrated that pretrained models lack “fine-grained” understanding, such as the ability to recognise relationships, verbs, and numbers in images. This has resulted in an increased interest in the community to either develop new benchmarks or models for such capabilities. To better understand and quantify progress in this direction, we investigate four competitive V&L models on four fine-grained benchmarks. Through our analysis, we find that X-VLM (Zeng et al., 2022) consistently outperforms other baselines, and that modelling innovations can impact performance more than scaling Web data, which even degrades performance sometimes. Through a deeper investigation of X-VLM, we highlight the importance of both novel losses and rich data sources for learning fine-grained skills. Finally, we inspect training dynamics, and discover that for some tasks, performance peaks early in training or significantly fluctuates, never converging.
+Cite (Informal):Measuring Progress in Fine-grained Vision-and-Language Understanding (Bugliarello et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.87
+Bibkey:bugliarello-etal-2023-measuring
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.87
+PDF:https://aclanthology.org/2023.acl-long.87.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Emanuele Bugliarello, Laurent Sartran, Aishwarya Agrawal, Lisa Anne Hendricks, and Aida Nematzadeh. 2023. Measuring Progress in Fine-grained Vision-and-Language Understanding. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 1559–1582, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:1559–1582
+DOI:10.18653/v1/2023.acl-long.87
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{bugliarello-etal-2023-measuring,
+    title = "Measuring Progress in Fine-grained Vision-and-Language Understanding",
+    author = "Bugliarello, Emanuele  and
+      Sartran, Laurent  and
+      Agrawal, Aishwarya  and
+      Hendricks, Lisa Anne  and
+      Nematzadeh, Aida",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.87",
+    doi = "10.18653/v1/2023.acl-long.87",
+    pages = "1559--1582",
+    abstract = "While pretraining on large-scale image{--}text data from the Web has facilitated rapid progress on many vision-and-language (V{\&}L) tasks, recent work has demonstrated that pretrained models lack {``}fine-grained{''} understanding, such as the ability to recognise relationships, verbs, and numbers in images. This has resulted in an increased interest in the community to either develop new benchmarks or models for such capabilities. To better understand and quantify progress in this direction, we investigate four competitive V{\&}L models on four fine-grained benchmarks. Through our analysis, we find that X-VLM (Zeng et al., 2022) consistently outperforms other baselines, and that modelling innovations can impact performance more than scaling Web data, which even degrades performance sometimes. Through a deeper investigation of X-VLM, we highlight the importance of both novel losses and rich data sources for learning fine-grained skills. Finally, we inspect training dynamics, and discover that for some tasks, performance peaks early in training or significantly fluctuates, never converging.",
+}

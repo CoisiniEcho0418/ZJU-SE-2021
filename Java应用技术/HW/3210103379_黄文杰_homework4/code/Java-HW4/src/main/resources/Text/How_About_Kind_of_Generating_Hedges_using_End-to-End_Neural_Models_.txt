@@ -1,0 +1,39 @@
+Title: How About Kind of Generating Hedges using End-to-End Neural Models?
+Authors: Alafate Abulimiti, Chloé Clavel, Justine Cassell
+Abstract: Hedging is a strategy for softening the impact of a statement in conversation. In reducing the strength of an expression, it may help to avoid embarrassment (more technically, “face threat”) to one’s listener. For this reason, it is often found in contexts of instruction, such as tutoring. In this work, we develop a model of hedge generation based on i) fine-tuning state-of-the-art language models trained on human-human tutoring data, followed by ii) reranking to select the candidate that best matches the expected hedging strategy within a candidate pool using a hedge classifier. We apply this method to a natural peer-tutoring corpus containing a significant number of disfluencies, repetitions, and repairs. The results show that generation in this noisy environment is feasible with reranking. By conducting an error analysis for both approaches, we reveal the challenges faced by systems attempting to accomplish both social and task-oriented goals in conversation.
+Cite (Informal):How About Kind of Generating Hedges using End-to-End Neural Models? (Abulimiti et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.50
+Bibkey:abulimiti-etal-2023-kind
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.50
+PDF:https://aclanthology.org/2023.acl-long.50.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Alafate Abulimiti, Chloé Clavel, and Justine Cassell. 2023. How About Kind of Generating Hedges using End-to-End Neural Models?. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 877–892, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:877–892
+DOI:10.18653/v1/2023.acl-long.50
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{abulimiti-etal-2023-kind,
+    title = "How About Kind of Generating Hedges using End-to-End Neural Models?",
+    author = "Abulimiti, Alafate  and
+      Clavel, Chlo{\'e}  and
+      Cassell, Justine",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.50",
+    doi = "10.18653/v1/2023.acl-long.50",
+    pages = "877--892",
+    abstract = "Hedging is a strategy for softening the impact of a statement in conversation. In reducing the strength of an expression, it may help to avoid embarrassment (more technically, {``}face threat{''}) to one{'}s listener. For this reason, it is often found in contexts of instruction, such as tutoring. In this work, we develop a model of hedge generation based on i) fine-tuning state-of-the-art language models trained on human-human tutoring data, followed by ii) reranking to select the candidate that best matches the expected hedging strategy within a candidate pool using a hedge classifier. We apply this method to a natural peer-tutoring corpus containing a significant number of disfluencies, repetitions, and repairs. The results show that generation in this noisy environment is feasible with reranking. By conducting an error analysis for both approaches, we reveal the challenges faced by systems attempting to accomplish both social and task-oriented goals in conversation.",
+}

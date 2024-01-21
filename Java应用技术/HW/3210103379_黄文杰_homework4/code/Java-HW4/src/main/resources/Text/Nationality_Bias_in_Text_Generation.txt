@@ -1,0 +1,41 @@
+Title: Nationality Bias in Text Generation
+Authors: Pranav Narayanan Venkit, Sanjana Gautam, Ruchi Panchanadikar, Ting-Hao Huang, Shomir Wilson
+Abstract: Little attention is placed on analyzing nationality bias in language models, especially when nationality is highly used as a factor in increasing the performance of social NLP models. This paper examines how a text generation model, GPT-2, accentuates pre-existing societal biases about country-based demonyms. We generate stories using GPT-2 for various nationalities and use sensitivity analysis to explore how the number of internet users and the country’s economic status impacts the sentiment of the stories. To reduce the propagation of biases through large language models (LLM), we explore the debiasing method of adversarial triggering. Our results show that GPT-2 demonstrates significant bias against countries with lower internet users, and adversarial triggering effectively reduces the same.
+Cite (Informal):Nationality Bias in Text Generation (Narayanan Venkit et al., EACL 2023)
+Year:2023
+Venue:EACL
+Video:https://aclanthology.org/2023.eacl-main.9.mp4
+Anthology ID:2023.eacl-main.9
+Bibkey:narayanan-venkit-etal-2023-nationality
+Volume:Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics
+URL:https://aclanthology.org/2023.eacl-main.9
+PDF:https://aclanthology.org/2023.eacl-main.9.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Pranav Narayanan Venkit, Sanjana Gautam, Ruchi Panchanadikar, Ting-Hao Huang, and Shomir Wilson. 2023. Nationality Bias in Text Generation. In Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics, pages 116–122, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:116–122
+DOI:10.18653/v1/2023.eacl-main.9
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{narayanan-venkit-etal-2023-nationality,
+    title = "Nationality Bias in Text Generation",
+    author = "Narayanan Venkit, Pranav  and
+      Gautam, Sanjana  and
+      Panchanadikar, Ruchi  and
+      Huang, Ting-Hao  and
+      Wilson, Shomir",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.eacl-main.9",
+    doi = "10.18653/v1/2023.eacl-main.9",
+    pages = "116--122",
+    abstract = "Little attention is placed on analyzing nationality bias in language models, especially when nationality is highly used as a factor in increasing the performance of social NLP models. This paper examines how a text generation model, GPT-2, accentuates pre-existing societal biases about country-based demonyms. We generate stories using GPT-2 for various nationalities and use sensitivity analysis to explore how the number of internet users and the country{'}s economic status impacts the sentiment of the stories. To reduce the propagation of biases through large language models (LLM), we explore the debiasing method of adversarial triggering. Our results show that GPT-2 demonstrates significant bias against countries with lower internet users, and adversarial triggering effectively reduces the same.",
+}

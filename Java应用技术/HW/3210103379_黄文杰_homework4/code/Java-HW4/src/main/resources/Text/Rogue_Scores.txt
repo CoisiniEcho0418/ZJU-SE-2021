@@ -1,0 +1,37 @@
+Title: Rogue Scores
+Authors: Max Grusky
+Abstract: Correct, comparable, and reproducible model evaluation is essential for progress in machine learning. Over twenty years, thousands of language and vision models have been evaluated with a popular metric called ROUGE. Does this widespread benchmark metric meet these three evaluation criteria? This systematic review of over two thousand publications using ROUGE finds: (A) Critical evaluation decisions and parameters are routinely omitted, making most reported scores irreproducible. (B) Differences in evaluation protocol are common, affect scores, and impact the comparability of results reported in many papers. (C) Thousands of papers use nonstandard evaluation packages with software defects that produce provably incorrect scores. Estimating the overall impact of these findings is difficult: because software citations are rare, it is nearly impossible to distinguish between correct ROUGE scores and incorrect “rogue scores.”
+Cite (Informal):Rogue Scores (Grusky, ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.107
+Bibkey:grusky-2023-rogue
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.107
+PDF:https://aclanthology.org/2023.acl-long.107.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Max Grusky. 2023. Rogue Scores. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 1914–1934, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:1914–1934
+DOI:10.18653/v1/2023.acl-long.107
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{grusky-2023-rogue,
+    title = "Rogue Scores",
+    author = "Grusky, Max",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.107",
+    doi = "10.18653/v1/2023.acl-long.107",
+    pages = "1914--1934",
+    abstract = "Correct, comparable, and reproducible model evaluation is essential for progress in machine learning. Over twenty years, thousands of language and vision models have been evaluated with a popular metric called ROUGE. Does this widespread benchmark metric meet these three evaluation criteria? This systematic review of over two thousand publications using ROUGE finds: (A) Critical evaluation decisions and parameters are routinely omitted, making most reported scores irreproducible. (B) Differences in evaluation protocol are common, affect scores, and impact the comparability of results reported in many papers. (C) Thousands of papers use nonstandard evaluation packages with software defects that produce provably incorrect scores. Estimating the overall impact of these findings is difficult: because software citations are rare, it is nearly impossible to distinguish between correct ROUGE scores and incorrect {``}rogue scores.{''}",
+}

@@ -1,0 +1,46 @@
+Title: NAIST Simultaneous Speech-to-speech Translation System for IWSLT 2023
+Authors: Ryo Fukuda, Yuta Nishikawa, Yasumasa Kano, Yuka Ko, Tomoya Yanagita, Kosuke Doi, Mana Makinae, Sakriani Sakti, Katsuhito Sudoh, Satoshi Nakamura
+Abstract: This paper describes NAIST’s submission to the IWSLT 2023 Simultaneous Speech Translation task: English-to-German, Japanese, Chinese speech-to-text translation and English-to-Japanese speech-to-speech translation. Our speech-to-text system uses an end-to-end multilingual speech translation model based on large-scale pre-trained speech and text models. We add Inter-connections into the model to incorporate the outputs from intermediate layers of the pre-trained speech model and augment prefix-to-prefix text data using Bilingual Prefix Alignment to enhance the simultaneity of the offline speech translation model. Our speech-to-speech system employs an incremental text-to-speech module that consists of a Japanese pronunciation estimation model, an acoustic model, and a neural vocoder.
+Cite (Informal):NAIST Simultaneous Speech-to-speech Translation System for IWSLT 2023 (Fukuda et al., IWSLT 2023)
+Year:2023
+Venue:IWSLT
+Anthology ID:2023.iwslt-1.31
+Bibkey:fukuda-etal-2023-naist
+Volume:Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023)
+URL:https://aclanthology.org/2023.iwslt-1.31
+PDF:https://aclanthology.org/2023.iwslt-1.31.pdf
+Month:July
+SIG:SIGSLT
+Address:Toronto, Canada (in-person and online)
+Language:
+Cite (ACL):Ryo Fukuda, Yuta Nishikawa, Yasumasa Kano, Yuka Ko, Tomoya Yanagita, Kosuke Doi, Mana Makinae, Sakriani Sakti, Katsuhito Sudoh, and Satoshi Nakamura. 2023. NAIST Simultaneous Speech-to-speech Translation System for IWSLT 2023. In Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023), pages 330–340, Toronto, Canada (in-person and online). Association for Computational Linguistics.
+Editors:Elizabeth Salesky,Marcello Federico,Marine Carpuat
+Note:
+Pages:330–340
+DOI:10.18653/v1/2023.iwslt-1.31
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{fukuda-etal-2023-naist,
+    title = "{NAIST} Simultaneous Speech-to-speech Translation System for {IWSLT} 2023",
+    author = "Fukuda, Ryo  and
+      Nishikawa, Yuta  and
+      Kano, Yasumasa  and
+      Ko, Yuka  and
+      Yanagita, Tomoya  and
+      Doi, Kosuke  and
+      Makinae, Mana  and
+      Sakti, Sakriani  and
+      Sudoh, Katsuhito  and
+      Nakamura, Satoshi",
+    editor = "Salesky, Elizabeth  and
+      Federico, Marcello  and
+      Carpuat, Marine",
+    booktitle = "Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada (in-person and online)",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.iwslt-1.31",
+    doi = "10.18653/v1/2023.iwslt-1.31",
+    pages = "330--340",
+    abstract = "This paper describes NAIST{'}s submission to the IWSLT 2023 Simultaneous Speech Translation task: English-to-German, Japanese, Chinese speech-to-text translation and English-to-Japanese speech-to-speech translation. Our speech-to-text system uses an end-to-end multilingual speech translation model based on large-scale pre-trained speech and text models. We add Inter-connections into the model to incorporate the outputs from intermediate layers of the pre-trained speech model and augment prefix-to-prefix text data using Bilingual Prefix Alignment to enhance the simultaneity of the offline speech translation model. Our speech-to-speech system employs an incremental text-to-speech module that consists of a Japanese pronunciation estimation model, an acoustic model, and a neural vocoder.",
+}

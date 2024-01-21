@@ -1,0 +1,44 @@
+Title: Small Data, Big Impact: Leveraging Minimal Data for Effective Machine Translation
+Authors: Jean Maillard, Cynthia Gao, Elahe Kalbassi, Kaushik Ram Sadagopan, Vedanuj Goswami, Philipp Koehn, Angela Fan, Francisco Guzman
+Abstract: For many languages, machine translation progress is hindered by the lack of reliable training data. Models are trained on whatever pre-existing datasets may be available and then augmented with synthetic data, because it is often not economical to pay for the creation of large-scale datasets. But for the case of low-resource languages, would the creation of a few thousand professionally translated sentence pairs give any benefit? In this paper, we show that it does. We describe a broad data collection effort involving around 6k professionally translated sentence pairs for each of 39 low-resource languages, which we make publicly available. We analyse the gains of models trained on this small but high-quality data, showing that it has significant impact even when larger but lower quality pre-existing corpora are used, or when data is augmented with millions of sentences through backtranslation.
+Cite (Informal):Small Data, Big Impact: Leveraging Minimal Data for Effective Machine Translation (Maillard et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.154
+Bibkey:maillard-etal-2023-small
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.154
+PDF:https://aclanthology.org/2023.acl-long.154.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Jean Maillard, Cynthia Gao, Elahe Kalbassi, Kaushik Ram Sadagopan, Vedanuj Goswami, Philipp Koehn, Angela Fan, and Francisco Guzman. 2023. Small Data, Big Impact: Leveraging Minimal Data for Effective Machine Translation. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 2740–2756, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:2740–2756
+DOI:10.18653/v1/2023.acl-long.154
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{maillard-etal-2023-small,
+    title = "Small Data, Big Impact: Leveraging Minimal Data for Effective Machine Translation",
+    author = "Maillard, Jean  and
+      Gao, Cynthia  and
+      Kalbassi, Elahe  and
+      Sadagopan, Kaushik Ram  and
+      Goswami, Vedanuj  and
+      Koehn, Philipp  and
+      Fan, Angela  and
+      Guzman, Francisco",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.154",
+    doi = "10.18653/v1/2023.acl-long.154",
+    pages = "2740--2756",
+    abstract = "For many languages, machine translation progress is hindered by the lack of reliable training data. Models are trained on whatever pre-existing datasets may be available and then augmented with synthetic data, because it is often not economical to pay for the creation of large-scale datasets. But for the case of low-resource languages, would the creation of a few thousand professionally translated sentence pairs give any benefit? In this paper, we show that it does. We describe a broad data collection effort involving around 6k professionally translated sentence pairs for each of 39 low-resource languages, which we make publicly available. We analyse the gains of models trained on this small but high-quality data, showing that it has significant impact even when larger but lower quality pre-existing corpora are used, or when data is augmented with millions of sentences through backtranslation.",
+}

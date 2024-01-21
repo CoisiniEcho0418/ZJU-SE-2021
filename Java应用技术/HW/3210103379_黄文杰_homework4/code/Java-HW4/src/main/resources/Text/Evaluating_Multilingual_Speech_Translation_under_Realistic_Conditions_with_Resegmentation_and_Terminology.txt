@@ -1,0 +1,42 @@
+Title: Evaluating Multilingual Speech Translation under Realistic Conditions with Resegmentation and Terminology
+Authors: Elizabeth Salesky, Kareem Darwish, Mohamed Al-Badrashiny, Mona Diab, Jan Niehues
+Abstract: We present the ACL 60/60 evaluation sets for multilingual translation of ACL 2022 technical presentations into 10 target languages. This dataset enables further research into multilingual speech translation under realistic recording conditions with unsegmented audio and domain-specific terminology, applying NLP tools to text and speech in the technical domain, and evaluating and improving model robustness to diverse speaker demographics.
+Cite (Informal):Evaluating Multilingual Speech Translation under Realistic Conditions with Resegmentation and Terminology (Salesky et al., IWSLT 2023)
+Year:2023
+Venue:IWSLT
+Anthology ID:2023.iwslt-1.2
+Bibkey:salesky-etal-2023-evaluating
+Dataset:2023.iwslt-1.2.dataset.zip
+Volume:Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023)
+URL:https://aclanthology.org/2023.iwslt-1.2
+PDF:https://aclanthology.org/2023.iwslt-1.2.pdf
+Month:July
+SIG:SIGSLT
+Address:Toronto, Canada (in-person and online)
+Language:
+Cite (ACL):Elizabeth Salesky, Kareem Darwish, Mohamed Al-Badrashiny, Mona Diab, and Jan Niehues. 2023. Evaluating Multilingual Speech Translation under Realistic Conditions with Resegmentation and Terminology. In Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023), pages 62–78, Toronto, Canada (in-person and online). Association for Computational Linguistics.
+Editors:Elizabeth Salesky,Marcello Federico,Marine Carpuat
+Note:
+Pages:62–78
+DOI:10.18653/v1/2023.iwslt-1.2
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{salesky-etal-2023-evaluating,
+    title = "Evaluating Multilingual Speech Translation under Realistic Conditions with Resegmentation and Terminology",
+    author = "Salesky, Elizabeth  and
+      Darwish, Kareem  and
+      Al-Badrashiny, Mohamed  and
+      Diab, Mona  and
+      Niehues, Jan",
+    editor = "Salesky, Elizabeth  and
+      Federico, Marcello  and
+      Carpuat, Marine",
+    booktitle = "Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada (in-person and online)",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.iwslt-1.2",
+    doi = "10.18653/v1/2023.iwslt-1.2",
+    pages = "62--78",
+    abstract = "We present the ACL 60/60 evaluation sets for multilingual translation of ACL 2022 technical presentations into 10 target languages. This dataset enables further research into multilingual speech translation under realistic recording conditions with unsegmented audio and domain-specific terminology, applying NLP tools to text and speech in the technical domain, and evaluating and improving model robustness to diverse speaker demographics.",
+}

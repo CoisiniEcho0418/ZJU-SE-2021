@@ -1,0 +1,40 @@
+Title: From Key Points to Key Point Hierarchy: Structured and Expressive Opinion Summarization
+Authors: Arie Cattan, Lilach Eden, Yoav Kantor, Roy Bar-Haim
+Abstract: Key Point Analysis (KPA) has been recently proposed for deriving fine-grained insights from collections of textual comments. KPA extracts the main points in the data as a list of concise sentences or phrases, termed Key Points, and quantifies their prevalence. While key points are more expressive than word clouds and key phrases, making sense of a long, flat list of key points, which often express related ideas in varying levels of granularity, may still be challenging. To address this limitation of KPA, we introduce the task of organizing a given set of key points into a hierarchy, according to their specificity. Such hierarchies may be viewed as a novel type of Textual Entailment Graph. We develop ThinkP, a high quality benchmark dataset of key point hierarchies for business and product reviews, obtained by consolidating multiple annotations. We compare different methods for predicting pairwise relations between key points, and for inferring a hierarchy from these pairwise predictions. In particular, for the task of computing pairwise key point relations, we achieve significant gains over existing strong baselines by applying directional distributional similarity methods to a novel distributional representation of key points, and further boost performance via weak supervision.
+Cite (Informal):From Key Points to Key Point Hierarchy: Structured and Expressive Opinion Summarization (Cattan et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.52
+Bibkey:cattan-etal-2023-key
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.52
+PDF:https://aclanthology.org/2023.acl-long.52.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Arie Cattan, Lilach Eden, Yoav Kantor, and Roy Bar-Haim. 2023. From Key Points to Key Point Hierarchy: Structured and Expressive Opinion Summarization. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 912–928, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:912–928
+DOI:10.18653/v1/2023.acl-long.52
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{cattan-etal-2023-key,
+    title = "From Key Points to Key Point Hierarchy: Structured and Expressive Opinion Summarization",
+    author = "Cattan, Arie  and
+      Eden, Lilach  and
+      Kantor, Yoav  and
+      Bar-Haim, Roy",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.52",
+    doi = "10.18653/v1/2023.acl-long.52",
+    pages = "912--928",
+    abstract = "Key Point Analysis (KPA) has been recently proposed for deriving fine-grained insights from collections of textual comments. KPA extracts the main points in the data as a list of concise sentences or phrases, termed Key Points, and quantifies their prevalence. While key points are more expressive than word clouds and key phrases, making sense of a long, flat list of key points, which often express related ideas in varying levels of granularity, may still be challenging. To address this limitation of KPA, we introduce the task of organizing a given set of key points into a hierarchy, according to their specificity. Such hierarchies may be viewed as a novel type of Textual Entailment Graph. We develop ThinkP, a high quality benchmark dataset of key point hierarchies for business and product reviews, obtained by consolidating multiple annotations. We compare different methods for predicting pairwise relations between key points, and for inferring a hierarchy from these pairwise predictions. In particular, for the task of computing pairwise key point relations, we achieve significant gains over existing strong baselines by applying directional distributional similarity methods to a novel distributional representation of key points, and further boost performance via weak supervision.",
+}

@@ -1,0 +1,37 @@
+Title: A Discerning Several Thousand Judgments: GPT-3 Rates the Article + Adjective + Numeral + Noun Construction
+Authors: Kyle Mahowald
+Abstract: Knowledge of syntax includes knowledge of rare, idiosyncratic constructions. LLMs must overcome frequency biases in order to master such constructions. In this study, I prompt GPT-3 to give acceptability judgments on the English-language Article + Adjective + Numeral + Noun construction (e.g., “a lovely five days”). I validate the prompt using the CoLA corpus of acceptability judgments and then zero in on the AANN construction. I compare GPT- 3’s judgments to crowdsourced human judgments on a subset of sentences. GPT-3’s judgments are broadly similar to human judgments and generally align with proposed constraints in the literature but, in some cases, GPT-3’s judgments and human judgments diverge from the literature and from each other.
+Cite (Informal):A Discerning Several Thousand Judgments: GPT-3 Rates the Article + Adjective + Numeral + Noun Construction (Mahowald, EACL 2023)
+Year:2023
+Venue:EACL
+Video:https://aclanthology.org/2023.eacl-main.20.mp4
+Anthology ID:2023.eacl-main.20
+Bibkey:mahowald-2023-discerning
+Volume:Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics
+URL:https://aclanthology.org/2023.eacl-main.20
+PDF:https://aclanthology.org/2023.eacl-main.20.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Kyle Mahowald. 2023. A Discerning Several Thousand Judgments: GPT-3 Rates the Article + Adjective + Numeral + Noun Construction. In Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics, pages 265–273, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:265–273
+DOI:10.18653/v1/2023.eacl-main.20
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{mahowald-2023-discerning,
+    title = "A Discerning Several Thousand Judgments: {GPT}-3 Rates the Article + Adjective + Numeral + Noun Construction",
+    author = "Mahowald, Kyle",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.eacl-main.20",
+    doi = "10.18653/v1/2023.eacl-main.20",
+    pages = "265--273",
+    abstract = "Knowledge of syntax includes knowledge of rare, idiosyncratic constructions. LLMs must overcome frequency biases in order to master such constructions. In this study, I prompt GPT-3 to give acceptability judgments on the English-language Article + Adjective + Numeral + Noun construction (e.g., {``}a lovely five days{''}). I validate the prompt using the CoLA corpus of acceptability judgments and then zero in on the AANN construction. I compare GPT- 3{'}s judgments to crowdsourced human judgments on a subset of sentences. GPT-3{'}s judgments are broadly similar to human judgments and generally align with proposed constraints in the literature but, in some cases, GPT-3{'}s judgments and human judgments diverge from the literature and from each other.",
+}

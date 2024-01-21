@@ -1,0 +1,39 @@
+Title: Learning Nearest Neighbour Informed Latent Word Embeddings to Improve Zero-Shot Machine Translation
+Authors: Nishant Kambhatla, Logan Born, Anoop Sarkar
+Abstract: Multilingual neural translation models exploit cross-lingual transfer to perform zero-shot translation between unseen language pairs. Past efforts to improve cross-lingual transfer have focused on aligning contextual sentence-level representations. This paper introduces three novel contributions to allow exploiting nearest neighbours at the token level during training, including: (i) an efficient, gradient-friendly way to share representations between neighboring tokens; (ii) an attentional semantic layer which extracts latent features from shared embeddings; and (iii) an agreement loss to harmonize predictions across different sentence representations. Experiments on two multilingual datasets demonstrate consistent gains in zero shot translation over strong baselines.
+Cite (Informal):Learning Nearest Neighbour Informed Latent Word Embeddings to Improve Zero-Shot Machine Translation (Kambhatla et al., IWSLT 2023)
+Year:2023
+Venue:IWSLT
+Anthology ID:2023.iwslt-1.27
+Bibkey:kambhatla-etal-2023-learning
+Volume:Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023)
+URL:https://aclanthology.org/2023.iwslt-1.27
+PDF:https://aclanthology.org/2023.iwslt-1.27.pdf
+Month:July
+SIG:SIGSLT
+Address:Toronto, Canada (in-person and online)
+Language:
+Cite (ACL):Nishant Kambhatla, Logan Born, and Anoop Sarkar. 2023. Learning Nearest Neighbour Informed Latent Word Embeddings to Improve Zero-Shot Machine Translation. In Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023), pages 291–301, Toronto, Canada (in-person and online). Association for Computational Linguistics.
+Editors:Elizabeth Salesky,Marcello Federico,Marine Carpuat
+Note:
+Pages:291–301
+DOI:10.18653/v1/2023.iwslt-1.27
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{kambhatla-etal-2023-learning,
+    title = "Learning Nearest Neighbour Informed Latent Word Embeddings to Improve Zero-Shot Machine Translation",
+    author = "Kambhatla, Nishant  and
+      Born, Logan  and
+      Sarkar, Anoop",
+    editor = "Salesky, Elizabeth  and
+      Federico, Marcello  and
+      Carpuat, Marine",
+    booktitle = "Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada (in-person and online)",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.iwslt-1.27",
+    doi = "10.18653/v1/2023.iwslt-1.27",
+    pages = "291--301",
+    abstract = "Multilingual neural translation models exploit cross-lingual transfer to perform zero-shot translation between unseen language pairs. Past efforts to improve cross-lingual transfer have focused on aligning contextual sentence-level representations. This paper introduces three novel contributions to allow exploiting nearest neighbours at the token level during training, including: (i) an efficient, gradient-friendly way to share representations between neighboring tokens; (ii) an attentional semantic layer which extracts latent features from shared embeddings; and (iii) an agreement loss to harmonize predictions across different sentence representations. Experiments on two multilingual datasets demonstrate consistent gains in zero shot translation over strong baselines.",
+}

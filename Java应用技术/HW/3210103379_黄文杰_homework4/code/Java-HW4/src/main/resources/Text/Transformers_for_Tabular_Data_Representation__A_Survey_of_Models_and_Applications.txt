@@ -1,0 +1,35 @@
+Title: Transformers for Tabular Data Representation: A Survey of Models and Applications
+Authors: Gilbert Badaro, Mohammed Saeed, Paolo Papotti
+Abstract: In the last few years, the natural language processing community has witnessed advances in neural representations of free texts with transformer-based language models (LMs). Given the importance of knowledge available in tabular data, recent research efforts extend LMs by developing neural representations for structured data. In this article, we present a survey that analyzes these efforts. We first abstract the different systems according to a traditional machine learning pipeline in terms of training data, input representation, model training, and supported downstream tasks. For each aspect, we characterize and compare the proposed solutions. Finally, we discuss future work directions.
+Cite (Informal):Transformers for Tabular Data Representation: A Survey of Models and Applications (Badaro et al., TACL 2023)
+Year:2023
+Venue:TACL
+Anthology ID:2023.tacl-1.14
+Bibkey:badaro-etal-2023-transformers
+Volume:Transactions of the Association for Computational Linguistics, Volume 11
+URL:https://aclanthology.org/2023.tacl-1.14
+PDF:https://aclanthology.org/2023.tacl-1.14.pdf
+Month:
+SIG:
+Address:Cambridge, MA
+Language:
+Cite (ACL):Gilbert Badaro, Mohammed Saeed, and Paolo Papotti. 2023. Transformers for Tabular Data Representation: A Survey of Models and Applications. Transactions of the Association for Computational Linguistics, 11:227–249.
+Note:
+Pages:227–249
+DOI:10.1162/tacl_a_00544
+Publisher:MIT Press
+BibTex: @article{badaro-etal-2023-transformers,
+    title = "Transformers for Tabular Data Representation: A Survey of Models and Applications",
+    author = "Badaro, Gilbert  and
+      Saeed, Mohammed  and
+      Papotti, Paolo",
+    journal = "Transactions of the Association for Computational Linguistics",
+    volume = "11",
+    year = "2023",
+    address = "Cambridge, MA",
+    publisher = "MIT Press",
+    url = "https://aclanthology.org/2023.tacl-1.14",
+    doi = "10.1162/tacl_a_00544",
+    pages = "227--249",
+    abstract = "In the last few years, the natural language processing community has witnessed advances in neural representations of free texts with transformer-based language models (LMs). Given the importance of knowledge available in tabular data, recent research efforts extend LMs by developing neural representations for structured data. In this article, we present a survey that analyzes these efforts. We first abstract the different systems according to a traditional machine learning pipeline in terms of training data, input representation, model training, and supported downstream tasks. For each aspect, we characterize and compare the proposed solutions. Finally, we discuss future work directions.",
+}

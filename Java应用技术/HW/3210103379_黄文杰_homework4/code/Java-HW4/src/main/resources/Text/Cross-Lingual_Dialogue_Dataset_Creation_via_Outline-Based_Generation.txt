@@ -1,0 +1,37 @@
+Title: Cross-Lingual Dialogue Dataset Creation via Outline-Based Generation
+Authors: Olga Majewska, Evgeniia Razumovskaia, Edoardo M. Ponti, Ivan Vulić, Anna Korhonen
+Abstract: Multilingual task-oriented dialogue (ToD) facilitates access to services and information for many (communities of) speakers. Nevertheless, its potential is not fully realized, as current multilingual ToD datasets—both for modular and end-to-end modeling—suffer from severe limitations. 1) When created from scratch, they are usually small in scale and fail to cover many possible dialogue flows. 2) Translation-based ToD datasets might lack naturalness and cultural specificity in the target language. In this work, to tackle these limitations we propose a novel outline-based annotation process for multilingual ToD datasets, where domain-specific abstract schemata of dialogue are mapped into natural language outlines. These in turn guide the target language annotators in writing dialogues by providing instructions about each turn’s intents and slots. Through this process we annotate a new large-scale dataset for evaluation of multilingual and cross-lingual ToD systems. Our Cross-lingual Outline-based Dialogue dataset (cod) enables natural language understanding, dialogue state tracking, and end-to-end dialogue evaluation in 4 diverse languages: Arabic, Indonesian, Russian, and Kiswahili. Qualitative and quantitative analyses of cod versus an equivalent translation-based dataset demonstrate improvements in data quality, unlocked by the outline-based approach. Finally, we benchmark a series of state-of-the-art systems for cross-lingual ToD, setting reference scores for future work and demonstrating that cod prevents over-inflated performance, typically met with prior translation-based ToD datasets.
+Cite (Informal):Cross-Lingual Dialogue Dataset Creation via Outline-Based Generation (Majewska et al., TACL 2023)
+Year:2023
+Venue:TACL
+Anthology ID:2023.tacl-1.9
+Bibkey:majewska-etal-2023-cross
+Volume:Transactions of the Association for Computational Linguistics, Volume 11
+URL:https://aclanthology.org/2023.tacl-1.9
+PDF:https://aclanthology.org/2023.tacl-1.9.pdf
+Month:
+SIG:
+Address:Cambridge, MA
+Language:
+Cite (ACL):Olga Majewska, Evgeniia Razumovskaia, Edoardo M. Ponti, Ivan Vulić, and Anna Korhonen. 2023. Cross-Lingual Dialogue Dataset Creation via Outline-Based Generation. Transactions of the Association for Computational Linguistics, 11:139–156.
+Note:
+Pages:139–156
+DOI:10.1162/tacl_a_00539
+Publisher:MIT Press
+BibTex: @article{majewska-etal-2023-cross,
+    title = "Cross-Lingual Dialogue Dataset Creation via Outline-Based Generation",
+    author = "Majewska, Olga  and
+      Razumovskaia, Evgeniia  and
+      Ponti, Edoardo M.  and
+      Vuli{\'c}, Ivan  and
+      Korhonen, Anna",
+    journal = "Transactions of the Association for Computational Linguistics",
+    volume = "11",
+    year = "2023",
+    address = "Cambridge, MA",
+    publisher = "MIT Press",
+    url = "https://aclanthology.org/2023.tacl-1.9",
+    doi = "10.1162/tacl_a_00539",
+    pages = "139--156",
+    abstract = "Multilingual task-oriented dialogue (ToD) facilitates access to services and information for many (communities of) speakers. Nevertheless, its potential is not fully realized, as current multilingual ToD datasets{---}both for modular and end-to-end modeling{---}suffer from severe limitations. 1) When created from scratch, they are usually small in scale and fail to cover many possible dialogue flows. 2) Translation-based ToD datasets might lack naturalness and cultural specificity in the target language. In this work, to tackle these limitations we propose a novel outline-based annotation process for multilingual ToD datasets, where domain-specific abstract schemata of dialogue are mapped into natural language outlines. These in turn guide the target language annotators in writing dialogues by providing instructions about each turn{'}s intents and slots. Through this process we annotate a new large-scale dataset for evaluation of multilingual and cross-lingual ToD systems. Our Cross-lingual Outline-based Dialogue dataset (cod) enables natural language understanding, dialogue state tracking, and end-to-end dialogue evaluation in 4 diverse languages: Arabic, Indonesian, Russian, and Kiswahili. Qualitative and quantitative analyses of cod versus an equivalent translation-based dataset demonstrate improvements in data quality, unlocked by the outline-based approach. Finally, we benchmark a series of state-of-the-art systems for cross-lingual ToD, setting reference scores for future work and demonstrating that cod prevents over-inflated performance, typically met with prior translation-based ToD datasets.",
+}

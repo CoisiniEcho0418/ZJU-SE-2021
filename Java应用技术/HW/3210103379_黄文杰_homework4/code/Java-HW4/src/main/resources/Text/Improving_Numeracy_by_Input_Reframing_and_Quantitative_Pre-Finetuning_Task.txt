@@ -1,0 +1,40 @@
+Title: Improving Numeracy by Input Reframing and Quantitative Pre-Finetuning Task
+Authors: Chung-Chi Chen, Hiroya Takamura, Ichiro Kobayashi, Yusuke Miyao
+Abstract: Numbers have unique characteristics to words. Teaching models to understand numbers in text is an open-ended research question. Instead of discussing the required calculation skills, this paper focuses on a more fundamental topic: understanding numerals. We point out that innumeracy—the inability to handle basic numeral concepts—exists in most pretrained language models (LMs), and we propose a method to solve this issue by exploring the notation of numbers. Further, we discuss whether changing notation and pre-finetuning along with the comparing-number task can improve performance in three benchmark datasets containing quantitative-related tasks. The results of this study indicate that input reframing and the proposed pre-finetuning task is useful for RoBERTa.
+Cite (Informal):Improving Numeracy by Input Reframing and Quantitative Pre-Finetuning Task (Chen et al., Findings 2023)
+Year:2023
+Venue:Findings
+Video:https://aclanthology.org/2023.findings-eacl.4.mp4
+Anthology ID:2023.findings-eacl.4
+Bibkey:chen-etal-2023-improving
+Volume:Findings of the Association for Computational Linguistics: EACL 2023
+URL:https://aclanthology.org/2023.findings-eacl.4
+PDF:https://aclanthology.org/2023.findings-eacl.4.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Chung-Chi Chen, Hiroya Takamura, Ichiro Kobayashi, and Yusuke Miyao. 2023. Improving Numeracy by Input Reframing and Quantitative Pre-Finetuning Task. In Findings of the Association for Computational Linguistics: EACL 2023, pages 69–77, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:69–77
+DOI:10.18653/v1/2023.findings-eacl.4
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{chen-etal-2023-improving,
+    title = "Improving Numeracy by Input Reframing and Quantitative Pre-Finetuning Task",
+    author = "Chen, Chung-Chi  and
+      Takamura, Hiroya  and
+      Kobayashi, Ichiro  and
+      Miyao, Yusuke",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Findings of the Association for Computational Linguistics: EACL 2023",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.findings-eacl.4",
+    doi = "10.18653/v1/2023.findings-eacl.4",
+    pages = "69--77",
+    abstract = "Numbers have unique characteristics to words. Teaching models to understand numbers in text is an open-ended research question. Instead of discussing the required calculation skills, this paper focuses on a more fundamental topic: understanding numerals. We point out that innumeracy{---}the inability to handle basic numeral concepts{---}exists in most pretrained language models (LMs), and we propose a method to solve this issue by exploring the notation of numbers. Further, we discuss whether changing notation and pre-finetuning along with the comparing-number task can improve performance in three benchmark datasets containing quantitative-related tasks. The results of this study indicate that input reframing and the proposed pre-finetuning task is useful for RoBERTa.",
+}

@@ -1,0 +1,38 @@
+Title: Learning to Generate Equitable Text in Dialogue from Biased Training Data
+Authors: Anthony Sicilia, Malihe Alikhani
+Abstract: The ingrained principles of fairness in a dialogue system’s decision-making process and generated responses are crucial for user engagement, satisfaction, and task achievement. Absence of equitable and inclusive principles can hinder the formation of common ground, which in turn negatively impacts the overall performance of the system. For example, misusing pronouns in a user interaction may cause ambiguity about the intended subject. Yet, there is no comprehensive study of equitable text generation in dialogue. Aptly, in this work, we use theories of computational learning to study this problem. We provide formal definitions of equity in text generation, and further, prove formal connections between learning human-likeness and learning equity: algorithms for improving equity ultimately reduce to algorithms for improving human-likeness (on augmented data). With this insight, we also formulate reasonable conditions under which text generation algorithms can learn to generate equitable text without any modifications to the biased training data on which they learn. To exemplify our theory in practice, we look at a group of algorithms for the GuessWhat?! visual dialogue game and, using this example, test our theory empirically. Our theory accurately predicts relative-performance of multiple algorithms in generating equitable text as measured by both human and automated evaluation.
+Cite (Informal):Learning to Generate Equitable Text in Dialogue from Biased Training Data (Sicilia & Alikhani, ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.163
+Bibkey:sicilia-alikhani-2023-learning
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.163
+PDF:https://aclanthology.org/2023.acl-long.163.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Anthony Sicilia and Malihe Alikhani. 2023. Learning to Generate Equitable Text in Dialogue from Biased Training Data. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 2898–2917, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:2898–2917
+DOI:10.18653/v1/2023.acl-long.163
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{sicilia-alikhani-2023-learning,
+    title = "Learning to Generate Equitable Text in Dialogue from Biased Training Data",
+    author = "Sicilia, Anthony  and
+      Alikhani, Malihe",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.163",
+    doi = "10.18653/v1/2023.acl-long.163",
+    pages = "2898--2917",
+    abstract = "The ingrained principles of fairness in a dialogue system{'}s decision-making process and generated responses are crucial for user engagement, satisfaction, and task achievement. Absence of equitable and inclusive principles can hinder the formation of common ground, which in turn negatively impacts the overall performance of the system. For example, misusing pronouns in a user interaction may cause ambiguity about the intended subject. Yet, there is no comprehensive study of equitable text generation in dialogue. Aptly, in this work, we use theories of computational learning to study this problem. We provide formal definitions of equity in text generation, and further, prove formal connections between learning human-likeness and learning equity: algorithms for improving equity ultimately reduce to algorithms for improving human-likeness (on augmented data). With this insight, we also formulate reasonable conditions under which text generation algorithms can learn to generate equitable text without any modifications to the biased training data on which they learn. To exemplify our theory in practice, we look at a group of algorithms for the GuessWhat?! visual dialogue game and, using this example, test our theory empirically. Our theory accurately predicts relative-performance of multiple algorithms in generating equitable text as measured by both human and automated evaluation.",
+}

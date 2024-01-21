@@ -1,0 +1,35 @@
+Title: On the Role of Negative Precedent in Legal Outcome Prediction
+Authors: Josef Valvoda, Ryan Cotterell, Simone Teufel
+Abstract: Every legal case sets a precedent by developing the law in one of the following two ways. It either expands its scope, in which case it sets positive precedent, or it narrows it, in which case it sets negative precedent. Legal outcome prediction, the prediction of positive outcome, is an increasingly popular task in AI. In contrast, we turn our focus to negative outcomes here, and introduce a new task of negative outcome prediction. We discover an asymmetry in existing models’ ability to predict positive and negative outcomes. Where the state-of-the-art outcome prediction model we used predicts positive outcomes at 75.06 F1, it predicts negative outcomes at only 10.09 F1, worse than a random baseline. To address this performance gap, we develop two new models inspired by the dynamics of a court process. Our first model significantly improves positive outcome prediction score to 77.15 F1 and our second model more than doubles the negative outcome prediction performance to 24.01 F1. Despite this improvement, shifting focus to negative outcomes reveals that there is still much room for improvement for outcome prediction models. https://github.com/valvoda/Negative-Precedent-in-Legal-Outcome-Prediction
+Cite (Informal):On the Role of Negative Precedent in Legal Outcome Prediction (Valvoda et al., TACL 2023)
+Year:2023
+Venue:TACL
+Anthology ID:2023.tacl-1.3
+Bibkey:valvoda-etal-2023-role
+Volume:Transactions of the Association for Computational Linguistics, Volume 11
+URL:https://aclanthology.org/2023.tacl-1.3
+PDF:https://aclanthology.org/2023.tacl-1.3.pdf
+Month:
+SIG:
+Address:Cambridge, MA
+Language:
+Cite (ACL):Josef Valvoda, Ryan Cotterell, and Simone Teufel. 2023. On the Role of Negative Precedent in Legal Outcome Prediction. Transactions of the Association for Computational Linguistics, 11:34–48.
+Note:
+Pages:34–48
+DOI:10.1162/tacl_a_00532
+Publisher:MIT Press
+BibTex: @article{valvoda-etal-2023-role,
+    title = "On the Role of Negative Precedent in Legal Outcome Prediction",
+    author = "Valvoda, Josef  and
+      Cotterell, Ryan  and
+      Teufel, Simone",
+    journal = "Transactions of the Association for Computational Linguistics",
+    volume = "11",
+    year = "2023",
+    address = "Cambridge, MA",
+    publisher = "MIT Press",
+    url = "https://aclanthology.org/2023.tacl-1.3",
+    doi = "10.1162/tacl_a_00532",
+    pages = "34--48",
+    abstract = "Every legal case sets a precedent by developing the law in one of the following two ways. It either expands its scope, in which case it sets positive precedent, or it narrows it, in which case it sets negative precedent. Legal outcome prediction, the prediction of positive outcome, is an increasingly popular task in AI. In contrast, we turn our focus to negative outcomes here, and introduce a new task of negative outcome prediction. We discover an asymmetry in existing models{'} ability to predict positive and negative outcomes. Where the state-of-the-art outcome prediction model we used predicts positive outcomes at 75.06 F1, it predicts negative outcomes at only 10.09 F1, worse than a random baseline. To address this performance gap, we develop two new models inspired by the dynamics of a court process. Our first model significantly improves positive outcome prediction score to 77.15 F1 and our second model more than doubles the negative outcome prediction performance to 24.01 F1. Despite this improvement, shifting focus to negative outcomes reveals that there is still much room for improvement for outcome prediction models. \url{https://github.com/valvoda/Negative-Precedent-in-Legal-Outcome-Prediction}",
+}

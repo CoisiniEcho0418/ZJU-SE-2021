@@ -1,0 +1,42 @@
+Title: Query Enhanced Knowledge-Intensive Conversation via Unsupervised Joint Modeling
+Authors: Mingzhu Cai, Siqi Bao, Xin Tian, Huang He, Fan Wang, Hua Wu
+Abstract: In this paper, we propose an unsupervised query enhanced approach for knowledge-intensive conversations, namely QKConv. There are three modules in QKConv: a query generator, an off-the-shelf knowledge selector, and a response generator. QKConv is optimized through joint training, which produces the response by exploring multiple candidate queries and leveraging corresponding selected knowledge. The joint training solely relies on the dialogue context and target response, getting exempt from extra query annotations or knowledge provenances. To evaluate the effectiveness of the proposed QKConv, we conduct experiments on three representative knowledge-intensive conversation datasets: conversational question-answering, task-oriented dialogue, and knowledge-grounded conversation. Experimental results reveal that QKConv performs better than all unsupervised methods across three datasets and achieves competitive performance compared to supervised methods.
+Cite (Informal):Query Enhanced Knowledge-Intensive Conversation via Unsupervised Joint Modeling (Cai et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.97
+Bibkey:cai-etal-2023-query
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.97
+PDF:https://aclanthology.org/2023.acl-long.97.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Mingzhu Cai, Siqi Bao, Xin Tian, Huang He, Fan Wang, and Hua Wu. 2023. Query Enhanced Knowledge-Intensive Conversation via Unsupervised Joint Modeling. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 1730–1745, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:1730–1745
+DOI:10.18653/v1/2023.acl-long.97
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{cai-etal-2023-query,
+    title = "Query Enhanced Knowledge-Intensive Conversation via Unsupervised Joint Modeling",
+    author = "Cai, Mingzhu  and
+      Bao, Siqi  and
+      Tian, Xin  and
+      He, Huang  and
+      Wang, Fan  and
+      Wu, Hua",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.97",
+    doi = "10.18653/v1/2023.acl-long.97",
+    pages = "1730--1745",
+    abstract = "In this paper, we propose an unsupervised query enhanced approach for knowledge-intensive conversations, namely QKConv. There are three modules in QKConv: a query generator, an off-the-shelf knowledge selector, and a response generator. QKConv is optimized through joint training, which produces the response by exploring multiple candidate queries and leveraging corresponding selected knowledge. The joint training solely relies on the dialogue context and target response, getting exempt from extra query annotations or knowledge provenances. To evaluate the effectiveness of the proposed QKConv, we conduct experiments on three representative knowledge-intensive conversation datasets: conversational question-answering, task-oriented dialogue, and knowledge-grounded conversation. Experimental results reveal that QKConv performs better than all unsupervised methods across three datasets and achieves competitive performance compared to supervised methods.",
+}

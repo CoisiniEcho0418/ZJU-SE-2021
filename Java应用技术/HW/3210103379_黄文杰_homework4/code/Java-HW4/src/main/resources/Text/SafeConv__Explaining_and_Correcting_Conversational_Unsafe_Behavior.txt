@@ -1,0 +1,42 @@
+Title: SafeConv: Explaining and Correcting Conversational Unsafe Behavior
+Authors: Mian Zhang, Lifeng Jin, Linfeng Song, Haitao Mi, Wenliang Chen, Dong Yu
+Abstract: One of the main challenges open-domain end-to-end dialogue systems, or chatbots, face is the prevalence of unsafe behavior, such as toxic languages and harmful suggestions. However, existing dialogue datasets do not provide enough annotation to explain and correct such unsafe behavior. In this work, we construct a new dataset called SafeConv for the research of conversational safety: (1) Besides the utterance-level safety labels, SafeConv also provides unsafe spans in an utterance, information able to indicate which words contribute to the detected unsafe behavior; (2) SafeConv provides safe alternative responses to continue the conversation when unsafe behavior detected, guiding the conversation to a gentle trajectory. By virtue of the comprehensive annotation of SafeConv, we benchmark three powerful models for the mitigation of conversational unsafe behavior, including a checker to detect unsafe utterances, a tagger to extract unsafe spans, and a rewriter to convert an unsafe response to a safe version. Moreover, we explore the huge benefits brought by combining the models for explaining the emergence of unsafe behavior and detoxifying chatbots. Experiments show that the detected unsafe behavior could be well explained with unsafe spans and popular chatbots could be detoxified by a huge extent. The dataset is available at https://github.com/mianzhang/SafeConv.
+Cite (Informal):SafeConv: Explaining and Correcting Conversational Unsafe Behavior (Zhang et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.2
+Bibkey:zhang-etal-2023-safeconv
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.2
+PDF:https://aclanthology.org/2023.acl-long.2.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Mian Zhang, Lifeng Jin, Linfeng Song, Haitao Mi, Wenliang Chen, and Dong Yu. 2023. SafeConv: Explaining and Correcting Conversational Unsafe Behavior. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 22–35, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:22–35
+DOI:10.18653/v1/2023.acl-long.2
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{zhang-etal-2023-safeconv,
+    title = "{S}afe{C}onv: Explaining and Correcting Conversational Unsafe Behavior",
+    author = "Zhang, Mian  and
+      Jin, Lifeng  and
+      Song, Linfeng  and
+      Mi, Haitao  and
+      Chen, Wenliang  and
+      Yu, Dong",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.2",
+    doi = "10.18653/v1/2023.acl-long.2",
+    pages = "22--35",
+    abstract = "One of the main challenges open-domain end-to-end dialogue systems, or chatbots, face is the prevalence of unsafe behavior, such as toxic languages and harmful suggestions. However, existing dialogue datasets do not provide enough annotation to explain and correct such unsafe behavior. In this work, we construct a new dataset called SafeConv for the research of conversational safety: (1) Besides the utterance-level safety labels, SafeConv also provides unsafe spans in an utterance, information able to indicate which words contribute to the detected unsafe behavior; (2) SafeConv provides safe alternative responses to continue the conversation when unsafe behavior detected, guiding the conversation to a gentle trajectory. By virtue of the comprehensive annotation of SafeConv, we benchmark three powerful models for the mitigation of conversational unsafe behavior, including a checker to detect unsafe utterances, a tagger to extract unsafe spans, and a rewriter to convert an unsafe response to a safe version. Moreover, we explore the huge benefits brought by combining the models for explaining the emergence of unsafe behavior and detoxifying chatbots. Experiments show that the detected unsafe behavior could be well explained with unsafe spans and popular chatbots could be detoxified by a huge extent. The dataset is available at \url{https://github.com/mianzhang/SafeConv}.",
+}

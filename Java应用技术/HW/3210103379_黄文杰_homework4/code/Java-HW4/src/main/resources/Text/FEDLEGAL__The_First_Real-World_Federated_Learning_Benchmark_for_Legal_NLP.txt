@@ -1,0 +1,43 @@
+Title: FEDLEGAL: The First Real-World Federated Learning Benchmark for Legal NLP
+Authors: Zhuo Zhang, Xiangjing Hu, Jingyuan Zhang, Yating Zhang, Hui Wang, Lizhen Qu, Zenglin Xu
+Abstract: The inevitable private information in legal data necessitates legal artificial intelligence to study privacy-preserving and decentralized learning methods. Federated learning (FL) has merged as a promising technique for multiple participants to collaboratively train a shared model while efficiently protecting the sensitive data of participants. However, to the best of our knowledge, there is no work on applying FL to legal NLP. To fill this gap, this paper presents the first real-world FL benchmark for legal NLP, coined FEDLEGAL, which comprises five legal NLP tasks and one privacy task based on the data from Chinese courts. Based on the extensive experiments on these datasets, our results show that FL faces new challenges in terms of real-world non-IID data. The benchmark also encourages researchers to investigate privacy protection using real-world data in the FL setting, as well as deploying models in resource-constrained scenarios. The code and datasets of FEDLEGAL are available here.
+Cite (Informal):FEDLEGAL: The First Real-World Federated Learning Benchmark for Legal NLP (Zhang et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.193
+Bibkey:zhang-etal-2023-fedlegal
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.193
+PDF:https://aclanthology.org/2023.acl-long.193.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Zhuo Zhang, Xiangjing Hu, Jingyuan Zhang, Yating Zhang, Hui Wang, Lizhen Qu, and Zenglin Xu. 2023. FEDLEGAL: The First Real-World Federated Learning Benchmark for Legal NLP. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 3492–3507, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:3492–3507
+DOI:10.18653/v1/2023.acl-long.193
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{zhang-etal-2023-fedlegal,
+    title = "{FEDLEGAL}: The First Real-World Federated Learning Benchmark for Legal {NLP}",
+    author = "Zhang, Zhuo  and
+      Hu, Xiangjing  and
+      Zhang, Jingyuan  and
+      Zhang, Yating  and
+      Wang, Hui  and
+      Qu, Lizhen  and
+      Xu, Zenglin",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.193",
+    doi = "10.18653/v1/2023.acl-long.193",
+    pages = "3492--3507",
+    abstract = "The inevitable private information in legal data necessitates legal artificial intelligence to study privacy-preserving and decentralized learning methods. Federated learning (FL) has merged as a promising technique for multiple participants to collaboratively train a shared model while efficiently protecting the sensitive data of participants. However, to the best of our knowledge, there is no work on applying FL to legal NLP. To fill this gap, this paper presents the first real-world FL benchmark for legal NLP, coined FEDLEGAL, which comprises five legal NLP tasks and one privacy task based on the data from Chinese courts. Based on the extensive experiments on these datasets, our results show that FL faces new challenges in terms of real-world non-IID data. The benchmark also encourages researchers to investigate privacy protection using real-world data in the FL setting, as well as deploying models in resource-constrained scenarios. The code and datasets of FEDLEGAL are available here.",
+}

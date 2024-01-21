@@ -1,0 +1,38 @@
+Title: StoryWars: A Dataset and Instruction Tuning Baselines for Collaborative Story Understanding and Generation
+Authors: Yulun Du, Lydia Chilton
+Abstract: Collaborative stories, which are texts created through the collaborative efforts of multiple authors with different writing styles and intentions, pose unique challenges for NLP models. Understanding and generating such stories remains an underexplored area due to the lack of open-domain corpora. To address this, we introduce StoryWars, a new dataset of over 40,000 collaborative stories written by 9,400 different authors from an online platform. We design 12 task types, comprising 7 understanding and 5 generation task types, on {pasted macro ‘STORYWARS’}, deriving 101 diverse story-related tasks in total as a multi-task benchmark covering all fully-supervised, few-shot, and zero-shot scenarios. Furthermore, we present our instruction-tuned model, InstructStory, for the story tasks showing that instruction tuning, in addition to achieving superior results in zero-shot and few-shot scenarios, can also obtain the best performance on the fully-supervised tasks in StoryWars, establishing strong multi-task benchmark performances on StoryWars.
+Cite (Informal):StoryWars: A Dataset and Instruction Tuning Baselines for Collaborative Story Understanding and Generation (Du & Chilton, ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.171
+Bibkey:du-chilton-2023-storywars
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.171
+PDF:https://aclanthology.org/2023.acl-long.171.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Yulun Du and Lydia Chilton. 2023. StoryWars: A Dataset and Instruction Tuning Baselines for Collaborative Story Understanding and Generation. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 3044–3062, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:3044–3062
+DOI:10.18653/v1/2023.acl-long.171
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{du-chilton-2023-storywars,
+    title = "{S}tory{W}ars: A Dataset and Instruction Tuning Baselines for Collaborative Story Understanding and Generation",
+    author = "Du, Yulun  and
+      Chilton, Lydia",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.171",
+    doi = "10.18653/v1/2023.acl-long.171",
+    pages = "3044--3062",
+    abstract = "Collaborative stories, which are texts created through the collaborative efforts of multiple authors with different writing styles and intentions, pose unique challenges for NLP models. Understanding and generating such stories remains an underexplored area due to the lack of open-domain corpora. To address this, we introduce StoryWars, a new dataset of over 40,000 collaborative stories written by 9,400 different authors from an online platform. We design 12 task types, comprising 7 understanding and 5 generation task types, on {pasted macro {`}STORYWARS{'}}, deriving 101 diverse story-related tasks in total as a multi-task benchmark covering all fully-supervised, few-shot, and zero-shot scenarios. Furthermore, we present our instruction-tuned model, InstructStory, for the story tasks showing that instruction tuning, in addition to achieving superior results in zero-shot and few-shot scenarios, can also obtain the best performance on the fully-supervised tasks in StoryWars, establishing strong multi-task benchmark performances on StoryWars.",
+}

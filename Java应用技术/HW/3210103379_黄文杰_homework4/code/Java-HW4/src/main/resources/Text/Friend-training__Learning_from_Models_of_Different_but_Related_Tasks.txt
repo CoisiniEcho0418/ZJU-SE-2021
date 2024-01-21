@@ -1,0 +1,42 @@
+Title: Friend-training: Learning from Models of Different but Related Tasks
+Authors: Mian Zhang, Lifeng Jin, Linfeng Song, Haitao Mi, Xiabing Zhou, Dong Yu
+Abstract: Current self-training methods such as standard self-training, co-training, tri-training, and others often focus on improving model performance on a single task, utilizing differences in input features, model architectures, and training processes. However, many tasks in natural language processing are about different but related aspects of language, and models trained for one task can be great teachers for other related tasks. In this work, we propose friend-training, a cross-task self-training framework, where models trained to do different tasks are used in an iterative training, pseudo-labeling, and retraining process to help each other for better selection of pseudo-labels. With two dialogue understanding tasks, conversational semantic role labeling and dialogue rewriting, chosen for a case study, we show that the models trained with the friend-training framework achieve the best performance compared to strong baselines.
+Cite (Informal):Friend-training: Learning from Models of Different but Related Tasks (Zhang et al., EACL 2023)
+Year:2023
+Venue:EACL
+Video:https://aclanthology.org/2023.eacl-main.18.mp4
+Anthology ID:2023.eacl-main.18
+Bibkey:zhang-etal-2023-friend
+Volume:Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics
+URL:https://aclanthology.org/2023.eacl-main.18
+PDF:https://aclanthology.org/2023.eacl-main.18.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Mian Zhang, Lifeng Jin, Linfeng Song, Haitao Mi, Xiabing Zhou, and Dong Yu. 2023. Friend-training: Learning from Models of Different but Related Tasks. In Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics, pages 232–247, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:232–247
+DOI:10.18653/v1/2023.eacl-main.18
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{zhang-etal-2023-friend,
+    title = "Friend-training: Learning from Models of Different but Related Tasks",
+    author = "Zhang, Mian  and
+      Jin, Lifeng  and
+      Song, Linfeng  and
+      Mi, Haitao  and
+      Zhou, Xiabing  and
+      Yu, Dong",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.eacl-main.18",
+    doi = "10.18653/v1/2023.eacl-main.18",
+    pages = "232--247",
+    abstract = "Current self-training methods such as standard self-training, co-training, tri-training, and others often focus on improving model performance on a single task, utilizing differences in input features, model architectures, and training processes. However, many tasks in natural language processing are about different but related aspects of language, and models trained for one task can be great teachers for other related tasks. In this work, we propose friend-training, a cross-task self-training framework, where models trained to do different tasks are used in an iterative training, pseudo-labeling, and retraining process to help each other for better selection of pseudo-labels. With two dialogue understanding tasks, conversational semantic role labeling and dialogue rewriting, chosen for a case study, we show that the models trained with the friend-training framework achieve the best performance compared to strong baselines.",
+}

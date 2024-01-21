@@ -1,0 +1,39 @@
+Title: Data-Efficient Methods For Improving Hate Speech Detection
+Authors: Sumegh Roychowdhury, Vikram Gupta
+Abstract: Scarcity of large-scale datasets, especially for resource-impoverished languages motivates exploration of data-efficient methods for hate speech detection. Hateful intents are expressed explicitly (use of cuss, swear, abusive words) and implicitly (indirect and contextual). In this work, we progress implicit and explicit hate speech detection using an input-level data augmentation technique, task reformulation using entailment and cross-learning across five languages. Our proposed data augmentation technique EasyMix, improves the performance across all english datasets by ~1% and across multilingual datasets by ~1-9%. We also observe substantial gains of ~2-8% by reformulating hate speech detection as entail problem. We further probe the contextual models and observe that higher layers encode implicit hate while lower layers focus on explicit hate, highlighting the importance of token-level understanding for explicit and context-level for implicit hate speech detection. Code and Dataset splits - https://anonymous.4open.science/r/data_efficient_hatedetect/
+Cite (Informal):Data-Efficient Methods For Improving Hate Speech Detection (Roychowdhury & Gupta, Findings 2023)
+Year:2023
+Venue:Findings
+Video:https://aclanthology.org/2023.findings-eacl.9.mp4
+Anthology ID:2023.findings-eacl.9
+Bibkey:roychowdhury-gupta-2023-data
+Dataset:2023.findings-eacl.9.dataset.zip
+Volume:Findings of the Association for Computational Linguistics: EACL 2023
+URL:https://aclanthology.org/2023.findings-eacl.9
+PDF:https://aclanthology.org/2023.findings-eacl.9.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Sumegh Roychowdhury and Vikram Gupta. 2023. Data-Efficient Methods For Improving Hate Speech Detection. In Findings of the Association for Computational Linguistics: EACL 2023, pages 125–132, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:125–132
+DOI:10.18653/v1/2023.findings-eacl.9
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{roychowdhury-gupta-2023-data,
+    title = "Data-Efficient Methods For Improving Hate Speech Detection",
+    author = "Roychowdhury, Sumegh  and
+      Gupta, Vikram",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Findings of the Association for Computational Linguistics: EACL 2023",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.findings-eacl.9",
+    doi = "10.18653/v1/2023.findings-eacl.9",
+    pages = "125--132",
+    abstract = "Scarcity of large-scale datasets, especially for resource-impoverished languages motivates exploration of data-efficient methods for hate speech detection. Hateful intents are expressed explicitly (use of cuss, swear, abusive words) and implicitly (indirect and contextual). In this work, we progress implicit and explicit hate speech detection using an input-level data augmentation technique, task reformulation using entailment and cross-learning across five languages. Our proposed data augmentation technique EasyMix, improves the performance across all english datasets by {\textasciitilde}1{\%} and across multilingual datasets by {\textasciitilde}1-9{\%}. We also observe substantial gains of {\textasciitilde}2-8{\%} by reformulating hate speech detection as entail problem. We further probe the contextual models and observe that higher layers encode implicit hate while lower layers focus on explicit hate, highlighting the importance of token-level understanding for explicit and context-level for implicit hate speech detection. Code and Dataset splits - \url{https://anonymous.4open.science/r/data_efficient_hatedetect/}",
+}

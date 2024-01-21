@@ -1,0 +1,42 @@
+Title: Enhancing Dialogue Summarization with Topic-Aware Global- and Local- Level Centrality
+Authors: Xinnian Liang, Shuangzhi Wu, Chenhao Cui, Jiaqi Bai, Chao Bian, Zhoujun Li
+Abstract: Dialogue summarization aims to condense a given dialogue into a simple and focused summary text. Typically, both the roles’ viewpoints and conversational topics change in the dialogue stream. Thus how to effectively handle the shifting topics and select the most salient utterance becomes one of the major challenges of this task. In this paper, we propose a novel topic-aware Global-Local Centrality (GLC) model to help select the salient context from all sub-topics. The centralities are constructed in both global level and local level. The global one aims to identify vital sub-topics in the dialogue and the local one aims to select the most important context in each sub-topic. Specifically, the GLC collects sub-topic based on the utterance representations. And each utterance is aligned with one sub-topic. Based on the sub-topics, the GLC calculates global- and local-level centralities. Finally, we combine the two to guide the model to capture both salient context and sub-topics when generating summaries. Experimental results show that our model outperforms strong baselines on three public dialogue summarization datasets: CSDS, MC, and SAMSUM. Further analysis demonstrates that our GLC can exactly identify vital contents from sub-topics.
+Cite (Informal):Enhancing Dialogue Summarization with Topic-Aware Global- and Local- Level Centrality (Liang et al., EACL 2023)
+Year:2023
+Venue:EACL
+Video:https://aclanthology.org/2023.eacl-main.2.mp4
+Anthology ID:2023.eacl-main.2
+Bibkey:liang-etal-2023-enhancing
+Volume:Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics
+URL:https://aclanthology.org/2023.eacl-main.2
+PDF:https://aclanthology.org/2023.eacl-main.2.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Xinnian Liang, Shuangzhi Wu, Chenhao Cui, Jiaqi Bai, Chao Bian, and Zhoujun Li. 2023. Enhancing Dialogue Summarization with Topic-Aware Global- and Local- Level Centrality. In Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics, pages 27–38, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Pages:27–38
+DOI:10.18653/v1/2023.eacl-main.2
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{liang-etal-2023-enhancing,
+    title = "Enhancing Dialogue Summarization with Topic-Aware Global- and Local- Level Centrality",
+    author = "Liang, Xinnian  and
+      Wu, Shuangzhi  and
+      Cui, Chenhao  and
+      Bai, Jiaqi  and
+      Bian, Chao  and
+      Li, Zhoujun",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.eacl-main.2",
+    doi = "10.18653/v1/2023.eacl-main.2",
+    pages = "27--38",
+    abstract = "Dialogue summarization aims to condense a given dialogue into a simple and focused summary text. Typically, both the roles{'} viewpoints and conversational topics change in the dialogue stream. Thus how to effectively handle the shifting topics and select the most salient utterance becomes one of the major challenges of this task. In this paper, we propose a novel topic-aware Global-Local Centrality (GLC) model to help select the salient context from all sub-topics. The centralities are constructed in both global level and local level. The global one aims to identify vital sub-topics in the dialogue and the local one aims to select the most important context in each sub-topic. Specifically, the GLC collects sub-topic based on the utterance representations. And each utterance is aligned with one sub-topic. Based on the sub-topics, the GLC calculates global- and local-level centralities. Finally, we combine the two to guide the model to capture both salient context and sub-topics when generating summaries. Experimental results show that our model outperforms strong baselines on three public dialogue summarization datasets: CSDS, MC, and SAMSUM. Further analysis demonstrates that our GLC can exactly identify vital contents from sub-topics.",
+}

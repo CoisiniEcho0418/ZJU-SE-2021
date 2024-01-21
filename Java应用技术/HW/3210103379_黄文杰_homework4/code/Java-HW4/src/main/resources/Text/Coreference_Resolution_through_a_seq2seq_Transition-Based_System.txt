@@ -1,0 +1,35 @@
+Title: Coreference Resolution through a seq2seq Transition-Based System
+Authors: Bernd Bohnet, Chris Alberti, Michael Collins
+Abstract: Most recent coreference resolution systems use search algorithms over possible spans to identify mentions and resolve coreference. We instead present a coreference resolution system that uses a text-to-text (seq2seq) paradigm to predict mentions and links jointly. We implement the coreference system as a transition system and use multilingual T5 as an underlying language model. We obtain state-of-the-art accuracy on the CoNLL-2012 datasets with 83.3 F1-score for English (a 2.3 higher F1-score than previous work [Dobrovolskii, 2021]) using only CoNLL data for training, 68.5 F1-score for Arabic (+4.1 higher than previous work), and 74.3 F1-score for Chinese (+5.3). In addition we use the SemEval-2010 data sets for experiments in the zero-shot setting, a few-shot setting, and supervised setting using all available training data. We obtain substantially higher zero-shot F1-scores for 3 out of 4 languages than previous approaches and significantly exceed previous supervised state-of-the-art results for all five tested languages. We provide the code and models as open source.1
+Cite (Informal):Coreference Resolution through a seq2seq Transition-Based System (Bohnet et al., TACL 2023)
+Year:2023
+Venue:TACL
+Anthology ID:2023.tacl-1.13
+Bibkey:bohnet-etal-2023-coreference
+Volume:Transactions of the Association for Computational Linguistics, Volume 11
+URL:https://aclanthology.org/2023.tacl-1.13
+PDF:https://aclanthology.org/2023.tacl-1.13.pdf
+Month:
+SIG:
+Address:Cambridge, MA
+Language:
+Cite (ACL):Bernd Bohnet, Chris Alberti, and Michael Collins. 2023. Coreference Resolution through a seq2seq Transition-Based System. Transactions of the Association for Computational Linguistics, 11:212–226.
+Note:
+Pages:212–226
+DOI:10.1162/tacl_a_00543
+Publisher:MIT Press
+BibTex: @article{bohnet-etal-2023-coreference,
+    title = "Coreference Resolution through a seq2seq Transition-Based System",
+    author = "Bohnet, Bernd  and
+      Alberti, Chris  and
+      Collins, Michael",
+    journal = "Transactions of the Association for Computational Linguistics",
+    volume = "11",
+    year = "2023",
+    address = "Cambridge, MA",
+    publisher = "MIT Press",
+    url = "https://aclanthology.org/2023.tacl-1.13",
+    doi = "10.1162/tacl_a_00543",
+    pages = "212--226",
+    abstract = "Most recent coreference resolution systems use search algorithms over possible spans to identify mentions and resolve coreference. We instead present a coreference resolution system that uses a text-to-text (seq2seq) paradigm to predict mentions and links jointly. We implement the coreference system as a transition system and use multilingual T5 as an underlying language model. We obtain state-of-the-art accuracy on the CoNLL-2012 datasets with 83.3 F1-score for English (a 2.3 higher F1-score than previous work [Dobrovolskii, 2021]) using only CoNLL data for training, 68.5 F1-score for Arabic (+4.1 higher than previous work), and 74.3 F1-score for Chinese (+5.3). In addition we use the SemEval-2010 data sets for experiments in the zero-shot setting, a few-shot setting, and supervised setting using all available training data. We obtain substantially higher zero-shot F1-scores for 3 out of 4 languages than previous approaches and significantly exceed previous supervised state-of-the-art results for all five tested languages. We provide the code and models as open source.1",
+}

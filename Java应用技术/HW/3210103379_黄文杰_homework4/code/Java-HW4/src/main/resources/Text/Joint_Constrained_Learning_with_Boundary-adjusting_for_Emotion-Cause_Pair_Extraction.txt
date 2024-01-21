@@ -1,0 +1,42 @@
+Title: Joint Constrained Learning with Boundary-adjusting for Emotion-Cause Pair Extraction
+Authors: Huawen Feng, Junlong Liu, Junhao Zheng, Haibin Chen, Xichen Shang, Qianli Ma
+Abstract: Emotion-Cause Pair Extraction (ECPE) aims to identify the document’s emotion clauses and corresponding cause clauses. Like other relation extraction tasks, ECPE is closely associated with the relationship between sentences. Recent methods based on Graph Convolutional Networks focus on how to model the multiplex relations between clauses by constructing different edges. However, the data of emotions, causes, and pairs are extremely unbalanced, and current methods get their representation using the same graph structure. In this paper, we propose a **J**oint **C**onstrained Learning framework with **B**oundary-adjusting for Emotion-Cause Pair Extraction (**JCB**). Specifically, through constrained learning, we summarize the prior rules existing in the data and force the model to take them into consideration in optimization, which helps the model learn a better representation from unbalanced data. Furthermore, we adjust the decision boundary of classifiers according to the relations between subtasks, which have always been ignored. No longer working independently as in the previous framework, the classifiers corresponding to three subtasks cooperate under the relation constraints. Experimental results show that **JCB** obtains competitive results compared with state-of-the-art methods and prove its robustness on unbalanced data.
+Cite (Informal):Joint Constrained Learning with Boundary-adjusting for Emotion-Cause Pair Extraction (Feng et al., ACL 2023)
+Year:2023
+Venue:ACL
+Anthology ID:2023.acl-long.62
+Bibkey:feng-etal-2023-joint
+Volume:Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+URL:https://aclanthology.org/2023.acl-long.62
+PDF:https://aclanthology.org/2023.acl-long.62.pdf
+Month:July
+SIG:
+Address:Toronto, Canada
+Language:
+Cite (ACL):Huawen Feng, Junlong Liu, Junhao Zheng, Haibin Chen, Xichen Shang, and Qianli Ma. 2023. Joint Constrained Learning with Boundary-adjusting for Emotion-Cause Pair Extraction. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 1118–1131, Toronto, Canada. Association for Computational Linguistics.
+Editors:Anna Rogers,Jordan Boyd-Graber,Naoaki Okazaki
+Note:
+Pages:1118–1131
+DOI:10.18653/v1/2023.acl-long.62
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{feng-etal-2023-joint,
+    title = "Joint Constrained Learning with Boundary-adjusting for Emotion-Cause Pair Extraction",
+    author = "Feng, Huawen  and
+      Liu, Junlong  and
+      Zheng, Junhao  and
+      Chen, Haibin  and
+      Shang, Xichen  and
+      Ma, Qianli",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.62",
+    doi = "10.18653/v1/2023.acl-long.62",
+    pages = "1118--1131",
+    abstract = "Emotion-Cause Pair Extraction (ECPE) aims to identify the document{'}s emotion clauses and corresponding cause clauses. Like other relation extraction tasks, ECPE is closely associated with the relationship between sentences. Recent methods based on Graph Convolutional Networks focus on how to model the multiplex relations between clauses by constructing different edges. However, the data of emotions, causes, and pairs are extremely unbalanced, and current methods get their representation using the same graph structure. In this paper, we propose a **J**oint **C**onstrained Learning framework with **B**oundary-adjusting for Emotion-Cause Pair Extraction (**JCB**). Specifically, through constrained learning, we summarize the prior rules existing in the data and force the model to take them into consideration in optimization, which helps the model learn a better representation from unbalanced data. Furthermore, we adjust the decision boundary of classifiers according to the relations between subtasks, which have always been ignored. No longer working independently as in the previous framework, the classifiers corresponding to three subtasks cooperate under the relation constraints. Experimental results show that **JCB** obtains competitive results compared with state-of-the-art methods and prove its robustness on unbalanced data.",
+}

@@ -1,0 +1,41 @@
+Title: WinoDict: Probing language models for in-context word acquisition
+Authors: Julian Martin Eisenschlos, Jeremy R. Cole, Fangyu Liu, William W. Cohen
+Abstract: We introduce a new in-context learning paradigm to measure Large Language Models’ (LLMs) ability to learn novel words during inference. In particular, we rewrite Winograd-style co-reference resolution problems by replacing the key concept word with a synthetic but plausible word that the model must understand to complete the task. Solving this task requires the model to make use of the dictionary definition of the new word given in the prompt. This benchmark addresses word acquisition, one important aspect of the diachronic degradation known to afflict LLMs. As LLMs are frozen in time at the moment they are trained, they are normally unable to reflect the way language changes over time. We show that the accuracy of LLMs compared to the original Winograd tasks decreases radically in our benchmark, thus identifying a limitation of current models and providing a benchmark to measure future improvements in LLMs ability to do in-context learning.
+Cite (Informal):WinoDict: Probing language models for in-context word acquisition (Eisenschlos et al., EACL 2023)
+Year:2023
+Venue:EACL
+Video:https://aclanthology.org/2023.eacl-main.7.mp4
+Anthology ID:2023.eacl-main.7
+Bibkey:eisenschlos-etal-2023-winodict
+Volume:Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics
+URL:https://aclanthology.org/2023.eacl-main.7
+PDF:https://aclanthology.org/2023.eacl-main.7.pdf
+Month:May
+SIG:
+Address:Dubrovnik, Croatia
+Language:
+Cite (ACL):Julian Martin Eisenschlos, Jeremy R. Cole, Fangyu Liu, and William W. Cohen. 2023. WinoDict: Probing language models for in-context word acquisition. In Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics, pages 94–102, Dubrovnik, Croatia. Association for Computational Linguistics.
+Editors:Andreas Vlachos,Isabelle Augenstein
+Note:
+Award:EACL Best Paper
+Pages:94–102
+DOI:10.18653/v1/2023.eacl-main.7
+Publisher:Association for Computational Linguistics
+BibTex: @inproceedings{eisenschlos-etal-2023-winodict,
+    title = "{W}ino{D}ict: Probing language models for in-context word acquisition",
+    author = "Eisenschlos, Julian Martin  and
+      Cole, Jeremy R.  and
+      Liu, Fangyu  and
+      Cohen, William W.",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.eacl-main.7",
+    doi = "10.18653/v1/2023.eacl-main.7",
+    pages = "94--102",
+    abstract = "We introduce a new in-context learning paradigm to measure Large Language Models{'} (LLMs) ability to learn novel words during inference. In particular, we rewrite Winograd-style co-reference resolution problems by replacing the key concept word with a synthetic but plausible word that the model must understand to complete the task. Solving this task requires the model to make use of the dictionary definition of the new word given in the prompt. This benchmark addresses word acquisition, one important aspect of the diachronic degradation known to afflict LLMs. As LLMs are frozen in time at the moment they are trained, they are normally unable to reflect the way language changes over time. We show that the accuracy of LLMs compared to the original Winograd tasks decreases radically in our benchmark, thus identifying a limitation of current models and providing a benchmark to measure future improvements in LLMs ability to do in-context learning.",
+}

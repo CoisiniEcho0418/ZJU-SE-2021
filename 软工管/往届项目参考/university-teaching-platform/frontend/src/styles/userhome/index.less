@@ -1,0 +1,248 @@
+.uhp{
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    justify-content: center;
+    padding: 20px;
+    background-color: #f4f4f4;
+
+    .uhp-left{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: #2b333b;
+        margin: 10px 10px 10px 10px;
+        padding: 30px 30px 30px 30px;
+
+        .avatar{
+            width: 100px;
+            height: 100px;
+            margin: 20px 0 0 0;
+        }
+        
+        .name{
+            width: 100px;
+            height: 50px;
+            font-size: large;
+            color: #f4f4f4;
+            margin: 10px 0 0 0;
+            display: table;
+            line-height: 50px;
+        }
+        
+        .menu{
+            width: 125px;
+            margin: 10px 0 10px 0;
+            line-height: 40px;
+            font-size: medium;
+            .item{
+                background: #f4f4f4;
+                color: #2b333b;
+                height: 40px;
+                margin: 15px 0px 15px 0px;
+                border-radius: 25px;
+                box-shadow: 4px 8px rgba(0,0,0,.16);
+            }
+            .otherItem{
+                height: 40px;
+                margin: 15px 0px 15px 0px;
+                border-radius: 25px;
+                background: inherit;
+                color: #f4f4f4;
+                &:hover{
+                    background-color: #5b6670;
+                    transform: translateY(-2px);
+                    transition: all 300ms;
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+
+    .uhp-center{
+        width: 600px;
+        background: #2b333b;
+        margin: 7px 10px 7px 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .notes-page{
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+        
+            .editor{
+                width: 500px;
+                margin: 5px 0 5px 0;
+                height: 100px;
+            }
+        
+            .btn-add{
+                width: 70px;
+            }
+            
+            .note-title{
+                margin: 20px 0 10px 0;
+                font-size: larger;
+                color: white;
+            }
+            
+            .note{
+                width: 500px;
+                margin-top: 15px;
+                background: #f4f4f4;
+                padding: 5px 5px 5px 5px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+        
+                .text{
+                    margin-top: 5px;
+                    width: 100%;
+                    height: 80px;
+                    text-align: left;
+                    text-indent: 20px;
+                }
+                .btn-delete{
+                    width: 70px;
+                }
+            }
+        }
+        
+        .center-title-bar{
+            width: 590px;
+            height: 40px;
+            line-height: 40px;
+            background: #5b6670;
+            margin: 5px 5px 5px 5px;
+            color: #f4f4f4;
+        }
+        
+        .notice-item{
+            margin: 15px 15px 15px 15px;
+            width: 550px;
+            background: #5b6670;
+            border-radius: 10px;
+            text-align: left;
+            padding: 0px 0px 5px 0px;
+            .notice-header{
+                display: flex;
+                flex-direction: row;
+                .notice-header-left{
+                    width: 90px;
+                    padding: 20px 20px 10px 30px;
+                    .notice-logo{
+                        height: 50px;
+                        width: 50px;
+                        background: url(../../assets/images/icon/notice.png);
+                        background-size: 100% 100%;
+                        background-repeat: no-repeat;
+                        overflow: hidden;
+                    }
+                }
+                .notice-header-right{
+                    display: flex;
+                    flex-direction: column;
+                    .notice-header-right-top{
+                        display: flex;
+                        flex-direction: row;
+                        line-height: 30px;
+                        .notice-title{
+                            width: 320px;
+                            padding: 10px 0px 5px 10px;
+                            font-weight: bold;
+                            font-size: large;
+                            color: #f4f4f4;
+                        }
+                        .notice-due{
+                            padding: 10px 0px 5px 10px;
+                            margin-left: 70px;
+                            color: #dd1111;
+                        }
+                    }
+                    .notice-header-right-bot{
+                        display: flex;
+                        flex-direction: row;
+                        line-height: 15px;
+                        .notice-time{
+                            width: 380px;
+                            padding: 5px 0px 5px 10px;
+                            color: #f4f4f4;
+                        }
+                        .notice-detail{
+                            color: grey;
+                            padding: 5px 0px 5px 10px;
+                            &:hover{
+                                cursor: pointer;
+                                color: #f4f4f4;
+                                transition: all 300ms;
+                            }
+                        }
+                    }
+                }
+            }
+            
+            .notice-text{
+                margin: 10px 10px 10px 10px;
+                border-radius: 10px;
+                padding: 5px;
+                font-size: small;
+                text-indent: 20px;
+                line-height: 50px;
+                color: #333333;
+                background: #cccccf;
+            }
+        }
+    }
+
+    .uhp-right{
+        width: 200px;
+        background: #2b333b;
+        margin: 10px 10px 10px 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 10px;
+
+        .courses-title-bar{
+            width: 190px;
+            height: 40px;
+            line-height: 40px;
+            background: #5b6670;
+            margin: -5px 5px 5px 5px;
+            color: #f4f4f4;
+        }
+        
+        .courses-list{
+            width: 180px;
+            overflow: scroll;
+            .course-item{
+                height: 100px;
+                margin: 10px 10px 10px 10px;
+                padding: 75px 0 0 0;
+                background: url(../../assets/images/zhanwei.png);
+                background-size: 100% 100%;
+                background-repeat:no-repeat;
+                border-radius: 10px;
+                color: #f4f4f4;
+                transition: all 500ms;
+                .course-title{
+                    line-height: 25px;
+                    background: #2b333b;
+                    filter: alpha(opacity=40);
+                    -webkit-filter: alpha(opacity=40);
+                    -ms-filter: alpha(opacity=40);
+                    opacity: 0.4;
+                }
+                &:hover{
+                    transform: translateY(-2px);
+                    cursor: pointer;
+                    font-size: medium;
+                }
+            }
+        }
+    }
+}

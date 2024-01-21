@@ -1,0 +1,2 @@
+- 2023ZJU软件工程管理课程资料仓库，代码仓库详见：[jiangmizzz/The-Mirror-of-Law: 2023ZJU软件工程管理课程-G04小组项目代码仓库 (github.com)](https://github.com/jiangmizzz/The-Mirror-of-Law)
+- 最后的展示视频以及终期答辩PPT由于文件过大，这里就没有上传

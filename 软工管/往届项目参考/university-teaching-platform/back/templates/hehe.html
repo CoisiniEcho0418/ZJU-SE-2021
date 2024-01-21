@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <form>
+        userid:<br>
+        <input type="text" id="userName" value="CAIcy">
+        <br>
+        Last name:<br>
+        <input type="text" id="passWD" value="canbao456">
+        <br><br>
+        <input type="submit" value="Submit" id='testbtn'>
+    </form>
+</head>
+<script src="../static/jquery-3.5.1.js"></script>
+<script src="../static/jquery-3.5.1.min.js"></script>
+<script>
+
+    $(function () {
+        //点击按钮发送数据
+        $("#testbtn").click(function (event) {
+            //关闭表单里面的按钮默认行为
+            event.preventDefault();
+            $.post({
+                //给哪个页面发送网络请求  url取  域名后面的所有东西
+                {#'url': '/loginValidness',  //passed.#}
+                'url':'/modifyInfo',
+                //data是发送过去的数据s
+                'data': {
+                    'userName': $('#userName').val(),
+                    'passWD': 'caobao123',
+                    'type':'ins',
+                    'nickName':'灿宝宝'
+
+                },
+                //如果网络请求发送成功，就会执行success里面的函数
+                //请求成功 是状态码等于200就会执行success里面的函数
+                //否则执行fail里面的函数
+                'success': function (data) {
+                    //data是服务器发送过来的数据
+                    //如果服务器发送过来的是json数据，那么JS底层会将json进行解析
+                    //比如 服务器发送过来的是JSON类型的字典，那么JS底层会将JSOn数据转换成一个对象
+                    console.log(data)
+                },
+                //如果网络请求发送失败，就会执行fail里面的函数
+                'fail':
+                    function (error) {
+                        console.log(error)
+                    }
+            })
+        })
+    })
+    ;
+</script>
+
+<body>
+
+</body>
+</html>

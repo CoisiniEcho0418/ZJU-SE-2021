@@ -1,0 +1,160 @@
+.tch-course{
+    width: 100%;
+    min-width: 1154px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    //align-content: center;
+    align-items: center;
+
+    .cp-header{
+        width: 1300px;
+        display: flex;
+        flex-direction: row;
+        text-align: left;
+
+        .cp-header-info{
+            width: 1250px;
+            display: flex;
+            flex-direction: column;
+            margin: 20px 50px 10px 50px;
+            padding-bottom: 20px;
+            box-sizing: border-box;
+            box-shadow: 0 5px 5px 0 rgba(28, 31, 33, 0.1);
+
+            .cp-header-title{
+                margin: 5px 20px 5px 20px;
+                font-size: 25px;
+                padding: 0 100px 0 100px;
+            }
+            .cp-header-time{
+                margin: 5px 20px 5px 20px;
+                font-size: 15px;
+                padding: 0 100px 0 100px;
+            }
+            .cp-header-instructor{
+                margin: 5px 20px 5px 20px;
+                font-size: 15px;
+                padding: 0 100px 0 100px;
+            }
+        }
+    }
+    .cp-navigation{
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: space-around;
+
+        .cp-navigation-list{
+            display: flex;
+            margin: 0 10px 0 10px;
+            box-sizing: border-box;
+            box-shadow: 0 5px 5px 0 rgba(28,31,33,.1);
+
+            li{
+                cursor: pointer;
+                margin: 0 50px 0 50px;
+                font-size: 15px;
+                color: #999999;
+                line-height: 50px;
+                width: 200px;
+                white-space: nowrap;
+
+                &:hover{
+                    color: #333333;
+                    background: #61dafb;
+                    font-weight: bold;
+                }
+            }
+        }
+    }
+    .cp-content{
+        width: 1200px;
+        display: flex;
+        text-align: left;
+
+        .cp-content-info{
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            margin: 30px 0 30px 0;
+            //padding: 20px 20px 20px 20px;
+            box-sizing: border-box;
+            box-shadow: 0 5px 5px 0 rgba(28, 31, 33, 0.1);
+            align-content: center;
+
+            .cp-content-title{
+                //margin: 20px 20px 20px 20px;
+                padding: 0px 20px 0px 20px;
+                height: 40px;
+                line-height: 40px;
+                font-size: 20px;
+                text-indent: 50px;
+                box-shadow: 0 5px 5px 0 rgba(28, 31, 33, 0.1);
+                background: cornflowerblue;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+
+                .title{
+                    width: 300px;
+                    background: #fff99c;
+                }
+                .btn-add{
+                    font-size: 16px;
+                    height: 80%;
+                    line-height: 80%;
+                    margin-left: 100px;
+                    background: #ff3c65;
+                }
+            }
+
+            .cp-content-text{
+                margin: 20px 50px 20px 50px;
+                padding-bottom: 20px;
+                font-size: 15px;
+                text-indent: 30px;
+            }
+            .cp-content-material{
+                //width: 1000px;
+                height: 40px;
+                line-height: 40px;
+                //background: #007aff;
+                text-align: center;
+                font-size: 18px;
+                margin: 10px 0px 0px 0px;
+                //padding: 20px 20px 20px 20px;
+                box-shadow: 0 5px 5px 0 rgba(28, 31, 33, 0.1);
+
+                display: flex;
+                flex-direction: row;
+
+                &:hover{
+                    //color: #333333;
+                    background: aquamarine;
+                }
+
+                .material-title{
+                    width: 500px;
+                    background: #fff99c;
+                    margin: 0px 50px 0px 50px;
+                }
+
+                .btn-download{
+                    width: 100px;
+                    margin: 0px 50px 0px 30px;
+                    float: right;
+                    background: #ff8da8;
+
+                    .download-icon{
+                        height: 100%;
+                    }
+
+                    &:hover{
+                        //color: #333333;
+                        background: #ff3c65;
+                    }
+                }
+            }
+        }
+    }
+}

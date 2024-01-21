@@ -1,0 +1,10 @@
+<HTML>
+<HEAD>
+<link href="../asdocs/css_tutorials/home.css" rel="stylesheet" type="text/css">
+</HEAD>
+<BODY>
+<H1 class="mylayout"> 这个标题使用了Style。</H1>
+<H1>这个标题没有使用Style。</H1>
+</BODY>
+</HTML>
+

@@ -1,0 +1,20 @@
+<html>
+<head>
+<title>一个使用到for...in循环的Javascript示例</title>
+</head>
+<body>
+<script type="text/javascript">
+// 创建一个对象 myObject 以及三个属性 sitename, siteurl, sitecontent。
+var myObject = new Object();
+myObject.sitename = "test";
+myObject.siteurl = "www.test.com";
+myObject.sitecontent = "JavaScript教程网站";
+//遍历对象的所有属性
+for (prop in myObject)
+{
+document.write("属性 '" + prop + "' 为 " + myObject[prop]);
+document.write("<br>");
+}
+</script>
+</body>
+</html>

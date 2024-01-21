@@ -1,0 +1,39 @@
+<html>
+<head>
+   <script type="text/javascript" src="jquery-1.11.0.min.js"></script>
+<script>
+ 	$(document).ready(function(){
+ 		//alert("Hello World!");//js弹窗显示
+		 $("#name").keyup(function() {
+			 $("#test").val("Hello: " + $("#name").val());
+		 })
+		 $("input:radio").click(function() {
+			 alert("click");
+		 })
+ 	});
+ </script>
+</head>
+<body onload="/*alert('test')*/">
+<form method=post>
+	Name:
+		<input type=text id=name name=name size=32 maxlength=80>
+		<input type=text id=test name=test size=32>
+	<p>
+	Sex:
+		<input type=radio name=sex value="M"> Male
+		<input type=radio name=sex value="F"> Female
+	<p>
+	Incomer:
+		<select name=income size=1>
+			<option>Under $25,000
+			<option>$25,001 to %50,000
+			<option>$50,001 and higher
+		</select>
+	<p>
+	<input type=button id="button" value="确认">
+</form>
+<script>
+	//alert("end of html");
+</script>
+</body>
+</html>

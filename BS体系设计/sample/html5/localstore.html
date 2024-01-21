@@ -1,0 +1,24 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<script>
+function init()
+{
+    var info = localStorage["info"];
+    if (info != undefined)
+        document.getElementById("info").value = info;
+}
+
+function save()
+{
+    var info = document.getElementById("info").value;
+    localStorage.setItem("info", info);
+}
+</script>
+</head>
+<body onLoad="init()">
+信息<br />
+<input type="text" id="info" name="info" /><br />
+<input type="button" id="save" name="save" value="保存" onClick="save()" />
+</body>
+</html>

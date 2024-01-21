@@ -1,0 +1,1 @@
+这是BS体系设计的课程资料，大作业资料在代码仓库：[CoisiniEcho0418/Iot_BS_Project: This is a course project of 2023 ZJU BS course. (github.com)](https://github.com/CoisiniEcho0418/Iot_BS_Project)

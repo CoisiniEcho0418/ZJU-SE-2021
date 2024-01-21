@@ -1,0 +1,19 @@
+<html>
+<head>
+<title>用substring方法返回一个字符串中指定那部分子字符串Javascript示例</title>
+</head>
+<body>
+
+<script type="text/javascript">
+var vText="I like blabla.cn"
+var vSubText=vText.substring(7,13)
+document.write("<p>" + vText + "</p>")
+document.write(vSubText)
+</script>
+
+<p>该Javascript示例代码解释：首先申明变量vText，将"I like blabla.cn"赋值给vText，然后声明另外一个变量vSubText，变量vSubText的值为从vText第7个字符到第12个字符那部分，即"blabla"，然后用document.write将vText和vSubText显示出来。</p>
+<p>这个示例用到String对象的substring(start, end)方法， start表示子字符串的起始位置，end表示子字符串的结束位置，substring(start, end)方法会返回一个包含从start到end(注:不包含end)的子字符串。
+</p>
+
+</body>
+</html>

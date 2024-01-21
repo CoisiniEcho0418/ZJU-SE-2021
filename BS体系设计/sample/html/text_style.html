@@ -1,0 +1,411 @@
+<HTML>
+<HEAD>
+   <TITLE></TITLE>
+</HEAD>
+<BODY BGCOLOR="#D4D4D4">
+
+<H1 ALIGN=CENTER>文字布局(TEXT STYLE)标记(TAGS)</H1>
+
+<CENTER><P>
+<HR></P></CENTER>
+
+<P><!--################## Line Control ########################--><A NAME="line"></A></P>
+
+<H2><IMG SRC="br20t.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/br20t.gif" ALT="+" HEIGHT=20 WIDTH=20 ALIGN=TOP> 行的控制
+</H2>
+
+<P><!------Paragraph-------></P>
+
+<H3>段(Paragraph) <FONT SIZE=-1>(可以看作是空行)</FONT> &lt;p&gt;</H3>
+
+<DL>
+<DD><TT>你好吗？&lt;p&gt;很好。</TT></DD>
+</DL>
+
+<P>你好吗？<P>
+
+<P>很好。</P>
+
+<PRE>
+</PRE>
+
+<P><!------Break Line-------></P>
+
+<H3>换行 &lt;br&gt;</H3>
+
+<DL>
+<DD><TT>你好吗？&lt;br&gt;很好。</TT></DD>
+</DL>
+
+<P>你好吗？<BR>
+很好。</P>
+
+<PRE>
+</PRE>
+
+<P><!------No Break-------></P>
+
+<H3>不换行&lt;nobr&gt;</H3>
+
+<DL>
+<DD><TT>&lt;nobr&gt; <BR>
+请改变您浏览器窗口的宽度， 使之小于这一行的宽度， 看看这个标记的作用！<BR>
+&lt;/nobr&gt; </TT></DD>
+</DL>
+
+<P><NOBR>请改变您浏览器窗口的宽度，使之小于这一行的宽度，看看这个标记的作用！
+</P>
+
+<PRE>
+</PRE>
+
+<P><!--################## ALIGNMENT ########################--><A NAME="center"></A></P>
+
+<H2><IMG SRC="br20t.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/br20t.gif" ALT="+" HEIGHT=20 WIDTH=20 ALIGN=TOP> 文字的对齐(Alignment)
+</H2>
+
+<P><!------hn centering-------></P>
+
+<H3>&lt;hn align=#&gt;...&lt;/hn&gt; <BR>
+&lt;p align=#&gt;...&lt;/p&gt; #=left, center, right</H3>
+
+<DL>
+<DD><TT>&lt;h3 align=center&gt;Hello&lt;\h3&gt;<BR>
+&lt;h3 align=right&gt;Hello&lt;\h3&gt; </TT></DD>
+</DL>
+
+<H3 ALIGN=CENTER>Hello</H3>
+
+<H3 ALIGN=RIGHT>Hello</H3>
+
+<P><!------centering-------></P>
+
+<H3>&lt;center&gt;...&lt;/center&gt; </H3>
+
+<DL>
+<DD><TT>&lt;center&gt;Hello&lt;/center&gt; </TT></DD>
+</DL>
+
+<CENTER><P>Hello </P></CENTER>
+
+<PRE>
+</PRE>
+
+<P><!--################## Division ########################--><A NAME="division"></A></P>
+
+<H2><IMG SRC="br20t.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/br20t.gif" ALT="+" HEIGHT=20 WIDTH=20 ALIGN=TOP> 文字的分区(Division)显示
+</H2>
+
+<P><!------left-------></P>
+
+<H3>&lt;div align=left&gt; ... &lt;/div&gt;</H3>
+
+<DL>
+<DD><TT>&lt;div align=left&gt;<BR>
+Can you feel happiness without unpleasant? &lt;br&gt;<BR>
+Please show me your smile.<BR>
+&lt;/div&gt;</TT></DD>
+
+<P><TT> </TT></P>
+</DL>
+
+<P>Can you feel happiness without unpleasant?<BR>
+Please show me your smile. <!------center-------></P>
+
+<H3>&lt;div align=center&gt; ... &lt;/div&gt;</H3>
+
+<CENTER><P>Can you feel happiness without unpleasant?<BR>
+Please show me your smile. <!------right-------></P></CENTER>
+
+<H3>&lt;div align=right&gt; ... &lt;/div&gt;</H3>
+
+<DIV ALIGN=right><P>Can you feel happiness without unpleasant?<BR>
+Please show me your smile. </P></DIV>
+
+<PRE>
+</PRE>
+
+<P><!--################## List ########################--><A NAME="list"></A></P>
+
+<H2><IMG SRC="br20t.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/br20t.gif" ALT="+" HEIGHT=20 WIDTH=20 ALIGN=TOP> 列表 
+</H2>
+
+<P><!------Unordered List-------></P>
+
+<H3>无序列表 &lt;ul&gt;&lt;li&gt;...&lt;/ul&gt;</H3>
+
+<DL>
+<DD><TT>&lt;ul&gt;<BR>
+&lt;li&gt;Today<BR>
+&lt;li&gt;Tommorow<BR>
+&lt;/ul&gt; </TT></DD>
+</DL>
+
+<UL>
+<LI>Today </LI>
+
+<LI>Tommorow </LI>
+</UL>
+
+<P><!------Ordered List-------></P>
+
+<H3>有序列表 &lt;ol&gt;&lt;li&gt;...&lt;/ol&gt;</H3>
+
+<DL>
+<DD><TT>&lt;ol&gt;<BR>
+&lt;li&gt;Today<BR>
+&lt;li&gt;Tommorow<BR>
+&lt;/ol&gt; </TT></DD>
+</DL>
+
+<OL>
+<LI>Today </LI>
+
+<LI>Tommorow </LI>
+</OL>
+
+<P><!------Definition List-------></P>
+
+<H3>定义列表(Definition lists) &lt;dl&gt;&lt;dt&gt;...&lt;dd&gt;...&lt;/dl&gt;</H3>
+
+<DL>
+<DD><TT>&lt;dl&gt;<BR>
+&lt;dt&gt;Today<BR>
+&lt;dd&gt;Today is yesterday.<BR>
+&lt;dt&gt;Tomorrow<BR>
+&lt;dd&gt;Tomorrow is today.<BR>
+&lt;/dl&gt; </TT></DD>
+</DL>
+
+<DL>
+<DT>Today </DT>
+
+<DD>Today will be yesterday. </DD>
+
+<DT>Tomorrow </DT>
+
+<DD>Tomorrow will be today. </DD>
+</DL>
+
+<P><!------Definition List Compact-------></P>
+
+<H3>Definition lists Compact &lt;dl compact&gt;&lt;dt&gt;...&lt;dd&gt;...&lt;/dl&gt;</H3>
+
+<TABLE WIDTH="100%" >
+<TR>
+<TD WIDTH=50%>
+<DL compact>
+<DT>Today </DT>
+
+<DD>Today will be yesterday. </DD>
+
+<DT>Next </DT>
+
+<DD>Tomorrow will be today. </DD>
+</DL>
+</TD>
+
+<TD><TT>&lt;dl compact&gt;<BR>
+&lt;dt&gt;Today<BR>
+&lt;dd&gt;Today is yesterday.<BR>
+&lt;dt&gt;Tomorrow<BR>
+&lt;dd&gt;Tomorrow is today.<BR>
+&lt;/dl&gt; </TT></TD>
+</TR>
+</TABLE>
+
+<PRE>
+</PRE>
+
+<P><!--################## List Customize ########################--><A NAME="custom"></A></P>
+
+<H2><IMG SRC="br20t.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/br20t.gif" ALT="+" HEIGHT=20 WIDTH=20 ALIGN=TOP> 定制列表元素 </H2>
+
+<P><!------Mark Style-------></P>
+
+<H3>定制表中的标记 &lt;li type=#&gt; #=disk, circle, square</H3>
+
+<DL>
+<DD><TT>&lt;ul&gt;<BR>
+&lt;li type=disc&gt;ONE<BR>
+&lt;li type=circle&gt;TWO<BR>
+&lt;li type=square&gt;THREE<BR>
+&lt;/ul&gt; </TT></DD>
+</DL>
+
+<UL>
+<LI type=disc>ONE </LI>
+
+<LI type=circle>TWO </LI>
+
+<LI type=square>THREE </LI>
+</UL>
+
+<P><!------Capital letters-------></P>
+
+<H3>定制有序列表表中的序号 &lt;li type=#&gt; #=A, a, I, i, 1</H3>
+
+<DL>
+<DD><TT>&lt;ol&gt;&lt;li type=A&gt;ONE-ONE<BR>
+&lt;li&gt;ONE-TWO&lt;/ol&gt; </TT></DD>
+
+<OL>
+<LI TYPE=A>ONE-ONE </LI>
+
+<LI>ONE-TWO </LI>
+</OL>
+
+<DD><TT>&lt;ol&gt;&lt;li type=a&gt;ONE-ONE<BR>
+&lt;li&gt;ONE-TWO&lt;/ol&gt; </TT></DD>
+
+<OL>
+<LI TYPE=a>ONE-ONE </LI>
+
+<LI>ONE-TWO </LI>
+</OL>
+
+<DD><TT>&lt;ol&gt;&lt;li type=I&gt;ONE-ONE<BR>
+&lt;li&gt;ONE-TWO&lt;/ol&gt; </TT></DD>
+
+<OL>
+<LI TYPE=I>ONE-ONE </LI>
+
+<LI>ONE-TWO </LI>
+</OL>
+
+<DD><TT>&lt;ol&gt;&lt;li type=i&gt;ONE-ONE<BR>
+&lt;li&gt;ONE-TWO&lt;/ol&gt; </TT></DD>
+
+<OL>
+<LI TYPE=i>ONE-ONE </LI>
+
+<LI>ONE-TWO </LI>
+</OL>
+
+<DD><TT>&lt;ol&gt;&lt;li type=1&gt;ONE-ONE<BR>
+&lt;li&gt;ONE-TWO&lt;/ol&gt; </TT></DD>
+
+<OL>
+<LI TYPE=1>ONE-ONE </LI>
+
+<LI>ONE-TWO </LI>
+</OL>
+</DL>
+
+<P><!------Sarted Number-------></P>
+
+<H3>定制有序列表表中的序号的起始值 &lt;ol start=#&gt; #=number</H3>
+
+<DL>
+<PRE>&lt;ol start=5&gt;
+&lt;li type=A&gt;ONE-ONE
+&lt;li&gt;ONE-TWO
+        &lt;ol start=10&gt;
+        &lt;li&gt;TWO-ONE
+        &lt;li type=i&gt;TWO-TWO
+&lt;/ol&gt;&lt;/ol&gt;
+</PRE>
+</DL>
+
+<OL start=5>
+<P><BR>
+</P>
+
+<LI type=A>ONE-ONE </LI>
+
+<LI>ONE-TWO </LI>
+
+<OL start=10>
+<LI>TWO-ONE </LI>
+
+<LI type=i>TWO-TWO </LI>
+</OL>
+</OL>
+
+<PRE>
+</PRE>
+
+<P><!--################## Preformatted ########################--><A NAME="pre"></A></P>
+
+<H2><IMG SRC="br20t.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/br20t.gif" ALT="+" HEIGHT=20 WIDTH=20 ALIGN=TOP> 预格式化文本(Preformatted Text) </H2>
+
+<P><!------Preformatted-------></P>
+
+<H3>&lt;pre&gt;...&lt;/pre&gt;</H3>
+
+<DL>
+<DD><TT>&lt;pre&gt;<BR>
+Please use your card.<BR>
+VISA Master<BR>
+&lt;b&gt;Here is an order form.&lt;/b&gt;<BR>
+&lt;ul&gt;&lt;li&gt;Fax<BR>
+&lt;li&gt;Air Mail&lt;/ul&gt;<BR>
+&lt;/pre&gt; </TT></DD>
+</DL>
+
+<PRE>Please use your card
+VISA    Master
+<B>Here is an order form.</B>
+</PRE>
+
+<UL>
+<LI>Fax </LI>
+
+<LI>Air Mail </LI>
+</UL>
+
+<P><!------Listing-------></P>
+
+<H3>&lt;listing&gt;...&lt;/listing&gt;</H3>
+
+<DL>
+<DD><TT>&lt;listing&gt;<BR>
+Please use your card.<BR>
+VISA Master<BR>
+&lt;b&gt;Here is an order form.&lt;/b&gt;<BR>
+&lt;ul&gt;&lt;li&gt;Fax<BR>
+&lt;li&gt;Air Mail&lt;/ul&gt;<BR>
+&lt;/listing&gt; </TT></DD>
+</DL>
+
+<PRE>Please use your card.
+VISA    Master
+<B>Here is order form.</B>
+</PRE>
+
+<UL>
+<LI>Fax </LI>
+
+<LI>Air Mail</LI>
+</UL>
+
+<P><!------Example-------></P>
+
+<H3>&lt;xmp&gt;...&lt;/xmp&gt;</H3>
+
+<DL>
+<DD><TT>&lt;xmp&gt;<BR>
+Please use your card.<BR>
+VISA Master<BR>
+&lt;b&gt;Here is an order form.&lt;/b&gt;<BR>
+&lt;ul&gt;&lt;li&gt;Fax<BR>
+&lt;li&gt;Air Mail&lt;/ul&gt;<BR>
+&lt;/xmp&gt; </TT></DD>
+</DL>
+
+<PRE>Please use your card.
+VISA    Master
+&lt;b&gt;Here is order form.&lt;/b&gt;
+&lt;ul&gt;&lt;li&gt;Fax
+&lt;li&gt;Air Mail&lt;/ul&gt;
+
+
+
+</PRE>
+
+<PRE>
+</PRE>
+
+
+</BODY>
+</HTML>

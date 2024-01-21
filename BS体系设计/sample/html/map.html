@@ -1,0 +1,84 @@
+<HTML>
+<HEAD>
+   <TITLE></TITLE>
+</HEAD>
+<BODY BGCOLOR="#D4D4D4">
+
+<H1 ALIGN=CENTER>客户端图象映射图<BR>
+(Client Side Image Map)</H1>
+
+<CENTER><P>
+<HR></P></CENTER>
+
+<P><!--################## Client Side Image Map  ########################--><A NAME="map"></A></P>
+
+<H2><IMG SRC="br20t.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/br20t.gif" ALT="+" HEIGHT=20 WIDTH=20 ALIGN=TOP>客户端图象映射图(Client Side Image Map)</H2>
+<B>请在下图中用鼠标到处点一点，就会理解“客户端图象映射图”的意思了。</B>
+
+<P><!------Basic-------></P>
+
+<H3>&lt;img src=img.gif usemap=&quot;MAP-Name&quot;&gt;<BR>
+<BR>
+&lt;map name=&quot;MAP-Name&quot;&gt;<BR>
+&lt;area shape=&quot;#&quot; coords=&quot;#&quot; href=&quot;url&quot;&gt;<BR>
+&lt;/map&gt;</H3>
+
+<P> </P>
+
+<DL>
+<DD># </DD>
+
+<DL>
+<DT>shape=&quot;rect&quot; coords=&quot;A,A',B,B'&quot; </DT>
+
+<DD>(A,A')=Upper Left, (B,B')=Lower Right </DD>
+
+<DT>shape=&quot;circle&quot; coords=&quot;A,A',R'&quot; </DT>
+
+<DD>(A,A')=Center, R=Radius </DD>
+
+<DT>shape=&quot;poly&quot; coords=&quot;A,A',B,B',C,C'...&quot; </DT>
+
+<DD>(A,A'&gt;=First Corner, (B,B')=Second Corner, ... </DD>
+</DL>
+</DL>
+
+<PRE>
+</PRE>
+
+<P><IMG USEMAP="#Face" SRC="mapimg.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/mapimg.gif" HEIGHT=200 WIDTH=300> <MAP name="Face"><!Text BOTTON><AREA shape="rect"
+         href="m-rect.html" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/samp/m-rect.html" 
+         coords="140,20,280,60"><!Triangle BOTTON><AREA shape="poly"
+         href="m-poly.html" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/samp/m-poly.html"
+         coords="100,100,180,80,200,140"><!FACE><AREA shape="circle" 
+         href="m-circle.html" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/samp/m-circle.html" 
+         coords="80,100,60"></MAP></P>
+
+<DL>
+<PRE>&lt;img src=&quot;mapimg.gif&quot; usemap=&quot;#Face&quot;&gt;
+
+&lt;map name=&quot;Face&quot;&gt;
+
+&lt;!Text BOTTON&gt;
+   &lt;area shape=&quot;rect&quot;
+         href=&quot;page.html&quot; 
+         coords=&quot;140,20,280,60&quot;&gt;
+
+&lt;!Triangle BOTTON&gt;
+   &lt;area shape=&quot;poly&quot;
+         href=&quot;image.html&quot;
+         coords=&quot;100,100,180,80,200,140&quot;&gt;
+
+&lt;!FACE&gt;
+   &lt;area shape=&quot;circle&quot; 
+         href=&quot;new.html&quot; 
+         coords=&quot;80,100,60&quot;&gt;
+&lt;/map&gt;
+
+</PRE>
+</DL>
+
+
+
+</BODY>
+</HTML>

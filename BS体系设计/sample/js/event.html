@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>onclick and addEventListener</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+    </head>
+    <body>
+        <div id="btnOk1">testbutton</div>
+        <script>
+            document.getElementById('btnOk1').onclick = function(){
+                alert('222');
+            }
+            document.getElementById('btnOk1').onclick = function(){
+                alert('444');
+            }
+            document.getElementById('btnOk1').addEventListener('click',function(){
+                alert('111');
+            });
+            document.getElementById('btnOk1').addEventListener('click',function(){
+                alert('333');
+            });
+        </script>
+    </body>
+</html>

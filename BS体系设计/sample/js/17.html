@@ -1,0 +1,29 @@
+<html>
+<head>
+<title>如何显示当天日期(yyyy-mm-dd)的Javascript示例(用到Date对象的getFullYear,getMonth和getDate方法)</title>
+</head>
+<body>
+<script type="text/javascript">
+var d = new Date()
+var vYear = d.getFullYear()
+var vMon = d.getMonth() + 1
+var vDay = d.getDate()
+document.write(vYear)
+document.write("-")
+document.write(vMon<10 ? "0" + vMon : vMon)
+document.write("-")
+document.write(vDay<10 ?  "0"+ vDay : vDay )
+document.write(" ")
+var vHour = d.getHours()
+var vMin = d.getMinutes()
+var vSec = d.getSeconds()
+document.write(vHour<10 ? "0" + vHour : vHour)
+document.write(":")
+document.write(vMin<10 ? "0" + vMin : vMin)
+document.write(":")
+document.write(vSec<10 ?  "0"+ vSec : vSec )
+</script>
+<p>Javascript示例代码解释：这个示例用到了Javascript内置对象Date的getFullYear,getMonth和getDate方法。首先申明一个变量d，var d = new Date()，表示将当天的日期值赋给变量d。然后使用getFullYear得到年份的值，用getMonth得到月份值(注：getMonth返回值范围为0到11，所以要得到实际的月份，还要加1)，用getDate得到当天日期所在月份的日期值。</p>
+<p>这个示例还用到了"test?语句1:语句2"，意思是如果符合test条件，那么执行语句1，否则使用语句2。计算月和日都用到了这个语法，如果月和日小于10，在月和日的值之前应该加0。</p>
+</body>
+</html>

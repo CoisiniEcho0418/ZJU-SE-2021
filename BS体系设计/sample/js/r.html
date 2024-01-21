@@ -1,0 +1,345 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+
+<!-- head BEGIN-->
+<head>
+
+	<title>注册</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+	<!-- CSS-->    
+    <link href="style.css" rel="stylesheet" type="text/css">
+
+	<script src="prototype.js"></script>
+	
+</head>
+<!-- head END -->
+
+
+<!--------------------------- Body BEGIN --------------------------->
+<body class="bodyPage">
+
+<div class="public">
+
+  <!-- 主页面 Table BEGIN-->
+  <table class="blackPageBody" border="0" cellspacing="0" cellpadding="0">
+  
+    
+				
+    
+    <!-- 中间页面 BEGIN-->
+    <tr>
+      <td height="100%" valign="top">
+
+		<form id="myform" name="myform" method="post">
+		<!-- 橘黄色Table -->
+		<table class="orangeTable" style="background-color:#FFFFFF;" width="750px" height="100%" cellpadding="0" cellspacing="0">
+
+			<tr>
+            	<td width="100%" height="400px" align="left" valign="top" style="padding-top:30px; margin:0px; text-align:center;">
+                  <div id="reg_new">
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注册新会员
+                  </div>
+
+                  <table width="650px" border="0" align="center" cellpadding="0" cellspacing="0" class="bg_textarea">
+                    
+                    <tr>
+                      <td width="130px" height="50px"><div align="right"><span class="font_register_new">会员名</span></div></td>
+                      <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                          <td width="15">&nbsp;</td>
+                          <td class="font_gray">
+							<label>
+					        <input name="username" id="textfield1" type="text" onBlur="javascript:checkName();this.className='register';" onfocus="this.className='registerFocusState';" class="register" />
+					        <span class="font_gray"> </span><span class="font_orange">(必填) 4-20位，仅限字母和数字，必须以字母开头</span>
+					        <div id="div1" class="font_red"></div>
+					        </label>                          
+                        </tr>
+                      </table></td>
+                    </tr>
+                    
+                    <tr>
+                      <td height="50px"><div align="right"><span class="font_register_new">Email</span></div></td>
+                      <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
+                          <tr>
+                            <td width="15">&nbsp;</td>
+                            <td class="font_gray">
+							  <input name="email" id="textfield4" type="text" class="register" onBlur="checkMail();this.className='register';" onfocus="this.className='registerFocusState';" />
+					          <span class="font_orange">(必填)</span><div id="div4" class="font_red">(建议使用163、126、新浪或QQ邮箱，最好为您的常用邮箱，方便及时查收系统邮件)</div>
+                            </td>
+                          </tr>
+                      </table></td>
+                    </tr>
+                    
+                    <tr>
+                      <td height="50px"><div align="right"><span class="font_register_new">密码</span></div></td>
+                      <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
+                          <tr>
+                            <td width="15">&nbsp;</td>
+                            <td class="font_gray">
+							  <input name="password" id="textfield2" type="password" onBlur="javascript:checkpwd();this.className='register';" onfocus="this.className='registerFocusState';" class="register" />
+					          <span class="font_orange">(必填) 4-12位，字母或数字组成</span>
+					          <div id="div2" class="font_red"></div>                            
+						   </td>
+                          </tr>
+                      </table></td>
+                    </tr>
+                    
+                    <tr>
+                      <td height="50px"><div align="right"><span class="font_register_new">确认密码</span></div></td>
+                      <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
+                          <tr>
+                            <td width="15">&nbsp;</td>
+                            <td class="font_gray">
+							  <input name="retype" id="textfield3" type="password" onBlur="javascript:checkpwd2();this.className='register';" onfocus="this.className='registerFocusState';" class="register" />
+					          <span class="font_orange">(必填) 请再次输入您的密码</span>
+					          <div id="div3" class="font_red"></div>                            
+                            </td>
+                          </tr>
+                      </table></td>
+                    </tr>
+                    
+                    
+                    
+                    <tr>
+                      <td colspan="2">&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td colspan="2">
+                          <div align="center">
+                          <a href="javascript:go();"><img src="btn_register.gif" width="79px" height="32px" border="0" /></a>&nbsp;&nbsp;&nbsp;
+                          </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td colspan="2">&nbsp;</td>
+                    </tr>
+    
+                 </table>
+
+				</td>
+            </tr>
+        	
+		</table>
+		</form>
+        
+      </td>
+    </tr>
+	<!-- 中间页面 END-->
+    
+    
+
+  </table>
+<!-- Page Table End-->
+
+
+</div>
+
+
+</body>
+<!--------------------------- body END --------------------------->
+
+
+<!--------------------------- script END --------------------------->
+<script>
+var nameCheck = '';
+var emailCheck = '';
+var pwdCheck = '';
+var pwd2Check = '';
+function InitAjax()
+{
+　var ajax=false; 
+　try { 
+　　ajax = new ActiveXObject("Msxml2.XMLHTTP"); 
+　} catch (e) { 
+　　try { 
+　　　ajax = new ActiveXObject("Microsoft.XMLHTTP"); 
+　　} catch (E) { 
+　　　ajax = false; 
+　　} 
+　}
+　if (!ajax && typeof XMLHttpRequest!='undefined') { 
+　　ajax = new XMLHttpRequest(); 
+　} 
+　return ajax;
+}　 
+
+function checkNameExist(username) {
+	var ajax = InitAjax();
+	ajax.onreadystatechange = function() {
+		if (ajax.readyState == 4) {
+			if (ajax.responseText == "1") {
+				showDiv1 = document.getElementById("div1");
+				showDiv1.innerHTML = "用户名已经存在";
+				nameCheck = "error";
+			}
+			else {
+				showDiv1 = document.getElementById("div1");
+				showDiv1.innerHTML = "用户名可以使用";
+			}
+		}
+	}
+	ajax.open("GET", "http://localhost/users?username=" + username);
+	ajax.send(null);
+}
+//检查会员名
+function checkName() {
+	
+	var obj = document.getElementById("textfield1");
+
+	showDiv1 = document.getElementById("div1");
+	showDiv1.innerHTML = "";
+	
+	if(obj.value=="") {
+		showDiv1.innerHTML="会员名不能为空";
+		nameCheck = "error";
+		return;
+	}
+   
+	//var pattern=/^[a-z]+(\.[_a-z0-9-]+)*$/;
+	var pattern = /^[a-zA-Z]+([a-zA-Z0-9])*$/;
+	//var pattern=/^[_\.0-9a-z-]+@([0-9a-z]+\.)+[a-z]{2,3}$/;
+	var flag = pattern.test(obj.value);
+	if(!flag) {
+		//obj.value = "";
+    	showDiv1.innerHTML="会员名必须以字母开头，仅限字母和数字";
+		nameCheck = "error";
+	 	return;
+    } 
+	
+	if(obj.value.length < 4 || obj.value.length> 20) {
+		//obj.value="";
+        showDiv1.innerHTML="会员名的长度不符合要求，必须为4-20位";
+		nameCheck = "error";
+	    return;
+     }
+
+	checkNameExist(obj.value);
+
+	nameCheck = "OK";
+}
+
+//检查email
+function checkMail()
+{
+	var obj = document.getElementById("textfield4");
+
+	showDiv4 = document.getElementById("div4");
+	showDiv4.innerHTML="";
+
+	if(obj.value=='') {
+		showDiv4.innerHTML="E-mail地址不能为空";
+		emailCheck = "error";
+        return;
+	}
+	
+	var pattern=/^[_\.0-9a-zA-Z-]+@([0-9a-zA-Z]+\.)+[a-zA-Z]{2,3}$/;
+	var flag = pattern.test(obj.value);
+	if(!flag) {
+		//obj.value="";
+		showDiv4.innerHTML="E-mail格式不对";
+		emailCheck = "error";
+		return;
+	}
+	emailCheck = "OK";
+}
+
+function checkpwd() {
+	var show = document.getElementById("textfield2");
+	showDiv = document.getElementById("div2");
+
+	if(show.value=="") {
+		showDiv.innerHTML="密码不能为空";
+		pwdCheck = "error";
+		return;
+	}
+	
+	showDiv.innerHTML="";
+	var pattern=/^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*$/;
+	var flag = pattern.test(show.value);
+	if(!flag) {
+		//show.value=="";
+	    showDiv.innerHTML="密码只能由字母或数字组成";
+		pwdCheck = "error";
+	    return;
+	}
+	
+	showDiv.innerHTML = "";
+	if(show.value.length< 4 || show.value.length>12) {
+		//show.value="";
+	    showDiv.innerHTML="密码的长度不符合要求，必须为4-12位";
+		pwdCheck = "error";
+	    return;
+	}
+	
+	showDiv.innerHTML="";
+	pwdCheck = "OK";
+}
+
+function checkpwd2() {
+	var show1 = document.getElementById("textfield2");
+	var show2 = document.getElementById("textfield3");
+	showDiv = document.getElementById("div3");
+
+	if(show1.value != show2.value) {
+		show2.value="";
+        showDiv.innerHTML="两次密码不一致";
+		pwd2Check = "error";
+	    return;
+    }
+	
+	showDiv.innerHTML="";
+	pwd2Check = "OK";
+}
+
+function go() {
+	nameCheck = "checking";
+	checkName();
+	emailCheck = "checking";
+	checkMail();
+	pwdCheck = "checking"
+	checkpwd();
+	pwd2Check = "checking"
+	checkpwd2();
+
+	submit_wait();
+}
+
+
+function submit_wait()
+{
+	if(emailCheck == "OK" && nameCheck == "OK" && pwdCheck == "OK" && pwd2Check == "OK")
+	{
+		var myform=document.getElementById("myform");
+		myform.action="http://localhost:3000/users";
+		myform.method="post";
+		myform.submit();
+	}
+}
+
+function change()
+{
+   var day=document.getElementById("day");
+   var year=document.getElementById("year");
+  
+    var month=document.getElementById("month");
+	day.options[30].style.display=""; day.options[29].style.display=""; day.options[28].style.display="";
+	if(month.value==4||month.value==6||month.value==9||month.value==11)
+	    day.options[30].style.display="none";
+	else if(month.value==2)
+		   {
+		      if(year.value%4==0&&year.value%100!=0) {day.options[30].style.display="none"; day.options[29].style.display="none"; }
+			  else{day.options[30].style.display="none"; day.options[29].style.display="none";day.options[28].style.display="none";}
+		   }		  		   
+}
+
+function init() {
+	$('textfield1').focus();
+}
+
+init();
+</script>
+<!--------------------------- script END --------------------------->
+
+</html>

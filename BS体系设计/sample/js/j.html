@@ -1,0 +1,48 @@
+<HTML>
+<HEAD>
+<TITLE>jquery sample</TITLE>
+<meta charset="utf8" />
+
+<script src="jquery-1.12.4.js"></script>
+<script>
+
+    //alert((1).toString());
+
+    //alert('aaa' + a);
+     $(document).ready(function(){  
+	$("#id").click(function(){
+    function Student(name) { 
+        this.name = name;
+        this.selectedCourses = [];
+    } 
+
+    //Student.prototype.selectedCourses = []; 
+
+    Student.prototype.addCourse = function(course) { 
+        this.selectedCourses.push(course); 
+    } 
+
+    Student.prototype.outputCourses = function() { 
+        alert(this.name + " 选修的课程是：" + this.selectedCourses.join(",")); 
+    } 
+
+    var studentA = new Student("A"); 
+    var studentB = new Student("B");
+
+    studentA.addCourse(" Java ");
+    studentB.addCourse(" Web ");
+
+    studentA.outputCourses();
+    studentB.outputCourses();
+
+	});
+});
+
+</script>
+</HEAD>
+
+<BODY>
+    <div id="id">aaaaaaaa</div>
+
+</BODY>
+</HTML>

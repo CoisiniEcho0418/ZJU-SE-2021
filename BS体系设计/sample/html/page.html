@@ -1,0 +1,270 @@
+<HTML>
+<HEAD>
+   <TITLE></TITLE>
+</HEAD>
+<!BODY BGCOLOR="#D4D4D4">
+<BODY BGCOLOR=White>
+<H1 ALIGN=CENTER>页面(PAGE)标记(TAGS)</H1>
+
+<CENTER><P>
+<HR></P></CENTER>
+
+<P><!--################## Document Structures ########################--><A NAME="document"></A></P>
+
+<H2><IMG SRC="br20t.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/br20t.gif" ALT="+" HEIGHT=20 WIDTH=20> HTML 文件结构(Document Structures)</H2>
+
+<H3>&lt;html&gt;...&lt;/html&gt;<BR>
+&lt;head&gt;...&lt;/head&gt;<BR>
+&lt;body&gt;...&lt;/body&gt;</H3>
+
+<DL>
+<PRE>&lt;HTML&gt;
+&lt;HEAD&gt;
+     &lt;title&gt;, &lt;base&gt;, &lt;link&gt;, &lt;isindex&gt;, &lt;meta&gt;
+&lt;/HEAD&gt;
+&lt;BODY&gt;
+    HTML 文件的正文写在这里... ... 
+&lt;/BODY&gt;
+&lt;/HTML&gt;
+</PRE>
+</DL>
+
+<P><!--################## LANGUAGE INFO ########################--><A NAME="lang"></A></P>
+
+<H2><IMG SRC="br20t.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/br20t.gif" ALT="+" HEIGHT=20 WIDTH=20> 语言字符集(Charsets)的信息
+<IMG SRC="netscape.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/netscape.gif" HEIGHT=14 WIDTH=80></H2>
+
+<H3>&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html;charset=#&quot;&gt;<BR>
+</H3>
+
+<DL compact>
+<DT>#= </DT>
+
+<DD>us-ascii, iso-8859-1, x-mac-roman, iso-8859-2, x-mac-ce,<BR>
+iso-2022-jp, x-sjis, x-euc-jp,<BR>
+euc-kr, iso-2022-kr,<BR>
+gb2312, gb_2312-80,<BR>
+x-euc-tw, x-cns11643-1, x-cns11643-2, big5 </DD>
+</DL>
+
+<P>可在 HTML 文件中设置 MIME 字符集信息。<BR>
+您在浏览主页时，最好自己在浏览器的选项菜单内选择相应的语言(language encoding)。<BR>
+但是如果 HTML 文件里写明了设置，浏览器就会自动设置语言选项。<BR>
+尤其是主页里用到了<A HREF="entities.html" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/entities.html">字符实体(entities)</A>，则该主页就应该写明字符集信息。<BR>
+否则，您在浏览该主页时，若未正确设置语言选项，显示将可能混乱。</P>
+
+<PRE>
+</PRE>
+
+<P><!--################## Background Color ########################--><A NAME="bgcolor"></A></P>
+
+<H2><IMG SRC="br20t.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/br20t.gif" ALT="+" HEIGHT=20 WIDTH=20> 背景色彩和文字色彩</H2>
+
+<H3>&lt;body bgcolor=# text=# link=# alink=# vlink=#&gt;</H3>
+
+<DL>
+<DD>bgcolor --- 背景色彩</DD>
+
+<DD>text --- 非可链接文字的色彩</DD>
+
+<DD>link --- 可链接文字的色彩</DD>
+
+<DD>alink --- 正被点击的可链接文字的色彩</DD>
+
+<DD>vlink --- 已经点击(访问)过的可链接文字的色彩</DD>
+
+<H3>#=rrggbb</H3>
+
+<DD>色彩是用 16 进制的 红－绿－蓝(red-green-blue, RGB) 值来表示。<BR>
+16 进制的数码有: 0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f.</DD>
+
+<P> </P>
+</DL>
+
+<H3>背景图象 &lt;body background=&quot;image-URL&quot;&gt;<BR>
+Non Scrolling Background &lt;body bgproperties=FIXED&gt; <IMG SRC="ie.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/ie.gif" HEIGHT=14 WIDTH=80></H3>
+
+<PRE>
+</PRE>
+
+<P><!--################## MARGIN ########################--><A NAME="margin"></A></P>
+
+<H2><IMG SRC="br20t.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/br20t.gif" ALT="+" HEIGHT=20 WIDTH=20 ALIGN=TOP> 页面空白(Margin)
+<IMG SRC="ie.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/ie.gif" HEIGHT=14 WIDTH=80></H2>
+
+<P><!------Margin-------></P>
+
+<H3>页面左边的空白 &lt;body leftmargin=#&gt;<BR>
+页面上方的空白(天头) &lt;body topmargin=#&gt; #=margin amount</H3>
+
+<PRE>
+</PRE>
+
+<P><!--################## Link ########################--><A NAME="link"></A></P>
+
+<H2><IMG SRC="br20t.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/br20t.gif" ALT="+" HEIGHT=20 WIDTH=20 ALIGN=TOP> 链接(Link)</H2>
+
+<P><!------link basic-------></P>
+
+<H3>基本语法 &lt;a href=&quot;URL&quot;&gt; ... &lt;/a&gt;</H3>
+
+<DL>
+<DD><TT>这是一个<BR>
+&lt;a href=&quot;samp/link.html&quot;&gt;链接的例子&lt;/a&gt;。 <BR>
+点一下带下划线的文字!</TT><BR>
+</DD>
+</DL>
+
+<P>这是一个<A HREF="link.html" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/samp/link.html">链接的例子</A>。 点一下带下划线的文字!</P>
+
+<P> </P>
+
+<PRE>
+</PRE>
+
+<P><!------link name-------></P>
+
+<H3>跳转到页面的另外一个地方<BR>
+&lt;a href=&quot;#name&quot;&gt; ... &lt;/a&gt;<BR>
+&lt;a name=&quot;name&quot;&gt; ... &lt;/a&gt; </H3>
+
+<DL>
+<DD><TT>&lt;a href=&quot;#jump-test&quot;&gt;跳转到下一个&quot;链接点&quot;&lt;/a&gt;&lt;P&gt;<BR>
+&lt;a name=&quot;jump-test&quot;&gt;下一个链接点&lt;/a&gt; </TT></DD>
+</DL>
+
+<P><A HREF="#jump-test">跳转到下一个&quot;链接点&quot;</A></P>
+
+<P> <A NAME="jump-test"></A>下一个链接点</P>
+
+<PRE>
+</PRE>
+
+<P><!------link name 2-------><A NAME="jump2"></A></P>
+
+<H3>跳转到另一个页面的某个地方<BR>
+&lt;a href=&quot;URL#name&quot;&gt; ... &lt;/a&gt;<BR>
+&lt;a name=&quot;name&quot;&gt; ... &lt;/a&gt; </H3>
+
+<DL>
+<DD><TT>跳转到另一个页面的&lt;a href=&quot;samp/link.html#jump-test&quot;&gt;某个地方&lt;/a&gt;。<BR>
+</TT></DD>
+</DL>
+
+<P>跳转到另一个页面的<A HREF="link.html#jump-test" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/samp/link.html#jump-test">某个地方</A>。</P>
+
+<PRE>
+</PRE>
+
+<P><!--################## Target WINDOWS ########################--><A NAME="window"></A></P>
+
+<H2><IMG SRC="br20t.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/br20t.gif" ALT="+" HEIGHT=20 WIDTH=20 ALIGN=TOP> 开一个新的(浏览器)窗口 (Target Window)
+</H2>
+
+<P><!------Target Windows-------></P>
+
+<H3>&lt;a href=&quot;URL&quot; target=&quot;Window_Name&quot;&gt; ... &lt;/a&gt;</H3>
+
+<DL>
+<DD><TT>&lt;a href=&quot;samp/window.html&quot; target=&quot;window_name&quot;&gt;<BR>
+开一个新窗口!<BR>
+&lt;/a&gt; </TT></DD>
+</DL>
+
+<P><A HREF="window.html" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/samp/window.html" target="window_name">开一个新窗口!</A> </P>
+
+<PRE>
+</PRE>
+
+<P><!--################## HR ########################--><A NAME="hr"></A></P>
+
+<H2><IMG SRC="br20t.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/br20t.gif" ALT="+" HEIGHT=20 WIDTH=20> 标尺线</H2>
+
+<H3>&lt;hr&gt;</H3>
+
+<P><TT>&lt;hr&gt; </TT></P>
+
+<P>
+<HR></P>
+
+<PRE>
+</PRE>
+
+<H3>&lt;hr size=#&gt;</H3>
+
+<P><TT>&lt;hr size=10&gt; </TT></P>
+
+<P>
+<HR size=10></P>
+
+<PRE>
+</PRE>
+
+<H3>&lt;hr width=#&gt;</H3>
+
+<P><TT>&lt;hr width=50&gt;<BR>
+&lt;hr width=50%&gt; </TT></P>
+
+<P>
+<HR width=50>
+<HR width=50%></P>
+
+<PRE>
+</PRE>
+
+<H3>&lt;hr align=#&gt; #=left, right</H3>
+
+<P><TT>&lt;hr width=50% align=left&gt;<BR>
+&lt;hr width=50% align=right&gt; </TT></P>
+
+<P>
+<HR width=50% align=left>
+<HR width=50% align=right></P>
+
+<PRE>
+</PRE>
+
+<H3>&lt;hr noshade&gt;</H3>
+
+<P><TT>&lt;hr noshade&gt; </TT></P>
+
+<P>
+<HR noshade></P>
+
+<PRE>
+</PRE>
+
+<H3>&lt;hr color=#&gt; <IMG SRC="ie.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/ie.gif" HEIGHT=14 WIDTH=80></H3>
+
+<DL>
+<DD>#=rrggbb 16 进制 RGB 数码，或者是下列预定义色彩：<BR>
+<FONT COLOR="#000000">Black</FONT>, <FONT COLOR="#808000">Olive</FONT>,
+<FONT COLOR="#008080">Teal</FONT>, <FONT COLOR="#FF0000">Red</FONT>, <FONT COLOR="#0000FF">Blue</FONT>,
+<FONT COLOR="#800000">Maroon</FONT>, <FONT COLOR="#000080">Navy</FONT>,
+<FONT COLOR="#808080">Gray</FONT>, <FONT COLOR="#00FF00">Lime</FONT>, <BR>
+<FONT COLOR="#FF00FF">Fuchsia</FONT>, <FONT COLOR="#FFFFFF">White</FONT>,
+<FONT COLOR="#008000">Green</FONT>, <FONT COLOR="#800080">Purple</FONT>,
+<FONT COLOR="#C0C0C0">Silver</FONT>, <FONT COLOR="#FFFF00">Yellow</FONT>,
+<FONT COLOR="#00FFFF">Aqua</FONT>, <BR>
+<FONT COLOR="#88FECE">88FECE</FONT>, <FONT COLOR="#FFFECE">FFFECE</FONT>,
+<FONT COLOR="#68EEEE">68EEEE</FONT>, <FONT COLOR="#A82EEE">A82EEE</FONT>,
+<FONT COLOR="#AADDEE">AADDEE</FONT>, <FONT COLOR="#EE8866">EE8866</FONT>,
+<FONT COLOR="#D0C0F0">D0C0F0</FONT>,<BR>
+<FONT COLOR="#DDDFFF">DDDFFF</FONT>, <FONT COLOR="#66FFFF">66FFFF</FONT>,
+<FONT COLOR="#ADDFFF">ADDFFF</FONT>, <FONT COLOR="#FFEEFF">FFEEFF</FONT>,
+<FONT COLOR="#C5FFEE">C5FFEE</FONT>, <FONT COLOR="#0DDFFF">0DDFFF</FONT>,<BR>
+<FONT COLOR="#888FFF">888FFF</FONT>, <FONT COLOR="#FF88FF">FF88FF</FONT>,
+<FONT COLOR="#FF8F8F">FF8F8F</FONT>, <FONT COLOR="#FDDFFF">FDDFFF</FONT>,
+<FONT COLOR="#FFF0FF">FFF0FF</FONT>, <FONT COLOR="#EE3388">EE3388</FONT>
+</DD>
+</DL>
+
+<P><TT>&lt;hr color=&quot;red&quot;&gt; </TT></P>
+
+<P>
+<HR color="red"></P>
+
+
+
+</BODY>
+</HTML>

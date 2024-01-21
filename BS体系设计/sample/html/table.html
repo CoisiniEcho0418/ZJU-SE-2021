@@ -1,0 +1,558 @@
+<HTML>
+<HEAD>
+   <TITLE></TITLE>
+</HEAD>
+<BODY BGCOLOR="#D4D4D4">
+
+<H1 ALIGN=CENTER>表格(TABLE)标记(TAGS)</H1>
+
+<CENTER><P>
+<HR></P></CENTER>
+
+<P><!--################## Basic ########################--><A NAME="basic"></A></P>
+
+<H2><IMG SRC="br20t.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/br20t.gif" ALT="+" HEIGHT=20 WIDTH=20> 表格的基本语法</H2>
+
+<H3>&lt;table&gt;...&lt;/table&gt; - 定义表格<BR>
+&lt;tr&gt; - 定义表行<BR>
+&lt;th&gt; - 定义表头<BR>
+&lt;td&gt; - 定义表元(表格的具体数据)</H3>
+
+带边框的表格：
+<PRE>&lt;table border&gt;
+&lt;tr&gt;&lt;th&gt;Food&lt;/th&gt;&lt;th&gt;Drink&lt;/th&gt;&lt;th&gt;Sweet&lt;/th&gt;
+&lt;tr&gt;&lt;td&gt;A&lt;/td&gt;&lt;td&gt;B&lt;/td&gt;&lt;td&gt;C&lt;/td&gt;      
+&lt;/table&gt;
+
+</PRE>
+
+<TABLE BORDER>
+<TR>
+<TH>Food</TH>
+
+<TH>Drink</TH>
+
+<TH>Sweet</TH>
+</TR>
+
+<TR>
+<TD>A</TD>
+
+<TD>B</TD>
+
+<TD>C</TD>
+</TR>
+</TABLE>
+
+<P>
+<BR>
+不带边框的表格：
+<PRE>&lt;table&gt;
+&lt;tr&gt;&lt;th&gt;Food&lt;/th&gt;&lt;th&gt;Drink&lt;/th&gt;&lt;th&gt;Sweet&lt;/th&gt;
+&lt;tr&gt;&lt;td&gt;A&lt;/td&gt;&lt;td&gt;B&lt;/td&gt;&lt;td&gt;C&lt;/td&gt;      
+&lt;/table&gt;
+
+</PRE>
+
+<TABLE>
+<TR>
+<TH>Food</TH>
+
+<TH>Drink</TH>
+
+<TH>Sweet</TH>
+</TR>
+
+<TR>
+<TD>A</TD>
+
+<TD>B</TD>
+
+<TD>C</TD>
+</TR>
+</TABLE>
+
+<PRE>
+</PRE>
+
+<P><!--################## Table Span ########################--><A NAME="span"></A></P>
+
+<H2><IMG SRC="br20t.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/br20t.gif" ALT="+" HEIGHT=20 WIDTH=20> 跨多行、多列的表元(Table Span)</H2>
+
+<P><!------Colspan-------></P>
+
+<H3>跨多列的表元 &lt;th colspan=#&gt;</H3>
+
+<PRE>&lt;table border&gt;
+&lt;tr&gt;&lt;th colspan=3&gt; Morning Menu&lt;/th&gt;
+&lt;tr&gt;&lt;th&gt;Food&lt;/th&gt;       &lt;th&gt;Drink&lt;/th&gt;  &lt;th&gt;Sweet&lt;/th&gt;
+&lt;tr&gt;&lt;td&gt;A&lt;/td&gt;&lt;td&gt;B&lt;/td&gt;&lt;td&gt;C&lt;/td&gt;
+&lt;/table&gt;
+
+</PRE>
+
+<TABLE BORDER>
+<TR>
+<TH colspan=3>Morning Menu</TH>
+</TR>
+
+<TR>
+<TH>Food</TH>
+
+<TH>Drink</TH>
+
+<TH>Sweet</TH>
+</TR>
+
+<TR>
+<TD>A</TD>
+
+<TD>B</TD>
+
+<TD>C</TD>
+</TR>
+</TABLE>
+
+<P><!------Rowspan-------></P>
+
+<H3>跨多行的表元 &lt;th rowspan=#&gt;</H3>
+
+<PRE>&lt;table border&gt;
+&lt;tr&gt;&lt;th rowspan=3&gt; Morning Menu&lt;/th&gt;
+        &lt;th&gt;Food&lt;/th&gt; &lt;td&gt;A&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;Drink&lt;/th&gt; &lt;td&gt;B&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;Sweet&lt;/th&gt; &lt;td&gt;C&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+
+</PRE>
+
+<TABLE BORDER>
+<TR>
+<TH rowspan=3>Morning Menu</TH>
+
+<TH>Food</TH>
+
+<TD>A</TD>
+</TR>
+
+<TR>
+<TH>Drink</TH>
+
+<TD>B</TD>
+</TR>
+
+<TR>
+<TH>Sweet</TH>
+
+<TD>C</TD>
+</TR>
+</TABLE>
+
+<PRE>
+</PRE>
+
+<P><!--################## Size ########################--><A NAME="size"></A></P>
+
+<H2><IMG SRC="br20t.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/br20t.gif" ALT="+" HEIGHT=20 WIDTH=20> 表格尺寸设置</H2>
+
+<P><!------Border-------></P>
+
+<H3>&lt;table border=#&gt;</H3>
+边框尺寸设置：
+
+<PRE>&lt;table border=10&gt;
+&lt;tr&gt;&lt;th&gt;Food&lt;/th&gt;&lt;th&gt;Drink&lt;/th&gt;&lt;th&gt;Sweet&lt;/th&gt;
+&lt;tr&gt;&lt;td&gt;A&lt;/td&gt;&lt;td&gt;B&lt;/td&gt;&lt;td&gt;C&lt;/td&gt;      
+&lt;/table&gt;
+
+</PRE>
+
+<TABLE BORDER=10 >
+<TR>
+<TH>Food</TH>
+
+<TH>Drink</TH>
+
+<TH>Sweet</TH>
+</TR>
+
+<TR>
+<TD>A</TD>
+
+<TD>B</TD>
+
+<TD>C</TD>
+</TR>
+</TABLE>
+
+<P><!------Length-------></P>
+
+<H3>&lt;table border width=# height=#&gt;</H3>
+表格尺寸设置：
+
+<PRE>&lt;table border width=170 height=100&gt;
+&lt;tr&gt;&lt;th&gt;Food&lt;/th&gt;&lt;th&gt;Drink&lt;/th&gt;&lt;th&gt;Sweet&lt;/th&gt;
+&lt;tr&gt;&lt;td&gt;A&lt;/td&gt;&lt;td&gt;B&lt;/td&gt;&lt;td&gt;C&lt;/td&gt;      
+&lt;/table&gt;
+
+</PRE>
+
+<TABLE border WIDTH="170" HEIGHT="100" >
+<TR>
+<TH>Food</TH>
+
+<TH>Drink</TH>
+
+<TH>Sweet</TH>
+</TR>
+
+<TR>
+<TD>A</TD>
+
+<TD>B</TD>
+
+<TD>C</TD>
+</TR>
+</TABLE>
+
+<P><!------CellSpacing-------></P>
+
+<H3>&lt;table border cellspacing=#&gt;</H3>
+表元间隙设置：
+
+<PRE>&lt;table border cellspacing=10&gt;
+&lt;tr&gt;&lt;th&gt;Food&lt;/th&gt;&lt;th&gt;Drink&lt;/th&gt;&lt;th&gt;Sweet&lt;/th&gt;
+&lt;tr&gt;&lt;td&gt;A&lt;/td&gt;&lt;td&gt;B&lt;/td&gt;&lt;td&gt;C&lt;/td&gt;      
+&lt;/table&gt;
+
+</PRE>
+
+<TABLE border CELLSPACING=10 >
+<TR>
+<TH>Food</TH>
+
+<TH>Drink</TH>
+
+<TH>Sweet</TH>
+</TR>
+
+<TR>
+<TD>A</TD>
+
+<TD>B</TD>
+
+<TD>C</TD>
+</TR>
+</TABLE>
+
+<P><!------CellPadding-------></P>
+
+<H3>&lt;table border cellpadding=#&gt;</H3>
+表元内部空白设置：
+
+
+<PRE>&lt;table border cellpadding=10&gt;
+&lt;tr&gt;&lt;th&gt;Food&lt;/th&gt;&lt;th&gt;Drink&lt;/th&gt;&lt;th&gt;Sweet&lt;/th&gt;
+&lt;tr&gt;&lt;td&gt;A&lt;/td&gt;&lt;td&gt;B&lt;/td&gt;&lt;td&gt;C&lt;/td&gt;      
+&lt;/table&gt;
+
+</PRE>
+
+<TABLE border CELLPADDING=10 >
+<TR>
+<TH>Food</TH>
+
+<TH>Drink</TH>
+
+<TH>Sweet</TH>
+</TR>
+
+<TR>
+<TD>A</TD>
+
+<TD>B</TD>
+
+<TD>C</TD>
+</TR>
+</TABLE>
+
+<PRE>
+</PRE>
+
+<P><!--################## Text in Table ########################--><A NAME="text"></A></P>
+
+<H2><IMG SRC="br20t.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/br20t.gif" ALT="+" HEIGHT=20 WIDTH=20> 表格内文字的对齐/布局</H2>
+
+<P><!------ALIGN-------></P>
+
+<H3>&lt;tr align=#&gt; </H3>
+
+<H3>&lt;th align=#&gt; #=left, center, right</H3>
+
+<H3>&lt;td align=#&gt; </H3>
+
+<PRE>&lt;table border width=160&gt;
+&lt;tr&gt;
+                &lt;th&gt;Food&lt;/th&gt;&lt;th&gt;Drink&lt;/th&gt;&lt;th&gt;Sweet&lt;/th&gt;
+&lt;tr&gt;
+                &lt;td align=left&gt;A&lt;/td&gt;
+                &lt;td align=center&gt;B&lt;/td&gt;
+                &lt;td align=right&gt;C&lt;/td&gt;  
+&lt;/table&gt;
+
+</PRE>
+
+<TABLE border WIDTH="160" >
+<TR>
+<TH>Food</TH>
+
+<TH>Drink</TH>
+
+<TH>Sweet</TH>
+</TR>
+
+<TR>
+<TD align=left>A</TD>
+
+<TD align=center>B</TD>
+
+<TD align=right>C</TD>
+</TR>
+</TABLE>
+
+<P><!------VALIGN-------></P>
+
+<H3>&lt;tr valign=#&gt; </H3>
+
+<H3>&lt;th valign=#&gt; #=top, middle, bottom, baseline</H3>
+
+<H3>&lt;td valign=#&gt; </H3>
+
+<PRE>&lt;table border height=100&gt;
+&lt;tr&gt;
+                &lt;th&gt;Food&lt;/th&gt;&lt;th&gt;Drink&lt;/th&gt;
+                &lt;th&gt;Sweet&lt;/th&gt;&lt;th&gt;Other&lt;/th&gt;
+&lt;tr&gt;
+                &lt;td valign=top&gt;A&lt;/td&gt;
+                &lt;td valign=middle&gt;B&lt;/td&gt;
+                &lt;td valign=bottom&gt;C&lt;/td&gt;
+                &lt;td valign=baseline&gt;D&lt;/td&gt;
+&lt;/table&gt;
+
+</PRE>
+
+<TABLE border HEIGHT="100" >
+<TR>
+<TH>Food</TH>
+
+<TH>Drink</TH>
+
+<TH>Sweet</TH>
+
+<TH>Other</TH>
+</TR>
+
+<TR>
+<TD valign=top>A</TD>
+
+<TD valign=middle>B</TD>
+
+<TD valign=bottom>C</TD>
+
+<TD valign=baseline>D</TD>
+</TR>
+</TABLE>
+
+<PRE>
+</PRE>
+
+<P><!--################## Floating Table ########################--><A NAME="float"></A></P>
+
+<H2><IMG SRC="br20t.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/br20t.gif" ALT="+" HEIGHT=20 WIDTH=20> 表格在页面中的对齐/布局(Floating Table)</H2>
+
+<P><!------left-------></P>
+
+<H3>&lt;table align=left&gt; </H3>
+
+<DL>
+<PRE>&lt;table align=&quot;left&quot; border&gt;
+&lt;tr&gt;&lt;th&gt;Food&lt;/th&gt;&lt;th&gt;Drink&lt;/th&gt;&lt;th&gt;Sweet&lt;/th&gt;
+&lt;tr&gt;&lt;td&gt;A&lt;/td&gt;&lt;td&gt;B&lt;/td&gt;&lt;td&gt;C&lt;/td&gt;
+&lt;/table&gt;
+My favorites...&lt;br&gt;
+cookies, chocolates, and more.
+</PRE>
+</DL>
+
+<TABLE ALIGN=LEFT border>
+<TR>
+<TH>Food</TH>
+
+<TH>Drink</TH>
+
+<TH>Sweet</TH>
+</TR>
+
+<TR>
+<TD>A</TD>
+
+<TD>B</TD>
+
+<TD>C</TD>
+</TR>
+</TABLE>
+
+<P>My favorites...<BR>
+cookies, chocolates, and more. <BR clear=all>
+</P>
+
+<PRE>
+</PRE>
+
+<P><!------right-------></P>
+
+<H3>&lt;table align=right&gt; </H3>
+
+<TABLE ALIGN=RIGHT border>
+<TR>
+<TH>Food</TH>
+
+<TH>Drink</TH>
+
+<TH>Sweet</TH>
+</TR>
+
+<TR>
+<TD>A</TD>
+
+<TD>B</TD>
+
+<TD>C</TD>
+</TR>
+</TABLE>
+
+<P>My favorites...<BR>
+cookies, chocolates, and more. <BR clear=all>
+</P>
+
+<PRE>
+</PRE>
+
+<H3>&lt;table vspace=# hspace=#&gt; #=space value <IMG SRC="netscape.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/netscape.gif" HEIGHT=14 WIDTH=80>
+</H3>
+
+<DL>
+<PRE>&lt;table align=&quot;left&quot; border vspace=20 hspace=30&gt;
+&lt;tr&gt;&lt;th&gt;Food&lt;/th&gt;&lt;th&gt;Drink&lt;/th&gt;&lt;th&gt;Sweet&lt;/th&gt;
+&lt;tr&gt;&lt;td&gt;A&lt;/td&gt;&lt;td&gt;B&lt;/td&gt;&lt;td&gt;C&lt;/td&gt;
+&lt;/table&gt;
+My favorites...&lt;br&gt;
+cookies, chocolates, and more.
+</PRE>
+</DL>
+
+<TABLE ALIGN=LEFT border vspace="20" hspace="30" >
+<TR>
+<TH>Food</TH>
+
+<TH>Drink</TH>
+
+<TH>Sweet</TH>
+</TR>
+
+<TR>
+<TD>A</TD>
+
+<TD>B</TD>
+
+<TD>C</TD>
+</TR>
+</TABLE>
+
+<P>My favorites...<BR>
+cookies, chocolates, and more. <BR clear=all>
+</P>
+
+<PRE>
+</PRE>
+
+<P><!--################## Table Caption ########################--><A NAME="caption"></A></P>
+
+<H2><IMG SRC="br20t.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/br20t.gif" ALT="+" HEIGHT=20 WIDTH=20> 表格的标题 <IMG SRC="ie.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/ie.gif"></H2>
+
+<P><!------Caption align-------></P>
+
+<H3>&lt;caption align=#&gt; ... &lt;/caption&gt; #=left, center, right</H3>
+
+<PRE>&lt;table border&gt;
+&lt;caption align=center&gt;Lunch&lt;/caption&gt;
+&lt;tr&gt;&lt;th&gt;Food&lt;/th&gt;&lt;th&gt;Drink&lt;/th&gt;&lt;th&gt;Sweet&lt;/th&gt;
+&lt;tr&gt;&lt;td&gt;A&lt;/td&gt;&lt;td&gt;B&lt;/td&gt;&lt;td&gt;C&lt;/td&gt;      
+&lt;/table&gt;
+</PRE>
+
+<TABLE border>
+<CAPTION align=center>
+<P>Lunch</P>
+</CAPTION>
+
+<TR>
+<TH>Food</TH>
+
+<TH>Drink</TH>
+
+<TH>Sweet</TH>
+</TR>
+
+<TR>
+<TD>A</TD>
+
+<TD>B</TD>
+
+<TD>C</TD>
+</TR>
+</TABLE>
+
+<P><!------Caption Valign-------></P>
+
+<H3>&lt;caption valign=#&gt; ... &lt;/caption&gt; #=top, bottom</H3>
+
+<UL>
+<LI><FONT SIZE=-1>valign=top is default.</FONT></LI>
+</UL>
+
+<PRE>&lt;table border&gt;
+&lt;caption valign=bottom&gt;Lunch&lt;/caption&gt;
+&lt;tr&gt;&lt;th&gt;Food&lt;/th&gt;&lt;th&gt;Drink&lt;/th&gt;&lt;th&gt;Sweet&lt;/th&gt;
+&lt;tr&gt;&lt;td&gt;A&lt;/td&gt;&lt;td&gt;B&lt;/td&gt;&lt;td&gt;C&lt;/td&gt;      
+&lt;/table&gt;
+</PRE>
+
+<TABLE border>
+<CAPTION valign=bottom>
+<P>Lunch</P>
+</CAPTION>
+
+<TR>
+<TH>Food</TH>
+
+<TH>Drink</TH>
+
+<TH>Sweet</TH>
+</TR>
+
+<TR>
+<TD>A</TD>
+
+<TD>B</TD>
+
+<TD>C</TD>
+</TR>
+</TABLE>
+
+<PRE>
+</PRE>
+
+
+</BODY>
+</HTML>

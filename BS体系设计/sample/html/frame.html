@@ -1,0 +1,378 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=gb2312">
+   <TITLE></TITLE>
+</HEAD>
+<BODY BGCOLOR="#D4D4D4">
+
+<H1 ALIGN=CENTER>多窗口页面(Frames)</H1>
+
+<CENTER><P>
+<HR></P></CENTER>
+
+<P><!--################## Frame ########################--><A NAME="frame"></A></P>
+
+<H2><IMG SRC="br20t.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/br20t.gif" ALT="+" HEIGHT=20 WIDTH=20 ALIGN=TOP> 基本语法
+</H2>
+
+<P><!------Basic-------></P>
+
+<H3>&lt;frameset&gt; ... &lt;/frameset&gt;<BR>
+&lt;frame src=&quot;url&quot;&gt; <BR>
+&lt;noframes&gt; ... &lt;/noframes&gt;</H3>
+
+<P>在 &lt;noframes&gt; 标记后的文字将只出现在不支持 FRAMES 的浏览器中。</P>
+
+<PRE>        &lt;HTML&gt;
+        &lt;HEAD&gt;
+        &lt;/HEAD&gt;
+        &lt;FRAMESET&gt;
+             &lt;FRAME SRC=&quot;url&quot;&gt;
+             &lt;NOFRAMES&gt; ... &lt;/NOFRAMES&gt;
+        &lt;/FRAMESET&gt;
+        &lt;/HTML&gt;</PRE>
+
+<P><!--################## Size ########################--><A NAME="size"></A></P>
+
+<H2><IMG SRC="br20t.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/br20t.gif" ALT="+" HEIGHT=20 WIDTH=20 ALIGN=TOP> 各窗口的尺寸设置
+</H2>
+
+<P><!------COLS-------></P>
+
+<H3>&lt;frameset cols=#&gt;</H3>
+纵向排列多个窗口：
+
+<DL>
+<PRE>&lt;frameset cols=30%,20%,50%&gt;
+&lt;frame src=&quot;A.html&quot;&gt;
+&lt;frame src=&quot;B.html&quot;&gt;
+&lt;frame src=&quot;C.html&quot;&gt;
+&lt;/frameset&gt;
+
+<A HREF="cols.html" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/frame/cols.html"><FONT SIZE=+2>示例</FONT></A>
+</PRE>
+</DL>
+
+<TABLE WIDTH="100" HEIGHT="120" >
+<TR>
+<TD width=30 align=center>A </TD>
+
+<TD width=20 align=center>B </TD>
+
+<TD width=50 align=center>C </TD>
+</TR>
+</TABLE>
+
+<PRE>
+</PRE>
+
+<P><!------ROWS-------></P>
+
+<H3>&lt;frameset rows=#&gt;</H3>
+横向排列多个窗口：
+
+<DL>
+<PRE>&lt;frameset rows=25%,25%,50%&gt;
+&lt;frame src=&quot;A.html&quot;&gt;
+&lt;frame src=&quot;B.html&quot;&gt;
+&lt;frame src=&quot;C.html&quot;&gt;
+&lt;/frameset&gt;
+
+<A HREF="rows.html" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/frame/rows.html"><FONT SIZE=+2>示例</FONT></A>
+</PRE>
+</DL>
+
+<TABLE WIDTH="100" HEIGHT="120" >
+<TR>
+<TD height=30 align=center>A </TD>
+</TR>
+
+<TR>
+<TD height=30 align=center>B </TD>
+</TR>
+
+<TR>
+<TD height=60 align=center>C </TD>
+</TR>
+</TABLE>
+
+<PRE>
+</PRE>
+
+<P><!------COLS & ROWS-------></P>
+
+<H3>COLS &amp; ROWS</H3>
+纵横排列多个窗口：
+
+<DL>
+<PRE>&lt;frameset cols=20%,*&gt;
+&lt;frame src=&quot;A.html&quot;&gt;
+     &lt;frameset rows=40%,*&gt;
+     &lt;frame src=&quot;B.html&quot;&gt;
+     &lt;frame src=&quot;C.html&quot;&gt;
+     &lt;/frameset&gt;
+&lt;/frameset&gt;
+
+<A HREF="row_col.html" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/frame/row_col.html"><FONT SIZE=+2>示例</FONT></A>
+</PRE>
+</DL>
+
+<TABLE WIDTH="100" HEIGHT="120" >
+<TR>
+<TD rowspan=2 align=center width=20>A </TD>
+
+<TD align=center height=48 width=80>B </TD>
+</TR>
+
+<TR>
+<TD align=center height=72 width=80>C </TD>
+</TR>
+</TABLE>
+
+<PRE>
+</PRE>
+
+<P><!------No Resize-------></P>
+
+<H3>不允许各窗口改变大小 &lt;frame noresize&gt;</H3>
+
+<DL>
+<DD>缺省设置是允许各窗口改变大小的。</DD>
+</DL>
+
+<PRE>
+</PRE>
+
+<P><!--################## Frame Target ########################--><A NAME="target"></A></P>
+
+<H2><IMG SRC="br20t.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/br20t.gif" ALT="+" HEIGHT=20 WIDTH=20 ALIGN=TOP> 各窗口间相互操作(Frame Target)
+</H2>
+
+<P><!------NAME-------></P>
+
+<H3>窗口标识(Frame Name) <BR>
+&lt;frame name=#&gt;<BR>
+&lt;a href=url target=#&gt; </H3>
+
+<DL>
+<PRE>&lt;frameset cols=50%,50%&gt;
+&lt;frame src=&quot;A.html&quot;&gt;
+&lt;frame src=&quot;B.html&quot; name=&quot;HELLO&quot;&gt;
+&lt;/frameset&gt;
+
+<A HREF="target.html" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/frame/target.html"><FONT SIZE=+2>示例</FONT></A>
+</PRE>
+</DL>
+
+<TABLE WIDTH="100" HEIGHT="120" >
+<TR>
+<TD width=50% align=center>A </TD>
+
+<TD width=50% align=center>B </TD>
+</TR>
+</TABLE>
+
+<P><!------Special Target-------></P>
+
+<H3>
+&lt;a href=url target=_blank&gt; 新窗口<BR>
+&lt;a href=url target=_self&gt; 本窗口<BR>
+&lt;a href=url target=_parent&gt; 父窗口<BR>
+&lt;a href=url target=_top&gt; 整个浏览器窗口</H3>
+
+<P><A HREF="target01.html" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/frame/target01.html"><FONT SIZE=+2>示例</FONT></A> </P>
+
+<PRE>
+</PRE>
+
+<P><!--################## Frame Appearance ########################--><A NAME="appear"></A></P>
+
+<H2><IMG SRC="br20t.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/br20t.gif" ALT="+" HEIGHT=20 WIDTH=20 ALIGN=TOP> Frame 的外观(Appearance)
+</H2>
+
+<P><!------BORDER-------></P>
+
+<H3>各窗口边框的设置 &lt;frame frameborder=#&gt; #=yes, no / 1, 0</H3>
+
+<DL>
+<PRE>&lt;frameset rows=30%,*&gt;
+&lt;frame src=&quot;Acol.html&quot; frameborder=1&gt;
+&lt;frameset cols=30%,*&gt;
+     &lt;frame src=&quot;Bcol.html&quot; frameborder=0&gt;
+     &lt;frame src=&quot;Ccol.html&quot; frameborder=0&gt;
+&lt;/frameset&gt;
+&lt;/frameset&gt;
+
+<A HREF="border.html" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/frame/border.html"><FONT SIZE=+2>示例</FONT></A>
+</PRE> (A 有边框，B、C 没有)
+</DL>
+
+<TABLE WIDTH="100" HEIGHT="120" frame="box" rules="rows" >
+<TR>
+<TD height=36 colspan=2 align=center bgcolor=3333ff>A </TD>
+</TR>
+
+<TR>
+<TD height=84 width=30 align=center bgcolor=9999ff>B </TD>
+
+<TD height=84 width=70 align=center bgcolor=ffffff>C </TD>
+</TR>
+</TABLE>
+
+<P><!------Frame Spacing-------></P>
+
+<H3>各窗口间空白区域的设置 <BR>
+&lt;frameset framespacing=#&gt; #=空白区域的大小 <IMG SRC="ie.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/ie.gif" HEIGHT=14 WIDTH=80></H3>
+
+<DL>
+<PRE>&lt;frameset rows=30%,* framespacing=100&gt;
+&lt;frame src=&quot;Acol.html&quot;&gt;
+&lt;frameset cols=30%,*&gt;
+     &lt;frame src=&quot;Bcol.html&quot;&gt;
+     &lt;frame src=&quot;Ccol.html&quot;&gt;
+&lt;/frameset&gt;
+&lt;/frameset&gt;
+
+<A HREF="space.html" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/frame/space.html"><FONT SIZE=+2>示例</FONT></A>
+</PRE>
+</DL>
+
+<TABLE CELLSPACING=10 WIDTH="100" HEIGHT="120" >
+<TR>
+<TD height=36 colspan=2 align=center bgcolor=3333ff>A </TD>
+</TR>
+
+<TR>
+<TD height=84 width=30 align=center bgcolor=9999ff>B </TD>
+
+<TD height=84 width=70 align=center bgcolor=ffffff>C </TD>
+</TR>
+</TABLE>
+
+<P><!------Border Color-------></P>
+
+<H3>边框色彩 &lt;frameset bordercolor=#&gt; <IMG SRC="netscape.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/netscape.gif" HEIGHT=14 WIDTH=80></H3>
+
+<DL>
+<DD>#=rrggbb 16 进制 RGB 数码, 或者是下列预定义色彩名称：<BR>
+<FONT COLOR="#000000">Black</FONT>, <FONT COLOR="#808000">Olive</FONT>,
+<FONT COLOR="#008080">Teal</FONT>, <FONT COLOR="#FF0000">Red</FONT>, <FONT COLOR="#0000FF">Blue</FONT>,
+<FONT COLOR="#800000">Maroon</FONT>, <FONT COLOR="#000080">Navy</FONT>,
+<FONT COLOR="#808080">Gray</FONT>, <FONT COLOR="#00FF00">Lime</FONT>, <BR>
+<FONT COLOR="#FF00FF">Fuchsia</FONT>, <FONT COLOR="#FFFFFF">White</FONT>,
+<FONT COLOR="#008000">Green</FONT>, <FONT COLOR="#800080">Purple</FONT>,
+<FONT COLOR="#C0C0C0">Silver</FONT>, <FONT COLOR="#FFFF00">Yellow</FONT>,
+<FONT COLOR="#00FFFF">Aqua</FONT> </DD>
+</DL>
+
+<DL>
+<PRE>&lt;frameset rows=30%,* bordercolor=red&gt;
+&lt;frame src=&quot;Acol.html&quot;&gt;
+&lt;frameset cols=30%,*&gt;
+     &lt;frame src=&quot;Bcol.html&quot;&gt;
+     &lt;frame src=&quot;Ccol.html&quot;&gt;
+&lt;/frameset&gt;
+&lt;/frameset&gt;
+
+<A HREF="color.html" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/frame/color.html"><FONT SIZE=+2>示例</FONT></A>
+</PRE>
+</DL>
+
+<TABLE WIDTH="100" HEIGHT="120" BGCOLOR="#FF0000" bordercolor="red" >
+<TR>
+<TD height=36 colspan=2 align=center bgcolor=3333ff>A </TD>
+</TR>
+
+<TR>
+<TD height=84 width=30 align=center bgcolor=9999ff>B </TD>
+
+<TD height=84 width=70 align=center bgcolor=ffffff>C </TD>
+</TR>
+</TABLE>
+
+<P><!------MARGIN-------></P>
+
+<H3>页面空白(Margin) &lt;frame marginwidth=# marginheight=#&gt;</H3>
+
+<DL>
+<PRE>&lt;frameset cols=50%,50%&gt;
+&lt;frame src=&quot;A.html&quot;&gt;
+&lt;frame src=&quot;A.html&quot; 
+    marginwidth=50 
+    marginheight=50&gt;
+&lt;/frameset&gt;
+
+<A HREF="margin.html" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/frame/margin.html"><FONT SIZE=+2>示例</FONT></A>
+</PRE>
+</DL>
+
+<TABLE WIDTH="100" HEIGHT="120" border>
+<TR>
+<TD width=50 align=center>AAAA </TD>
+
+<TD width=50 align=center>AA<BR>
+AA </TD>
+</TR>
+</TABLE>
+
+<P><!------SCROLLBAR-------></P>
+
+<H3>卷滚条设置 &lt;frame scrolling=#&gt; #=yes, no, auto</H3>
+
+<DL>
+<DD>#=缺省值是 auto。 </DD>
+</DL>
+
+<PRE>
+</PRE>
+
+<P><!--################## Floating Frame ########################--><A NAME="float"></A></P>
+
+<H2><IMG SRC="br20t.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/br20t.gif" ALT="+" HEIGHT=20 WIDTH=20 ALIGN=TOP> 浮动窗口(Floating Frame)<IMG SRC="ie.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/ie.gif" HEIGHT=14 WIDTH=80></H2>
+
+<P><!------Floating Frame-------></P>
+
+<H3>&lt;iframe src=# name=##&gt; ... &lt;/iframe&gt; <BR>
+#=初始页面的 URL<BR>
+##=<A HREF="#target">窗口标识</A>(Frame Name)<FONT SIZE=+0>(之后可对此标识进行<A HREF="#target">各窗口间相互操作</A>)<BR>
+</FONT>... = 此处文字将只出现在不支持 FRAMES 的浏览器中。</H3>
+
+<DL>
+<PRE>&lt;center&gt;
+&lt;iframe src=&quot;A.html&quot; name=&quot;window&quot;&gt;
+   Here is a Floating Frame
+&lt;/iframe&gt;
+&lt;br&gt;&lt;br&gt;
+&lt;a href=&quot;A.html&quot; target=&quot;window&quot;&gt;Load A&lt;/A&gt;&lt;BR&gt;
+&lt;a href=&quot;B.html&quot; target=&quot;window&quot;&gt;Load B&lt;/A&gt;&lt;BR&gt;
+&lt;a href=&quot;Ccol.html&quot; target=&quot;window&quot;&gt;Load C&lt;/A&gt;&lt;BR&gt;
+&lt;/center&gt;
+
+<A HREF="iframe.html" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/frame/iframe.html"><FONT SIZE=+2>示例</FONT></A>
+</PRE>
+</DL>
+
+<TABLE WIDTH="100" HEIGHT="120" >
+<TR>
+<TD>
+<CENTER><TABLE WIDTH="50" HEIGHT="30" >
+<TR>
+<TD>Display A.html </TD>
+</TR>
+</TABLE></CENTER>
+
+<P><BR>
+<U>Load A<BR>
+Load B<BR>
+Load C</U><BR>
+</P>
+</TD>
+</TR>
+</TABLE>
+
+<PRE>
+</PRE>
+
+
+</BODY>
+</HTML>

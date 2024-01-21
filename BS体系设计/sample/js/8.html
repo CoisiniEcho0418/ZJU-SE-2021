@@ -1,0 +1,22 @@
+<html>
+<head><title>使用swith条件语句的Javascript示例</title></head>
+<body>
+<script type="text/javascript">
+var d = new Date()
+theDay=d.getDay()
+switch (theDay)
+{
+case 5:
+document.write("<b>星期五</b>")
+break
+case 6:
+case 0:
+document.write("<b>周末</b>")
+break
+default:
+document.write("<b>工作日</b>")
+}
+</script>
+<p>该Javascript示例解释：首先将今天的日期值赋值给变量d，然后用.getDay得出天数，赋值给变量theDay，然后使用switch条件语句。如果theDay等于5，表示是星期五；如果是6，表示是星期六；如果是0，表示是星期天；如果是其它数，表示是星期一到星期四。根据值的不同，显示不同的内容。</p>
+</body>
+</html>

@@ -1,0 +1,397 @@
+<HTML>
+<HEAD>
+   <TITLE></TITLE>
+</HEAD>
+<BODY>
+
+<H1 ALIGN=CENTER>表单(FORM)标记(TAGS)</H1>
+
+<CENTER><P>
+<HR></P></CENTER>
+
+<P><!--################## Basic ########################--><A NAME="basic"></A></P>
+
+<H2><IMG SRC="br20t.gif" ALT="+" HEIGHT=20 WIDTH=20 ALIGN=TOP> 基本语法</H2>
+
+<P><!------Form Basic-------></P>
+
+<H3>表单的基本语法</H3>
+
+<DL>
+<H3><TT>&lt;form action=&quot;url&quot; method=*&gt;<BR>
+... <BR>
+... <BR>
+&lt;input type=submit&gt; &lt;input type=reset&gt;<BR>
+&lt;/form&gt; </TT></H3>
+
+<P><TT>*=GET, POST </TT></P>
+</DL>
+
+<PRE>
+</PRE>
+
+<P><!------Input Basic-------></P>
+
+<H3>表单中提供给用户的输入形式</H3>
+
+<DL>
+<H3><TT>&lt;input type=* name=**&gt;</TT></H3>
+
+<P><TT>*=text, password, checkbox, radio, image, hidden, submit, reset</TT></P>
+
+<P><TT> **=Symbolic Name for CGI script </TT></P>
+</DL>
+
+<PRE>
+</PRE>
+
+<P><!--################## Text & Passwd ########################--><A NAME="text"></A></P>
+
+<H2><IMG SRC="br20t.gif" ALT="+" HEIGHT=20 WIDTH=20 ALIGN=TOP> 文字输入和密码输入</H2>
+
+<P><!------Text & Password-------><TT>*=text, password</TT> </P>
+
+<H3>&lt;input type=*&gt;<BR>
+&lt;input type=* value=**&gt;</H3>
+
+<PRE>&lt;form action=/cgi-bin/post-query method=POST&gt;
+您的姓名: 
+&lt;input type=text name=姓名&gt;&lt;br&gt;
+您的主页的网址: 
+&lt;input type=text name=网址 value=http://&gt;&lt;br&gt;
+密码: 
+&lt;input type=password name=密码&gt;&lt;br&gt;
+&lt;input type=submit value="发送"&gt;&lt;input type=reset value="重设"&gt;
+&lt;/form&gt;
+
+</PRE>
+
+<P><FORM action=/cgi-bin/post-query method=POST>您的姓名: <INPUT type=text name=姓名><BR>
+您的主页的网址: <INPUT type=text name=网址 value=http://><BR>
+密码: <INPUT type=password name=密码><BR>
+<INPUT type=submit value="发送"><INPUT type=reset value="重设"></FORM></P>
+
+<PRE>
+</PRE>
+
+<P><!------Text & Password -- Size, Max -------></P>
+
+<H3>&lt;input type=* size=**&gt;<BR>
+&lt;input type=* maxlength=**&gt;</H3>
+
+<PRE>&lt;form action=/cgi-bin/post-query method=POST&gt;
+&lt;input type=text name=a01 size=40&gt;&lt;br&gt;
+&lt;input type=text name=a02 maxlength=5&gt;&lt;br&gt;
+&lt;input type=submit&gt;&lt;input type=reset&gt;
+&lt;/form&gt;
+
+</PRE>
+
+<P><FORM action=/cgi-bin/post-query method=POST><INPUT type=text name=a01 size=40><BR>
+<INPUT type=text name=a02 maxlength=5><BR>
+<INPUT type=submit><INPUT type=reset></FORM></P>
+
+<PRE>
+</PRE>
+
+<P><!--################## Checkbox & Radio ########################--><A NAME="check"></A></P>
+
+<H2><IMG SRC="br20t.gif" ALT="+" HEIGHT=20 WIDTH=20 ALIGN=TOP> 复选框(Checkbox) 和 单选框(RadioButton) </H2>
+
+<P><!------Checkbox-------></P>
+
+<H3>&lt;input type=checkbox&gt;<BR>
+&lt;input type=checkbox checked&gt;<BR>
+&lt;input type=checkbox value=**&gt;</H3>
+
+<PRE>&lt;form action=/cgi-bin/post-query method=POST&gt;
+&lt;input type=checkbox name=水果1&gt;
+        Banana&lt;p&gt;
+&lt;input type=checkbox name=水果2 checked&gt;
+        Apple&lt;p&gt;
+&lt;input type=checkbox name=水果3 value=橘子&gt;
+        Orange&lt;p&gt;
+&lt;input type=submit&gt;&lt;input type=reset&gt;
+&lt;/form&gt;
+
+</PRE>
+
+<P><FORM action=/cgi-bin/post-query method=POST>
+<INPUT type=checkbox name=水果1>Banana</P>
+
+<P> <INPUT type=checkbox name=水果2 checked>Apple</P>
+
+<P> <INPUT type=checkbox name=水果3 value=橘子>Orange</P>
+
+<P> <INPUT type=submit><INPUT type=reset></FORM></P>
+
+<PRE>
+</PRE>
+
+<P><!------Checkbox-------></P>
+
+<H3>&lt;input type=radio value=**&gt;<BR>
+&lt;input type=radio value=** checked&gt;</H3>
+
+<PRE>
+&lt;form action=/cgi-bin/post-query method=POST&gt;
+&lt;input type=radio name=水果&gt;
+        Banana&lt;p&gt;
+&lt;input type=radio name=水果 checked&gt;
+        Apple&lt;p&gt;
+&lt;input type=radio name=水果 value=橘子&gt;
+        Orange&lt;p&gt;
+&lt;input type=submit&gt;&lt;input type=reset&gt;
+&lt;/form&gt;
+
+</PRE>
+
+<P><FORM action=/cgi-bin/post-query method=POST>
+<INPUT type=radio name=水果>Banana</P>
+
+<P> <INPUT type=radio name=水果 checked>Apple</P>
+
+<P> <INPUT type=radio name=水果 value=橘子>Orange</P>
+
+<P> <INPUT type=submit><INPUT type=reset></FORM></P>
+
+<PRE>
+</PRE>
+
+<P><!--################## Image ########################--><A NAME="image"></A></P>
+
+<H2><IMG SRC="br20t.gif" ALT="+" HEIGHT=20 WIDTH=20 ALIGN=TOP> 图象坐标 </H2><P>
+<B>在下面选则一个系数后，在图象上点一下，就知道什么是图象坐标了！</B>
+
+
+<H3>&lt;input type=image src=url&gt;</H3>
+
+<PRE>&lt;form action=/cgi-bin/post-query method=POST&gt;
+&lt;input type=image name=face src=f.gif&gt;&lt;p&gt;
+&lt;input type=radio name=zoom value=2 checked&gt;x2
+&lt;input type=radio name=zoom value=4&gt;x4
+&lt;input type=radio name=zoom value=6&gt;x6&lt;p&gt;
+&lt;input type=reset&gt;
+&lt;/form&gt;
+
+</PRE>
+
+<P><FORM action=/cgi-bin/post-query method=POST><INPUT type=image src=f.gif name=face></P>
+
+<P><INPUT type=radio name=zoom value=2 checked>x2 <INPUT type=radio name=zoom value=4>x4
+<INPUT type=radio name=zoom value=6>x6</P>
+
+<P> <INPUT type=reset></FORM></P>
+
+<PRE>
+</PRE>
+
+<P><!--################## Hidden ########################--><A NAME="hide"></A></P>
+
+<H2><IMG SRC="br20t.gif" ALT="+" HEIGHT=20 WIDTH=20 ALIGN=TOP> 隐藏表单的元素
+</H2>
+
+<H3>&lt;input type=hidden value=*&gt;</H3>
+
+<PRE>&lt;form action=/cgi-bin/post-query method=POST&gt;
+&lt;input type=hidden name=add value=hoge@hoge.jp&gt;
+Here is a hidden element. &lt;p&gt;
+&lt;input type=submit&gt;&lt;input type=reset&gt;
+&lt;/form&gt;
+
+</PRE>
+
+<P><FORM action=/cgi-bin/post-query method=POST><INPUT type=hidden name=add value=hoge@hoge.jp>Here
+is a hidden element. </P>
+
+<P><INPUT type=submit><INPUT type=reset></FORM></P>
+
+<PRE>
+</PRE>
+
+<P><!--################## Select ########################--><A NAME="select"></A></P>
+
+<H2><IMG SRC="br20t.gif" ALT="+" HEIGHT=20 WIDTH=20 ALIGN=TOP> 列表框(Selectable Menu) </H2>
+
+<P><!------Basic-------></P>
+
+<H3>基本语法</H3>
+
+<DL>
+<H3>&lt;select name=*&gt;<BR>
+&lt;option&gt; ...<BR>
+&lt;/select&gt; </H3>
+</DL>
+
+<P><!------select & option-------></P>
+
+<H3>&lt;option selected&gt;<BR>
+&lt;option value=**&gt;</H3>
+
+<PRE>&lt;form action=/cgi-bin/post-query method=POST&gt;
+&lt;select name=fruits&gt;
+        &lt;option&gt;Banana
+        &lt;option selected&gt;Apple
+        &lt;option value=My_Favorite&gt;Orange
+&lt;/select&gt;&lt;p&gt;
+&lt;input type=submit&gt;&lt;input type=reset&gt;
+&lt;/form&gt;
+
+</PRE>
+
+<P><FORM action=/cgi-bin/post-query method=POST><SELECT name=fruits><OPTION>Banana
+<OPTION selected>Apple <OPTION value=My_Favorite>Orange </SELECT></P>
+
+<P><INPUT type=submit><INPUT type=reset></FORM></P>
+
+<PRE>
+</PRE>
+
+<P><!------size & multiple-------></P>
+
+<H3>&lt;select size=**&gt;</H3>
+
+<PRE>&lt;form action=/cgi-bin/post-query method=POST&gt;
+&lt;select name=fruits size=3&gt;
+        &lt;option&gt;Banana
+        &lt;option selected&gt;Apple
+        &lt;option value=My_Favorite&gt;Orange
+        &lt;option&gt;Peach
+&lt;/select&gt;&lt;p&gt;
+&lt;input type=submit&gt;&lt;input type=reset&gt;
+&lt;/form&gt;
+
+</PRE>
+
+<P><FORM action=/cgi-bin/post-query method=POST><SELECT name=fruits size=3><OPTION>Banana
+<OPTION selected>Apple <OPTION value=My_Favorite>Orange <OPTION>Peach </SELECT></P>
+
+<P><INPUT type=submit><INPUT type=reset></FORM></P>
+
+<PRE>
+</PRE>
+
+<P><!------multiple-------></P>
+
+<H3>&lt;select size=** multiple&gt;</H3>
+<B>注意，是用 Ctrl 键配合鼠标实现多选。<BR>
+(和 MS-WINDOWS 的 File Manager 一样)</B>
+
+<PRE>&lt;form action=/cgi-bin/post-query method=POST&gt;
+&lt;select name=fruits size=3 multiple&gt;
+        &lt;option selected&gt;Banana
+        &lt;option selected&gt;Apple
+        &lt;option value=My_Favorite&gt;Orange
+        &lt;option selected&gt;Peach
+&lt;/select&gt;&lt;p&gt;
+&lt;input type=submit&gt;&lt;input type=reset&gt;
+&lt;/form&gt;
+</PRE>
+
+<P><FORM action=/cgi-bin/post-query method=POST><SELECT name=fruits size=3 multiple><OPTION selected>Banana
+<OPTION selected>Apple <OPTION value=My_Favorite>Orange <OPTION selected>Peach
+</SELECT></P>
+
+<P><INPUT type=submit><INPUT type=reset></FORM></P>
+
+<PRE>
+</PRE>
+
+<P><!--################## Textarea ########################--><A NAME="textarea"></A></P>
+
+<H2><IMG SRC="br20t.gif" ALT="+" HEIGHT=20 WIDTH=20 ALIGN=TOP> 文本区域</H2>
+
+<H3>&lt;textarea name=* rows=** cols=**&gt; ... &lt;textarea&gt;</H3>
+
+<PRE>&lt;form action=/cgi-bin/post-query method=POST&gt;
+&lt;textarea name=comment rows=5 cols=60&gt;
+&lt;/textarea&gt;
+&lt;P&gt;
+&lt;input type=submit&gt;&lt;input type=reset&gt;
+&lt;/form&gt;
+
+</PRE>
+
+<P><FORM action=/cgi-bin/post-query method=POST><TEXTAREA name=comment rows=5 cols=60></TEXTAREA></P>
+
+<P><INPUT type=submit><INPUT type=reset></FORM></P>
+
+<PRE>
+</PRE>
+
+<P><!------Word Wrapping Off-------><A NAME="wrap"></A></P>
+
+<H3>对于很长的行是否进行换行的设置(Word Wrapping) <IMG SRC="netscape.gif" HEIGHT=14 WIDTH=80></H3>
+
+<H3>&lt;textarea wrap=off&gt; ... &lt;/textarea&gt;</H3>
+
+<DL>
+<DD>不换行，是缺省设置。</DD>
+</DL>
+
+<P><!------Word Wrapping Soft-------></P>
+
+<H3>&lt;textarea wrap=soft&gt; ... &lt;/textarea&gt;</H3>
+“软换行”，好象 MS－WORD 里的“软回车”。
+
+<DL>
+<DD><TT>&lt;form action=/cgi-bin/post-query method=POST&gt;<BR>
+&lt;textarea wrap=soft name=comment rows=5 cols=25&gt; &lt;/textarea&gt;&lt;P&gt;<BR>
+&lt;input type=submit&gt;&lt;input type=reset&gt;<BR>
+&lt;/form&gt;</TT><BR>
+</DD>
+</DL>
+
+<P><FORM action=/cgi-bin/post-query method=POST><TEXTAREA wrap=soft name=comment rows=5 cols=25></TEXTAREA></P>
+
+<P><INPUT type=submit><INPUT type=reset></FORM></P>
+
+<P><!------Word Wrapping Hard-------></P>
+
+<H3>&lt;textarea wrap=hard&gt; ... &lt;/textarea&gt;</H3>
+“硬换行”，好象 MS－WORD 里的“硬回车”。
+
+<DL>
+<DD><TT>&lt;form action=/cgi-bin/post-query method=POST&gt;<BR>
+&lt;textarea wrap=hard name=comment rows=5 cols=25&gt; &lt;/textarea&gt;&lt;P&gt;<BR>
+&lt;input type=submit&gt;&lt;input type=reset&gt;<BR>
+&lt;/form&gt;</TT><BR>
+</DD>
+</DL>
+
+<P><FORM action=/cgi-bin/post-query method=POST><TEXTAREA wrap=hard name=comment rows=5 cols=25></TEXTAREA></P>
+
+<P><INPUT type=submit><INPUT type=reset></FORM></P>
+
+<PRE>
+</PRE>
+
+<P><!--################## (^^) Jump & Add (^^) ########################-->
+<HR><A HREF="http://ncdesign.kyushu-id.ac.jp/"><IMG SRC="angel-homeg.gif" ALT="NCD HOME" HSPACE=3 VSPACE=10 BORDER=0 HEIGHT=46 WIDTH=55 ALIGN=LEFT></A>
+<B><A HREF="../html_design.html">HTML
+Design Guide Main Page<BR>
+<NOBR></A></B><FONT FACE="'Times New Roman', Arial"><FONT SIZE=-1><A HREF="html_design.html#content">Contents</A>
+|| <A HREF="page.html">Page</A>
+|| <A HREF="font.html">Font</A>
+|| <A HREF="text_style.html">Text
+Style</A> || <A HREF="image.html">Image</A>
+|| <A HREF="form.html">Form</A>
+|| <A HREF="table.html">Table</A>
+|| <A HREF="table02.html">Table
+Advanced</A> <BR>
+|| <A HREF="frame.html">Frames</A>
+|| <A HREF="marquee.html">Marquee</A>
+|| <A HREF="inline.html">Alternative
+Inline Elements</A> <BR>
+</FONT><FONT SIZE=-2><A HREF="tag-index.html">Tag
+Index</A> || <A HREF="new.html">What's
+New</A></FONT><FONT SIZE=-1> </FONT></FONT><BR clear=all>
+</P>
+
+<P>Network Communication Design<BR>
+<A HREF="http://ncdesign.kyushu-id.ac.jp/">http://ncdesign.kyushu-id.ac.jp/<BR>
+</A>C&amp;P 1994-1996 Yuriko Ienaga <FONT SIZE=-1><A HREF="mailto:v91102@vgenda.kyushu-id.ac.jp">v91102@vgenda.kyushu-id.ac.jp</A></FONT>
+<!--################## (^^) END (^^) ########################--></P>
+
+</BODY>
+</HTML>

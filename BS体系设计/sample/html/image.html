@@ -1,0 +1,184 @@
+<HTML>
+<HEAD>
+   <TITLE></TITLE>
+</HEAD>
+<BODY BGCOLOR="#D4D4D4">
+
+<H1 ALIGN=CENTER>图象(IMAGE)标记(TAGS)</H1>
+
+<CENTER><P>
+<HR></P></CENTER>
+
+<P><!--################## Basic ########################--><A NAME="basic"></A></P>
+
+<H2><IMG SRC="br20t.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/br20t.gif" ALT="+" HEIGHT=20 WIDTH=20 ALIGN=TOP> 链入图象的基本语法</H2>
+
+<P><!------img source-------></P>
+
+<H3>&lt;img src=#&gt; #=图象的 URL</H3>
+
+<P><!------img description-------></P>
+
+<H3>&lt;img alt=#&gt; <BR>
+<FONT SIZE=+0>#=在浏览器尚未完全读入图象时，在图象位置显示的文字。</FONT></H3>
+
+<DL>
+<DD><TT>&lt;img src=&quot;f.gif&quot; alt=&quot;MY FACE :-)&quot;&gt; </TT></DD>
+</DL>
+
+<P><IMG SRC="f.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/f.gif" ALT="MY FACE :-)" HEIGHT=64 WIDTH=64> </P>
+
+<PRE>
+</PRE>
+
+<P><!--################## Image aligned with Text ########################--><A NAME="text"></A></P>
+
+<H2><IMG SRC="br20t.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/br20t.gif" ALT="+" HEIGHT=20 WIDTH=20 ALIGN=TOP> 图象和文字的对齐</H2>
+
+<H3>&lt;img align=#&gt; #=top, middle, bottom</H3>
+
+<DL>
+<DD><TT>&lt;img src=URL align=top&gt; My face! </TT></DD>
+</DL>
+
+<P><IMG SRC="f.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/f.gif" ALT="(^_^)" HEIGHT=64 WIDTH=64 ALIGN=TOP> My Face!
+</P>
+
+<DL>
+<DD><TT>&lt;img src=URL align=middle&gt; My face! </TT></DD>
+</DL>
+
+<P><IMG SRC="f.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/f.gif" ALT="(^_^)" HEIGHT=64 WIDTH=64 ALIGN=CENTER> My Face!
+</P>
+
+<DL>
+<DD><TT>&lt;img src=URL align=bottom&gt; My face! </TT></DD>
+</DL>
+
+<P><IMG SRC="f.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/f.gif" ALT="(^_^)" HEIGHT=64 WIDTH=64 ALIGN=BOTTOM> My Face!
+</P>
+
+<UL>
+<LI>只有一行文字才可以放在图象的两边。（不知道翻译的对不对？)</LI>
+<LI>Only one text line can be flown into the both side of Image. </LI>
+</UL>
+
+<PRE>
+</PRE>
+
+<P><!--################## Floating Image ########################--><A NAME="float"></A></P>
+
+<H2><IMG SRC="br20t.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/br20t.gif" ALT="+" HEIGHT=20 WIDTH=20 ALIGN=TOP> 图象在页面中的对齐/布局(Floating Image) </H2>
+
+<P><!------img align=left-------></P>
+
+<H3><B>&lt;img align=left&gt;</B></H3>
+
+<DL>
+<DD><TT>&lt;img src=URL align=left&gt;My Face!&lt;br&gt;<BR>
+It is always&lt;br&gt;<BR>
+smiling.&lt;br&gt;<BR>
+Hahaha....&lt;br&gt;</TT><BR>
+</DD>
+</DL>
+
+<P><IMG SRC="f.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/f.gif" ALT="(^_^)" HEIGHT=64 WIDTH=64 ALIGN=LEFT>My Face!<BR>
+It is always<BR>
+smiling.<BR>
+Hahaha....<BR>
+<BR clear=all>
+</P>
+
+<PRE>
+</PRE>
+
+<P><!------img align=right-------></P>
+
+<H3><B>&lt;img align=right&gt;</B></H3>
+
+<P><IMG SRC="f.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/f.gif" ALT="(^_^)" HEIGHT=64 WIDTH=64 ALIGN=RIGHT>My Face!<BR>
+It is always<BR>
+smiling.<BR>
+Hahaha....<BR>
+<BR clear=all>
+</P>
+
+<PRE>
+</PRE>
+
+<P><!------br clear-------></P>
+
+<H3><B>&lt;br clear=all&gt;</B></H3>
+
+<DL>
+<DD><TT>&lt;img src=URL align=left&gt;My Face!&lt;br&gt;<BR>
+It is always<BR>
+&lt;br clear=all&gt;<BR>
+smiling.&lt;br&gt;<BR>
+Hahaha....&lt;br&gt;</TT><BR>
+</DD>
+</DL>
+
+<P><IMG SRC="f.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/f.gif" ALT="(^_^)" HEIGHT=64 WIDTH=64 ALIGN=LEFT>My Face!<BR>
+It is always<BR>
+<BR clear=all>
+smiling.<BR>
+Hahaha....</P>
+
+<P> </P>
+
+<PRE>
+</PRE>
+
+<P><!------vspace hspace-------></P>
+
+<H3><B>&lt;img vspace=# hspace=#&gt; #=value</B></H3>
+
+<DL>
+<DD><TT>&lt;img src=URL align=left vspace=10 hspace=20&gt;My Face!&lt;br&gt;<BR>
+It is always&lt;br&gt;<BR>
+smiling.&lt;br&gt;<BR>
+Hahaha....&lt;br&gt;</TT><BR>
+</DD>
+</DL>
+
+<P><IMG SRC="f.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/f.gif" ALT="(^_^)" HSPACE=20 VSPACE=10 HEIGHT=64 WIDTH=64 ALIGN=LEFT>My
+Face!<BR>
+It is always<BR>
+smiling.<BR>
+Hahaha....<BR>
+<BR clear=all>
+</P>
+
+<PRE>
+</PRE>
+
+<P><!--################## Border ########################--><A NAME="border"></A></P>
+
+<H2><IMG SRC="br20t.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/br20t.gif" ALT="+" HEIGHT=20 WIDTH=20 ALIGN=TOP> 边框</H2>
+
+<P><!------border-------></P>
+
+<H3><B>&lt;img border=#&gt; #=value</B></H3>
+
+<DL>
+<DD><TT>&lt;a href=&quot;URL&quot;&gt;<BR>
+&lt;img src=URL border=15&gt;<BR>
+&lt;/a&gt; </TT></DD>
+</DL>
+
+<P><A HREF="fh.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/fh.gif"><IMG SRC="fh.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/fh.gif" ALT="(^_^)" BORDER=15 HEIGHT=64 WIDTH=64></A>
+</P>
+
+<PRE>
+</PRE>
+
+<P><!--################## Client Side Image Map ########################--><A NAME="cmap"></A></P>
+
+<H2><IMG SRC="br20t.gif" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/br20t.gif" ALT="+" HEIGHT=20 WIDTH=20 ALIGN=TOP> <A HREF="map.html" tppabs="http://www.lib.tsinghua.edu.cn/chinese/INTERNET/HTML/Normal/map.html">客户端图象映射图(Client Side Image Map)</A> </H2>
+
+<PRE>
+</PRE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,22 @@
+<html>
+<head><title>使用if...else条件语句的Javascript示例</title></head>
+<body>
+
+<script type="text/javascript">
+var vDay = new Date()
+var vHour = vDay.getHours()
+
+if (vHour < 17)
+{
+document.write("<b>日安</b>")
+}
+else
+{
+document.write("<b>晚安</b>")
+}
+</script>
+
+<p>Javascript代码示例解释：首先将今天的日期赋值给变量vDay，然后用.getHours得出vDay的小时数，赋值给变量vHour，然后使用if...else条件语句判断，如果vHour小于17，显示"日安"，反之则显示"晚安"。</p>
+
+</body>
+</html>

@@ -1,0 +1,21 @@
+<html>
+<head>
+<title>一个用break中断循环的Javascript代码示例</title>
+</head>
+<body>
+
+<script  type="text/javascript">
+for (i = 1;i<10;i++)
+{
+	if (i == 5)
+		continue;
+	if (i == 8)
+		break;
+	for (j=i;j<10;j++)
+		document.writeln(i + "*" + j + "=" + i*j);
+	document.writeln("<br>");
+}
+</script>
+
+</body>
+</html>
